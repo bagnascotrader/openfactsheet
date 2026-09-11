@@ -43,7 +43,7 @@
     }
   ],
   "input": {
-    "duplicate_dates": 0,
+    "duplicate_periods": 0,
     "end": "2023-12-31",
     "frequency": "monthly",
     "frequency_evidence": "100% of consecutive observations are exactly one calendar month apart.",
@@ -401,6 +401,10 @@
         "information_ratio": "annualized arithmetic mean active return / tracking error",
         "regression": "OLS of fund on benchmark returns (risk-free = 0)"
       },
+      "confidence": {
+        "annualization_min_years": 1.0,
+        "benchmark_min_coverage": 0.9
+      },
       "dependence": {
         "acf_lags": [
           1,
@@ -742,7 +746,9 @@
       "status": "applicable",
       "unit": "decimal_return",
       "value": -0.5999096665560689,
-      "warnings": []
+      "warnings": [
+        "The deepest drawdown has not recovered by the end of the data; the loss is still open."
+      ]
     },
     {
       "assumptions": [
@@ -1079,7 +1085,7 @@
       "reference_values": null,
       "status": "low_confidence",
       "unit": "ratio",
-      "value": 0.39183077855344356,
+      "value": 0.39183077855344367,
       "warnings": [
         "Only about 3.0 observations are expected in the 5% tail (< 5); the tail estimate rests on very few data points."
       ]

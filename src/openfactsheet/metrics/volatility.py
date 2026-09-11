@@ -28,6 +28,7 @@ _SMOOTHING_CAVEAT = (
     docs=MetricDocs(
         measures="Dispersion of single-period returns around their mean.",
         formula="sqrt( sum((r_t - mean)^2) / (n - 1) )",
+        formula_latex=r"s = \sqrt{\frac{1}{n-1} \sum_{t=1}^{n} \left(r_t - \bar r\right)^2}",
         inputs="Periodic simple returns.",
         retail="How much returns typically swing from one period to the next; higher means a "
         "bumpier ride.",
@@ -62,6 +63,7 @@ def volatility(ctx: MetricContext) -> float:
     docs=MetricDocs(
         measures="Per-period volatility scaled to one year.",
         formula="std(r_t, ddof=1) * sqrt(P)",
+        formula_latex=r"\sigma_{\text{ann}} = s \sqrt{P}",
         inputs="Periodic simple returns with a regular frequency.",
         retail="The typical size of yearly swings implied by the period-to-period variability.",
         institutional="Square-root-of-time scaling assumes serially uncorrelated returns; "

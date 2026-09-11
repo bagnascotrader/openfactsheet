@@ -28,13 +28,13 @@ def missingness_findings(diag: InputDiagnostics) -> list[DiagnosticFinding]:
                 diag.missing_expected_periods,
             )
         )
-    if diag.duplicate_dates:
+    if diag.duplicate_periods:
         findings.append(
             DiagnosticFinding(
                 "duplicate_periods",
                 "critical",
-                f"{diag.duplicate_dates} pair(s) of observations share a calendar period.",
-                diag.duplicate_dates,
+                f"{diag.duplicate_periods} pair(s) of observations share a calendar period.",
+                diag.duplicate_periods,
             )
         )
     if not diag.was_sorted:

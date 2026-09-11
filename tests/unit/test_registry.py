@@ -44,6 +44,7 @@ def test_every_metric_is_fully_documented() -> None:
         ):
             assert getattr(docs, field).strip(), f"{d.id}.{field}"
         assert docs.misleading_when, d.id
+        assert docs.formula_latex.strip(), f"{d.id} needs an exact LaTeX formula"
         assert docs.references, d.id
         assert d.min_data_policy in MIN_DATA_POLICIES
         assert d.category in CATEGORY_ORDER

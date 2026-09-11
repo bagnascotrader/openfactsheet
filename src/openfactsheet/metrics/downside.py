@@ -24,6 +24,11 @@ from openfactsheet.models.metric import MetricDocs
     docs=MetricDocs(
         measures="Variability of returns below the target (0% per period), scaled to a year.",
         formula="sqrt( (1/n) * sum(min(r_t - MAR, 0)^2) ) * sqrt(P), MAR = 0",
+        formula_latex=(
+            r"\mathrm{DD}_{\text{ann}} = \sqrt{P}\,\mathrm{DD}, \quad "
+            r"\mathrm{DD} = \sqrt{\frac{1}{n} \sum_{t=1}^{n} \min(r_t - \tau, 0)^2}, "
+            r"\quad \tau = 0"
+        ),
         inputs="Periodic simple returns with a regular frequency.",
         retail="How large the losing periods typically are; gains do not count as risk here.",
         institutional="Lower partial moment of order 2 (root), full-sample denominator as in "

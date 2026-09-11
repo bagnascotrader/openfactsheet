@@ -82,6 +82,11 @@ when it misleads, minimum data, references and the OpenFactsheet convention.
 - [Methodology](docs/methodology.md) and [assumptions](docs/assumptions.md)
 - [Methodology decisions](docs/methodology/decisions/README.md)
 - [Metric catalog](docs/metric_catalog.md)
+- Reference: [exact formulas](docs/reference/formulas.md) ·
+  [notation](docs/reference/notation.md) ·
+  [decision criteria](docs/reference/criteria.md) ·
+  [policies & thresholds](docs/reference/policies.md) ·
+  [JSON schema](docs/reference/report_schema.md)
 - [Reference implementations & validation](docs/validation/reference_implementations.md)
 
 ## Roadmap

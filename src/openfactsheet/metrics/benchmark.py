@@ -50,6 +50,12 @@ _BENCH_CAVEATS = (
     docs=MetricDocs(
         measures="Sensitivity of fund returns to benchmark returns.",
         formula="slope b in OLS: r_fund,t = a + b * r_bench,t + e_t",
+        formula_latex=(
+            r"\hat\beta = \frac{\sum_{t=1}^{m} (r_t - \bar r)(b_t - \bar b)}"
+            r"{\sum_{t=1}^{m} (b_t - \bar b)^2}"
+            r" \quad \text{(OLS slope of } r_t = \alpha + \beta b_t + \varepsilon_t)"
+        ),
+        undefined_when=("Benchmark returns are constant over the aligned periods.",),
         inputs="Fund and benchmark returns on aligned periods.",
         retail="A beta of 1 means the fund tended to move one-for-one with the benchmark; 0.5 "
         "means about half as much.",
@@ -97,6 +103,11 @@ def beta(ctx: MetricContext) -> Computed:
     docs=MetricDocs(
         measures="Average return not explained by benchmark exposure, annualized.",
         formula="P * a, with a the intercept of OLS: r_fund,t = a + b * r_bench,t + e_t",
+        formula_latex=(
+            r"\alpha_{\text{ann}} = P \, \hat\alpha, \quad "
+            r"\hat\alpha = \bar r - \hat\beta \, \bar b"
+        ),
+        undefined_when=("Benchmark returns are constant over the aligned periods.",),
         inputs="Fund and benchmark returns on aligned periods with a regular frequency.",
         retail="The part of the fund's yearly return that the benchmark does not explain; it "
         "depends heavily on which benchmark is used.",
@@ -157,6 +168,11 @@ def alpha(ctx: MetricContext) -> Computed:
     docs=MetricDocs(
         measures="Share of fund return variance explained by the benchmark.",
         formula="1 - SSR/SST of the OLS regression (equals correlation^2 for one regressor)",
+        formula_latex=(
+            r"R^2 = 1 - \frac{\sum_{t=1}^{m} \hat\varepsilon_t^2}{\sum_{t=1}^{m} (r_t - \bar r)^2},"
+            r" \quad \hat\varepsilon_t = r_t - \hat\alpha - \hat\beta b_t"
+        ),
+        undefined_when=("Benchmark returns are constant over the aligned periods.",),
         inputs="Fund and benchmark returns on aligned periods.",
         retail="How closely the fund's ups and downs followed the benchmark (1 = perfectly).",
         institutional="Low R-squared means beta and alpha say little about the fund; the "
@@ -186,6 +202,11 @@ def r_squared(ctx: MetricContext) -> float:
     docs=MetricDocs(
         measures="Linear co-movement of fund and benchmark returns.",
         formula="Pearson correlation of aligned returns",
+        formula_latex=(
+            r"\rho_{rb} = \frac{\sum_{t=1}^{m} (r_t - \bar r)(b_t - \bar b)}"
+            r"{\sqrt{\sum_{t=1}^{m} (r_t - \bar r)^2 \, \sum_{t=1}^{m} (b_t - \bar b)^2}}"
+        ),
+        undefined_when=("Fund or benchmark returns are constant over the aligned periods.",),
         inputs="Fund and benchmark returns on aligned periods.",
         retail="+1 means the fund moved exactly with the benchmark, 0 no linear relation, -1 "
         "exactly opposite.",
@@ -220,6 +241,10 @@ def correlation(ctx: MetricContext) -> float:
     docs=MetricDocs(
         measures="Volatility of the difference between fund and benchmark returns, annualized.",
         formula="std(r_fund,t - r_bench,t, ddof=1) * sqrt(P)",
+        formula_latex=(
+            r"\mathrm{TE} = s_a \sqrt{P}, \quad s_a = \sqrt{\frac{1}{m-1} \sum_{t=1}^{m}"
+            r" (a_t - \bar a)^2}, \quad a_t = r_t - b_t"
+        ),
         inputs="Fund and benchmark returns on aligned periods with a regular frequency.",
         retail="How much the fund's results differed from the benchmark from period to period.",
         institutional="Ex-post tracking error (active risk); the Information Ratio denominator.",
@@ -249,6 +274,7 @@ def tracking_error(ctx: MetricContext) -> float:
     docs=MetricDocs(
         measures="Average fund-minus-benchmark return, annualized.",
         formula="P * mean(r_fund,t - r_bench,t)",
+        formula_latex=r"\mathrm{AR} = P \, \bar a = \frac{P}{m} \sum_{t=1}^{m} (r_t - b_t)",
         inputs="Fund and benchmark returns on aligned periods with a regular frequency.",
         retail="How much the fund returned above (or below) the benchmark per year, on average.",
         institutional="Arithmetic active return, consistent with the Information Ratio "
@@ -288,6 +314,10 @@ def active_return(ctx: MetricContext) -> float:
     docs=MetricDocs(
         measures="Active return per unit of tracking error, annualized.",
         formula="P * mean(a_t) / (std(a_t, ddof=1) * sqrt(P)), a_t = r_fund,t - r_bench,t",
+        formula_latex=(
+            r"\mathrm{IR} = \frac{P \, \bar a}{s_a \sqrt{P}} = \frac{\bar a}{s_a} \sqrt{P}"
+        ),
+        undefined_when=("Tracking error is exactly zero (fund equals benchmark plus a constant).",),
         inputs="Fund and benchmark returns on aligned periods with a regular frequency.",
         retail="How consistently the fund beat (or lagged) its benchmark relative to how much "
         "it deviated from it.",
@@ -337,6 +367,14 @@ def information_ratio(ctx: MetricContext) -> float:
     docs=MetricDocs(
         measures="Annualized return per unit of benchmark beta.",
         formula="P * mean(r_fund,t - rf) / beta, rf = 0",
+        formula_latex=(
+            r"\mathrm{TR} = \frac{P\,(\bar r^{(m)} - r_f)}{\hat\beta}, \quad r_f = 0, \quad "
+            r"\bar r^{(m)} = \frac{1}{m} \sum_{t=1}^{m} r_t \text{ (aligned periods)}"
+        ),
+        undefined_when=(
+            "Benchmark returns are constant (beta undefined).",
+            "Estimated beta is exactly zero.",
+        ),
         inputs="Fund and benchmark returns on aligned periods with a regular frequency.",
         retail="Return earned per unit of market (benchmark) risk taken.",
         institutional="Treynor (1965) with arithmetic annualized mean on the aligned sample; "
@@ -432,6 +470,15 @@ _CAPTURE_REFS = (
     docs=MetricDocs(
         measures="Fund return in benchmark up periods relative to the benchmark's, compounded.",
         formula="annualized geometric fund return over {t : r_bench,t > 0} / same for benchmark",
+        formula_latex=(
+            r"\mathrm{UC} = \frac{G(U, r)}{G(U, b)}, \quad U = \{t : b_t > 0\}, \quad "
+            r"G(S, x) = \begin{cases} \left(\prod_{t \in S} (1 + x_t)\right)^{P/|S|} - 1"
+            r" & \prod_{t \in S} (1 + x_t) > 0 \\ -1 & \text{otherwise} \end{cases}"
+        ),
+        undefined_when=(
+            "The benchmark has no up periods in the overlap.",
+            "The benchmark's compounded up-period return is exactly zero.",
+        ),
         inputs="Fund and benchmark returns on aligned periods with a regular frequency.",
         retail="Above 1 (100%): the fund gained more than the benchmark when the benchmark rose.",
         institutional="Morningstar-style geometric upside capture; read together with downside "
@@ -463,6 +510,14 @@ def upside_capture(ctx: MetricContext) -> Computed:
     docs=MetricDocs(
         measures="Fund return in benchmark down periods relative to the benchmark's, compounded.",
         formula="annualized geometric fund return over {t : r_bench,t < 0} / same for benchmark",
+        formula_latex=(
+            r"\mathrm{DC} = \frac{G(D, r)}{G(D, b)}, \quad D = \{t : b_t < 0\}"
+            r" \quad (G \text{ as for upside capture})"
+        ),
+        undefined_when=(
+            "The benchmark has no down periods in the overlap.",
+            "The benchmark's compounded down-period return is exactly zero.",
+        ),
         inputs="Fund and benchmark returns on aligned periods with a regular frequency.",
         retail="Below 1 (100%): the fund lost less than the benchmark when the benchmark fell. "
         "Negative: the fund gained on average when the benchmark fell.",

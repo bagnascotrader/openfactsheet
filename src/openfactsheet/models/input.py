@@ -160,7 +160,7 @@ class InputDiagnostics:
     leading_missing_trimmed: int
     trailing_missing_trimmed: int
     missing_expected_periods: int | None
-    duplicate_dates: int
+    duplicate_periods: int  # observations sharing a calendar period (identical timestamps fail)
     was_sorted: bool
     transformations: tuple[str, ...]
     warnings: tuple[str, ...]
@@ -189,7 +189,7 @@ class InputDiagnostics:
             "leading_missing_trimmed": self.leading_missing_trimmed,
             "trailing_missing_trimmed": self.trailing_missing_trimmed,
             "missing_expected_periods": self.missing_expected_periods,
-            "duplicate_dates": self.duplicate_dates,
+            "duplicate_periods": self.duplicate_periods,
             "was_sorted": self.was_sorted,
             "transformations": list(self.transformations),
             "warnings": list(self.warnings),
@@ -215,7 +215,7 @@ class InputDiagnostics:
             f"Return scale:              {self.return_scale.replace('_', ' ')}",
             f"Missing values (interior): {self.missing_values}",
             f"Missing expected periods:  {missing}",
-            f"Duplicate dates:           {self.duplicate_dates}",
+            f"Duplicate periods:         {self.duplicate_periods}",
         ]
         if self.transformations:
             lines.append("Transformations applied:   " + "; ".join(self.transformations))

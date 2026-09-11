@@ -172,7 +172,7 @@ def run_diagnostics(series: ReturnSeries, input_diag: InputDiagnostics) -> DataQ
         frequency=series.frequency.value,
         missing_values=input_diag.missing_values,
         missing_expected_periods=input_diag.missing_expected_periods,
-        duplicate_periods=input_diag.duplicate_dates,
+        duplicate_periods=input_diag.duplicate_periods,
         zero_return_count=zeros,
         zero_return_pct=zero_pct,
         longest_identical_run=run,

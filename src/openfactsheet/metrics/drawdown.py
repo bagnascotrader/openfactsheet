@@ -40,6 +40,10 @@ _PATH_CAVEAT = (
     docs=MetricDocs(
         measures="Largest peak-to-trough decline of compounded wealth.",
         formula="min_t( W_t / max_{s<=t} W_s - 1 ), W_0 = 1, W_t = prod_{i<=t}(1 + r_i)",
+        formula_latex=(
+            r"\mathrm{MDD} = \min_{0 \le t \le n} D_t, \quad D_t = \frac{W_t}{M_t} - 1, \quad "
+            r"M_t = \max_{0 \le u \le t} W_u, \quad W_0 = 1"
+        ),
         inputs="Periodic simple returns.",
         retail="The worst loss an investor would have suffered buying at a high point and "
         "selling at the following low point.",
@@ -68,6 +72,12 @@ def max_drawdown(ctx: MetricContext) -> Computed:
     if not episodes:
         return Computed(0.0, details={"episodes": 0})
     worst = min(episodes, key=lambda e: e.depth)
+    notes: tuple[str, ...] = ()
+    if not worst.recovered:
+        notes = (
+            "The deepest drawdown has not recovered by the end of the data; the loss is "
+            "still open.",
+        )
     return Computed(
         worst.depth,
         details={
@@ -78,6 +88,7 @@ def max_drawdown(ctx: MetricContext) -> Computed:
             "peak_to_trough_periods": worst.peak_to_trough_periods,
             "duration_periods": worst.duration_periods,
         },
+        notes=notes,
     )
 
 
@@ -94,6 +105,10 @@ def max_drawdown(ctx: MetricContext) -> Computed:
     docs=MetricDocs(
         measures="Mean depth of all distinct drawdown episodes.",
         formula="(1/K) * sum_k depth_k over K peak-to-recovery episodes",
+        formula_latex=(
+            r"\overline{\mathrm{DD}} = \begin{cases} \frac{1}{K} \sum_{k=1}^{K} \delta_k & K > 0"
+            r" \\ 0 & K = 0 \end{cases}, \quad \delta_k = \min_{t \in E_k} D_t"
+        ),
         inputs="Periodic simple returns.",
         retail="How deep the typical decline from a high point has been.",
         institutional="Episode-based average (PerformanceAnalytics AverageDrawdown convention); "
@@ -131,6 +146,7 @@ def average_drawdown(ctx: MetricContext) -> Computed:
     docs=MetricDocs(
         measures="Decline of wealth at the end of the history relative to its highest point.",
         formula="W_n / max_{s<=n} W_s - 1",
+        formula_latex=r"D_n = \frac{W_n}{M_n} - 1",
         inputs="Periodic simple returns.",
         retail="How far below its previous high the investment stands at the end of the data.",
         institutional="State variable at the reporting date; zero when the series ends at a "
@@ -161,6 +177,12 @@ def current_drawdown(ctx: MetricContext) -> float:
         measures="Longest time from a peak until wealth regained that peak (or until the end of "
         "the history, if not yet recovered).",
         formula="max_k (recovery_k - peak_k) in periods; ongoing episodes use n - peak_k",
+        formula_latex=(
+            r"L_{\max} = \max_{1 \le k \le K} \ell_k, \quad \ell_k = \begin{cases}"
+            r" \rho_k - \pi_k & \text{episode } k \text{ recovered} \\"
+            r" n - \pi_k & \text{episode } k \text{ ongoing} \end{cases}"
+            r", \quad L_{\max} = 0 \text{ if } K = 0"
+        ),
         inputs="Periodic simple returns.",
         retail="The longest stretch an investor would have waited to get back to a previous high.",
         institutional="Peak-to-recovery duration in observation periods; an ongoing episode is "
@@ -218,6 +240,10 @@ def longest_drawdown_duration(ctx: MetricContext) -> Computed:
     docs=MetricDocs(
         measures="How many distinct peak-to-recovery declines occurred.",
         formula="K = number of maximal runs with W_t below its running peak",
+        formula_latex=(
+            r"K = \#\{\text{maximal runs } t_1..t_2 \subseteq 1..n \text{ with } D_t < 0"
+            r" \ \forall t \in t_1..t_2\}"
+        ),
         inputs="Periodic simple returns.",
         retail="How often the investment fell below a previous high.",
         institutional="Context for average drawdown and durations; depends strongly on data "
@@ -249,6 +275,7 @@ def drawdown_count(ctx: MetricContext) -> Computed:
     docs=MetricDocs(
         measures="Share of periods in which wealth was below its previous peak.",
         formula="(1/n) * #{t : D_t < 0}",
+        formula_latex=r"\mathrm{TUW} = \frac{1}{n} \#\{t \in 1..n : D_t < 0\}",
         inputs="Periodic simple returns.",
         retail="The share of the time the investment was below a previous high.",
         institutional="Complements depth measures with persistence; high values with shallow "
@@ -278,6 +305,7 @@ def time_underwater_pct(ctx: MetricContext) -> float:
     docs=MetricDocs(
         measures="Root-mean-square drawdown: combines depth and duration of declines.",
         formula="sqrt( (1/n) * sum_t D_t^2 )",
+        formula_latex=r"\mathrm{UI} = \sqrt{\frac{1}{n} \sum_{t=1}^{n} D_t^2}",
         inputs="Periodic simple returns.",
         retail="A single number for how deep and how long-lasting the declines were; 0 means "
         "the investment never fell below a previous high.",
@@ -318,6 +346,7 @@ def ulcer_index(ctx: MetricContext) -> float:
     docs=MetricDocs(
         measures="Average drawdown over time (mean absolute drawdown across all periods).",
         formula="(1/n) * sum_t |D_t|",
+        formula_latex=r"\mathrm{PI} = \frac{1}{n} \sum_{t=1}^{n} \left| D_t \right|",
         inputs="Periodic simple returns.",
         retail="How far below its previous high the investment was, on average, over the whole "
         "history.",

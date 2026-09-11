@@ -41,6 +41,8 @@ from openfactsheet.models.metric import MetricDocs
     docs=MetricDocs(
         measures="Average return per unit of total volatility, annualized.",
         formula="(mean(r_t) - rf) / std(r_t, ddof=1) * sqrt(P), rf = 0",
+        formula_latex=r"\mathrm{SR} = \frac{\bar r - r_f}{s} \sqrt{P}, \quad r_f = 0",
+        undefined_when=("Sample standard deviation is exactly zero (constant returns).",),
         inputs="Periodic simple returns with a regular frequency.",
         retail="The Sharpe ratio compares excess return with total return variability. Higher "
         "values indicate more return per unit of measured volatility, but the statistic can be "
@@ -99,6 +101,11 @@ def sharpe_ratio(ctx: MetricContext) -> float:
         measures="Average return in excess of the target per unit of downside deviation, "
         "annualized.",
         formula="P * mean(r_t - MAR) / ( sqrt((1/n) sum min(r_t - MAR, 0)^2) * sqrt(P) ), MAR = 0",
+        formula_latex=(
+            r"\mathrm{Sortino} = \frac{P\,(\bar r - \tau)}{\mathrm{DD}\,\sqrt{P}}"
+            r" = \frac{\bar r - \tau}{\mathrm{DD}} \sqrt{P}, \quad \tau = 0"
+        ),
+        undefined_when=("No return is below the 0% target (downside deviation is zero).",),
         inputs="Periodic simple returns with a regular frequency.",
         retail="Like the Sharpe ratio, but only losing periods count as risk.",
         institutional="Sortino & Price (1994) with MAR = 0 and full-sample downside deviation. "
@@ -148,6 +155,8 @@ def sortino_ratio(ctx: MetricContext) -> float:
     docs=MetricDocs(
         measures="Annualized return per unit of maximum drawdown.",
         formula="CAGR / |max drawdown|",
+        formula_latex=r"\mathrm{Calmar} = \frac{\mathrm{CAGR}}{\left| \mathrm{MDD} \right|}",
+        undefined_when=("No drawdown occurred (maximum drawdown is zero).",),
         inputs="Periodic simple returns with a regular frequency.",
         retail="How much yearly return was earned relative to the worst peak-to-trough loss.",
         institutional="Young (1991) defined Calmar on a trailing 36-month window; OpenFactsheet "
@@ -197,6 +206,8 @@ def calmar_ratio(ctx: MetricContext) -> float:
     docs=MetricDocs(
         measures="Annualized return per unit of Ulcer Index.",
         formula="(CAGR - rf) / UlcerIndex, rf = 0",
+        formula_latex=r"\mathrm{Martin} = \frac{\mathrm{CAGR} - r_f}{\mathrm{UI}}, \quad r_f = 0",
+        undefined_when=("No drawdown occurred (Ulcer Index is zero).",),
         inputs="Periodic simple returns with a regular frequency.",
         retail="Return relative to how deep and prolonged the declines were.",
         institutional="Ulcer Performance Index (Martin & McCann, 1989); penalizes both depth "
@@ -240,6 +251,11 @@ def martin_ratio(ctx: MetricContext) -> float:
         measures="Probability-weighted gains above the threshold relative to probability-"
         "weighted losses below it.",
         formula="sum(max(r_t - L, 0)) / sum(max(L - r_t, 0)), L = 0",
+        formula_latex=(
+            r"\Omega(L) = \frac{\sum_{t=1}^{n} \max(r_t - L, 0)}"
+            r"{\sum_{t=1}^{n} \max(L - r_t, 0)}, \quad L = 0"
+        ),
+        undefined_when=("No return is below the 0% threshold (zero denominator).",),
         inputs="Periodic simple returns.",
         retail="Total gains divided by total losses; above 1 means gains outweighed losses.",
         institutional="Keating & Shadwick (2002) Omega at threshold 0, using the full empirical "

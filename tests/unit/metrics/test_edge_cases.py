@@ -12,7 +12,8 @@ import numpy as np
 import pytest
 
 import openfactsheet as ofs
-from openfactsheet.metrics.registry import all_metrics
+from openfactsheet.metrics.registry import all_metrics, get_metric
+from openfactsheet.policy.applicability import NO_BENCHMARK_REASON
 from tests.conftest import monthly
 
 CASES: dict[str, list[float]] = {
@@ -28,6 +29,9 @@ CASES: dict[str, list[float]] = {
 }
 
 
+_PRECHECK_REASONS = (NO_BENCHMARK_REASON, "Annualization requires", "The series contains returns")
+
+
 def assert_structured(report: ofs.FactsheetReport) -> None:
     ids = [d.id for d in all_metrics()]
     assert [m.id for m in report.metrics] == ids  # compute-all: every metric, canonical order
@@ -35,6 +39,9 @@ def assert_structured(report: ofs.FactsheetReport) -> None:
         if m.value is None:
             assert m.reason, f"{m.id} has neither value nor reason"
             assert m.status in ("not_applicable", "insufficient_data", "error")
+            if m.status == "not_applicable" and not m.reason.startswith(_PRECHECK_REASONS):
+                # Raised by the metric itself: the condition must be documented.
+                assert get_metric(m.id).docs.undefined_when, f"{m.id}: document {m.reason!r}"
         else:
             assert math.isfinite(m.value), m.id
         assert m.status != "error", f"{m.id}: {m.reason}"
@@ -64,6 +71,13 @@ def test_all_positive_has_no_drawdown_and_undefined_downside_ratios() -> None:
     assert rep.metrics["drawdown_count"].value == 0.0
     for mid in ("sortino_ratio", "calmar_ratio", "omega_ratio", "gain_to_pain_ratio"):
         assert rep.metrics[mid].status == "not_applicable", mid
+
+
+def test_open_deepest_drawdown_is_flagged() -> None:
+    rep = ofs.analyze(monthly([0.05, -0.2, 0.05, 0.02]))
+    mdd = rep.metrics["max_drawdown"]
+    assert mdd.details["recovered"] is False
+    assert any("not recovered" in w for w in mdd.warnings)
 
 
 def test_single_observation() -> None:

@@ -88,6 +88,20 @@ def test_declared_frequency_must_match_dates() -> None:
         ofs.analyze(monthly([0.01, 0.02, 0.03]), frequency="quarterly")
 
 
+def test_declared_frequency_with_single_timestamp() -> None:
+    s = pd.Series([0.01], index=pd.DatetimeIndex(["2020-01-31"]))
+    series = ofs.load(s, frequency="monthly")
+    assert isinstance(series, ofs.ReturnSeries)
+    assert series.periods_per_year == 12
+    assert series.frequency_source == "declared"
+
+
+def test_float_index_is_not_read_as_dates() -> None:
+    series = ofs.load(pd.Series([0.01, 0.02, -0.01], index=[0.5, 1.5, 2.5]))
+    assert isinstance(series, ofs.ReturnSeries)
+    assert series.dates is None
+
+
 def test_timezone_aware_dates() -> None:
     idx = pd.date_range("2020-01-31", periods=4, freq="ME", tz="US/Eastern")
     series = ofs.load(pd.Series([0.01, 0.02, -0.01, 0.0], index=idx))

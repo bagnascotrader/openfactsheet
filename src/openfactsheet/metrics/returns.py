@@ -37,6 +37,7 @@ def _date_of(ctx: MetricContext, position: int) -> str | None:
     docs=MetricDocs(
         measures="Total compounded return over the full supplied history.",
         formula="prod_{t=1..n}(1 + r_t) - 1",
+        formula_latex=r"\mathrm{CR} = W_n - 1 = \prod_{t=1}^{n} (1 + r_t) - 1",
         inputs="Periodic simple returns.",
         retail="How much 1 unit invested at the start would have gained or lost by the end, "
         "with all returns reinvested.",
@@ -79,6 +80,10 @@ def cumulative_return(ctx: MetricContext) -> float:
     docs=MetricDocs(
         measures="Constant yearly growth rate that would produce the observed cumulative return.",
         formula="(prod(1 + r_t))^(P / n) - 1, where P = periods per year and n = observations",
+        formula_latex=(
+            r"\mathrm{CAGR} = \begin{cases} W_n^{P/n} - 1 & W_n > 0 \\"
+            r" -1 & W_n \le 0 \end{cases}"
+        ),
         inputs="Periodic simple returns with a regular frequency.",
         retail="The average yearly growth rate, taking compounding and losses into account.",
         institutional="Geometric mean return annualized with the canonical periods-per-year "
@@ -121,6 +126,7 @@ def cagr(ctx: MetricContext) -> float:
     docs=MetricDocs(
         measures="Average single-period return.",
         formula="(1/n) * sum(r_t)",
+        formula_latex=r"\bar r = \frac{1}{n} \sum_{t=1}^{n} r_t",
         inputs="Periodic simple returns.",
         retail="The typical return in one period (e.g. one month), ignoring compounding.",
         institutional="Sample mean; the numerator of Sharpe-type ratios. An estimate of the "
@@ -153,6 +159,7 @@ def arithmetic_mean(ctx: MetricContext) -> float:
     docs=MetricDocs(
         measures="Average per-period return scaled to a year without compounding.",
         formula="P * mean(r_t)",
+        formula_latex=r"\bar r_{\text{ann}} = P \, \bar r",
         inputs="Periodic simple returns with a regular frequency.",
         retail="The average return per year if yearly results were simply added up; usually "
         "higher than the compounded annual return.",
@@ -181,6 +188,10 @@ def annualized_arithmetic_mean(ctx: MetricContext) -> float:
     docs=MetricDocs(
         measures="Middle value of the per-period returns.",
         formula="median(r_t)",
+        formula_latex=(
+            r"\operatorname{med}(r) = \begin{cases} r_{((n+1)/2)} & n \text{ odd} \\"
+            r" \tfrac{1}{2}\left(r_{(n/2)} + r_{(n/2+1)}\right) & n \text{ even} \end{cases}"
+        ),
         inputs="Periodic simple returns.",
         retail="Half of the periods did better than this and half did worse.",
         institutional="Robust location estimate, insensitive to a few extreme periods. A median "
@@ -208,6 +219,7 @@ def median_return(ctx: MetricContext) -> float:
     docs=MetricDocs(
         measures="Highest single-period return in the history.",
         formula="max(r_t)",
+        formula_latex=r"\max_{1 \le t \le n} r_t = r_{(n)}",
         inputs="Periodic simple returns.",
         retail="The best single period (e.g. month) the investment had.",
         institutional="Observed upper extreme; context for the dispersion and tail statistics.",
@@ -235,6 +247,7 @@ def best_period(ctx: MetricContext) -> Computed:
     docs=MetricDocs(
         measures="Lowest single-period return in the history.",
         formula="min(r_t)",
+        formula_latex=r"\min_{1 \le t \le n} r_t = r_{(1)}",
         inputs="Periodic simple returns.",
         retail="The worst single period (e.g. month) the investment had.",
         institutional="Observed lower extreme; a model-free loss statistic that is always shown.",
@@ -265,6 +278,10 @@ def worst_period(ctx: MetricContext) -> Computed:
     docs=MetricDocs(
         measures="Sum of all returns relative to the sum of losing-period returns.",
         formula="sum(r_t) / |sum(r_t for r_t < 0)|",
+        formula_latex=(
+            r"\mathrm{GPR} = \frac{\sum_{t=1}^{n} r_t}{\left| \sum_{t:\, r_t < 0} r_t \right|}"
+        ),
+        undefined_when=("No period has a negative return (zero denominator).",),
         inputs="Periodic simple returns.",
         retail="How much net return was earned for each unit of losses suffered along the way.",
         institutional="Schwager's gain-to-pain ratio on per-period returns; a simple, "

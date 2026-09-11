@@ -154,8 +154,11 @@ def assess(definition: MetricDefinition, ctx: MetricContext, notes: tuple[str, .
     if definition.uses_wealth_path and diag.total_loss:
         warnings.append("A -100% return occurs: wealth is zero from that period onward.")
 
+    thresholds = ctx.methodology.get("confidence")
+
     # Annualizing less than a year of data.
-    if definition.annualized and years is not None and years < 1:
+    min_years = float(thresholds["annualization_min_years"])
+    if definition.annualized and years is not None and years < min_years:
         confidence = "low"
         warnings.append(
             f"Annualized from only {years:.1f} years of data; the figure extrapolates a partial "
@@ -169,7 +172,7 @@ def assess(definition: MetricDefinition, ctx: MetricContext, notes: tuple[str, .
     # Benchmark overlap.
     if definition.requires_benchmark and ctx.benchmark is not None:
         b = ctx.benchmark.diagnostics
-        if b.fund_coverage < 0.9:
+        if b.fund_coverage < float(thresholds["benchmark_min_coverage"]):
             confidence = _cap(confidence, "moderate")
             warnings.append(f"Benchmark overlaps only {b.fund_coverage:.0%} of the fund history.")
         if b.alignment_method.startswith("by position"):

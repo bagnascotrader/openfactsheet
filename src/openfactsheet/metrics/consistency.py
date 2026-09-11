@@ -30,6 +30,7 @@ def _longest_run(mask: npt.NDArray[np.bool_]) -> int:
     docs=MetricDocs(
         measures="Share of periods with a strictly positive return (hit rate).",
         formula="#{t : r_t > 0} / n",
+        formula_latex=r"\mathrm{Pos} = \frac{1}{n} \#\{t : r_t > 0\}",
         inputs="Periodic simple returns.",
         retail="How often the investment made money in a period.",
         institutional="Win rate on the supplied frequency; says nothing about the size of wins "
@@ -67,6 +68,7 @@ def positive_period_pct(ctx: MetricContext) -> float:
     docs=MetricDocs(
         measures="Share of periods with a strictly negative return.",
         formula="#{t : r_t < 0} / n",
+        formula_latex=r"\mathrm{Neg} = \frac{1}{n} \#\{t : r_t < 0\}",
         inputs="Periodic simple returns.",
         retail="How often the investment lost money in a period.",
         institutional="Loss frequency on the supplied frequency; together with positive "
@@ -94,6 +96,10 @@ def negative_period_pct(ctx: MetricContext) -> float:
     docs=MetricDocs(
         measures="Maximum number of consecutive periods with positive returns.",
         formula="max length of consecutive runs with r_t > 0",
+        formula_latex=(
+            r"\max \{ j - i + 1 : 1 \le i \le j \le n,\ r_u > 0 \ \forall u \in i..j \}"
+            r" \ (0 \text{ if no } r_t > 0)"
+        ),
         inputs="Periodic simple returns.",
         retail="The longest stretch of back-to-back gaining periods.",
         institutional="Descriptive path statistic; unusually long streaks relative to the hit "
@@ -121,6 +127,10 @@ def longest_winning_streak(ctx: MetricContext) -> float:
     docs=MetricDocs(
         measures="Maximum number of consecutive periods with negative returns.",
         formula="max length of consecutive runs with r_t < 0",
+        formula_latex=(
+            r"\max \{ j - i + 1 : 1 \le i \le j \le n,\ r_u < 0 \ \forall u \in i..j \}"
+            r" \ (0 \text{ if no } r_t < 0)"
+        ),
         inputs="Periodic simple returns.",
         retail="The longest stretch of back-to-back losing periods.",
         institutional="Descriptive path statistic complementing drawdown duration.",

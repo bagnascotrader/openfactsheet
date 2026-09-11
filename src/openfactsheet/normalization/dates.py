@@ -26,8 +26,10 @@ def coerce_dates(index: Any) -> tuple[pd.DatetimeIndex | None, tuple[str, ...]]:
     if isinstance(index, pd.DatetimeIndex):
         dates = index
     elif isinstance(index, pd.RangeIndex) or (
-        isinstance(index, pd.Index) and pd.api.types.is_integer_dtype(index.dtype)
+        isinstance(index, pd.Index) and pd.api.types.is_numeric_dtype(index.dtype)
     ):
+        # Integer or float labels are positions, never dates: converting them would
+        # silently produce 1970-epoch timestamps.
         return None, ()
     else:
         try:

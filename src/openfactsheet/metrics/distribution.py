@@ -19,6 +19,11 @@ from openfactsheet.models.metric import MetricDocs
     docs=MetricDocs(
         measures="Asymmetry of the return distribution.",
         formula="G1 = sqrt(n(n-1))/(n-2) * m3 / m2^(3/2), m_k = (1/n) sum (r_t - mean)^k",
+        formula_latex=(
+            r"G_1 = \frac{\sqrt{n(n-1)}}{n-2} \, \frac{m_3}{m_2^{3/2}}, \quad "
+            r"m_k = \frac{1}{n} \sum_{t=1}^{n} (r_t - \bar r)^k"
+        ),
+        undefined_when=("All returns are identical (m_2 = 0).",),
         inputs="Periodic simple returns.",
         retail="Negative values mean occasional large losses and many small gains; positive "
         "values mean occasional large gains.",
@@ -61,6 +66,10 @@ def skewness(ctx: MetricContext) -> float:
     docs=MetricDocs(
         measures="Tail heaviness relative to a normal distribution (normal = 0).",
         formula="G2 = (n-1)/((n-2)(n-3)) * ((n+1) * m4/m2^2 - 3(n-1))",
+        formula_latex=(
+            r"G_2 = \frac{n-1}{(n-2)(n-3)} \left[ (n+1) \frac{m_4}{m_2^2} - 3(n-1) \right]"
+        ),
+        undefined_when=("All returns are identical (m_2 = 0).",),
         inputs="Periodic simple returns.",
         retail="Positive values mean extreme periods (good or bad) happen more often than a "
         "bell curve would suggest.",

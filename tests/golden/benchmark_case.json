@@ -16,7 +16,7 @@
       ]
     },
     "input": {
-      "duplicate_dates": 0,
+      "duplicate_periods": 0,
       "end": "2024-06-01",
       "frequency": "monthly",
       "frequency_evidence": "100% of consecutive observations are exactly one calendar month apart.",
@@ -351,7 +351,7 @@
     }
   ],
   "input": {
-    "duplicate_dates": 0,
+    "duplicate_periods": 0,
     "end": "2024-12-31",
     "frequency": "monthly",
     "frequency_evidence": "100% of consecutive observations are exactly one calendar month apart.",
@@ -690,6 +690,10 @@
         "description": "periods aligned on their intersection (monthly/quarterly/yearly by calendar period, daily/weekly by exact date); missing benchmark returns are never filled",
         "information_ratio": "annualized arithmetic mean active return / tracking error",
         "regression": "OLS of fund on benchmark returns (risk-free = 0)"
+      },
+      "confidence": {
+        "annualization_min_years": 1.0,
+        "benchmark_min_coverage": 0.9
       },
       "dependence": {
         "acf_lags": [
@@ -1367,7 +1371,7 @@
       "reference_values": null,
       "status": "applicable",
       "unit": "ratio",
-      "value": 1.6122297312039098,
+      "value": 1.6122297312039102,
       "warnings": [
         "About 5.1 observations are expected in the 5% tail (< 10)."
       ]

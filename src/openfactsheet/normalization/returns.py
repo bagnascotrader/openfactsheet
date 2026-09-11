@@ -105,12 +105,26 @@ def normalize_returns(
                 f"{name}: declared frequency {declared.value!r} contradicts the dates, which "
                 f"indicate {inference.frequency.value!r} ({inference.evidence})"
             )
-        if declared is not None and not inference.frequency.is_regular:
+        if declared is not None and inference.frequency is ObservationFrequency.IRREGULAR:
             raise FrequencyInferenceError(
                 f"{name}: declared frequency {declared.value!r} contradicts irregular dates "
                 f"({inference.evidence})"
             )
-        freq_source = "inferred" if inference.frequency.is_regular else "none"
+        if declared is not None and inference.frequency is ObservationFrequency.UNKNOWN:
+            # A single timestamp cannot establish spacing, so nothing contradicts the
+            # declaration; it is used and recorded as declared.
+            inference = FrequencyInference(
+                declared,
+                periods_per_year(declared),
+                False,
+                None,
+                0,
+                f"A single timestamp cannot establish spacing; frequency {declared.value!r} "
+                "declared by the caller.",
+            )
+            freq_source = "declared"
+        else:
+            freq_source = "inferred" if inference.frequency.is_regular else "none"
     elif declared is not None:
         inference = FrequencyInference(
             declared,
@@ -175,7 +189,7 @@ def normalize_returns(
         leading_missing_trimmed=leading,
         trailing_missing_trimmed=trailing,
         missing_expected_periods=inference.missing_expected_periods,
-        duplicate_dates=inference.duplicate_periods,
+        duplicate_periods=inference.duplicate_periods,
         was_sorted=was_sorted,
         transformations=tuple(transformations),
         warnings=tuple(warnings),

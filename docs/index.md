@@ -13,12 +13,28 @@ actually look like under one transparent, standardized methodology?*
 
 ## Reference
 
+Exact, auditable specification of everything OpenFactsheet computes and decides:
+
+- [Exact formulas](reference/formulas.md) — the precise mathematical definition
+  of every metric, as implemented (generated from the registry).
+- [Notation](reference/notation.md) — symbols, wealth/drawdown and quantile
+  definitions used by all formulas.
+- [Decision criteria](reference/criteria.md) — every rule, in evaluation order:
+  input parsing, validation, missing data, frequency inference, percent/decimal
+  detection, data-quality findings, applicability, confidence and status,
+  benchmark alignment, comparison, interpretation, report structure,
+  determinism.
+- [Policies, thresholds and constants](reference/policies.md) — every numeric
+  threshold and canonical constant, read directly from the code (generated).
+- [JSON report schema](reference/report_schema.md) — every field of the report.
 - [Metric catalog](metric_catalog.md) — all canonical metrics (generated from
   the registry). Each metric links to a page in [`interpretation/`](interpretation/)
   answering the twelve documentation questions: what it measures, formula,
   inputs, direction, plain and professional interpretation, assumptions, when it
   misleads, minimum data, reference implementations, sources and the
-  OpenFactsheet convention.
+  OpenFactsheet convention — followed by its calculation criteria: when a value
+  is produced, exactly when it is undefined, the confidence rules that apply to
+  it, and the assumptions recorded on every result.
 - [Methodology decisions](methodology/decisions/README.md) — one note per
   convention where definitions vary.
 - [Reference implementations & validation](validation/reference_implementations.md)

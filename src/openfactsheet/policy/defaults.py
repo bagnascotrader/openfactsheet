@@ -140,6 +140,13 @@ CANONICAL_ASSUMPTIONS: dict[str, Any] = {
         "zero_share_warning": 0.10,
         "identical_run_warning": 3,
     },
+    "confidence": {
+        # Benchmark-relative metrics are capped at "moderate" when the aligned
+        # overlap covers less than this share of the fund's observations.
+        "benchmark_min_coverage": 0.9,
+        # Annualized metrics are "low" confidence when fewer years than this exist.
+        "annualization_min_years": 1.0,
+    },
     "distribution_warning": {
         "skewness_at_or_below": -1.0,
         "excess_kurtosis_at_or_above": 3.0,

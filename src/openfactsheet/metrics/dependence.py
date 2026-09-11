@@ -20,6 +20,14 @@ def _acf_docs(lag: int) -> MetricDocs:
     return MetricDocs(
         measures=f"Correlation between each return and the return {lag} period(s) earlier.",
         formula=f"rho_{lag} = sum_(t>{lag}) (r_t - m)(r_(t-{lag}) - m) / sum_t (r_t - m)^2",
+        formula_latex=(
+            rf"\hat\rho_{lag} = \frac{{\sum_{{t={lag + 1}}}^{{n}} (r_t - \bar r)"
+            rf"(r_{{t-{lag}}} - \bar r)}}{{\sum_{{t=1}}^{{n}} (r_t - \bar r)^2}}"
+        ),
+        undefined_when=(
+            f"n <= {lag + 1} observations.",
+            "All returns are identical (zero variance).",
+        ),
         inputs="Periodic simple returns.",
         retail="Whether good or bad periods tend to be followed by similar periods. Values "
         "near zero are typical for liquid, market-priced investments.",
@@ -103,6 +111,11 @@ def autocorrelation_lag3(ctx: MetricContext) -> Computed:
     docs=MetricDocs(
         measures="Joint test that the first three autocorrelations are all zero.",
         formula="Q = n(n+2) sum_{k=1..3} rho_k^2 / (n - k); p-value from chi-squared(3)",
+        formula_latex=(
+            r"Q = n(n+2) \sum_{k=1}^{3} \frac{\hat\rho_k^2}{n-k}, \quad "
+            r"p = 1 - F_{\chi^2_3}(Q)"
+        ),
+        undefined_when=("All returns are identical (zero variance).",),
         inputs="Periodic simple returns.",
         retail="A small value (below 0.05) suggests returns are not independent from one "
         "period to the next.",
@@ -140,6 +153,7 @@ def ljung_box_pvalue(ctx: MetricContext) -> Computed:
     docs=MetricDocs(
         measures="Share of periods with a return of exactly zero.",
         formula="#{t : r_t = 0} / n",
+        formula_latex=r"Z = \frac{1}{n} \#\{t : r_t = 0\}",
         inputs="Periodic simple returns.",
         retail="Many exactly-zero periods can mean prices were not updated (stale pricing).",
         institutional="Stale-price indicator; exact zeros are rare for marked-to-market "

@@ -48,6 +48,10 @@ def _alpha(ctx: MetricContext) -> float:
     docs=MetricDocs(
         measures="Return threshold that was breached in the worst 5% of periods.",
         formula="Q_0.05(r), empirical quantile with linear interpolation (Hyndman-Fan type 7)",
+        formula_latex=(
+            r"\mathrm{VaR}_{95} = Q_{0.05}(r), \quad Q_p(r) = r_{(j)} + (h - j)"
+            r"\left(r_{(j+1)} - r_{(j)}\right), \ h = (n-1)p + 1, \ j = \lfloor h \rfloor"
+        ),
         inputs="Periodic simple returns.",
         retail="In about 1 period out of 20, the return was this bad or worse.",
         institutional="Historical-simulation VaR at 95% for one observation period; says "
@@ -92,6 +96,10 @@ def var_historical_95(ctx: MetricContext) -> float:
     docs=MetricDocs(
         measures="Average return in the periods at or below the 95% VaR threshold.",
         formula="mean(r_t | r_t <= Q_0.05(r))",
+        formula_latex=(
+            r"\mathrm{ES}_{95} = \frac{1}{|T|} \sum_{t \in T} r_t, \quad "
+            r"T = \{t : r_t \le Q_{0.05}(r)\}"
+        ),
         inputs="Periodic simple returns.",
         retail="When things went badly (the worst 5% of periods), this was the average return.",
         institutional="Historical Expected Shortfall (CVaR); a coherent risk measure (Acerbi & "
@@ -140,6 +148,10 @@ def expected_shortfall_historical_95(ctx: MetricContext) -> Computed:
     docs=MetricDocs(
         measures="Size of the right tail relative to the left tail.",
         formula="|Q_0.95(r)| / |Q_0.05(r)|",
+        formula_latex=(
+            r"\mathrm{TR} = \frac{\left| Q_{0.95}(r) \right|}{\left| Q_{0.05}(r) \right|}"
+        ),
+        undefined_when=("The 5th percentile return is exactly zero.",),
         inputs="Periodic simple returns.",
         retail="Above 1: the best periods were larger than the worst periods were bad.",
         institutional="Quantile-based asymmetry measure, robust to single extremes but noisy "

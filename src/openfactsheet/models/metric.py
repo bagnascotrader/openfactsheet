@@ -107,6 +107,12 @@ class MetricDocs:
     reference_implementations: tuple[LibraryReference, ...]  # 10.
     references: tuple[AcademicReference, ...]  # 11.
     convention: str  # 12. OpenFactsheet convention where definitions vary
+    # Exact definition in LaTeX, using the notation of docs/reference/notation.md.
+    # It must describe precisely what the implementation computes.
+    formula_latex: str = ""
+    # Data conditions under which the function raises UndefinedMetric
+    # (reported as status "not_applicable" with that reason).
+    undefined_when: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)

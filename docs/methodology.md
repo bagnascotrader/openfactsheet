@@ -132,3 +132,7 @@ JSON.
 - [Assumptions for methodology 0.1.0](assumptions.md)
 - [Methodology decision notes](methodology/decisions/README.md)
 - [Reference implementations and validation](validation/reference_implementations.md)
+- Full specification: [exact formulas](reference/formulas.md),
+  [notation](reference/notation.md), [decision criteria](reference/criteria.md),
+  [policies and thresholds](reference/policies.md),
+  [JSON report schema](reference/report_schema.md)

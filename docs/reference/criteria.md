@@ -1,0 +1,640 @@
+# Decision criteria reference
+
+Every rule OpenFactsheet applies between receiving data and printing a report,
+stated exactly: thresholds, comparison operators and order of evaluation, with
+a pointer to the implementing code. All rules are part of methodology 0.1.0;
+changing any of them changes results and requires a methodology version bump
+(see [methodology decisions](../methodology/decisions/README.md)).
+
+Related references: exact metric formulas are in
+[formulas.md](formulas.md), minimum-data policies in
+[policies.md](policies.md), notation in [notation.md](notation.md), and the
+JSON output in [report_schema.md](report_schema.md).
+
+Notation used below: `r` is the vector of analyzed simple decimal returns,
+`n` its length, `P` the periods-per-year factor, `years = n / P`.
+
+---
+
+## 1. Pipeline and order of operations
+
+| Step | What happens | Code |
+|---|---|---|
+| 1. Input | Any supported source is parsed into one or more `RawReturns` (values may contain NaN and may be in percent). | [input/dispatcher.py](../../src/openfactsheet/input/dispatcher.py) `to_raw` |
+| 2. Normalization | Validation, sorting, missing-data handling, frequency inference, scale detection → `ReturnSeries` + `InputDiagnostics`. | [normalization/returns.py](../../src/openfactsheet/normalization/returns.py) `normalize_returns` |
+| 3. Diagnostics | Data-quality checks → `DataQualityReport` (runs before any metric). | [diagnostics/data_quality.py](../../src/openfactsheet/diagnostics/data_quality.py) `run_diagnostics` |
+| 4. Benchmark alignment | Only if a benchmark is supplied. | [compare/alignment.py](../../src/openfactsheet/compare/alignment.py) `align_benchmark` |
+| 5. Metrics | Every registered metric, in canonical order: applicability pre-check → calculation → outcome handling. | [metrics/engine.py](../../src/openfactsheet/metrics/engine.py) `compute_all`, `evaluate` |
+| 6. Policy | Status, confidence, warnings and assumptions for each computed value. | [policy/confidence.py](../../src/openfactsheet/policy/confidence.py) `assess` |
+| 7. Interpretation | Plain and professional text plus context notes. | [interpretation/engine.py](../../src/openfactsheet/interpretation/engine.py) |
+| 8. Report | Assembly and rendering (terminal, Markdown, HTML, JSON). | [report/builder.py](../../src/openfactsheet/report/builder.py), [report/](../../src/openfactsheet/report/) |
+
+`ofs.analyze(returns, benchmark=None, *, name=None, return_scale=None,
+frequency=None)` ([api.py](../../src/openfactsheet/api.py)) runs steps 1–8.
+`return_scale` and `frequency` are *input declarations*, applied to both fund
+and benchmark, and are recorded in the report; they are not tuning parameters.
+
+---
+
+## 2. Input parsing criteria
+
+### 2.1 Source dispatch — [input/dispatcher.py](../../src/openfactsheet/input/dispatcher.py)
+
+Checked in this order:
+
+| Source | Treatment |
+|---|---|
+| `RawReturns` | Used as is. |
+| `pandas.Series` | `from_series`. |
+| `pandas.DataFrame` | `from_frame` (may yield several series). |
+| `pathlib.Path` | By file suffix (below). |
+| `str` containing a newline after stripping | Pasted table text. |
+| other `str` | Treated as a file path. |
+| `numpy.ndarray`, `list`, `tuple` (or other sequence) | `from_sequence` (undated). |
+| anything else | `InputError`. |
+
+File suffixes (case-insensitive): `.csv`, `.txt`, `.tsv` → CSV reader;
+`.xlsx`, `.xlsm`, `.xls` → Excel reader; `.png .jpg .jpeg .gif .bmp .tif .tiff
+.webp` → `OCRExtractionError` (image ingestion is roadmap phase 6); `.pdf` →
+`OCRExtractionError`; any other suffix → `InputError`; a non-existent path →
+`InputError("File not found")`. When a file yields exactly one series whose
+name is the default `"Returns"` and no `name` was passed, the series is named
+after the file stem. The file name is stored in metadata.
+
+`analyze()` requires exactly one series after parsing; more than one raises
+`InputError` suggesting `ofs.compare()`.
+
+A `ReturnSeries` passed to `analyze()` that carries its `input_diagnostics`
+(e.g. from `ofs.load`) is reused unchanged when no declaration is passed
+(only renamed if `name` differs). Otherwise it is re-normalized with
+`return_scale="decimal"` unless another scale is declared.
+
+### 2.2 Cell parsing — [input/values.py](../../src/openfactsheet/input/values.py) `parse_cell`
+
+| Cell | Result |
+|---|---|
+| `None` | missing (NaN) |
+| `bool` | `InputError` (a boolean is not a return) |
+| `int`, `float`, NumPy number | its float value; carries no percent evidence |
+| string, after stripping, whose lower-case form is one of `""`, `-`, `--`, `—`, `–`, `na`, `n/a`, `nan`, `none`, `null`, `#n/a` | missing (NaN) |
+| other string | parsed as below |
+
+String parsing, in order:
+
+1. `%` anywhere in the string sets the percent flag for that cell; all `%`
+   characters are removed.
+2. The unicode minus `−` becomes `-`; spaces and non-breaking spaces are removed.
+3. Parentheses around the whole value, `(1.2)`, mean a negative number.
+4. If the string contains `,` and no `.`, the comma is a decimal separator
+   (`1,5` → `1.5`). Thousands separators are not supported because they are not
+   plausible in return data.
+5. The remainder must match `^[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?$`,
+   otherwise `InputError`.
+
+Percent hint for a whole column (`parse_cells`): `True` if any cell contained
+`%`; `False` if cells were strings but none contained `%`; `None` if no cell
+was a string (numeric input carries no label evidence).
+
+### 2.3 Sequences — [input/arrays.py](../../src/openfactsheet/input/arrays.py)
+
+A 2-D array with one dimension equal to 1 is flattened; any other non-1-D shape
+raises `InputError`. Sequences are undated. Default name `"Returns"`.
+
+### 2.4 pandas Series — [input/pandas_input.py](../../src/openfactsheet/input/pandas_input.py) and [normalization/dates.py](../../src/openfactsheet/normalization/dates.py)
+
+Index handling (`coerce_dates`):
+
+| Index | Result |
+|---|---|
+| `PeriodIndex` | Converted to period-end dates, normalized to midnight (recorded as a transformation). |
+| `DatetimeIndex` | Used as dates. |
+| `RangeIndex` or any numeric dtype (integer or float) | Undated: numeric labels are positions, never dates (converting them would produce 1970-epoch timestamps). |
+| other (e.g. strings) | `pd.to_datetime`; failure → `InputError`. |
+| timezone-aware | Timezone removed, wall-clock dates kept (recorded). |
+| any `NaT` | `InputError`. |
+
+The series name becomes the report name unless `name` is given.
+
+### 2.5 pandas DataFrame layouts — `from_frame`
+
+Evaluated in this order:
+
+1. Empty frame → `InputError`.
+2. **Wide monthly table** if the column labels contain at least 12 distinct
+   month names (`is_monthly_table`). Month labels are matched after removing
+   non-letters and lower-casing: `jan`/`january`, `feb`/`february`, …,
+   `sep`/`sept`/`september`, …, `dec`/`december`. See 2.6.
+3. If the index is not a `DatetimeIndex`/`PeriodIndex`, a **date column** is
+   searched for: first, a column whose stripped name matches
+   `^(date|dates|period|month|time|timestamp|as of|asof|day)$`
+   (case-insensitive) *and* looks like dates; otherwise the first column if it
+   looks like dates. "Looks like dates" (`_looks_like_dates`): datetime or
+   period dtype → yes; numeric dtype → no; otherwise every non-null value must
+   parse with `pd.to_datetime(format="mixed")`. The date column becomes the index.
+4. Remaining columns are return series. Duplicate column names → `InputError`;
+   no columns → `InputError`.
+
+Series naming: with one column, the `name` argument if given; otherwise
+`"Returns"` if the header is generic (after removing `% ( ) [ ]`, lower-cased:
+`return`, `returns`, `ret`, `rets`, `r`, `value`, `values`, `performance`,
+`monthly return(s)`, `daily return(s)`, `total return`); otherwise the column
+header. With several columns, each series is named by its header.
+
+A `%` in a column header sets the percent hint to `True` for that column.
+
+### 2.6 Wide monthly tables — [input/monthly_table.py](../../src/openfactsheet/input/monthly_table.py)
+
+- Exactly one column per month is required (a repeated month → `InputError`;
+  missing months → `InputError`).
+- Year labels: a column named `year`, `yr`, `years` or `fy` (case-insensitive),
+  otherwise the index. Labels must convert to integers in `[1800, 2200]` and be
+  unique; otherwise `InputError`.
+- Every cell becomes the return for the month-end date of its (year, month).
+  Empty cells stay missing, so trailing future months are trimmed later and are
+  never treated as zero.
+- Other columns (e.g. `YTD`, `Total`) are ignored for calculation and listed in
+  the transformations.
+- Percent hint: `True` if any column header contains `%`, else the cell-based hint.
+
+### 2.7 CSV, Excel and pasted text
+
+- **CSV** ([input/csv.py](../../src/openfactsheet/input/csv.py)): read as text
+  with delimiter sniffing (`sep=None`, Python engine, `skipinitialspace`) so that
+  `%` labels and accounting negatives survive; all-empty columns dropped; then
+  `from_frame`.
+- **Excel** ([input/excel.py](../../src/openfactsheet/input/excel.py)): requires
+  `openpyxl` (else `InputError` naming the `excel` extra); **only the first
+  sheet** is read; all-empty rows and columns dropped; then `from_frame`.
+- **Pasted text** ([input/clipboard.py](../../src/openfactsheet/input/clipboard.py)):
+  lines are stripped and blank lines dropped. Delimiter: tab if every line has a
+  tab; else `;` if every line has one; else `,` if every line has a comma *and*
+  commas do not look like decimal separators (they do when the data rows contain
+  no `.` and do contain whitespace); else runs of whitespace. If the header has
+  one field fewer than the data rows (blank top-left cell), the first column is
+  restored and named `Year`.
+
+---
+
+## 3. Validation criteria (input corruption fails early)
+
+Applied by `normalize_returns` in this order
+([normalization/validation.py](../../src/openfactsheet/normalization/validation.py)):
+
+| Condition | Outcome |
+|---|---|
+| No observations | `InputError` |
+| Any `+inf` or `-inf` | `InputError` listing up to 5 positions |
+| All values missing | `InputError` |
+| Duplicate timestamps (checked on all supplied dates, including rows whose value is missing) | `InputError` listing up to 5 dates |
+| Timestamps not in increasing order | Stable sort; `was_sorted = false`; transformation and warning recorded |
+
+Returns below −100% are **not** rejected and not clipped: they are counted
+(`impossible_return_count`) and make wealth-path metrics not applicable (see 7).
+
+---
+
+## 4. Missing-data criteria
+
+[normalization/returns.py](../../src/openfactsheet/normalization/returns.py):
+
+1. Leading and trailing missing values are trimmed and counted
+   (`leading_missing_trimmed`, `trailing_missing_trimmed`).
+2. Interior missing values are **dropped, never filled** with zero or a previous
+   value; their count is `missing_values`, and an input warning is recorded.
+3. Frequency is inferred from the **grid dates**: the dates after trimming but
+   *before* dropping interior missing rows, so a missing value is treated as a
+   missing observation rather than as irregular spacing.
+4. `missing_expected_periods` = calendar gaps in the grid dates (from frequency
+   inference) **+** the number of interior missing values. It is `null` when
+   the frequency does not support counting (business-daily, irregular, unknown,
+   undated).
+
+Metrics are computed on the remaining observations; compounding and
+annualization skip the missing periods, and affected metrics are capped at
+moderate confidence (section 9).
+
+---
+
+## 5. Frequency inference
+
+[normalization/frequency.py](../../src/openfactsheet/normalization/frequency.py) `infer_frequency`.
+Only calendar spacing is evidence; the number of observations never is.
+
+Let `g` be the day gaps between consecutive grid dates and `m = median(g)`.
+
+| Condition | Outcome |
+|---|---|
+| fewer than 2 dates | `unknown` (no annualization) |
+| `25 ≤ m ≤ 35` | monthly candidate; steps = differences of `12·year + month` |
+| `80 ≤ m ≤ 100` | quarterly candidate; steps = differences of `4·year + quarter` |
+| `300 ≤ m ≤ 400` | yearly candidate; steps = differences of `year` |
+| `5 ≤ m ≤ 9` | weekly candidate (below) |
+| `m ≤ 4` | daily candidate (below) |
+| any other `m` | `irregular` |
+
+Bands are inclusive and tested in the order monthly, quarterly, yearly, weekly,
+daily. Comparing calendar periods (not days) makes month-start, month-end and
+business-month-end dates equivalent.
+
+**Period candidates (monthly, quarterly, yearly).** With `steps` as above:
+
+- any step equal to 0 (two observations in the same calendar period) →
+  `irregular`, and the count is reported as `duplicate_periods`;
+- else if the share of steps equal to exactly 1 is `< 0.5` → `irregular`;
+- else **regular**; `missing_expected_periods = Σ(steps − 1)`.
+
+**Weekly candidate.** `weeks = round(g / 7)`. The series is weekly only if every
+gap satisfies `|g − 7·weeks| ≤ 1` (one-day holiday shifts allowed), every
+`weeks ≥ 1`, and the share of `weeks == 1` is `≥ 0.5`; missing periods =
+`Σ(weeks − 1)`. Otherwise `irregular`.
+
+**Daily candidate.** If the share of gaps `≤ 4` days is `< 0.8` → `irregular`.
+Otherwise:
+
+- if any date falls on a Saturday or Sunday → **calendar-day** daily,
+  `P = 365`, `missing_expected_periods = Σ(g − 1)`;
+- else → **business-day** daily, `P = 252`, missing periods not counted
+  (exchange holidays are legitimate gaps); the evidence notes the number of
+  gaps longer than 7 days.
+
+**Annualization factors** ([policy/annualization.py](../../src/openfactsheet/policy/annualization.py)):
+business daily 252, calendar daily 365, weekly 52, monthly 12, quarterly 4,
+yearly 1; `irregular` and `unknown` → `P = null` (never annualized).
+
+**Declared frequency** (`frequency=` argument):
+
+| Situation | Outcome |
+|---|---|
+| Declared value not one of daily, weekly, monthly, quarterly, yearly | `FrequencyInferenceError` |
+| Dated input, inferred regular frequency ≠ declared | `FrequencyInferenceError` |
+| Dated input, inferred `irregular` | `FrequencyInferenceError` |
+| Dated input with a single timestamp (inferred `unknown`) | Declared frequency used (`frequency_source = "declared"`); one timestamp cannot contradict it |
+| Dated input, inferred = declared | Inferred frequency used (`frequency_source = "inferred"`) |
+| Undated input | Declared frequency used (`frequency_source = "declared"`); declared daily assumes business days (`P = 252`) with a warning |
+| Undated input, nothing declared | `unknown`, `frequency_source = "none"`, warning that nothing is annualized |
+
+For dated input without a declaration, `frequency_source` is `"inferred"` when
+the inferred frequency is regular and `"none"` otherwise.
+
+---
+
+## 6. Return-scale classifier (percent vs decimal)
+
+[normalization/scaling.py](../../src/openfactsheet/normalization/scaling.py) `detect_return_scale`,
+thresholds in [policy/defaults.py](../../src/openfactsheet/policy/defaults.py) `return_scale`.
+Runs after missing values are removed and after frequency is established.
+
+Upper bound `U` for the median absolute return of a plausible *decimal* series:
+
+| Frequency | `U` | Confident decimal bound `U / 4` |
+|---|---|---|
+| daily | 0.05 | 0.0125 |
+| weekly | 0.10 | 0.025 |
+| monthly | 0.20 | 0.05 |
+| quarterly | 0.30 | 0.075 |
+| yearly | 0.60 | 0.15 |
+| irregular | 0.30 | 0.075 |
+| unknown | 0.30 | 0.075 |
+
+Let `M` = median of `|r|` over the **non-zero** raw values. Rules, first match wins:
+
+1. `return_scale` declared → `declared_decimal` (×1) or `declared_percent` (×0.01).
+   Any other declared value → `InputError`.
+2. Percent hint is `True` (`%` labels in the source) → `detected_percent`.
+3. All values are exactly zero → `detected_decimal` (scale immaterial).
+4. `M > U`:
+   - if `M / 100 > U` → `InputError` (implausible in both scales; when every
+     value is positive the message suggests the data are prices/NAVs that must
+     be converted explicitly);
+   - else → `detected_percent`.
+5. `M ≤ U / 4` → `detected_decimal`. Values below −1 stay decimal and are
+   flagged as impossible, not rescaled.
+6. Ambiguous zone `U/4 < M ≤ U`:
+   - if any value `< −1` (impossible as a decimal return) → `detected_percent`;
+   - else → `AmbiguousReturnScaleError` asking the caller to declare the scale.
+
+Percent values are multiplied by 0.01 and the conversion is recorded as a
+transformation.
+
+---
+
+## 7. Data-quality diagnostics
+
+[diagnostics/data_quality.py](../../src/openfactsheet/diagnostics/data_quality.py) `run_diagnostics`
+and [diagnostics/missingness.py](../../src/openfactsheet/diagnostics/missingness.py).
+Diagnostics never remove or alter data.
+
+### 7.1 Findings
+
+| id | Severity | Exact trigger | Effect on metrics |
+|---|---|---|---|
+| `missing_values` | warning | interior missing values `> 0` | wealth-path and annualized metrics capped at moderate, with a warning |
+| `missing_periods` | warning | `missing_expected_periods > 0` | same as above |
+| `duplicate_periods` | critical | two or more observations in the same calendar period (frequency becomes irregular) | annualized metrics not applicable (no `P`) |
+| `unsorted_dates` | info | input was not chronologically sorted | none (data sorted) |
+| `frequency_declared` | info | `frequency_source == "declared"` | warning on annualized metrics |
+| `frequency_not_established` | warning | not declared and frequency is `irregular` or `unknown` | annualized metrics not applicable |
+| `percent_scale_detected` | info | `return_scale == "detected_percent"` | none |
+| `very_short_history` | warning | `years` known and `years < 1` | none directly (years-based policies already give low confidence) |
+| `short_history` | warning | `years` known and `1 ≤ years < 3` | none directly |
+| `very_few_observations` | warning | `years` unknown and `n < 12` | none directly |
+| `impossible_returns` | critical | any `r_t < −1` | every wealth-path metric not applicable; drawdown episodes omitted from the report |
+| `total_loss` | critical | any `r_t = −1` exactly | warning on wealth-path metrics (wealth is 0 afterwards) |
+| `suspicious_large_returns` | warning | robust outlier count `> 0` (7.2) | none (values are kept) |
+| `excessive_zero_returns` | warning | share of exact zeros `≥ 0.10` | volatility-based metrics capped at moderate, with a warning |
+| `repeated_returns` | warning | longest run of identical consecutive returns `≥ 3` | none |
+| `smoothing_risk` | warning | smoothing risk is `moderate` or `high` (7.4) | volatility-based metrics: high → low confidence, moderate → capped at moderate |
+| `serial_correlation` | info | smoothing risk is neither moderate nor high, Ljung-Box computed and `p < 0.05` | none |
+
+History findings are mutually exclusive and evaluated in the order shown.
+
+### 7.2 Outliers — [diagnostics/outliers.py](../../src/openfactsheet/diagnostics/outliers.py)
+
+```math
+z_t = \frac{|r_t - \operatorname{median}(r)|}{1.4826 \cdot \operatorname{MAD}}, \qquad \operatorname{MAD} = \operatorname{median}\left(|r - \operatorname{median}(r)|\right)
+```
+
+An observation is flagged when `z_t > 5`. No observation is flagged when
+`n < 5` or `MAD = 0`. Flagged values are kept in every calculation.
+
+### 7.3 Stale returns — [diagnostics/stale_returns.py](../../src/openfactsheet/diagnostics/stale_returns.py)
+
+- zero-return share = `#{r_t = 0} / n` (exact equality after normalization);
+- longest identical run = longest run of consecutive, exactly equal returns
+  (1 when nothing repeats; 0 for an empty series).
+
+### 7.4 Serial dependence and smoothing
+
+- **Autocorrelation** ([diagnostics/autocorrelation.py](../../src/openfactsheet/diagnostics/autocorrelation.py)),
+  lags 1–3, statsmodels `acf(adjusted=False)`:
+
+  ```math
+  \hat\rho_k = \frac{\sum_{t=k+1}^{n} (r_t - \bar r)(r_{t-k} - \bar r)}{\sum_{t=1}^{n} (r_t - \bar r)^2}
+  ```
+
+  undefined (`null`) when `n ≤ k + 1` or all returns are identical.
+- **Significance bound** reported as `±1.96 / √n` when `n > 3`.
+- **Ljung-Box** with 3 lags (statsmodels `acorr_ljungbox`), computed only when
+  `n ≥ 10` and returns are not constant.
+- **Smoothing risk** ([diagnostics/smoothing.py](../../src/openfactsheet/diagnostics/smoothing.py)),
+  with `z = ρ̂₁ · √n`:
+
+  | Condition (first match) | Risk |
+  |---|---|
+  | `n < 12` | `not_assessable` |
+  | `ρ̂₁` undefined | `not_assessable` |
+  | `ρ̂₁ ≥ 0.30` and `z ≥ 1.96` | `high` |
+  | `ρ̂₁ ≥ 0.15` and `z ≥ 1.645` | `moderate` |
+  | otherwise | `none` |
+
+  The thresholds are a documented heuristic
+  ([decision 0014](../methodology/decisions/0014-smoothing-risk.md)).
+  Returns are never unsmoothed.
+
+---
+
+## 8. Applicability criteria
+
+[policy/applicability.py](../../src/openfactsheet/policy/applicability.py) `precheck`,
+evaluated before calculation, first match wins:
+
+| # | Condition | Status | Reason (abridged) |
+|---|---|---|---|
+| 1 | metric requires a benchmark and none was supplied | `not_applicable` | no benchmark supplied; no default benchmark is ever assumed |
+| 2 | metric is annualized and `P` is `null` | `not_applicable` | annualization requires a regular frequency |
+| 3 | metric uses the wealth path and any `r_t < −1` | `not_applicable` | compounded wealth path not meaningful |
+| 4 | observations `<` the policy's mathematical minimum | `insufficient_data` | requires at least *k* observations |
+
+The observation count is `n` for single-series metrics and the number of
+**aligned** observations for benchmark metrics. For benchmark metrics, check 2
+uses the fund's `P`. Mathematical minimums per policy are listed in
+[policies.md](policies.md).
+
+A metric is never withheld because its value is unfavorable or because its
+confidence is low.
+
+---
+
+## 9. Metric-function outcomes
+
+[metrics/engine.py](../../src/openfactsheet/metrics/engine.py) `evaluate`:
+
+| Outcome of the metric function | Result |
+|---|---|
+| Raises `UndefinedMetric(reason)` (e.g. zero volatility, no losing periods) | `not_applicable`, `value = null`, `reason` = the metric's reason, `confidence = not_assessable` |
+| Raises any other exception | `error`, value withheld, reason names the exception and asks for a bug report |
+| Returns a non-finite number | `error`, value withheld |
+| Returns a finite number | passed to the confidence engine (10) |
+
+Calculations run with NumPy floating-point warnings suppressed; the finiteness
+check above is the guard. Results without a value still carry their
+assumptions. Each metric's undefined conditions are listed on its page in
+[`interpretation/`](../interpretation/).
+
+---
+
+## 10. Confidence and status algorithm
+
+[policy/confidence.py](../../src/openfactsheet/policy/confidence.py) `assess`
+with [policy/thresholds.py](../../src/openfactsheet/policy/thresholds.py).
+Confidence describes the reliability of an estimate, not the quality of the
+investment. Ranks: `high > moderate > low`. "Cap at X" means
+`confidence = min(confidence, X)`.
+
+**Step 1 — base confidence from the metric's minimum-data policy.** Inputs:
+`n` (aligned `n` for benchmark metrics), `years = n / P` (`null` if `P` is
+`null`), tail probability `p = 1 − 0.95 = 0.05`.
+
+| Policy basis | Rule |
+|---|---|
+| `none` | `high` |
+| `years` | `years` null → `low`; `years < low` → `low`; `years < moderate` → `moderate`; else `high` |
+| `observations` | `n < low` → `low`; `n < moderate` → `moderate`; else `high` |
+| `tail_observations` | `e = n · p`; `e < low` → `low`; `e < moderate` → `moderate`; else `high` |
+
+Every reduction adds a warning stating the reason. Thresholds per policy are in
+[policies.md](policies.md).
+
+**Step 2 — modifiers, in code order.**
+
+| # | Applies to | Trigger | Effect |
+|---|---|---|---|
+| a | volatility-based metrics | smoothing risk `high` | set to `low`, warning |
+| b | volatility-based metrics | smoothing risk `moderate` | cap at `moderate`, warning |
+| c | volatility-based metrics | zero-return share `≥ 0.10` | cap at `moderate`, warning |
+| d | volatility-based metrics | `n ≥ 24`, skewness and excess kurtosis both defined, and (`skewness ≤ −1` or `excess kurtosis ≥ 3`) | warning only, no confidence change |
+| e | wealth-path or annualized metrics | `missing_expected_periods > 0` or `missing_values > 0` | cap at `moderate`, warning |
+| f | wealth-path metrics | a −100% return occurs | warning only |
+| g | annualized metrics | `years` known and `years < 1` (`confidence.annualization_min_years`) | set to `low`, warning (annualizing a partial year) |
+| h | annualized metrics | `frequency_source == "declared"` | warning only |
+| i | benchmark metrics | benchmark covers `< 90%` of fund observations (`confidence.benchmark_min_coverage`) | cap at `moderate`, warning |
+| j | benchmark metrics | alignment method starts with "by position" | warning only |
+
+Thresholds in modifiers a–i are read from the canonical methodology
+([policy/defaults.py](../../src/openfactsheet/policy/defaults.py): `stale_returns`,
+`distribution_warning`, `confidence`), so they are embedded in every report.
+
+Volatility-based metrics: `volatility`, `annualized_volatility`,
+`downside_deviation`, `sharpe_ratio`, `sortino_ratio`, `tracking_error`,
+`information_ratio`. Wealth-path metrics: `cumulative_return`, `cagr`, all
+drawdown metrics, `calmar_ratio`, `martin_ratio`. Annualized metrics: `cagr`,
+`annualized_arithmetic_mean`, `annualized_volatility`, `downside_deviation`,
+`sharpe_ratio`, `sortino_ratio`, `calmar_ratio`, `martin_ratio`, `alpha`,
+`tracking_error`, `active_return`, `information_ratio`, `treynor_ratio`,
+`upside_capture`, `downside_capture`. The generated
+[metric catalog](../metric_catalog.md) shows these flags per metric.
+
+Notes produced by the metric function itself (e.g. "the longest drawdown has not
+recovered") come first in the warning list. Warnings are de-duplicated,
+preserving first occurrence.
+
+**Step 3 — status.**
+
+| Condition (first match) | Status |
+|---|---|
+| metric is flagged supplementary (`ljung_box_pvalue`) | `supplementary` |
+| confidence is `low` | `low_confidence` |
+| otherwise | `applicable` |
+
+A value is always shown when it exists.
+
+**Assumptions** attached to each result come from the metric's declared
+assumption keys: annualization statement, risk-free rate 0%, MAR 0%, Omega
+threshold 0%, 95% historical tail convention, drawdown convention, sample
+standard deviation, the benchmark name and alignment, and the OLS convention.
+
+---
+
+## 11. Benchmark alignment criteria
+
+[compare/alignment.py](../../src/openfactsheet/compare/alignment.py) `align_benchmark`.
+Benchmark returns are normalized with the same rules as the fund. Missing
+benchmark returns are never filled.
+
+| Case | Rule |
+|---|---|
+| Both dated, both regular, different frequencies | `BenchmarkAlignmentError` (no resampling in 0.1.0) |
+| Both dated otherwise | Key type chosen once for both series: the calendar period (`M`, `Q`, `Y`) of the fund's frequency if it is monthly/quarterly/yearly, else of the benchmark's; if neither has one, exact normalized dates. Duplicate keys in either series → `BenchmarkAlignmentError`. The intersection of keys is used, in fund order; dates are the fund's. Method: `calendar <frequency> period` or `exact date`. |
+| Neither dated | Equal lengths → paired by position with a warning; different lengths → `BenchmarkAlignmentError`. |
+| Exactly one dated | Equal lengths → the undated series is assumed to share the other's dates (warning); different lengths → `BenchmarkAlignmentError`. |
+
+Reported: fund, benchmark and aligned observation counts,
+`fund_only_periods = n_fund − n_aligned`, `benchmark_only_periods =
+n_bench − n_aligned`, `fund_coverage = n_aligned / n_fund`, overlap start/end.
+Warnings: fund observations without a benchmark return (when
+`n_aligned < n_fund`), and "no periods in common" when `n_aligned = 0`.
+Benchmark metrics use the fund's `P`.
+
+**Regression** (`AlignedBenchmark.ols`): statsmodels OLS of aligned fund
+returns on a constant and aligned benchmark returns (risk-free 0%),
+conventional i.i.d. standard errors, residual degrees of freedom `n − 2`.
+Undefined (metric not applicable) when `n < 3` or the benchmark returns are
+constant. Standard errors, t-statistics and p-values are `null` when
+non-finite.
+
+---
+
+## 12. Comparison criteria
+
+[compare/comparison.py](../../src/openfactsheet/compare/comparison.py):
+
+- Accepted inputs: mapping name → returns, `DataFrame` (one series per column),
+  `ReturnTable`, or a sequence (named by each item's `.name` or `Series i`).
+- At least two investments and unique names, else `InputError`.
+- Every investment is analyzed by the same `analyze()` call with the same
+  optional benchmark and declarations: the methodology is identical.
+- Nothing is ranked.
+- Note emitted when observation frequencies differ.
+- **Common-period analysis** is produced when all investments are dated, share
+  one regular frequency and their (start, end) ranges differ: the intersection
+  of their calendar-period (or exact-date) keys is taken; if it has at least 2
+  periods, each investment is re-analyzed on it (recorded as the transformation
+  "restricted to the common period of all compared histories"), otherwise a note
+  says the histories have fewer than 2 periods in common.
+
+---
+
+## 13. Interpretation rules
+
+[interpretation/templates.py](../../src/openfactsheet/interpretation/templates.py) `RULES`.
+Each metric gets its plain-language and professional text from the registry.
+When the metric has no value, its reason is the first context note. Then the
+rules below are applied in order. No rule grades an investment ("good",
+"excellent") or gives advice.
+
+| Rule | Applies to | Exact trigger | Note (summary) |
+|---|---|---|---|
+| `_smoothing` | `sharpe_ratio`, `sortino_ratio`, `information_ratio`, `annualized_volatility`, `volatility` with a value | smoothing risk `moderate` or `high` | reports lag-1 autocorrelation; treat the figure as an optimistic bound, not evidence of skill |
+| `_hidden_tail` | `sharpe_ratio` with a value | skewness `≤ −1` or excess kurtosis `≥ 3` (each only if computed) | volatility-based ratios do not reflect such tail risk; compare with maximum drawdown and Expected Shortfall |
+| `_alpha_significance` | `alpha` with a value and both p-value and t-statistic available | `p ≥ 0.05` / `p < 0.05` | not distinguishable from zero at 5% / significant under the single-index model, omitted factors may still explain it |
+| `_short_path` | every drawdown-category metric with a value | `years` known and `years < 3` | drawdowns observed so far are likely milder than a longer history would reveal |
+| `_hit_rate_smoothing` | `positive_period_pct` with a value | smoothing risk `high` and value `≥ 0.75` | very high hit rate with strong serial correlation is a pattern associated with smoothed returns |
+| `_annualized_short` | `cagr`, `annualized_arithmetic_mean` with a value | `years` known and `years < 1` | annualizing extrapolates a partial year; GIPS prohibits annualized returns for periods under one year |
+
+---
+
+## 14. Report structure and display rules
+
+[report/tables.py](../../src/openfactsheet/report/tables.py) and the renderers
+([terminal](../../src/openfactsheet/report/terminal.py),
+[markdown](../../src/openfactsheet/report/markdown.py),
+[html](../../src/openfactsheet/report/html.py)).
+
+The canonical report has exactly 14 sections; none can be removed by a flag:
+
+1. Input & methodology
+2. Data-quality diagnostics — including the serial dependence & smoothing
+   metrics (`autocorrelation_lag1`–`3`, `ljung_box_pvalue`, `zero_return_pct`)
+3. Return summary
+4. Risk summary
+5. Drawdowns
+6. Risk-adjusted performance
+7. Tail behavior
+8. Distribution
+9. Consistency
+10. Benchmark-relative analysis (without a benchmark: the reason and the list
+    of metrics that are not applicable)
+11. Factor analysis (not available in methodology 0.1.0; stated)
+12. Statistical confidence (counts of confidence labels and statuses)
+13. Metric catalog (pointer)
+14. Assumptions & caveats (methodology description and all warning/critical
+    findings)
+
+**Display rounding** (presentation only; stored values are raw `float64`):
+
+| Unit | Display |
+|---|---|
+| `decimal_return` | percent, 2 decimals (`-27.32%`) |
+| `fraction` | percent, 1 decimal (`54.2%`) |
+| `probability` | 3 decimals |
+| `periods` | integer, plus years in parentheses when `details.years` is available (`54 (4.5y)`) |
+| `count` | integer |
+| `ratio`, `beta`, `correlation` | 2 decimals |
+| no value | `—` |
+
+**Status column**: the confidence label when a value exists
+(`supplementary (<confidence>)` for supplementary metrics); otherwise
+`not applicable`, `insufficient data` or `error`.
+
+**Notes**: each result's reason (when it has no value) and warnings are shown as
+numbered footnotes; identical texts share one number across the whole report.
+
+---
+
+## 15. Determinism and provenance
+
+[report/json.py](../../src/openfactsheet/report/json.py),
+[report/builder.py](../../src/openfactsheet/report/builder.py):
+
+- JSON is written with sorted keys and `allow_nan=False`; NumPy types are
+  converted to plain Python and any non-finite float in nested data becomes
+  `null`. No timestamps are embedded, so identical inputs give identical JSON.
+- **Input fingerprint** `input_sha256`: SHA-256 of the compact JSON
+  `{"dates": [...], "values": [...]}` (separators `,` and `:`), where dates are
+  `YYYY-MM-DD` strings (or `null` if undated) and values are Python `repr` of
+  each analyzed float (shortest round-trip form). `benchmark_sha256` uses the
+  same construction for the benchmark.
+- **Versions**: `package_version` is the software release;
+  `methodology_version` identifies the conventions that produced the numbers.
+  A package release that changes no result keeps the methodology version.
+- `canonical` is `true` for every report produced by the public API.
