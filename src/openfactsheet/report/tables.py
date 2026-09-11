@@ -69,17 +69,23 @@ def result_notes(result: MetricResult) -> list[str]:
 # section 2 (data-quality diagnostics); the canonical report keeps the 14 sections of
 # CLAUDE.md section 30.
 DATA_QUALITY_CATEGORY = "dependence"
+# Statistical-confidence metrics are rendered in section 12, after factor analysis.
+STATISTICAL_CATEGORY = "statistical"
 
 
 def data_quality_metrics(report: FactsheetReport) -> list[MetricResult]:
     return list(report.metrics.by_category(DATA_QUALITY_CATEGORY))
 
 
+def statistical_metrics(report: FactsheetReport) -> list[MetricResult]:
+    return list(report.metrics.by_category(STATISTICAL_CATEGORY))
+
+
 def ordered_categories(report: FactsheetReport) -> list[tuple[str, str, list[MetricResult]]]:
     """Metric categories rendered as their own sections (3 to 10), in canonical order."""
     out: list[tuple[str, str, list[MetricResult]]] = []
     for cat in CATEGORY_ORDER:
-        if cat == DATA_QUALITY_CATEGORY:
+        if cat in (DATA_QUALITY_CATEGORY, STATISTICAL_CATEGORY):
             continue
         rows = list(report.metrics.by_category(cat))
         if rows:
@@ -103,6 +109,7 @@ FACTOR_SECTION_TEXT = (
 
 STATISTICAL_SECTION_TEXT = (
     "Confidence labels summarize estimation reliability from sample length, data quality and "
-    "benchmark overlap. Confidence intervals, Probabilistic and Deflated Sharpe ratios are "
-    "planned for a later methodology version."
+    "benchmark overlap. The statistics below quantify sampling uncertainty under i.i.d. "
+    "assumptions; the Deflated Sharpe Ratio is not computed because it requires the number of "
+    "strategies tried, which a single return series does not reveal."
 )

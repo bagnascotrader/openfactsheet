@@ -68,7 +68,7 @@ Adjusted Fisher-Pearson G1, as in pandas and Excel SKEW (decision 0011).
 
 1. At least 3 observations (mathematical minimum of policy `skewness`); otherwise `insufficient_data`.
 2. The value is undefined, and reported as `not_applicable` with the reason, when:
-   - All returns are identical (m_2 = 0).
+   - Return variance is zero or underflows in floating point (e.g. identical returns).
 
 An unexpected calculation failure or a non-finite result is reported as `error` with the value withheld; it never appears as NaN or infinity.
 

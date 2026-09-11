@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass, field
 from functools import cached_property
 
@@ -76,27 +77,72 @@ class MetricCache:
     def ulcer_index(self) -> float:
         return float(np.sqrt(np.mean(self.drawdown**2)))
 
+    def central_moment(self, k: int) -> float:
+        """Population central moment m_k = (1/n) sum (r_t - mean)^k."""
+        return float(np.mean((self.r - self.mean) ** k))
+
+    def _standardized_moment(self, k: int, what: str) -> float:
+        """m_k / m_2^(k/2), undefined when the variance is zero or underflows.
+
+        Returns that differ only at the level of floating-point underflow (e.g.
+        ``[0, 0, 1e-198]``) have a variance that rounds to 0 or a ratio that
+        overflows; such shape statistics are reported as undefined, never NaN.
+        """
+        m2 = self.central_moment(2)
+        if m2 == 0.0:
+            raise UndefinedMetric(f"Return variance is zero (numerically); {what} is undefined.")
+        denominator = m2 ** (k / 2)
+        value = self.central_moment(k) / denominator if denominator != 0.0 else math.inf
+        if not math.isfinite(value):
+            raise UndefinedMetric(
+                f"Return variance is too small to compute {what} in floating point."
+            )
+        return float(value)
+
+    @cached_property
+    def population_skewness(self) -> float:
+        """Moment skewness g1 = m3 / m2^(3/2) (population, not bias-corrected)."""
+        return self._standardized_moment(3, "moment skewness")
+
+    @cached_property
+    def population_kurtosis(self) -> float:
+        """Moment kurtosis m4 / m2^2 (population, non-excess: normal = 3)."""
+        return self._standardized_moment(4, "moment kurtosis")
+
+    @cached_property
+    def lower_partial_moment_1(self) -> float:
+        """LPM of order 1 at target 0: (1/n) sum max(-r_t, 0)."""
+        return float(np.mean(np.maximum(-self.r, 0.0)))
+
     @cached_property
     def skewness(self) -> float:
         """Bias-corrected sample skewness G1."""
         if self.r.shape[0] < 3:
             raise UndefinedMetric("Skewness requires at least 3 observations.")
-        if float(np.ptp(self.r)) == 0.0:
-            raise UndefinedMetric("Returns are constant; skewness is undefined.")
+        self._standardized_moment(3, "skewness")  # raises if the variance underflows
         from scipy.stats import skew
 
-        return float(skew(self.r, bias=False))
+        value = float(skew(self.r, bias=False))
+        if not math.isfinite(value):
+            raise UndefinedMetric(
+                "Return variance is too small to compute skewness in floating point."
+            )
+        return value
 
     @cached_property
     def excess_kurtosis(self) -> float:
         """Bias-corrected sample excess kurtosis G2."""
         if self.r.shape[0] < 4:
             raise UndefinedMetric("Kurtosis requires at least 4 observations.")
-        if float(np.ptp(self.r)) == 0.0:
-            raise UndefinedMetric("Returns are constant; kurtosis is undefined.")
+        self._standardized_moment(4, "kurtosis")  # raises if the variance underflows
         from scipy.stats import kurtosis
 
-        return float(kurtosis(self.r, fisher=True, bias=False))
+        value = float(kurtosis(self.r, fisher=True, bias=False))
+        if not math.isfinite(value):
+            raise UndefinedMetric(
+                "Return variance is too small to compute kurtosis in floating point."
+            )
+        return value
 
 
 @dataclass(eq=False)

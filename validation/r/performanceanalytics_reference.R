@@ -27,9 +27,57 @@ read_fixture <- function(name) {
 
 num <- function(x) as.numeric(x)[1]
 
+# NA (JSON null) when PerformanceAnalytics refuses a case (e.g. PSR / MinTRL with a
+# negative Sharpe ratio stop() in PerformanceAnalytics 2.0.4).
+safe <- function(expr) tryCatch(num(expr), error = function(e) NA_real_)
+
+phase2 <- function(R) {
+  r <- as.numeric(R)
+  n <- length(r)
+  cagr <- num(Return.annualized(R, scale = 12, geometric = TRUE))
+  dd <- as.numeric(Drawdowns(R))
+  episodes <- findDrawdowns(R)
+  depths <- episodes$return[episodes$return < 0]
+  g1 <- num(skewness(R, method = "moment"))
+  g2 <- num(kurtosis(R, method = "excess"))
+  jb <- n / 6 * (g1^2 + g2^2 / 4)
+  tt <- t.test(r)
+  list(
+    kappa_3 = num(Kappa(R, MAR = 0, l = 3)),
+    upside_potential_full = num(UpsidePotentialRatio(r, MAR = 0, method = "full")),
+    upside_potential_subset = num(UpsidePotentialRatio(r, MAR = 0, method = "subset")),
+    semi_deviation_per_period = num(SemiDeviation(R)),
+    mean_absolute_deviation = num(MeanAbsoluteDeviation(R)),
+    downside_potential = num(DownsideDeviation(R, MAR = 0, potential = TRUE)),
+    sterling_ratio = num(SterlingRatio(R, scale = 12, excess = 0.1)),
+    burke_ratio_pa = num(BurkeRatio(R)),
+    burke_from_find_drawdowns = cagr / sqrt(sum(depths^2)),
+    pain_ratio_from_drawdowns = cagr / mean(abs(dd)),
+    var_gaussian_95 = num(VaR(R, p = 0.95, method = "gaussian")),
+    var_modified_95 = num(VaR(R, p = 0.95, method = "modified")),
+    psr_ref0_with_kurtosis = safe(
+      ProbSharpeRatio(R, Rf = 0, refSR = 0, ignore_kurtosis = FALSE)$sr_prob
+    ),
+    min_trl_ref0_with_kurtosis = safe(
+      MinTrackRecord(R, Rf = 0, refSR = 0, p = 0.95, ignore_kurtosis = FALSE)$min_TRL
+    ),
+    # PA reports the interval rounded to 4 decimals; half-width = qnorm(0.95) * SE.
+    psr_ci_half_width_per_period = tryCatch({
+      ci <- ProbSharpeRatio(R, Rf = 0, refSR = 0, ignore_kurtosis = FALSE)$sr_confidence_interval
+      (num(ci[["Upper Bound"]]) - num(ci[["Lower Bound"]])) / 2
+    }, error = function(e) NA_real_),
+    jarque_bera_statistic = jb,
+    jarque_bera_pvalue = 1 - pchisq(jb, 2),
+    t_test_ci_lower = tt$conf.int[1],
+    t_test_ci_upper = tt$conf.int[2],
+    t_test_statistic = unname(tt$statistic),
+    t_test_pvalue = tt$p.value
+  )
+}
+
 single_series <- function(R) {
   dd <- as.numeric(Drawdowns(R))
-  list(
+  c(list(
     n = length(R),
     cumulative_return = num(Return.cumulative(R, geometric = TRUE)),
     cagr = num(Return.annualized(R, scale = 12, geometric = TRUE)),
@@ -57,7 +105,7 @@ single_series <- function(R) {
     acf_lag2 = num(acf(as.numeric(R), lag.max = 3, plot = FALSE)$acf[3]),
     acf_lag3 = num(acf(as.numeric(R), lag.max = 3, plot = FALSE)$acf[4]),
     ljung_box_pvalue_3 = num(Box.test(as.numeric(R), lag = 3, type = "Ljung-Box")$p.value)
-  )
+  ), phase2(R))
 }
 
 results <- list(
@@ -98,5 +146,5 @@ results$benchmark_case <- list(
 )
 
 path <- file.path(out_dir, "performanceanalytics.json")
-writeLines(toJSON(results, auto_unbox = TRUE, digits = NA, pretty = TRUE), path)
+writeLines(toJSON(results, auto_unbox = TRUE, digits = NA, pretty = TRUE, na = "null"), path)
 cat("Wrote", path, "\n")

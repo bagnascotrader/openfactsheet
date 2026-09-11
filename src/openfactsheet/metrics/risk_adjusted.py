@@ -10,9 +10,12 @@ from openfactsheet.exceptions import UndefinedMetric
 from openfactsheet.metrics.context import MetricContext
 from openfactsheet.metrics.references import (
     BACON,
+    BURKE_1994,
     EMP,
     GLM_2004,
+    KAPLAN_KNOWLES_2004,
     KEATING_SHADWICK_2002,
+    KESTNER_1996,
     LO_2002,
     MARTIN_MCCANN_1989,
     PA,
@@ -20,11 +23,12 @@ from openfactsheet.metrics.references import (
     SHARPE_1966,
     SHARPE_1994,
     SORTINO_PRICE_1994,
+    SORTINO_VDM_PLANTINGA_1999,
     YOUNG_1991,
     lib,
 )
 from openfactsheet.metrics.registry import metric
-from openfactsheet.models.metric import MetricDocs
+from openfactsheet.models.metric import Computed, MetricDocs
 
 
 @metric(
@@ -281,3 +285,234 @@ def omega_ratio(ctx: MetricContext) -> float:
     if losses == 0.0:
         raise UndefinedMetric("No returns below the 0% threshold; the Omega ratio is undefined.")
     return gains / losses
+
+
+@metric(
+    id="kappa_3_ratio",
+    name="Kappa 3 ratio",
+    category="risk_adjusted",
+    unit="ratio",
+    direction="higher_is_better",
+    nature="estimated",
+    min_data_policy="ratio_standard",
+    volatility_based=True,
+    assumptions=("mar",),
+    docs=MetricDocs(
+        measures="Mean excess return over the target per unit of third-order lower partial "
+        "moment, penalizing large losses more than the Sortino ratio does.",
+        formula="(mean(r_t) - tau) / ( (1/n) sum max(tau - r_t, 0)^3 )^(1/3), tau = 0",
+        formula_latex=(
+            r"K_3 = \frac{\bar r - \tau}{\left( \frac{1}{n} \sum_{t=1}^{n} "
+            r"\max(\tau - r_t, 0)^3 \right)^{1/3}}, \quad \tau = 0"
+        ),
+        undefined_when=("No return is below the 0% target (zero lower partial moment).",),
+        inputs="Periodic simple returns.",
+        retail="Return per unit of downside risk, where large losses count much more than small "
+        "ones.",
+        institutional="Kaplan & Knowles (2004) Kappa of order 3 (Sortino is Kappa 2; Omega - 1 is "
+        "Kappa 1). The cubic lower partial moment emphasizes tail losses. Per-period, not "
+        "annualized.",
+        assumptions=("Target (MAR) of 0% per period.",),
+        misleading_when=(
+            "Very few losing periods: the lower partial moment rests on a handful of values.",
+            "Compared across data frequencies (per-period ratio).",
+        ),
+        minimum_data="At least 2 observations and one loss; low confidence below 3 years.",
+        reference_implementations=(lib(PA, "Kappa(MAR=0, l=3)"),),
+        references=(KAPLAN_KNOWLES_2004, BACON),
+        convention="Target 0, full-sample denominator n, per period (decision 0016).",
+    ),
+)
+def kappa_3_ratio(ctx: MetricContext) -> float:
+    order = int(ctx.methodology.get("lower_partial_moments.kappa_order"))
+    lpm = float(np.mean(np.maximum(-ctx.r, 0.0) ** order))
+    if lpm == 0.0:
+        raise UndefinedMetric("No returns below the 0% target; the Kappa 3 ratio is undefined.")
+    return float(ctx.cache.mean / lpm ** (1.0 / order))
+
+
+@metric(
+    id="upside_potential_ratio",
+    name="Upside potential ratio",
+    category="risk_adjusted",
+    unit="ratio",
+    direction="higher_is_better",
+    nature="estimated",
+    min_data_policy="ratio_standard",
+    volatility_based=True,
+    assumptions=("mar",),
+    docs=MetricDocs(
+        measures="Average gain above the target per unit of downside deviation.",
+        formula="( (1/n) sum max(r_t - tau, 0) ) / sqrt( (1/n) sum min(r_t - tau, 0)^2 ), tau = 0",
+        formula_latex=(
+            r"\mathrm{UPR} = \frac{\frac{1}{n} \sum_{t=1}^{n} \max(r_t - \tau, 0)}{\mathrm{DD}},"
+            r" \quad \tau = 0"
+        ),
+        undefined_when=("No return is below the 0% target (downside deviation is zero).",),
+        inputs="Periodic simple returns.",
+        retail="How much upside the investment delivered for each unit of downside it exposed "
+        "investors to.",
+        institutional="Sortino, van der Meer & Plantinga (1999): first upper partial moment over "
+        "the square root of the second lower partial moment, both at target 0 with full-sample "
+        "denominators. Per-period, not annualized.",
+        assumptions=("Target (MAR) of 0% per period.",),
+        misleading_when=(
+            "Very few losing periods: the denominator is unstable.",
+            "Compared across data frequencies (per-period ratio).",
+        ),
+        minimum_data="At least 2 observations and one loss; low confidence below 3 years.",
+        reference_implementations=(
+            lib(
+                PA,
+                "UpsidePotentialRatio(MAR=0, method='full')",
+                note="The PerformanceAnalytics default method='subset' divides by the number of "
+                "gains / losses instead of n.",
+            ),
+        ),
+        references=(SORTINO_VDM_PLANTINGA_1999, BACON),
+        convention="Target 0, full-sample denominators (decision 0016).",
+    ),
+)
+def upside_potential_ratio(ctx: MetricContext) -> float:
+    dd = ctx.cache.downside_deviation
+    if dd == 0.0:
+        raise UndefinedMetric(
+            "No returns below the 0% target; the upside potential ratio is undefined."
+        )
+    return float(np.mean(np.maximum(ctx.r, 0.0))) / dd
+
+
+@metric(
+    id="burke_ratio",
+    name="Burke ratio",
+    category="risk_adjusted",
+    unit="ratio",
+    direction="higher_is_better",
+    nature="derived",
+    min_data_policy="ratio_standard",
+    annualized=True,
+    uses_wealth_path=True,
+    assumptions=("annualization", "drawdown", "risk_free"),
+    docs=MetricDocs(
+        measures="Annualized return per unit of the root sum of squared drawdown depths.",
+        formula="(CAGR - rf) / sqrt( sum_k depth_k^2 ), rf = 0",
+        formula_latex=(
+            r"\mathrm{Burke} = \frac{\mathrm{CAGR} - r_f}{\sqrt{\sum_{k=1}^{K} \delta_k^2}},"
+            r" \quad r_f = 0"
+        ),
+        undefined_when=("No drawdown occurred (K = 0).",),
+        inputs="Periodic simple returns with a regular frequency.",
+        retail="Return relative to the drawdowns suffered, where deep drawdowns weigh more than "
+        "shallow ones.",
+        institutional="Burke (1994): penalizes the square of every drawdown episode rather than "
+        "only the worst one (Calmar) or their time-average (Martin, Pain).",
+        assumptions=("Risk-free rate 0%.", "Every peak-to-recovery episode counts once."),
+        misleading_when=(
+            "Short histories with few drawdown episodes.",
+            "Compared across frequencies or history lengths (the sum grows with both).",
+        ),
+        minimum_data="At least 2 observations and one drawdown; low confidence below 3 years.",
+        reference_implementations=(
+            lib(
+                PA,
+                "BurkeRatio",
+                agrees=False,
+                note="PerformanceAnalytics 2.0.4 treats runs of negative returns as drawdowns "
+                "and multiplies returns by 0.01 (percent-input assumption); agreement is verified "
+                "against CAGR / sqrt(sum of findDrawdowns depths squared).",
+            ),
+        ),
+        references=(BURKE_1994, BACON),
+        convention="Episode depths from the canonical drawdown engine; geometric CAGR "
+        "(decision 0017).",
+    ),
+)
+def burke_ratio(ctx: MetricContext) -> float:
+    depths = np.array([e.depth for e in ctx.cache.episodes], dtype=np.float64)
+    if depths.size == 0:
+        raise UndefinedMetric("No drawdown occurred; the Burke ratio is undefined.")
+    return ctx.cagr / float(np.sqrt(np.sum(depths**2)))
+
+
+@metric(
+    id="sterling_ratio",
+    name="Sterling ratio",
+    category="risk_adjusted",
+    unit="ratio",
+    direction="higher_is_better",
+    nature="derived",
+    min_data_policy="ratio_standard",
+    annualized=True,
+    uses_wealth_path=True,
+    assumptions=("annualization", "drawdown", "sterling_excess", "risk_free"),
+    docs=MetricDocs(
+        measures="Annualized return per unit of maximum drawdown plus a fixed 10% adjustment.",
+        formula="CAGR / ( |max drawdown| + 0.10 )",
+        formula_latex=(
+            r"\mathrm{Sterling} = \frac{\mathrm{CAGR}}{\left| \mathrm{MDD} \right| + e},"
+            r" \quad e = 0.10"
+        ),
+        inputs="Periodic simple returns with a regular frequency.",
+        retail="Like the Calmar ratio, but the fixed 10% added to the worst loss keeps the ratio "
+        "from exploding for investments with tiny drawdowns.",
+        institutional="Sterling-type ratio in the form popularized by Kestner (1996) and Bacon, "
+        "using the full-history maximum drawdown. The 10% adjustment is a historical convention, "
+        "not an estimate; definitions in the literature vary (e.g. averages of annual maximum "
+        "drawdowns).",
+        assumptions=("Full-history maximum drawdown.", "Fixed 10% adjustment."),
+        misleading_when=(
+            "Compared with Sterling ratios computed from averaged annual drawdowns.",
+            "Histories of different lengths are compared.",
+        ),
+        minimum_data="At least 2 observations; low confidence below 3 years.",
+        reference_implementations=(lib(PA, "SterlingRatio(excess=0.1)"),),
+        references=(KESTNER_1996, BACON),
+        convention="CAGR / (|MDD| + 10%), full history (decision 0017).",
+    ),
+)
+def sterling_ratio(ctx: MetricContext) -> float:
+    excess = float(ctx.methodology.get("sterling.excess"))
+    return ctx.cagr / (abs(ctx.cache.max_drawdown) + excess)
+
+
+@metric(
+    id="pain_ratio",
+    name="Pain ratio",
+    category="risk_adjusted",
+    unit="ratio",
+    direction="higher_is_better",
+    nature="derived",
+    min_data_policy="ratio_standard",
+    annualized=True,
+    uses_wealth_path=True,
+    assumptions=("annualization", "drawdown", "risk_free"),
+    docs=MetricDocs(
+        measures="Annualized return per unit of Pain Index (average drawdown over time).",
+        formula="(CAGR - rf) / PainIndex, rf = 0",
+        formula_latex=r"\mathrm{PR} = \frac{\mathrm{CAGR} - r_f}{\mathrm{PI}}, \quad r_f = 0",
+        undefined_when=("No drawdown occurred (Pain Index is zero).",),
+        inputs="Periodic simple returns with a regular frequency.",
+        retail="Return relative to how far below its previous highs the investment typically was.",
+        institutional="Zephyr Pain ratio (see Bacon): like the Martin ratio but with the mean "
+        "rather than the root-mean-square drawdown, so deep drawdowns weigh less.",
+        assumptions=("Risk-free rate 0%.",),
+        misleading_when=("Short histories with few drawdowns.",),
+        minimum_data="At least 2 observations and one drawdown; low confidence below 3 years.",
+        reference_implementations=(
+            lib(
+                PA,
+                "PainRatio",
+                agrees=False,
+                note="Inherits the PainIndex percent-input issue in PerformanceAnalytics 2.0.4; "
+                "agreement is verified against CAGR / mean(|Drawdowns(R)|).",
+            ),
+        ),
+        references=(BACON,),
+        convention="Geometric CAGR over the canonical Pain Index (decision 0017).",
+    ),
+)
+def pain_ratio(ctx: MetricContext) -> Computed:
+    pain = float(np.mean(np.abs(ctx.cache.drawdown)))
+    if pain == 0.0:
+        raise UndefinedMetric("No drawdown occurred; the Pain ratio is undefined.")
+    return Computed(ctx.cagr / pain, details={"pain_index": pain})

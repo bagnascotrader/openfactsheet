@@ -3,9 +3,17 @@
 from __future__ import annotations
 
 from openfactsheet.metrics.context import MetricContext
-from openfactsheet.metrics.references import JOANES_GILL_1998, PA, PANDAS, QS, SCIPY, lib
+from openfactsheet.metrics.references import (
+    JARQUE_BERA_1987,
+    JOANES_GILL_1998,
+    PA,
+    PANDAS,
+    QS,
+    SCIPY,
+    lib,
+)
 from openfactsheet.metrics.registry import metric
-from openfactsheet.models.metric import MetricDocs
+from openfactsheet.models.metric import Computed, MetricDocs
 
 
 @metric(
@@ -23,7 +31,9 @@ from openfactsheet.models.metric import MetricDocs
             r"G_1 = \frac{\sqrt{n(n-1)}}{n-2} \, \frac{m_3}{m_2^{3/2}}, \quad "
             r"m_k = \frac{1}{n} \sum_{t=1}^{n} (r_t - \bar r)^k"
         ),
-        undefined_when=("All returns are identical (m_2 = 0).",),
+        undefined_when=(
+            "Return variance is zero or underflows in floating point (e.g. identical returns).",
+        ),
         inputs="Periodic simple returns.",
         retail="Negative values mean occasional large losses and many small gains; positive "
         "values mean occasional large gains.",
@@ -69,7 +79,9 @@ def skewness(ctx: MetricContext) -> float:
         formula_latex=(
             r"G_2 = \frac{n-1}{(n-2)(n-3)} \left[ (n+1) \frac{m_4}{m_2^2} - 3(n-1) \right]"
         ),
-        undefined_when=("All returns are identical (m_2 = 0).",),
+        undefined_when=(
+            "Return variance is zero or underflows in floating point (e.g. identical returns).",
+        ),
         inputs="Periodic simple returns.",
         retail="Positive values mean extreme periods (good or bad) happen more often than a "
         "bell curve would suggest.",
@@ -93,3 +105,51 @@ def skewness(ctx: MetricContext) -> float:
 )
 def excess_kurtosis(ctx: MetricContext) -> float:
     return ctx.cache.excess_kurtosis
+
+
+@metric(
+    id="jarque_bera_pvalue",
+    name="Jarque-Bera normality p-value",
+    category="distribution",
+    unit="probability",
+    direction="context_dependent",
+    nature="model_dependent",
+    min_data_policy="skewness",
+    supplementary=True,
+    docs=MetricDocs(
+        measures="Evidence against normally distributed returns from skewness and kurtosis.",
+        formula="JB = n/6 * (g1^2 + g2^2 / 4), g1 = m3/m2^1.5, g2 = m4/m2^2 - 3; p = 1 - F_chi2(2)",
+        formula_latex=(
+            r"JB = \frac{n}{6}\left( g_1^2 + \frac{g_2^2}{4} \right), \quad "
+            r"g_1 = \frac{m_3}{m_2^{3/2}}, \ g_2 = \frac{m_4}{m_2^2} - 3, \quad "
+            r"p = 1 - F_{\chi^2_2}(JB)"
+        ),
+        undefined_when=(
+            "Return variance is zero or underflows in floating point (e.g. identical returns).",
+        ),
+        inputs="Periodic simple returns.",
+        retail="A small value (below 0.05) indicates the returns are not bell-shaped, so "
+        "volatility-based statistics tell only part of the story.",
+        institutional="Jarque & Bera (1987) test with population moments and its asymptotic "
+        "chi-squared(2) p-value. A diagnostic, not a performance measure: in small samples the "
+        "test has low power and poor size; in very large samples trivial departures are "
+        "significant.",
+        assumptions=("i.i.d. returns; asymptotic chi-squared distribution of the statistic.",),
+        misleading_when=(
+            "Samples are short (the asymptotic p-value is unreliable).",
+            "Returns are serially correlated or heteroskedastic.",
+        ),
+        minimum_data="At least 3 observations; low confidence below 60, moderate below 120.",
+        reference_implementations=(lib(SCIPY, "stats.jarque_bera"),),
+        references=(JARQUE_BERA_1987,),
+        convention="Population (biased) skewness and excess kurtosis, as in the original test "
+        "(decision 0020).",
+    ),
+)
+def jarque_bera_pvalue(ctx: MetricContext) -> Computed:
+    from scipy.stats import chi2
+
+    g1 = ctx.cache.population_skewness
+    g2 = ctx.cache.population_kurtosis - 3.0
+    stat = ctx.n / 6.0 * (g1**2 + g2**2 / 4.0)
+    return Computed(float(chi2.sf(stat, 2)), details={"statistic": stat})

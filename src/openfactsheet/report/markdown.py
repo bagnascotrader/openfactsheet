@@ -15,6 +15,7 @@ from openfactsheet.report.tables import (
     format_value,
     ordered_categories,
     result_notes,
+    statistical_metrics,
     status_label,
 )
 
@@ -83,6 +84,8 @@ def render_markdown(report: FactsheetReport) -> str:
         ", ".join(f"{k.replace('_', ' ')}: {v}" for k, v in sorted(counts.items())),
         "",
         CONFIDENCE_DISCLAIMER + " " + STATISTICAL_SECTION_TEXT,
+        "",
+        *_metric_table(statistical_metrics(report), notes),
         "",
         f"## {number + 2}. Metric catalog",
         "",

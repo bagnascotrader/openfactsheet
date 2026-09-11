@@ -63,5 +63,7 @@ active return and alpha conventions consistent with each other
 - Values differ from PerformanceAnalytics' default `SharpeRatio.annualized`.
   The cross-library test asserts the difference so that it cannot disappear
   silently.
-- Confidence intervals, Probabilistic and Deflated Sharpe ratios are planned for
-  a later methodology version.
+- Sampling uncertainty is reported separately (standard error with a 95%
+  interval, Probabilistic Sharpe Ratio, minimum track record length); see
+  [0019](0019-sharpe-ratio-inference.md). The Deflated Sharpe Ratio is not
+  computed because it needs the number of strategies tried.

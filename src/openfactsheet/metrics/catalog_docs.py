@@ -13,6 +13,7 @@ from typing import Any
 
 from openfactsheet.metrics.registry import all_metrics
 from openfactsheet.models.metric import CATEGORY_TITLES, MetricDefinition
+from openfactsheet.policy.confidence import IID_ASYMPTOTICS_ASSUMPTION, PARAMETRIC_ASSUMPTION
 from openfactsheet.policy.defaults import canonical_methodology
 from openfactsheet.policy.methodology_version import METHODOLOGY_VERSION
 from openfactsheet.policy.risk_free import RISK_FREE_ASSUMPTION
@@ -40,6 +41,9 @@ _ASSUMPTION_LABELS = {
     "sample_std": "sample std (n-1)",
     "benchmark": "supplied benchmark",
     "regression": "OLS",
+    "iid_asymptotics": "i.i.d. asymptotics",
+    "parametric": "parametric (population moments)",
+    "sterling_excess": "+10% adjustment",
 }
 
 _UNIT_OUTPUT = {
@@ -112,6 +116,12 @@ def _assumption_doc(key: str) -> str:
         "regression": lambda: (
             "Ordinary least squares with an intercept (statsmodels), risk-free rate 0%, "
             "conventional i.i.d. standard errors with m - 2 degrees of freedom."
+        ),
+        "iid_asymptotics": lambda: IID_ASYMPTOTICS_ASSUMPTION,
+        "parametric": lambda: PARAMETRIC_ASSUMPTION,
+        "sterling_excess": lambda: (
+            f"Sterling adjustment of {_pct(_get('sterling.excess'))} added to the absolute "
+            "maximum drawdown (a historical convention, not an estimate)."
         ),
     }
     return docs[key]()
@@ -443,6 +453,29 @@ def render_policies() -> str:
         lines.append(f"| `{p.key}` | {p.math_min_obs} obs | {basis} | {lo} | {mo} | {metrics} |")
     lines += ["", "Policy descriptions:", ""]
     lines += [f"- `{p.key}`: {p.description}" for p in MIN_DATA_POLICIES.values()]
+
+    def flag(on: bool) -> str:
+        return "yes" if on else ""
+
+    lines += [
+        "",
+        "## Metric flags",
+        "",
+        "Flags that decide which applicability checks and confidence modifiers apply to each "
+        "metric (see [criteria](criteria.md#10-confidence-and-status-algorithm)).",
+        "",
+        "| Metric | Category | Volatility-based | Wealth path | Annualized | Benchmark | "
+        "Supplementary | Minimum-data policy | Assumption keys |",
+        "|---|---|---|---|---|---|---|---|---|",
+    ]
+    for d in all_metrics():
+        keys = ", ".join(f"`{k}`" for k in d.assumption_keys) or "—"
+        lines.append(
+            f"| [`{d.id}`](../interpretation/{d.id}.md) | {d.category} | "
+            f"{flag(d.volatility_based)} | {flag(d.uses_wealth_path)} | {flag(d.annualized)} | "
+            f"{flag(d.requires_benchmark)} | {flag(d.supplementary)} | `{d.min_data_policy}` | "
+            f"{keys} |"
+        )
 
     ppy = m.get("annualization.periods_per_year")
     lines += [

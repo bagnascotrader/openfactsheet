@@ -165,6 +165,16 @@ MIN_DATA_POLICIES: dict[str, MinDataPolicy] = {
             "Requires at least 10 observations for a 3-lag test; low below 36, moderate below 60.",
         ),
         MinDataPolicy(
+            "asymptotic_inference",
+            4,
+            "observations",
+            36,
+            60,
+            "Asymptotic Sharpe-ratio inference needs at least 4 observations for the moments it "
+            "uses; the normal approximation is poor below 36 observations (low) and 60 "
+            "(moderate).",
+        ),
+        MinDataPolicy(
             "benchmark_regression",
             3,
             "years",

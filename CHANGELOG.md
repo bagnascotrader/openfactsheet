@@ -24,6 +24,20 @@ Package 0.1.0 · Methodology 0.1.0
 - Tests: unit, property-based, golden reports, CLAUDE.md acceptance tests 1–3,
   cross-library validation against PerformanceAnalytics, empyrical, QuantStats.
 
+### Added — Phase 2, first increment (16 metrics; 64 in total)
+- Risk-adjusted: Kappa 3, upside potential ratio, Burke, Sterling, Pain ratio.
+- Returns / dispersion: payoff ratio, semi-deviation, downside potential (LPM 1),
+  mean absolute deviation.
+- Tail (supplementary, model-dependent): Gaussian and Cornish-Fisher VaR.
+- Distribution (supplementary): Jarque-Bera p-value.
+- New **Statistical confidence** category, rendered in report section 12:
+  Probabilistic Sharpe Ratio, Sharpe standard error with 95% interval, Minimum
+  Track Record Length, standard error of the mean with t-interval and t-test.
+- Two interpretation rules state whether the Sharpe ratio is statistically
+  distinguishable from zero and whether the track record is long enough.
+- Every new metric cross-validated against PerformanceAnalytics, R `t.test`,
+  SciPy or QuantStats; decision notes 0016–0020.
+
 ### Documentation
 - Complete specification under `docs/reference/`: exact LaTeX formulas for every
   metric (stored in the registry), notation, every decision criterion in

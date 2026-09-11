@@ -25,6 +25,11 @@ All decisions below are **Accepted** for methodology **0.1.0**.
 | [0013](0013-return-scale-detection.md) | Return-scale detection | Deterministic percent/decimal classifier; refuses to guess in the ambiguous zone. |
 | [0014](0014-smoothing-risk.md) | Smoothing risk | Lag-1 autocorrelation + significance thresholds; warn and downgrade, never unsmooth. |
 | [0015](0015-minimum-data-policy.md) | Minimum-data policies | Named policies: mathematical minimum vs statistical confidence thresholds. |
+| [0016](0016-lower-partial-moment-ratios.md) | Lower-partial-moment ratios and dispersion | Kappa 3, upside potential, LPM 1, semi-deviation, MAD: target 0, full-sample denominators; per period except annualized semi-deviation. |
+| [0017](0017-drawdown-ratios-burke-sterling-pain.md) | Burke, Sterling, Pain, payoff | Canonical episode depths for Burke; Sterling = CAGR / (\|MDD\| + 10%); Pain ratio = CAGR / Pain Index; payoff excludes zeros. |
+| [0018](0018-parametric-var.md) | Parametric VaR | Gaussian and Cornish-Fisher VaR with population moments; supplementary, model-dependent. |
+| [0019](0019-sharpe-ratio-inference.md) | Sharpe-ratio inference | PSR vs 0, SE with two-sided 95% CI, MinTRL at 95%; kurtosis kept; i.i.d. asymptotics; no Deflated Sharpe. |
+| [0020](0020-mean-inference-and-normality.md) | Mean inference and normality | Student-t 95% CI and t-test for the mean; Jarque-Bera with population moments (supplementary). |
 
 ## Adding or changing a decision
 

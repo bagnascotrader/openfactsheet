@@ -107,6 +107,36 @@ def _annualized_short(result: MetricResult, _: MetricCollection, ctx: MetricCont
     return None
 
 
+def _sharpe_significance(
+    result: MetricResult, _: MetricCollection, __: MetricContext
+) -> str | None:
+    if result.id != "probabilistic_sharpe_ratio" or result.value is None:
+        return None
+    if result.value >= 0.95:
+        return (
+            f"PSR = {result.value:.2f}: the Sharpe ratio is statistically above zero at the 95% "
+            "level under i.i.d. assumptions (not a guarantee of future performance)."
+        )
+    return (
+        f"PSR = {result.value:.2f}: the Sharpe ratio is not statistically distinguishable from "
+        "zero at the 95% level; the track record cannot separate skill from luck."
+    )
+
+
+def _track_record_sufficiency(
+    result: MetricResult, _: MetricCollection, __: MetricContext
+) -> str | None:
+    if result.id != "minimum_track_record_length" or result.value is None:
+        return None
+    needed = result.details.get("additional_periods_needed")
+    if result.details.get("sufficient"):
+        return "The actual history is at least as long as the minimum track record length."
+    return (
+        f"The history is {needed} period(s) shorter than the minimum track record length needed "
+        "for the observed Sharpe ratio to be significant at 95%."
+    )
+
+
 RULES: tuple[ContextRule, ...] = (
     _smoothing,
     _hidden_tail,
@@ -114,4 +144,6 @@ RULES: tuple[ContextRule, ...] = (
     _short_path,
     _hit_rate_smoothing,
     _annualized_short,
+    _sharpe_significance,
+    _track_record_sufficiency,
 )

@@ -62,6 +62,35 @@ CANONICAL_ASSUMPTIONS: dict[str, Any] = {
         "threshold": 0.0,
         "description": "threshold = 0% per period, simple (empirical) estimator",
     },
+    "lower_partial_moments": {
+        # Decision 0016. Kappa-3 and the upside potential ratio share the Sortino
+        # target and the full-sample denominator; all are per-period ratios.
+        "target": 0.0,
+        "kappa_order": 3,
+        "denominator": "full_sample",
+    },
+    "sterling": {
+        # Decision 0017. Historical 10% adjustment added to |max drawdown|.
+        "excess": 0.10,
+    },
+    "parametric_var": {
+        # Decision 0018. Population moments (Boudt, Peterson & Croux 2008), so the
+        # Cornish-Fisher quantile reduces exactly to the Gaussian one when S = K = 0.
+        "confidence": 0.95,
+        "moments": "population",
+    },
+    "sharpe_inference": {
+        # Decision 0019. Non-normal i.i.d. asymptotics (Mertens 2002; Bailey &
+        # Lopez de Prado 2012) on the per-period Sharpe ratio.
+        "reference_sharpe": 0.0,
+        "ci_level": 0.95,
+        "min_track_record_confidence": 0.95,
+        "moments": "population skewness g1 and non-excess kurtosis m4 / m2^2",
+    },
+    "mean_inference": {
+        # Decision 0020. Student-t interval with n - 1 degrees of freedom.
+        "ci_level": 0.95,
+    },
     "tail": {
         "var_confidence": 0.95,
         "es_confidence": 0.95,

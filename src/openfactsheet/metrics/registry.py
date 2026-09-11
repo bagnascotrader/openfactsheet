@@ -36,6 +36,7 @@ _BUILTIN_MODULES = (
     "openfactsheet.metrics.consistency",
     "openfactsheet.metrics.dependence",
     "openfactsheet.metrics.benchmark",
+    "openfactsheet.metrics.statistical",
 )
 _loaded = False
 
@@ -50,6 +51,9 @@ ASSUMPTION_KEYS = frozenset(
         "sample_std",
         "benchmark",
         "regression",
+        "iid_asymptotics",
+        "parametric",
+        "sterling_excess",
     }
 )
 

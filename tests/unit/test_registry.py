@@ -26,6 +26,12 @@ def test_phase_one_catalog_is_complete() -> None:
         "gain_to_pain_ratio", "autocorrelation_lag1", "zero_return_pct", "alpha", "beta",
         "correlation", "tracking_error", "information_ratio", "treynor_ratio",
         "upside_capture", "downside_capture",
+        # Phase 2 (first increment)
+        "kappa_3_ratio", "upside_potential_ratio", "burke_ratio", "sterling_ratio",
+        "pain_ratio", "payoff_ratio", "semi_deviation", "downside_potential",
+        "mean_absolute_deviation", "gaussian_var_95", "modified_var_95",
+        "jarque_bera_pvalue", "probabilistic_sharpe_ratio", "sharpe_ratio_standard_error",
+        "minimum_track_record_length", "mean_return_standard_error",
     }  # fmt: skip
     assert required <= ids
 

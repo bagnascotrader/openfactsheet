@@ -474,15 +474,10 @@ Thresholds in modifiers a–i are read from the canonical methodology
 ([policy/defaults.py](../../src/openfactsheet/policy/defaults.py): `stale_returns`,
 `distribution_warning`, `confidence`), so they are embedded in every report.
 
-Volatility-based metrics: `volatility`, `annualized_volatility`,
-`downside_deviation`, `sharpe_ratio`, `sortino_ratio`, `tracking_error`,
-`information_ratio`. Wealth-path metrics: `cumulative_return`, `cagr`, all
-drawdown metrics, `calmar_ratio`, `martin_ratio`. Annualized metrics: `cagr`,
-`annualized_arithmetic_mean`, `annualized_volatility`, `downside_deviation`,
-`sharpe_ratio`, `sortino_ratio`, `calmar_ratio`, `martin_ratio`, `alpha`,
-`tracking_error`, `active_return`, `information_ratio`, `treynor_ratio`,
-`upside_capture`, `downside_capture`. The generated
-[metric catalog](../metric_catalog.md) shows these flags per metric.
+Which metrics are volatility-based, wealth-path, annualized, benchmark-relative
+or supplementary is listed in the code-generated
+[metric flags table](policies.md#metric-flags) (and on each metric page), so the
+membership can never drift from the registry.
 
 Notes produced by the metric function itself (e.g. "the longest drawdown has not
 recovered") come first in the warning list. Warnings are de-duplicated,
@@ -492,7 +487,7 @@ preserving first occurrence.
 
 | Condition (first match) | Status |
 |---|---|
-| metric is flagged supplementary (`ljung_box_pvalue`) | `supplementary` |
+| metric is flagged supplementary ([metric flags](policies.md#metric-flags)) | `supplementary` |
 | confidence is `low` | `low_confidence` |
 | otherwise | `applicable` |
 
@@ -501,7 +496,10 @@ A value is always shown when it exists.
 **Assumptions** attached to each result come from the metric's declared
 assumption keys: annualization statement, risk-free rate 0%, MAR 0%, Omega
 threshold 0%, 95% historical tail convention, drawdown convention, sample
-standard deviation, the benchmark name and alignment, and the OLS convention.
+standard deviation, the benchmark name and alignment, the OLS convention, i.i.d.
+asymptotics (statistical-confidence metrics), the parametric-moment convention
+(Gaussian / Cornish-Fisher VaR) and the Sterling 10% adjustment. The keys per
+metric are listed in the [metric flags table](policies.md#metric-flags).
 
 ---
 
@@ -570,6 +568,8 @@ rules below are applied in order. No rule grades an investment ("good",
 | `_short_path` | every drawdown-category metric with a value | `years` known and `years < 3` | drawdowns observed so far are likely milder than a longer history would reveal |
 | `_hit_rate_smoothing` | `positive_period_pct` with a value | smoothing risk `high` and value `≥ 0.75` | very high hit rate with strong serial correlation is a pattern associated with smoothed returns |
 | `_annualized_short` | `cagr`, `annualized_arithmetic_mean` with a value | `years` known and `years < 1` | annualizing extrapolates a partial year; GIPS prohibits annualized returns for periods under one year |
+| `_sharpe_significance` | `probabilistic_sharpe_ratio` with a value | value `≥ 0.95` / value `< 0.95` | the Sharpe ratio is statistically above zero at 95% under i.i.d. assumptions (no guarantee of future performance) / not distinguishable from zero, the track record cannot separate skill from luck |
+| `_track_record_sufficiency` | `minimum_track_record_length` with a value | `details.sufficient` true / false | the history is at least as long as the minimum track record length / states how many periods are missing (`details.additional_periods_needed`) |
 
 ---
 
@@ -595,7 +595,11 @@ The canonical report has exactly 14 sections; none can be removed by a flag:
 10. Benchmark-relative analysis (without a benchmark: the reason and the list
     of metrics that are not applicable)
 11. Factor analysis (not available in methodology 0.1.0; stated)
-12. Statistical confidence (counts of confidence labels and statuses)
+12. Statistical confidence — counts of confidence labels and statuses, then the
+    `statistical` category metrics (`probabilistic_sharpe_ratio`,
+    `sharpe_ratio_standard_error`, `minimum_track_record_length`,
+    `mean_return_standard_error`); the Deflated Sharpe Ratio is stated as not
+    computable (it needs the number of strategies tried)
 13. Metric catalog (pointer)
 14. Assumptions & caveats (methodology description and all warning/critical
     findings)

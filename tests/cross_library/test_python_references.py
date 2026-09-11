@@ -67,6 +67,21 @@ def test_empyrical_benchmark() -> None:
     )
 
 
+@pytest.mark.parametrize("fixture", SINGLE_FIXTURES)
+def test_scipy_normality_and_mean_inference(fixture: str) -> None:
+    s = fixture_series(fixture)
+    rep = ofs.analyze(s)
+    jb = stats.jarque_bera(s.to_numpy())
+    assert rep.metrics["jarque_bera_pvalue"].details["statistic"] == pytest.approx(
+        jb.statistic, **TOL
+    )
+    assert val(rep, "jarque_bera_pvalue") == pytest.approx(jb.pvalue, rel=1e-7)
+    tt = stats.ttest_1samp(s.to_numpy(), 0.0)
+    assert rep.metrics["mean_return_standard_error"].details["p_value"] == pytest.approx(
+        tt.pvalue, rel=1e-9
+    )
+
+
 def test_quantstats_information_ratio_is_per_period() -> None:
     qs = pytest.importorskip("quantstats")
     fund, bench = fixture_series("benchmark_case_fund"), fixture_series("benchmark_case_benchmark")
@@ -106,6 +121,7 @@ def test_quantstats(fixture: str) -> None:
     normal_var = stats.norm.ppf(0.05, r.mean(), r.std(ddof=1))
     assert qs.stats.value_at_risk(s) == pytest.approx(normal_var, **TOL)
     assert qs.stats.value_at_risk(s) != pytest.approx(val(rep, "var_historical_95"))
+    assert val(rep, "payoff_ratio") == pytest.approx(qs.stats.payoff_ratio(s), **TOL)
     # QuantStats win_rate excludes zero returns; fixtures have none, so values coincide.
     assert (s == 0).sum() == 0
     assert val(rep, "positive_period_pct") == pytest.approx(qs.stats.win_rate(s), **TOL)

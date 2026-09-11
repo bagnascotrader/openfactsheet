@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import math
 
+import numpy as np
+
 from openfactsheet.metrics.context import MetricContext
 from openfactsheet.metrics.references import BACON, EMP, LO_2002, NUMPY, PA, QS, lib
 from openfactsheet.metrics.registry import metric
@@ -85,3 +87,36 @@ def volatility(ctx: MetricContext) -> float:
 )
 def annualized_volatility(ctx: MetricContext) -> float:
     return ctx.cache.std * math.sqrt(ctx.ppy)
+
+
+@metric(
+    id="mean_absolute_deviation",
+    name="Mean absolute deviation",
+    category="volatility",
+    unit="decimal_return",
+    direction="lower_is_better",
+    nature="estimated",
+    min_data_policy="dispersion",
+    volatility_based=True,
+    docs=MetricDocs(
+        measures="Average absolute distance of single-period returns from their mean.",
+        formula="(1/n) * sum |r_t - mean|",
+        formula_latex=r"\mathrm{MAD} = \frac{1}{n} \sum_{t=1}^{n} \left| r_t - \bar r \right|",
+        inputs="Periodic simple returns.",
+        retail="The typical size of a period's deviation from the average, without squaring "
+        "(so single extreme periods weigh less than in volatility).",
+        institutional="Mean absolute deviation around the mean (the L1 dispersion used in "
+        "Konno-Yamazaki portfolio models); for normal returns MAD = sqrt(2/pi) sigma. Per period.",
+        assumptions=("Returns are identically distributed over the history.",),
+        misleading_when=(
+            "Returns are smoothed or stale.",
+            "Compared across data frequencies (per-period quantity).",
+        ),
+        minimum_data="At least 2 observations; low confidence below 3 years.",
+        reference_implementations=(lib(PA, "MeanAbsoluteDeviation"),),
+        references=(BACON,),
+        convention="Deviation from the sample mean, denominator n, per period.",
+    ),
+)
+def mean_absolute_deviation(ctx: MetricContext) -> float:
+    return float(np.mean(np.abs(ctx.r - ctx.cache.mean)))

@@ -56,6 +56,14 @@ Every canonical metric of methodology 0.1.0, exactly as implemented. Symbols are
 
 Undefined (`not_applicable`) when: No period has a negative return (zero denominator).
 
+### Payoff ratio (average win / average loss) — [`payoff_ratio`](../interpretation/payoff_ratio.md)
+
+```math
+\mathrm{Payoff} = \frac{\frac{1}{|G|} \sum_{t \in G} r_t}{\left| \frac{1}{|L|} \sum_{t \in L} r_t \right|}, \quad G = \{t : r_t > 0\}, \ L = \{t : r_t < 0\}
+```
+
+Undefined (`not_applicable`) when: No positive period or no negative period exists.
+
 ## Risk summary
 
 ### Volatility per period — [`volatility`](../interpretation/volatility.md)
@@ -70,10 +78,28 @@ s = \sqrt{\frac{1}{n-1} \sum_{t=1}^{n} \left(r_t - \bar r\right)^2}
 \sigma_{\text{ann}} = s \sqrt{P}
 ```
 
+### Mean absolute deviation — [`mean_absolute_deviation`](../interpretation/mean_absolute_deviation.md)
+
+```math
+\mathrm{MAD} = \frac{1}{n} \sum_{t=1}^{n} \left| r_t - \bar r \right|
+```
+
 ### Downside deviation (annualized) — [`downside_deviation`](../interpretation/downside_deviation.md)
 
 ```math
 \mathrm{DD}_{\text{ann}} = \sqrt{P}\,\mathrm{DD}, \quad \mathrm{DD} = \sqrt{\frac{1}{n} \sum_{t=1}^{n} \min(r_t - \tau, 0)^2}, \quad \tau = 0
+```
+
+### Semi-deviation (annualized) — [`semi_deviation`](../interpretation/semi_deviation.md)
+
+```math
+\mathrm{SemiDev}_{\text{ann}} = \sqrt{P} \, \sqrt{\frac{1}{n} \sum_{t=1}^{n} \min(r_t - \bar r, 0)^2}
+```
+
+### Downside potential (LPM 1) — [`downside_potential`](../interpretation/downside_potential.md)
+
+```math
+\mathrm{LPM}_1 = \frac{1}{n} \sum_{t=1}^{n} \max(\tau - r_t, 0), \quad \tau = 0
 ```
 
 ## Drawdowns
@@ -168,6 +194,44 @@ Undefined (`not_applicable`) when: No drawdown occurred (Ulcer Index is zero).
 
 Undefined (`not_applicable`) when: No return is below the 0% threshold (zero denominator).
 
+### Kappa 3 ratio — [`kappa_3_ratio`](../interpretation/kappa_3_ratio.md)
+
+```math
+K_3 = \frac{\bar r - \tau}{\left( \frac{1}{n} \sum_{t=1}^{n} \max(\tau - r_t, 0)^3 \right)^{1/3}}, \quad \tau = 0
+```
+
+Undefined (`not_applicable`) when: No return is below the 0% target (zero lower partial moment).
+
+### Upside potential ratio — [`upside_potential_ratio`](../interpretation/upside_potential_ratio.md)
+
+```math
+\mathrm{UPR} = \frac{\frac{1}{n} \sum_{t=1}^{n} \max(r_t - \tau, 0)}{\mathrm{DD}}, \quad \tau = 0
+```
+
+Undefined (`not_applicable`) when: No return is below the 0% target (downside deviation is zero).
+
+### Burke ratio — [`burke_ratio`](../interpretation/burke_ratio.md)
+
+```math
+\mathrm{Burke} = \frac{\mathrm{CAGR} - r_f}{\sqrt{\sum_{k=1}^{K} \delta_k^2}}, \quad r_f = 0
+```
+
+Undefined (`not_applicable`) when: No drawdown occurred (K = 0).
+
+### Sterling ratio — [`sterling_ratio`](../interpretation/sterling_ratio.md)
+
+```math
+\mathrm{Sterling} = \frac{\mathrm{CAGR}}{\left| \mathrm{MDD} \right| + e}, \quad e = 0.10
+```
+
+### Pain ratio — [`pain_ratio`](../interpretation/pain_ratio.md)
+
+```math
+\mathrm{PR} = \frac{\mathrm{CAGR} - r_f}{\mathrm{PI}}, \quad r_f = 0
+```
+
+Undefined (`not_applicable`) when: No drawdown occurred (Pain Index is zero).
+
 ## Tail behavior
 
 ### Value at Risk (historical, 95%) — [`var_historical_95`](../interpretation/var_historical_95.md)
@@ -190,6 +254,20 @@ Undefined (`not_applicable`) when: No return is below the 0% threshold (zero den
 
 Undefined (`not_applicable`) when: The 5th percentile return is exactly zero.
 
+### Value at Risk (Gaussian, 95%) — [`gaussian_var_95`](../interpretation/gaussian_var_95.md)
+
+```math
+\mathrm{VaR}^{N}_{95} = \bar r + z_{0.05} \sqrt{m_2}, \quad z_{0.05} = \Phi^{-1}(0.05) \approx -1.645
+```
+
+### Modified VaR (Cornish-Fisher, 95%) — [`modified_var_95`](../interpretation/modified_var_95.md)
+
+```math
+\mathrm{mVaR}_{95} = \bar r + h \sqrt{m_2}, \quad h = z + \frac{(z^2 - 1) S}{6} + \frac{(z^3 - 3z) K}{24} - \frac{(2z^3 - 5z) S^2}{36}, \quad z = \Phi^{-1}(0.05), \ S = \frac{m_3}{m_2^{3/2}}, \ K = \frac{m_4}{m_2^2} - 3
+```
+
+Undefined (`not_applicable`) when: Return variance is zero or underflows in floating point (e.g. identical returns).
+
 ## Distribution
 
 ### Skewness — [`skewness`](../interpretation/skewness.md)
@@ -198,7 +276,7 @@ Undefined (`not_applicable`) when: The 5th percentile return is exactly zero.
 G_1 = \frac{\sqrt{n(n-1)}}{n-2} \, \frac{m_3}{m_2^{3/2}}, \quad m_k = \frac{1}{n} \sum_{t=1}^{n} (r_t - \bar r)^k
 ```
 
-Undefined (`not_applicable`) when: All returns are identical (m_2 = 0).
+Undefined (`not_applicable`) when: Return variance is zero or underflows in floating point (e.g. identical returns).
 
 ### Excess kurtosis — [`excess_kurtosis`](../interpretation/excess_kurtosis.md)
 
@@ -206,7 +284,15 @@ Undefined (`not_applicable`) when: All returns are identical (m_2 = 0).
 G_2 = \frac{n-1}{(n-2)(n-3)} \left[ (n+1) \frac{m_4}{m_2^2} - 3(n-1) \right]
 ```
 
-Undefined (`not_applicable`) when: All returns are identical (m_2 = 0).
+Undefined (`not_applicable`) when: Return variance is zero or underflows in floating point (e.g. identical returns).
+
+### Jarque-Bera normality p-value — [`jarque_bera_pvalue`](../interpretation/jarque_bera_pvalue.md)
+
+```math
+JB = \frac{n}{6}\left( g_1^2 + \frac{g_2^2}{4} \right), \quad g_1 = \frac{m_3}{m_2^{3/2}}, \ g_2 = \frac{m_4}{m_2^2} - 3, \quad p = 1 - F_{\chi^2_2}(JB)
+```
+
+Undefined (`not_applicable`) when: Return variance is zero or underflows in floating point (e.g. identical returns).
 
 ## Consistency
 
@@ -351,3 +437,37 @@ Undefined (`not_applicable`) when: The benchmark has no up periods in the overla
 ```
 
 Undefined (`not_applicable`) when: The benchmark has no down periods in the overlap. The benchmark's compounded down-period return is exactly zero.
+
+## Statistical confidence
+
+### Probabilistic Sharpe Ratio (vs 0) — [`probabilistic_sharpe_ratio`](../interpretation/probabilistic_sharpe_ratio.md)
+
+```math
+\mathrm{PSR} = \Phi\!\left( \frac{(\widehat{SR} - SR^*)\sqrt{n-1}}{\sqrt{1 - g_3 \widehat{SR} + \frac{g_4 - 1}{4} \widehat{SR}^2}} \right), \quad \widehat{SR} = \frac{\bar r}{s}, \ g_3 = \frac{m_3}{m_2^{3/2}}, \ g_4 = \frac{m_4}{m_2^2}, \ SR^* = 0
+```
+
+Undefined (`not_applicable`) when: Sample standard deviation is exactly zero. Return variance underflows in floating point (moments not computable). The variance factor is not positive (degenerate distribution).
+
+### Sharpe ratio standard error (annualized) — [`sharpe_ratio_standard_error`](../interpretation/sharpe_ratio_standard_error.md)
+
+```math
+\mathrm{SE}(\widehat{SR}_{\text{ann}}) = \sqrt{P} \sqrt{\frac{1 - g_3 \widehat{SR} + \frac{g_4 - 1}{4} \widehat{SR}^2}{n - 1}}, \quad \mathrm{CI}_{95} = \widehat{SR}\sqrt{P} \pm z_{0.975} \, \mathrm{SE}
+```
+
+Undefined (`not_applicable`) when: Sample standard deviation is exactly zero. Return variance underflows in floating point (moments not computable). The variance factor is not positive (degenerate distribution).
+
+### Minimum track record length — [`minimum_track_record_length`](../interpretation/minimum_track_record_length.md)
+
+```math
+\mathrm{MinTRL} = 1 + \left(1 - g_3 \widehat{SR} + \frac{g_4 - 1}{4} \widehat{SR}^2\right) \left( \frac{z_{0.95}}{\widehat{SR} - SR^*} \right)^2, \quad SR^* = 0
+```
+
+Undefined (`not_applicable`) when: The observed Sharpe ratio is not above the reference 0 (no track-record length can make it significant). Sample standard deviation is exactly zero. Return variance underflows in floating point (moments not computable).
+
+### Mean return standard error (per period) — [`mean_return_standard_error`](../interpretation/mean_return_standard_error.md)
+
+```math
+\mathrm{SE}(\bar r) = \frac{s}{\sqrt{n}}, \quad \mathrm{CI}_{95} = \bar r \pm t_{0.975,\,n-1} \, \frac{s}{\sqrt{n}}, \quad t = \frac{\bar r}{\mathrm{SE}(\bar r)}
+```
+
+Undefined (`not_applicable`) when: Sample standard deviation is exactly zero (no sampling variability).

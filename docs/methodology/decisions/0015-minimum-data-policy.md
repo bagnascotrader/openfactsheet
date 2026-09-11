@@ -51,6 +51,7 @@ shown and confidence is set from the statistical thresholds:
 | tail | 2 | expected tail obs. (n x 5%) | 5 | 10 |
 | autocorrelation | 5 | observations | 36 | 60 |
 | ljung_box | 10 | observations | 36 | 60 |
+| asymptotic_inference | 4 | observations | 36 | 60 |
 | benchmark_regression | 3 | years of overlap | 3 | 5 |
 | benchmark_simple | 2 | years of overlap | 3 | 5 |
 

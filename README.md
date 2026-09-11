@@ -70,9 +70,13 @@ table text. OpenFactsheet shows exactly which returns it believes it received
 
 ## Metric coverage (methodology 0.1.0)
 
-48 metrics across returns, volatility, drawdowns, risk-adjusted ratios, tail
-risk, distribution shape, consistency, serial dependence and
-benchmark-relative analysis. See the [metric catalog](docs/metric_catalog.md);
+64 metrics across returns, volatility and downside risk, drawdowns,
+risk-adjusted ratios (Sharpe, Sortino, Calmar, Martin, Omega, Kappa 3, upside
+potential, Burke, Sterling, Pain), tail risk (historical, Gaussian and
+Cornish-Fisher VaR, Expected Shortfall), distribution shape, consistency, serial
+dependence, benchmark-relative analysis, and **statistical confidence**
+(Probabilistic Sharpe Ratio, Sharpe standard error and confidence interval,
+Minimum Track Record Length, standard error of the mean). See the [metric catalog](docs/metric_catalog.md);
 each metric has a page answering what it measures, its formula, assumptions,
 when it misleads, minimum data, references and the OpenFactsheet convention.
 
@@ -91,8 +95,9 @@ when it misleads, minimum data, references and the OpenFactsheet convention.
 
 ## Roadmap
 
-1. Phase 2 — broader catalog (Kappa, Sterling, Burke, CDaR/EDaR, lower partial
-   moments, Probabilistic/Deflated Sharpe, confidence intervals).
+1. Phase 2 (continuing) — CDaR/EDaR, entropic VaR, modified Expected Shortfall,
+   calendar-year statistics, rolling statistics, M² and further benchmark
+   measures.
 2. Phase 4 — charts (wealth, underwater, heatmap, distribution, rolling statistics).
 3. Phase 6 — optional PDF and screenshot ingestion with extraction confidence.
 4. Phase 7 — factor models with explicitly supplied factor data.

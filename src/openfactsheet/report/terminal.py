@@ -17,6 +17,7 @@ from openfactsheet.report.tables import (
     format_value,
     ordered_categories,
     result_notes,
+    statistical_metrics,
     status_label,
 )
 
@@ -106,6 +107,8 @@ def render_terminal(report: FactsheetReport) -> str:
     counts = confidence_counts(report)
     out.append(_wrap(", ".join(f"{k.replace('_', ' ')}: {v}" for k, v in sorted(counts.items()))))
     out.append(_wrap(CONFIDENCE_DISCLAIMER + " " + STATISTICAL_SECTION_TEXT))
+    out.append("")
+    out.extend(_metric_table(statistical_metrics(report), notes))
 
     out.append(_heading(number, "Metric catalog"))
     number += 1

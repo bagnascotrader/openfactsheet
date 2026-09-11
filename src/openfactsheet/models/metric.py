@@ -50,6 +50,7 @@ Category = Literal[
     "dependence",
     "consistency",
     "benchmark",
+    "statistical",
 ]
 
 CATEGORY_TITLES: Mapping[str, str] = MappingProxyType(
@@ -63,6 +64,7 @@ CATEGORY_TITLES: Mapping[str, str] = MappingProxyType(
         "consistency": "Consistency",
         "dependence": "Serial dependence & smoothing",
         "benchmark": "Benchmark-relative analysis",
+        "statistical": "Statistical confidence",
     }
 )
 

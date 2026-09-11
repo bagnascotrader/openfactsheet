@@ -130,7 +130,7 @@ it could be computed.
 |---|---|---|
 | `id` | string | Stable metric identifier (see the [metric catalog](../metric_catalog.md)). |
 | `name` | string | Display name. |
-| `category` | string | `returns`, `volatility`, `drawdown`, `risk_adjusted`, `tail`, `distribution`, `consistency`, `dependence`, `benchmark`. |
+| `category` | string | `returns`, `volatility`, `drawdown`, `risk_adjusted`, `tail`, `distribution`, `consistency`, `dependence`, `benchmark`, `statistical`. |
 | `value` | number \| null | Raw `float64` value (never rounded, never non-finite); `null` when not computable. |
 | `unit` | string | `decimal_return`, `fraction` (0–1), `ratio`, `periods`, `count`, `correlation`, `probability`, `beta`. |
 | `status` | string | `applicable`, `low_confidence`, `supplementary`, `not_applicable`, `insufficient_data`, `error`. |
@@ -183,6 +183,23 @@ listed emit `{}`.
 | `upside_capture` | `up_periods` | integer | Aligned periods with benchmark return > 0. |
 | `downside_capture` | `down_periods` | integer | Aligned periods with benchmark return < 0. |
 | `upside_capture`, `downside_capture` | `fund_annualized`, `benchmark_annualized` | number | Annualized geometric returns over those periods (numerator and denominator). |
+| `payoff_ratio` | `average_gain`, `average_loss` | number | Mean of positive and of negative period returns (loss is signed). |
+| `pain_ratio` | `pain_index` | number | Pain Index used as the denominator. |
+| `modified_var_95` | `cornish_fisher_quantile` | number | Adjusted quantile `h` (replaces z = -1.645). |
+| | `skewness`, `excess_kurtosis` | number | Population moments used by the expansion. |
+| `jarque_bera_pvalue` | `statistic` | number | Jarque-Bera statistic (chi-squared with 2 degrees of freedom). |
+| `probabilistic_sharpe_ratio` | `sharpe_per_period` | number | Per-period Sharpe ratio used by the test. |
+| | `z_statistic` | number | Standardized distance of the Sharpe ratio from 0. |
+| | `moment_skewness`, `moment_kurtosis` | number | Population skewness and non-excess kurtosis. |
+| `sharpe_ratio_standard_error` | `sharpe_ratio` | number | Annualized Sharpe ratio (same as the `sharpe_ratio` metric). |
+| | `ci_level`, `ci_lower`, `ci_upper` | number | Two-sided confidence interval of the annualized Sharpe ratio. |
+| | `standard_error_per_period` | number | Standard error of the per-period Sharpe ratio. |
+| `minimum_track_record_length` | `years` | number \| null | MinTRL in years (`null` if not annualizable). |
+| | `observed_periods` | integer | Actual number of observations. |
+| | `sufficient` | boolean | Whether the history is at least MinTRL long. |
+| | `additional_periods_needed` | integer | `max(0, ceil(MinTRL - n))`. |
+| `mean_return_standard_error` | `ci_level`, `ci_lower`, `ci_upper` | number | Student-t confidence interval of the per-period mean. |
+| | `t_statistic`, `p_value` | number | Two-sided t-test of the mean against zero. |
 
 ---
 

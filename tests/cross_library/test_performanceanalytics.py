@@ -83,6 +83,60 @@ def test_single_series_agreement(fixture: str, pa_reference: dict[str, Any]) -> 
     assert ref["sharpe_ratio_pa_default_geometric"] != pytest.approx(val(rep, "sharpe_ratio"))
 
 
+@pytest.mark.parametrize("fixture", SINGLE_FIXTURES)
+def test_phase2_agreement(fixture: str, pa_reference: dict[str, Any]) -> None:
+    ref = pa_reference[fixture]
+    rep = ofs.analyze(fixture_series(fixture))
+
+    assert val(rep, "kappa_3_ratio") == pytest.approx(ref["kappa_3"], **TOL)
+    assert val(rep, "upside_potential_ratio") == pytest.approx(ref["upside_potential_full"], **TOL)
+    # PA default method='subset' differs (documented, decision 0016).
+    assert val(rep, "upside_potential_ratio") != pytest.approx(ref["upside_potential_subset"])
+    assert val(rep, "semi_deviation") == pytest.approx(
+        ref["semi_deviation_per_period"] * math.sqrt(12), **TOL
+    )
+    assert val(rep, "mean_absolute_deviation") == pytest.approx(
+        ref["mean_absolute_deviation"], **TOL
+    )
+    assert val(rep, "downside_potential") == pytest.approx(ref["downside_potential"], **TOL)
+    assert val(rep, "sterling_ratio") == pytest.approx(ref["sterling_ratio"], **TOL)
+    # Burke: PA's own BurkeRatio uses runs of negative returns with a percent-input
+    # scaling; OpenFactsheet agrees with the formula on PA's findDrawdowns depths.
+    assert val(rep, "burke_ratio") == pytest.approx(ref["burke_from_find_drawdowns"], **TOL)
+    assert val(rep, "burke_ratio") != pytest.approx(ref["burke_ratio_pa"])
+    assert val(rep, "pain_ratio") == pytest.approx(ref["pain_ratio_from_drawdowns"], **TOL)
+    assert val(rep, "gaussian_var_95") == pytest.approx(ref["var_gaussian_95"], **TOL)
+    assert val(rep, "modified_var_95") == pytest.approx(ref["var_modified_95"], **TOL)
+
+    # Statistical confidence.
+    if ref["psr_ref0_with_kurtosis"] is None:
+        # PerformanceAnalytics stops for a negative Sharpe ratio; OpenFactsheet reports the
+        # probability (below 0.5) and marks MinTRL as not applicable.
+        assert val(rep, "probabilistic_sharpe_ratio") < 0.5
+        assert rep.metrics["minimum_track_record_length"].status == "not_applicable"
+    else:
+        assert val(rep, "probabilistic_sharpe_ratio") == pytest.approx(
+            ref["psr_ref0_with_kurtosis"], **TOL
+        )
+        assert val(rep, "minimum_track_record_length") == pytest.approx(
+            ref["min_trl_ref0_with_kurtosis"], **TOL
+        )
+        # Same variance formula: PA's (rounded, one-sided 95%) interval half-width equals
+        # qnorm(0.95) x the per-period standard error.
+        se_pp = rep.metrics["sharpe_ratio_standard_error"].details["standard_error_per_period"]
+        assert ref["psr_ci_half_width_per_period"] == pytest.approx(1.6448536 * se_pp, abs=1e-4)
+    jb = rep.metrics["jarque_bera_pvalue"]
+    assert jb.details["statistic"] == pytest.approx(ref["jarque_bera_statistic"], **TOL)
+    assert val(rep, "jarque_bera_pvalue") == pytest.approx(ref["jarque_bera_pvalue"], rel=1e-7)
+
+    # Mean-return inference against R's t.test.
+    se = rep.metrics["mean_return_standard_error"]
+    assert se.details["ci_lower"] == pytest.approx(ref["t_test_ci_lower"], **TOL)
+    assert se.details["ci_upper"] == pytest.approx(ref["t_test_ci_upper"], **TOL)
+    assert se.details["t_statistic"] == pytest.approx(ref["t_test_statistic"], **TOL)
+    assert se.details["p_value"] == pytest.approx(ref["t_test_pvalue"], rel=1e-7)
+
+
 def test_drawdown_duration_convention(pa_reference: dict[str, Any]) -> None:
     """PA findDrawdowns length equals OpenFactsheet duration for recovered episodes and is
     one period longer for an episode still open at the end of the data."""

@@ -310,3 +310,50 @@ def gain_to_pain_ratio(ctx: MetricContext) -> float:
     if losses.size == 0:
         raise UndefinedMetric("No losing periods: the gain-to-pain denominator is zero.")
     return float(np.sum(ctx.r) / abs(np.sum(losses)))
+
+
+@metric(
+    id="payoff_ratio",
+    name="Payoff ratio (average win / average loss)",
+    category="returns",
+    unit="ratio",
+    direction="higher_is_better",
+    nature="derived",
+    min_data_policy="ratio_standard",
+    docs=MetricDocs(
+        measures="Size of the average winning period relative to the average losing period.",
+        formula="mean(r_t | r_t > 0) / |mean(r_t | r_t < 0)|",
+        formula_latex=(
+            r"\mathrm{Payoff} = \frac{\frac{1}{|G|} \sum_{t \in G} r_t}"
+            r"{\left| \frac{1}{|L|} \sum_{t \in L} r_t \right|}, \quad "
+            r"G = \{t : r_t > 0\}, \ L = \{t : r_t < 0\}"
+        ),
+        undefined_when=("No positive period or no negative period exists.",),
+        inputs="Periodic simple returns.",
+        retail="How big the typical gain is compared with the typical loss. Read it together "
+        "with the share of positive periods: a low payoff with a high hit rate can still be "
+        "profitable, and vice versa.",
+        institutional="Win/loss (payoff) ratio on the supplied frequency; zero-return periods "
+        "are excluded from both averages. The expectation per period equals hit rate x average "
+        "win - loss rate x average loss.",
+        assumptions=("Zero returns count as neither wins nor losses.",),
+        misleading_when=(
+            "Very few winning or losing periods.",
+            "Returns are smoothed (many small gains, rare large losses).",
+        ),
+        minimum_data="At least 2 observations with one gain and one loss; low confidence below "
+        "3 years.",
+        reference_implementations=(lib(QS, "stats.payoff_ratio"),),
+        references=(BACON,),
+        convention="Arithmetic averages of strictly positive and strictly negative periods.",
+    ),
+)
+def payoff_ratio(ctx: MetricContext) -> Computed:
+    gains = ctx.r[ctx.r > 0.0]
+    losses = ctx.r[ctx.r < 0.0]
+    if gains.size == 0 or losses.size == 0:
+        raise UndefinedMetric("The payoff ratio needs at least one gain and one loss.")
+    return Computed(
+        float(np.mean(gains)) / abs(float(np.mean(losses))),
+        details={"average_gain": float(np.mean(gains)), "average_loss": float(np.mean(losses))},
+    )

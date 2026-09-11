@@ -26,6 +26,8 @@ CASES: dict[str, list[float]] = {
     "two_observations": [0.02, -0.01],
     "extreme_loss": [0.01, 0.02, -0.6, 0.05, 0.03, 0.01],
     "total_loss": [0.01, 0.02, -1.0, 0.05, 0.03],
+    # Found by hypothesis: distinct values whose variance underflows float64.
+    "variance_underflow": [0.0, 0.0, 1.00023621493343e-198, 0.0],
 }
 
 

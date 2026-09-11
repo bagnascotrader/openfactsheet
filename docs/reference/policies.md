@@ -13,13 +13,14 @@ Below the mathematical minimum a metric is `insufficient_data`; the statistical 
 | `observed_point` | 1 obs | none (always high) | — | — | `cumulative_return`, `best_period`, `worst_period`, `current_drawdown`, `zero_return_pct` |
 | `path_risk` | 1 obs | years of history | 3 | 5 | `max_drawdown`, `average_drawdown`, `longest_drawdown_duration`, `drawdown_count`, `time_underwater_pct`, `ulcer_index`, `pain_index`, `longest_winning_streak`, `longest_losing_streak` |
 | `location` | 1 obs | years of history | 3 | 5 | `cagr`, `arithmetic_mean`, `annualized_arithmetic_mean`, `median_return`, `positive_period_pct`, `negative_period_pct` |
-| `dispersion` | 2 obs | years of history | 3 | 5 | `volatility`, `annualized_volatility`, `downside_deviation` |
-| `ratio_standard` | 2 obs | years of history | 3 | 5 | `gain_to_pain_ratio`, `sharpe_ratio`, `sortino_ratio`, `calmar_ratio`, `martin_ratio`, `omega_ratio` |
-| `skewness` | 3 obs | observations | 60 | 120 | `skewness` |
-| `kurtosis` | 4 obs | observations | 120 | 240 | `excess_kurtosis` |
+| `dispersion` | 2 obs | years of history | 3 | 5 | `volatility`, `annualized_volatility`, `mean_absolute_deviation`, `downside_deviation`, `semi_deviation`, `downside_potential`, `gaussian_var_95`, `mean_return_standard_error` |
+| `ratio_standard` | 2 obs | years of history | 3 | 5 | `gain_to_pain_ratio`, `payoff_ratio`, `sharpe_ratio`, `sortino_ratio`, `calmar_ratio`, `martin_ratio`, `omega_ratio`, `kappa_3_ratio`, `upside_potential_ratio`, `burke_ratio`, `sterling_ratio`, `pain_ratio` |
+| `skewness` | 3 obs | observations | 60 | 120 | `skewness`, `jarque_bera_pvalue` |
+| `kurtosis` | 4 obs | observations | 120 | 240 | `modified_var_95`, `excess_kurtosis` |
 | `tail` | 2 obs | expected tail observations | 5 | 10 | `var_historical_95`, `expected_shortfall_historical_95`, `tail_ratio` |
 | `autocorrelation` | 5 obs | observations | 36 | 60 | `autocorrelation_lag1`, `autocorrelation_lag2`, `autocorrelation_lag3` |
 | `ljung_box` | 10 obs | observations | 36 | 60 | `ljung_box_pvalue` |
+| `asymptotic_inference` | 4 obs | observations | 36 | 60 | `probabilistic_sharpe_ratio`, `sharpe_ratio_standard_error`, `minimum_track_record_length` |
 | `benchmark_regression` | 3 obs | years of history | 3 | 5 | `beta`, `alpha`, `r_squared`, `correlation`, `treynor_ratio` |
 | `benchmark_simple` | 2 obs | years of history | 3 | 5 | `tracking_error`, `active_return`, `information_ratio`, `upside_capture`, `downside_capture` |
 
@@ -35,8 +36,80 @@ Policy descriptions:
 - `tail`: Requires at least 2 observations; low confidence when fewer than 5 observations are expected in the 5% tail (n < 100), moderate when fewer than 10 (n < 200).
 - `autocorrelation`: Requires at least 5 observations; standard error is roughly 1/sqrt(n), so low confidence below 36 and moderate below 60 observations.
 - `ljung_box`: Requires at least 10 observations for a 3-lag test; low below 36, moderate below 60.
+- `asymptotic_inference`: Asymptotic Sharpe-ratio inference needs at least 4 observations for the moments it uses; the normal approximation is poor below 36 observations (low) and 60 (moderate).
 - `benchmark_regression`: Requires at least 3 aligned observations; low confidence below 3 years of overlap, moderate below 5 years.
 - `benchmark_simple`: Requires at least 2 aligned observations; low confidence below 3 years of overlap, moderate below 5 years.
+
+## Metric flags
+
+Flags that decide which applicability checks and confidence modifiers apply to each metric (see [criteria](criteria.md#10-confidence-and-status-algorithm)).
+
+| Metric | Category | Volatility-based | Wealth path | Annualized | Benchmark | Supplementary | Minimum-data policy | Assumption keys |
+|---|---|---|---|---|---|---|---|---|
+| [`cumulative_return`](../interpretation/cumulative_return.md) | returns |  | yes |  |  |  | `observed_point` | — |
+| [`cagr`](../interpretation/cagr.md) | returns |  | yes | yes |  |  | `location` | `annualization` |
+| [`arithmetic_mean`](../interpretation/arithmetic_mean.md) | returns |  |  |  |  |  | `location` | — |
+| [`annualized_arithmetic_mean`](../interpretation/annualized_arithmetic_mean.md) | returns |  |  | yes |  |  | `location` | `annualization` |
+| [`median_return`](../interpretation/median_return.md) | returns |  |  |  |  |  | `location` | — |
+| [`best_period`](../interpretation/best_period.md) | returns |  |  |  |  |  | `observed_point` | — |
+| [`worst_period`](../interpretation/worst_period.md) | returns |  |  |  |  |  | `observed_point` | — |
+| [`gain_to_pain_ratio`](../interpretation/gain_to_pain_ratio.md) | returns |  |  |  |  |  | `ratio_standard` | — |
+| [`payoff_ratio`](../interpretation/payoff_ratio.md) | returns |  |  |  |  |  | `ratio_standard` | — |
+| [`volatility`](../interpretation/volatility.md) | volatility | yes |  |  |  |  | `dispersion` | `sample_std` |
+| [`annualized_volatility`](../interpretation/annualized_volatility.md) | volatility | yes |  | yes |  |  | `dispersion` | `sample_std`, `annualization` |
+| [`mean_absolute_deviation`](../interpretation/mean_absolute_deviation.md) | volatility | yes |  |  |  |  | `dispersion` | — |
+| [`downside_deviation`](../interpretation/downside_deviation.md) | volatility | yes |  | yes |  |  | `dispersion` | `mar`, `annualization` |
+| [`semi_deviation`](../interpretation/semi_deviation.md) | volatility | yes |  | yes |  |  | `dispersion` | `annualization` |
+| [`downside_potential`](../interpretation/downside_potential.md) | volatility |  |  |  |  |  | `dispersion` | `mar` |
+| [`max_drawdown`](../interpretation/max_drawdown.md) | drawdown |  | yes |  |  |  | `path_risk` | `drawdown` |
+| [`average_drawdown`](../interpretation/average_drawdown.md) | drawdown |  | yes |  |  |  | `path_risk` | `drawdown` |
+| [`current_drawdown`](../interpretation/current_drawdown.md) | drawdown |  | yes |  |  |  | `observed_point` | `drawdown` |
+| [`longest_drawdown_duration`](../interpretation/longest_drawdown_duration.md) | drawdown |  | yes |  |  |  | `path_risk` | `drawdown` |
+| [`drawdown_count`](../interpretation/drawdown_count.md) | drawdown |  | yes |  |  |  | `path_risk` | `drawdown` |
+| [`time_underwater_pct`](../interpretation/time_underwater_pct.md) | drawdown |  | yes |  |  |  | `path_risk` | `drawdown` |
+| [`ulcer_index`](../interpretation/ulcer_index.md) | drawdown |  | yes |  |  |  | `path_risk` | `drawdown` |
+| [`pain_index`](../interpretation/pain_index.md) | drawdown |  | yes |  |  |  | `path_risk` | `drawdown` |
+| [`sharpe_ratio`](../interpretation/sharpe_ratio.md) | risk_adjusted | yes |  | yes |  |  | `ratio_standard` | `risk_free`, `sample_std`, `annualization` |
+| [`sortino_ratio`](../interpretation/sortino_ratio.md) | risk_adjusted | yes |  | yes |  |  | `ratio_standard` | `risk_free`, `mar`, `annualization` |
+| [`calmar_ratio`](../interpretation/calmar_ratio.md) | risk_adjusted |  | yes | yes |  |  | `ratio_standard` | `annualization`, `drawdown`, `risk_free` |
+| [`martin_ratio`](../interpretation/martin_ratio.md) | risk_adjusted |  | yes | yes |  |  | `ratio_standard` | `annualization`, `drawdown`, `risk_free` |
+| [`omega_ratio`](../interpretation/omega_ratio.md) | risk_adjusted |  |  |  |  |  | `ratio_standard` | `omega_threshold` |
+| [`kappa_3_ratio`](../interpretation/kappa_3_ratio.md) | risk_adjusted | yes |  |  |  |  | `ratio_standard` | `mar` |
+| [`upside_potential_ratio`](../interpretation/upside_potential_ratio.md) | risk_adjusted | yes |  |  |  |  | `ratio_standard` | `mar` |
+| [`burke_ratio`](../interpretation/burke_ratio.md) | risk_adjusted |  | yes | yes |  |  | `ratio_standard` | `annualization`, `drawdown`, `risk_free` |
+| [`sterling_ratio`](../interpretation/sterling_ratio.md) | risk_adjusted |  | yes | yes |  |  | `ratio_standard` | `annualization`, `drawdown`, `sterling_excess`, `risk_free` |
+| [`pain_ratio`](../interpretation/pain_ratio.md) | risk_adjusted |  | yes | yes |  |  | `ratio_standard` | `annualization`, `drawdown`, `risk_free` |
+| [`var_historical_95`](../interpretation/var_historical_95.md) | tail |  |  |  |  |  | `tail` | `tail` |
+| [`expected_shortfall_historical_95`](../interpretation/expected_shortfall_historical_95.md) | tail |  |  |  |  |  | `tail` | `tail` |
+| [`tail_ratio`](../interpretation/tail_ratio.md) | tail |  |  |  |  |  | `tail` | — |
+| [`gaussian_var_95`](../interpretation/gaussian_var_95.md) | tail | yes |  |  |  | yes | `dispersion` | `parametric` |
+| [`modified_var_95`](../interpretation/modified_var_95.md) | tail | yes |  |  |  | yes | `kurtosis` | `parametric` |
+| [`skewness`](../interpretation/skewness.md) | distribution |  |  |  |  |  | `skewness` | — |
+| [`excess_kurtosis`](../interpretation/excess_kurtosis.md) | distribution |  |  |  |  |  | `kurtosis` | — |
+| [`jarque_bera_pvalue`](../interpretation/jarque_bera_pvalue.md) | distribution |  |  |  |  | yes | `skewness` | — |
+| [`positive_period_pct`](../interpretation/positive_period_pct.md) | consistency |  |  |  |  |  | `location` | — |
+| [`negative_period_pct`](../interpretation/negative_period_pct.md) | consistency |  |  |  |  |  | `location` | — |
+| [`longest_winning_streak`](../interpretation/longest_winning_streak.md) | consistency |  |  |  |  |  | `path_risk` | — |
+| [`longest_losing_streak`](../interpretation/longest_losing_streak.md) | consistency |  |  |  |  |  | `path_risk` | — |
+| [`autocorrelation_lag1`](../interpretation/autocorrelation_lag1.md) | dependence |  |  |  |  |  | `autocorrelation` | — |
+| [`autocorrelation_lag2`](../interpretation/autocorrelation_lag2.md) | dependence |  |  |  |  |  | `autocorrelation` | — |
+| [`autocorrelation_lag3`](../interpretation/autocorrelation_lag3.md) | dependence |  |  |  |  |  | `autocorrelation` | — |
+| [`ljung_box_pvalue`](../interpretation/ljung_box_pvalue.md) | dependence |  |  |  |  | yes | `ljung_box` | — |
+| [`zero_return_pct`](../interpretation/zero_return_pct.md) | dependence |  |  |  |  |  | `observed_point` | — |
+| [`beta`](../interpretation/beta.md) | benchmark |  |  |  | yes |  | `benchmark_regression` | `benchmark`, `regression` |
+| [`alpha`](../interpretation/alpha.md) | benchmark |  |  | yes | yes |  | `benchmark_regression` | `benchmark`, `regression`, `annualization` |
+| [`r_squared`](../interpretation/r_squared.md) | benchmark |  |  |  | yes |  | `benchmark_regression` | `benchmark`, `regression` |
+| [`correlation`](../interpretation/correlation.md) | benchmark |  |  |  | yes |  | `benchmark_regression` | `benchmark` |
+| [`tracking_error`](../interpretation/tracking_error.md) | benchmark | yes |  | yes | yes |  | `benchmark_simple` | `benchmark`, `sample_std`, `annualization` |
+| [`active_return`](../interpretation/active_return.md) | benchmark |  |  | yes | yes |  | `benchmark_simple` | `benchmark`, `annualization` |
+| [`information_ratio`](../interpretation/information_ratio.md) | benchmark | yes |  | yes | yes |  | `benchmark_simple` | `benchmark`, `sample_std`, `annualization` |
+| [`treynor_ratio`](../interpretation/treynor_ratio.md) | benchmark |  |  | yes | yes |  | `benchmark_regression` | `benchmark`, `regression`, `risk_free`, `annualization` |
+| [`upside_capture`](../interpretation/upside_capture.md) | benchmark |  |  | yes | yes |  | `benchmark_simple` | `benchmark`, `annualization` |
+| [`downside_capture`](../interpretation/downside_capture.md) | benchmark |  |  | yes | yes |  | `benchmark_simple` | `benchmark`, `annualization` |
+| [`probabilistic_sharpe_ratio`](../interpretation/probabilistic_sharpe_ratio.md) | statistical | yes |  |  |  |  | `asymptotic_inference` | `iid_asymptotics`, `risk_free` |
+| [`sharpe_ratio_standard_error`](../interpretation/sharpe_ratio_standard_error.md) | statistical | yes |  | yes |  |  | `asymptotic_inference` | `iid_asymptotics`, `annualization`, `risk_free` |
+| [`minimum_track_record_length`](../interpretation/minimum_track_record_length.md) | statistical | yes |  |  |  |  | `asymptotic_inference` | `iid_asymptotics`, `risk_free` |
+| [`mean_return_standard_error`](../interpretation/mean_return_standard_error.md) | statistical | yes |  |  |  |  | `dispersion` | — |
 
 ## Annualization factors
 
@@ -150,6 +223,14 @@ This is the `methodology` object embedded in every JSON report.
       "description": "wealth index starts at 1 before the first return, so a first-period loss is a drawdown; drawdowns reported as signed returns (negative = loss)",
       "initial_wealth_is_peak": true
     },
+    "lower_partial_moments": {
+      "denominator": "full_sample",
+      "kappa_order": 3,
+      "target": 0.0
+    },
+    "mean_inference": {
+      "ci_level": 0.95
+    },
     "missing_data": {
       "description": "missing returns are never replaced by zero or forward-filled; leading and trailing gaps are trimmed, interior gaps are disclosed and the remaining observations are analyzed"
     },
@@ -160,6 +241,10 @@ This is the `methodology` object embedded in every JSON report.
     "outliers": {
       "description": "robust z-score |r - median| / (1.4826 * MAD) above 5 is flagged (never removed)",
       "robust_z_threshold": 5.0
+    },
+    "parametric_var": {
+      "confidence": 0.95,
+      "moments": "population"
     },
     "return_scale": {
       "confident_divisor": 4.0,
@@ -178,6 +263,12 @@ This is the `methodology` object embedded in every JSON report.
       "description": "0% per period in methodology 0.1.0 for all excess-return metrics (Sharpe, Sortino, Calmar, Martin, alpha, Treynor). Ratios are therefore total-return ratios; this is disclosed on every affected metric.",
       "rate": 0.0
     },
+    "sharpe_inference": {
+      "ci_level": 0.95,
+      "min_track_record_confidence": 0.95,
+      "moments": "population skewness g1 and non-excess kurtosis m4 / m2^2",
+      "reference_sharpe": 0.0
+    },
     "smoothing": {
       "high": {
         "lag1_min": 0.3,
@@ -193,6 +284,9 @@ This is the `methodology` object embedded in every JSON report.
     "stale_returns": {
       "identical_run_warning": 3,
       "zero_share_warning": 0.1
+    },
+    "sterling": {
+      "excess": 0.1
     },
     "tail": {
       "description": "historical 95% VaR = 5% empirical quantile (linear interpolation, R type 7); 95% ES = mean of returns at or below that quantile; both reported as signed returns (negative = loss)",

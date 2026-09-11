@@ -14,8 +14,9 @@ pins the relationship.
 | PerformanceAnalytics (R) | 2.0.4 on R 4.3.1 | GPL-2 \| GPL-3 | External numerical oracle only. Function bodies were read to understand conventions; **no code was copied** into OpenFactsheet. |
 | empyrical-reloaded | 0.5.12 | Apache-2.0 | Python cross-check (optional `validation` extra). |
 | QuantStats | 0.0.81 | Apache-2.0 | Python cross-check (optional `validation` extra). |
+| R `stats` (base R) | R 4.3.1 | GPL-2 \| GPL-3 | External oracle only: `acf`, `Box.test`, `cor`, `lm`, `t.test`, `pchisq` in the R harness. |
 | statsmodels | installed version | BSD-3-Clause | Runtime dependency: OLS, ACF, Ljung-Box. |
-| SciPy | installed version | BSD-3-Clause | Runtime dependency: skewness, kurtosis. |
+| SciPy | installed version | BSD-3-Clause | Runtime dependency: skewness, kurtosis, normal / Student-t / chi-squared distributions; `jarque_bera` and `ttest_1samp` used as test references. |
 | NumPy | installed version | BSD-3-Clause | Runtime dependency: numerical kernels, quantiles. |
 | pandas | installed version | BSD-3-Clause | Runtime dependency: labeled time series and input handling. |
 
@@ -38,15 +39,20 @@ dates) by calendar month in R, the same convention OpenFactsheet uses.
 **Python checks.** `tests/cross_library/test_performanceanalytics.py` compares
 against the committed R values. `tests/cross_library/test_python_references.py`
 calls empyrical and QuantStats directly and is skipped automatically when they
-are not installed (`pip install -e ".[validation]"`).
+are not installed (`pip install -e ".[validation]"`); its SciPy checks
+(Jarque-Bera, one-sample t-test) always run.
+
+Where PerformanceAnalytics stops with an error (PSR and MinTRL for a negative
+Sharpe ratio), the harness records `null` and the tests assert OpenFactsheet's
+documented behavior instead.
 
 **Fixtures.** `monthly_fund_10y` (120 months, fat-tailed), `negative_fund`
 (60 months), `smoothed_hedge_fund` (96 months, smoothed, large losses),
 `benchmark_case_fund` / `benchmark_case_benchmark` (102 months each, 96
 overlapping). Generated once by `scripts/make_fixtures.py` and committed.
 
-Tolerance for agreement: relative 1e-9 / absolute 1e-12 (Ljung-Box p-value:
-relative 1e-7).
+Tolerance for agreement: relative 1e-9 / absolute 1e-12 (Ljung-Box,
+Jarque-Bera and t-test p-values: relative 1e-7).
 
 ## Per-metric agreement
 
@@ -92,6 +98,25 @@ inequality. "—" means not compared.
 | downside_capture | Differs (pinned) from `UpDownRatios(Capture, Down)` | Agrees (`down_capture`) | — | PA = sum ratio over `Rb <= 0` (verified). |
 | treynor_ratio | Differs (pinned): PA = geometric annualized return / beta (verified) | — | — | OpenFactsheet = arithmetic annualized mean / beta (verified against PA's beta). |
 | gain_to_pain_ratio | — | — | Agrees (`stats.gain_to_pain_ratio`) | Monthly fixtures. |
+| payoff_ratio | — | — | Agrees (`stats.payoff_ratio`) | |
+| kappa_3_ratio | Agrees (`Kappa(MAR=0, l=3)`) | — | — | Per period. |
+| upside_potential_ratio | Agrees (`UpsidePotentialRatio(MAR=0, method="full")`); differs (pinned) from the default `method="subset"` | — | — | Per period. |
+| semi_deviation | Agrees (`SemiDeviation` x sqrt(12)) | — | — | PA reports per period. |
+| downside_potential | Agrees (`DownsideDeviation(MAR=0, potential=TRUE)`) | — | — | Per period. |
+| mean_absolute_deviation | Agrees (`MeanAbsoluteDeviation`) | — | — | |
+| sterling_ratio | Agrees (`SterlingRatio(excess=0.1)`) | — | — | |
+| burke_ratio | Differs (pinned) from `BurkeRatio`; agrees with `Return.annualized / sqrt(sum(findDrawdowns depths^2))` | — | — | PA uses runs of negative returns and a percent-input scaling. |
+| pain_ratio | Agrees with `Return.annualized / mean(abs(Drawdowns))` | — | — | PA `PainRatio` inherits the `DrawdownPeak` issue. |
+| gaussian_var_95 | Agrees (`VaR(p=0.95, method="gaussian")`) | — | — | Population standard deviation; QuantStats `stats.value_at_risk` uses the sample std (see var_historical_95 row). |
+| modified_var_95 | Agrees (`VaR(p=0.95, method="modified")`) | — | — | Cornish-Fisher with population moments. |
+| jarque_bera_pvalue | Agrees with a manual R computation from `skewness(method="moment")` and `kurtosis(method="excess")` | — | — | Also agrees with SciPy `stats.jarque_bera` (statistic 1e-9, p-value 1e-7). |
+| probabilistic_sharpe_ratio | Agrees (`ProbSharpeRatio(refSR=0, ignore_kurtosis=FALSE)`) on fixtures with a positive Sharpe ratio | — | — | PA stops with an error when SR < 0; OpenFactsheet reports PSR < 0.5 (asserted). |
+| minimum_track_record_length | Agrees (`MinTrackRecord(refSR=0, p=0.95, ignore_kurtosis=FALSE)`) on fixtures with a positive Sharpe ratio | — | — | `not_applicable` when SR <= 0 (asserted); PA stops with an error. |
+| sharpe_ratio_standard_error | — (same variance formula; PA's interval is 90% two-sided) | — | — | Checked against a hand computation in unit tests. |
+| mean_return_standard_error | Agrees with R `t.test` (CI bounds, t-statistic; p-value to 1e-7) | — | — | Also agrees with SciPy `stats.ttest_1samp` p-value. |
+
+R's base `t.test` is used as an additional independent reference for the
+mean-return interval; it is not part of PerformanceAnalytics.
 
 Metrics without a reference comparison (median_return, arithmetic_mean,
 current_drawdown, drawdown_count, time_underwater_pct, negative_period_pct,
@@ -128,3 +153,23 @@ streaks, zero_return_pct) are checked against hand computations in
    parametric (normal); `stats.information_ratio` is not annualized. All three
    are verified in `tests/cross_library/test_python_references.py`.
    `stats.cvar` conditions on the parametric threshold (observed, not asserted).
+10. **Upside potential ratio (PA default).** `UpsidePotentialRatio` defaults to
+    `method = "subset"` (divides by the number of gains / losses); OpenFactsheet
+    uses the full-sample denominator, equal to `method = "full"`. See
+    [0016](../methodology/decisions/0016-lower-partial-moment-ratios.md).
+11. **Burke ratio (PA).** `BurkeRatio` treats runs of consecutive negative
+    returns as drawdowns and multiplies returns by 0.01; OpenFactsheet uses
+    peak-to-recovery episode depths. See
+    [0017](../methodology/decisions/0017-drawdown-ratios-burke-sterling-pain.md).
+12. **Pain ratio (PA).** `PainRatio` inherits the `PainIndex` / `DrawdownPeak`
+    percent-input issue (item 2).
+13. **PSR / MinTRL (PA defaults).** `ProbSharpeRatio` and `MinTrackRecord`
+    default to `ignore_kurtosis = TRUE` (kurtosis fixed at 3); OpenFactsheet keeps
+    the sample kurtosis and agrees with `ignore_kurtosis = FALSE`. PA stops with an
+    error when the reference Sharpe ratio exceeds the observed one; OpenFactsheet
+    reports PSR below 0.5 and MinTRL as `not_applicable`. See
+    [0019](../methodology/decisions/0019-sharpe-ratio-inference.md).
+14. **Sharpe confidence interval (PA).** `ProbSharpeRatio(...)$sr_confidence_interval`
+    uses `qnorm(p)` with p = 0.95, a 90% two-sided interval on the per-period
+    Sharpe ratio; OpenFactsheet reports a two-sided 95% interval on the annualized
+    Sharpe ratio (not numerically compared).

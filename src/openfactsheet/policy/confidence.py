@@ -27,6 +27,16 @@ if TYPE_CHECKING:
 
 _RANK: dict[str, int] = {"high": 3, "moderate": 2, "low": 1}
 
+IID_ASYMPTOTICS_ASSUMPTION = (
+    "Asymptotic normal approximation for independent, identically distributed returns, "
+    "allowing for skewness and kurtosis (Mertens 2002; Bailey & Lopez de Prado 2012); serial "
+    "correlation is not modelled."
+)
+PARAMETRIC_ASSUMPTION = (
+    "Model-dependent: return distribution approximated from population moments (normal, or "
+    "Cornish-Fisher expansion with skewness and excess kurtosis); not a historical estimate."
+)
+
 
 def _cap(current: Confidence, ceiling: Confidence) -> Confidence:
     return ceiling if _RANK[ceiling] < _RANK[current] else current
@@ -81,6 +91,15 @@ def assumption_texts(definition: MetricDefinition, ctx: MetricContext) -> tuple[
             texts.append(
                 "Ordinary least squares of fund on benchmark returns (risk-free rate 0%); "
                 "conventional i.i.d. standard errors."
+            )
+        elif key == "iid_asymptotics":
+            texts.append(IID_ASYMPTOTICS_ASSUMPTION)
+        elif key == "parametric":
+            texts.append(PARAMETRIC_ASSUMPTION)
+        elif key == "sterling_excess":
+            texts.append(
+                f"Sterling adjustment: {m.get('sterling.excess'):.0%} added to the absolute "
+                "maximum drawdown (a historical convention, not an estimate)."
             )
     return tuple(texts)
 

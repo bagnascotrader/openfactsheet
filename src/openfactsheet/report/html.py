@@ -20,6 +20,7 @@ from openfactsheet.report.tables import (
     format_value,
     ordered_categories,
     result_notes,
+    statistical_metrics,
     status_label,
 )
 
@@ -92,6 +93,7 @@ def render_html(report: FactsheetReport) -> str:
         f"<h2>{number + 1}. Statistical confidence</h2><p>"
         + escape(", ".join(f"{k.replace('_', ' ')}: {v}" for k, v in sorted(counts.items())))
         + f"</p><p>{escape(CONFIDENCE_DISCLAIMER + ' ' + STATISTICAL_SECTION_TEXT)}</p>",
+        *_metric_table(statistical_metrics(report), notes),
         f"<h2>{number + 2}. Metric catalog</h2><p>Definitions: <code>ofs.metric_catalog()</code> "
         "or docs/metric_catalog.md.</p>",
         f"<h2>{number + 3}. Assumptions &amp; caveats</h2>",

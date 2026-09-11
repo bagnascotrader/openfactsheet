@@ -18,6 +18,7 @@ Reference column: ✓ agrees with the OpenFactsheet convention, ≠ documented c
 | [`best_period`](interpretation/best_period.md) | Best period | observed | decimal_return | Higher is better | no | no | — | `observed_point` | implemented (best_period@v1) | QuantStats ✓, NumPy ✓ |
 | [`worst_period`](interpretation/worst_period.md) | Worst period | observed | decimal_return | Higher is better | no | no | — | `observed_point` | implemented (worst_period@v1) | QuantStats ✓, NumPy ✓ |
 | [`gain_to_pain_ratio`](interpretation/gain_to_pain_ratio.md) | Gain-to-pain ratio | derived | ratio | Higher is better | no | no | — | `ratio_standard` | implemented (gain_to_pain_ratio@v1) | QuantStats ✓ |
+| [`payoff_ratio`](interpretation/payoff_ratio.md) | Payoff ratio (average win / average loss) | derived | ratio | Higher is better | no | no | — | `ratio_standard` | implemented (payoff_ratio@v1) | QuantStats ✓ |
 
 ## Risk summary
 
@@ -25,7 +26,10 @@ Reference column: ✓ agrees with the OpenFactsheet convention, ≠ documented c
 |---|---|---|---|---|---|---|---|---|---|---|
 | [`volatility`](interpretation/volatility.md) | Volatility per period | estimated | decimal_return | Lower is better | no | no | sample std (n-1) | `dispersion` | implemented (volatility@v1) | NumPy ✓, PerformanceAnalytics ✓ |
 | [`annualized_volatility`](interpretation/annualized_volatility.md) | Annualized volatility | estimated | decimal_return | Lower is better | no | yes | sample std (n-1), annualization factor | `dispersion` | implemented (annualized_volatility@v1) | PerformanceAnalytics ✓, empyrical-reloaded ✓, QuantStats ✓ |
+| [`mean_absolute_deviation`](interpretation/mean_absolute_deviation.md) | Mean absolute deviation | estimated | decimal_return | Lower is better | no | no | — | `dispersion` | implemented (mean_absolute_deviation@v1) | PerformanceAnalytics ✓ |
 | [`downside_deviation`](interpretation/downside_deviation.md) | Downside deviation (annualized) | estimated | decimal_return | Lower is better | no | yes | MAR = 0, annualization factor | `dispersion` | implemented (downside_deviation@v1) | PerformanceAnalytics ✓, empyrical-reloaded ✓, QuantStats ✓ |
+| [`semi_deviation`](interpretation/semi_deviation.md) | Semi-deviation (annualized) | estimated | decimal_return | Lower is better | no | yes | annualization factor | `dispersion` | implemented (semi_deviation@v1) | PerformanceAnalytics ✓ |
+| [`downside_potential`](interpretation/downside_potential.md) | Downside potential (LPM 1) | estimated | decimal_return | Lower is better | no | no | MAR = 0 | `dispersion` | implemented (downside_potential@v1) | PerformanceAnalytics ✓ |
 
 ## Drawdowns
 
@@ -49,6 +53,11 @@ Reference column: ✓ agrees with the OpenFactsheet convention, ≠ documented c
 | [`calmar_ratio`](interpretation/calmar_ratio.md) | Calmar ratio | derived | ratio | Higher is better | no | yes | annualization factor, wealth starts at 1, risk-free = 0 | `ratio_standard` | implemented (calmar_ratio@v1) | PerformanceAnalytics ✓, empyrical-reloaded ✓, QuantStats ≠ |
 | [`martin_ratio`](interpretation/martin_ratio.md) | Martin ratio (Ulcer Performance Index) | derived | ratio | Higher is better | no | yes | annualization factor, wealth starts at 1, risk-free = 0 | `ratio_standard` | implemented (martin_ratio@v1) | PerformanceAnalytics ≠ |
 | [`omega_ratio`](interpretation/omega_ratio.md) | Omega ratio | derived | ratio | Higher is better | no | no | threshold = 0 | `ratio_standard` | implemented (omega_ratio@v1) | PerformanceAnalytics ✓, empyrical-reloaded ✓, QuantStats ✓ |
+| [`kappa_3_ratio`](interpretation/kappa_3_ratio.md) | Kappa 3 ratio | estimated | ratio | Higher is better | no | no | MAR = 0 | `ratio_standard` | implemented (kappa_3_ratio@v1) | PerformanceAnalytics ✓ |
+| [`upside_potential_ratio`](interpretation/upside_potential_ratio.md) | Upside potential ratio | estimated | ratio | Higher is better | no | no | MAR = 0 | `ratio_standard` | implemented (upside_potential_ratio@v1) | PerformanceAnalytics ✓ |
+| [`burke_ratio`](interpretation/burke_ratio.md) | Burke ratio | derived | ratio | Higher is better | no | yes | annualization factor, wealth starts at 1, risk-free = 0 | `ratio_standard` | implemented (burke_ratio@v1) | PerformanceAnalytics ≠ |
+| [`sterling_ratio`](interpretation/sterling_ratio.md) | Sterling ratio | derived | ratio | Higher is better | no | yes | annualization factor, wealth starts at 1, +10% adjustment, risk-free = 0 | `ratio_standard` | implemented (sterling_ratio@v1) | PerformanceAnalytics ✓ |
+| [`pain_ratio`](interpretation/pain_ratio.md) | Pain ratio | derived | ratio | Higher is better | no | yes | annualization factor, wealth starts at 1, risk-free = 0 | `ratio_standard` | implemented (pain_ratio@v1) | PerformanceAnalytics ≠ |
 
 ## Tail behavior
 
@@ -57,6 +66,8 @@ Reference column: ✓ agrees with the OpenFactsheet convention, ≠ documented c
 | [`var_historical_95`](interpretation/var_historical_95.md) | Value at Risk (historical, 95%) | estimated | decimal_return | Higher is better | no | no | 95% confidence | `tail` | implemented (var_historical_95@v1) | PerformanceAnalytics ✓, NumPy ✓, QuantStats ≠ |
 | [`expected_shortfall_historical_95`](interpretation/expected_shortfall_historical_95.md) | Expected Shortfall / CVaR (historical, 95%) | estimated | decimal_return | Higher is better | no | no | 95% confidence | `tail` | implemented (expected_shortfall_historical_95@v1) | PerformanceAnalytics ✓, QuantStats ≠, empyrical-reloaded ✓ |
 | [`tail_ratio`](interpretation/tail_ratio.md) | Tail ratio (95th / 5th percentile) | estimated | ratio | Higher is better | no | no | — | `tail` | implemented (tail_ratio@v1) | empyrical-reloaded ✓, QuantStats ✓ |
+| [`gaussian_var_95`](interpretation/gaussian_var_95.md) | Value at Risk (Gaussian, 95%) | model_dependent | decimal_return | Higher is better | no | no | parametric (population moments) | `dispersion` | implemented (gaussian_var_95@v1) | PerformanceAnalytics ✓, QuantStats ≠ |
+| [`modified_var_95`](interpretation/modified_var_95.md) | Modified VaR (Cornish-Fisher, 95%) | model_dependent | decimal_return | Higher is better | no | no | parametric (population moments) | `kurtosis` | implemented (modified_var_95@v1) | PerformanceAnalytics ✓ |
 
 ## Distribution
 
@@ -64,6 +75,7 @@ Reference column: ✓ agrees with the OpenFactsheet convention, ≠ documented c
 |---|---|---|---|---|---|---|---|---|---|---|
 | [`skewness`](interpretation/skewness.md) | Skewness | estimated | ratio | Context dependent | no | no | — | `skewness` | implemented (skewness@v1) | SciPy ✓, pandas ✓, QuantStats ✓, PerformanceAnalytics ≠ |
 | [`excess_kurtosis`](interpretation/excess_kurtosis.md) | Excess kurtosis | estimated | ratio | Context dependent | no | no | — | `kurtosis` | implemented (excess_kurtosis@v1) | SciPy ✓, pandas ✓, QuantStats ✓, PerformanceAnalytics ✓ |
+| [`jarque_bera_pvalue`](interpretation/jarque_bera_pvalue.md) | Jarque-Bera normality p-value | model_dependent | probability | Context dependent | no | no | — | `skewness` | implemented (jarque_bera_pvalue@v1) | SciPy ✓ |
 
 ## Consistency
 
@@ -98,3 +110,12 @@ Reference column: ✓ agrees with the OpenFactsheet convention, ≠ documented c
 | [`treynor_ratio`](interpretation/treynor_ratio.md) | Treynor ratio | model_dependent | ratio | Higher is better | yes | yes | supplied benchmark, OLS, risk-free = 0, annualization factor | `benchmark_regression` | implemented (treynor_ratio@v1) | PerformanceAnalytics ≠ |
 | [`upside_capture`](interpretation/upside_capture.md) | Upside capture ratio | derived | ratio | Higher is better | yes | yes | supplied benchmark, annualization factor | `benchmark_simple` | implemented (upside_capture@v1) | empyrical-reloaded ✓, PerformanceAnalytics ≠ |
 | [`downside_capture`](interpretation/downside_capture.md) | Downside capture ratio | derived | ratio | Lower is better | yes | yes | supplied benchmark, annualization factor | `benchmark_simple` | implemented (downside_capture@v1) | empyrical-reloaded ✓, PerformanceAnalytics ≠ |
+
+## Statistical confidence
+
+| ID | Name | Nature | Unit | Direction | Benchmark | Annualized | Canonical parameters | Minimum-data policy | Status | References |
+|---|---|---|---|---|---|---|---|---|---|---|
+| [`probabilistic_sharpe_ratio`](interpretation/probabilistic_sharpe_ratio.md) | Probabilistic Sharpe Ratio (vs 0) | estimated | probability | Higher is better | no | no | i.i.d. asymptotics, risk-free = 0 | `asymptotic_inference` | implemented (probabilistic_sharpe_ratio@v1) | PerformanceAnalytics ✓ |
+| [`sharpe_ratio_standard_error`](interpretation/sharpe_ratio_standard_error.md) | Sharpe ratio standard error (annualized) | estimated | ratio | Neutral (descriptive) | no | yes | i.i.d. asymptotics, annualization factor, risk-free = 0 | `asymptotic_inference` | implemented (sharpe_ratio_standard_error@v1) | PerformanceAnalytics ≠ |
+| [`minimum_track_record_length`](interpretation/minimum_track_record_length.md) | Minimum track record length | estimated | periods | Neutral (descriptive) | no | no | i.i.d. asymptotics, risk-free = 0 | `asymptotic_inference` | implemented (minimum_track_record_length@v1) | PerformanceAnalytics ✓ |
+| [`mean_return_standard_error`](interpretation/mean_return_standard_error.md) | Mean return standard error (per period) | estimated | decimal_return | Neutral (descriptive) | no | no | — | `dispersion` | implemented (mean_return_standard_error@v1) | SciPy ✓ |

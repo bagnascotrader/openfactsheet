@@ -13,12 +13,15 @@ from openfactsheet.metrics.context import MetricContext
 from openfactsheet.metrics.references import (
     ACERBI_TASCHE_2002,
     BACON,
+    BOUDT_PETERSON_CROUX_2008,
     EMP,
+    FAVRE_GALEANO_2002,
     HYNDMAN_FAN_1996,
     JORION_2006,
     NUMPY,
     PA,
     QS,
+    ZANGARI_1996,
     lib,
 )
 from openfactsheet.metrics.registry import metric
@@ -171,3 +174,108 @@ def tail_ratio(ctx: MetricContext) -> float:
     if lo == 0.0:
         raise UndefinedMetric("The 5th percentile return is zero; the tail ratio is undefined.")
     return abs(hi) / abs(lo)
+
+
+def _parametric_z(ctx: MetricContext) -> float:
+    from scipy.stats import norm
+
+    return float(norm.ppf(1.0 - float(ctx.methodology.get("parametric_var.confidence"))))
+
+
+@metric(
+    id="gaussian_var_95",
+    name="Value at Risk (Gaussian, 95%)",
+    category="tail",
+    unit="decimal_return",
+    direction="higher_is_better",
+    nature="model_dependent",
+    min_data_policy="dispersion",
+    volatility_based=True,
+    supplementary=True,
+    assumptions=("parametric",),
+    docs=MetricDocs(
+        measures="The 5% quantile of a normal distribution with the series' mean and variance.",
+        formula="mean + z_0.05 * sqrt(m2), m2 = (1/n) sum (r_t - mean)^2, z_0.05 = -1.645",
+        formula_latex=(
+            r"\mathrm{VaR}^{N}_{95} = \bar r + z_{0.05} \sqrt{m_2}, \quad "
+            r"z_{0.05} = \Phi^{-1}(0.05) \approx -1.645"
+        ),
+        inputs="Periodic simple returns.",
+        retail="The 1-in-20 loss threshold if returns followed a bell curve. Compare it with the "
+        "historical VaR: a large gap means the bell curve does not fit.",
+        institutional="Parametric (delta-normal) VaR with population moments. Supplementary and "
+        "model-dependent: it ignores skewness and fat tails, which the historical and "
+        "Cornish-Fisher VaR capture.",
+        assumptions=("Normally distributed, i.i.d. returns.",),
+        misleading_when=(
+            "Returns are skewed or fat-tailed (typical for hedge funds and options strategies).",
+            "Returns are smoothed, which understates the variance.",
+        ),
+        minimum_data="At least 2 observations; low confidence below 3 years.",
+        reference_implementations=(
+            lib(PA, "VaR(p=0.95, method='gaussian')"),
+            lib(
+                QS,
+                "stats.value_at_risk",
+                agrees=False,
+                note="QuantStats uses the sample (n - 1) standard deviation.",
+            ),
+        ),
+        references=(JORION_2006, BOUDT_PETERSON_CROUX_2008),
+        convention="Population standard deviation sqrt(m2), signed return, per period "
+        "(decision 0018).",
+    ),
+)
+def gaussian_var_95(ctx: MetricContext) -> float:
+    return ctx.cache.mean + _parametric_z(ctx) * float(np.sqrt(ctx.cache.central_moment(2)))
+
+
+@metric(
+    id="modified_var_95",
+    name="Modified VaR (Cornish-Fisher, 95%)",
+    category="tail",
+    unit="decimal_return",
+    direction="higher_is_better",
+    nature="model_dependent",
+    min_data_policy="kurtosis",
+    volatility_based=True,
+    supplementary=True,
+    assumptions=("parametric",),
+    docs=MetricDocs(
+        measures="Parametric 95% VaR adjusted for the skewness and excess kurtosis of returns.",
+        formula="mean + h * sqrt(m2), h = z + (z^2-1) S/6 + (z^3-3z) K/24 - (2z^3-5z) S^2/36",
+        formula_latex=(
+            r"\mathrm{mVaR}_{95} = \bar r + h \sqrt{m_2}, \quad "
+            r"h = z + \frac{(z^2 - 1) S}{6} + \frac{(z^3 - 3z) K}{24} - \frac{(2z^3 - 5z) S^2}{36},"
+            r" \quad z = \Phi^{-1}(0.05), \ S = \frac{m_3}{m_2^{3/2}}, \ K = \frac{m_4}{m_2^2} - 3"
+        ),
+        undefined_when=(
+            "Return variance is zero or underflows in floating point (e.g. identical returns).",
+        ),
+        inputs="Periodic simple returns.",
+        retail="A 1-in-20 loss threshold that accounts for lopsided and fat-tailed returns.",
+        institutional="Cornish-Fisher modified VaR (Zangari 1996; Favre & Galeano 2002) with "
+        "population moments as in Boudt, Peterson & Croux (2008). Reduces to the Gaussian VaR "
+        "when S = K = 0. Supplementary and model-dependent.",
+        assumptions=("The Cornish-Fisher expansion adequately approximates the quantile.",),
+        misleading_when=(
+            "Skewness or kurtosis are extreme: the expansion can become non-monotonic and "
+            "unreliable.",
+            "Samples are short: higher moments are estimated imprecisely.",
+        ),
+        minimum_data="At least 4 observations; low confidence below 120 observations (kurtosis "
+        "is unstable).",
+        reference_implementations=(lib(PA, "VaR(p=0.95, method='modified')"),),
+        references=(ZANGARI_1996, FAVRE_GALEANO_2002, BOUDT_PETERSON_CROUX_2008),
+        convention="Population moments, signed return, per period (decision 0018).",
+    ),
+)
+def modified_var_95(ctx: MetricContext) -> Computed:
+    z = _parametric_z(ctx)
+    s = ctx.cache.population_skewness
+    k = ctx.cache.population_kurtosis - 3.0
+    h = z + (z**2 - 1) * s / 6 + (z**3 - 3 * z) * k / 24 - (2 * z**3 - 5 * z) * s**2 / 36
+    value = ctx.cache.mean + h * float(np.sqrt(ctx.cache.central_moment(2)))
+    return Computed(
+        value, details={"cornish_fisher_quantile": h, "skewness": s, "excess_kurtosis": k}
+    )

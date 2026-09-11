@@ -88,6 +88,51 @@ MORNINGSTAR_CAPTURE = AcademicReference(
     "returns in up/down benchmark periods)."
 )
 
+KAPLAN_KNOWLES_2004 = AcademicReference(
+    "Kaplan, P. D., & Knowles, J. A. (2004). Kappa: A Generalized Downside Risk-Adjusted "
+    "Performance Measure. Journal of Performance Measurement, 8(3), 42-54."
+)
+SORTINO_VDM_PLANTINGA_1999 = AcademicReference(
+    "Sortino, F. A., van der Meer, R., & Plantinga, A. (1999). The Dutch Triangle. Journal of "
+    "Portfolio Management, 26(1), 50-57 (upside potential ratio)."
+)
+BURKE_1994 = AcademicReference("Burke, G. (1994). A Sharper Sharpe Ratio. Futures, 23(3), 56.")
+KESTNER_1996 = AcademicReference(
+    "Kestner, L. N. (1996). Getting a Handle on True Performance. Futures, 25(1), 44-46 "
+    "(Sterling ratio)."
+)
+ZANGARI_1996 = AcademicReference(
+    "Zangari, P. (1996). A VaR Methodology for Portfolios That Include Options. RiskMetrics "
+    "Monitor, First Quarter, 4-12 (Cornish-Fisher VaR)."
+)
+FAVRE_GALEANO_2002 = AcademicReference(
+    "Favre, L., & Galeano, J.-A. (2002). Mean-Modified Value-at-Risk Optimization with Hedge "
+    "Funds. Journal of Alternative Investments, 5(2), 21-25."
+)
+BOUDT_PETERSON_CROUX_2008 = AcademicReference(
+    "Boudt, K., Peterson, B. G., & Croux, C. (2008). Estimation and Decomposition of Downside "
+    "Risk for Portfolios with Non-Normal Returns. Journal of Risk, 11(2), 79-103."
+)
+MERTENS_2002 = AcademicReference(
+    "Mertens, E. (2002). Comments on Variance of the IID Estimator in Lo (2002). Working paper, "
+    "University of Basel."
+)
+OPDYKE_2007 = AcademicReference(
+    "Opdyke, J. D. (2007). Comparing Sharpe Ratios: So Where Are the p-Values? Journal of Asset "
+    "Management, 8(5), 308-336."
+)
+BAILEY_LDP_2012 = AcademicReference(
+    "Bailey, D. H., & Lopez de Prado, M. (2012). The Sharpe Ratio Efficient Frontier. Journal "
+    "of Risk, 15(2), 3-44 (Probabilistic Sharpe Ratio, Minimum Track Record Length)."
+)
+JARQUE_BERA_1987 = AcademicReference(
+    "Jarque, C. M., & Bera, A. K. (1987). A Test for Normality of Observations and Regression "
+    "Residuals. International Statistical Review, 55(2), 163-172."
+)
+STUDENT_1908 = AcademicReference(
+    "Student [Gosset, W. S.] (1908). The Probable Error of a Mean. Biometrika, 6(1), 1-25."
+)
+
 # --- Library references ----------------------------------------------------
 PA = "PerformanceAnalytics 2.0.4 (R)"
 EMP = "empyrical-reloaded 0.5.12"
