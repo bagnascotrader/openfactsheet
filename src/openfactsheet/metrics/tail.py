@@ -153,8 +153,9 @@ def expected_shortfall_historical_95(ctx: MetricContext) -> Computed:
     ),
 )
 def tail_ratio(ctx: MetricContext) -> float:
-    lo = float(np.quantile(ctx.r, 0.05, method="linear"))
-    hi = float(np.quantile(ctx.r, 0.95, method="linear"))
+    alpha = _alpha(ctx)
+    lo = float(np.quantile(ctx.r, alpha, method="linear"))
+    hi = float(np.quantile(ctx.r, 1.0 - alpha, method="linear"))
     if lo == 0.0:
         raise UndefinedMetric("The 5th percentile return is zero; the tail ratio is undefined.")
     return abs(hi) / abs(lo)

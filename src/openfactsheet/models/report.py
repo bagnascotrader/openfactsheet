@@ -63,7 +63,8 @@ class BenchmarkDiagnostics:
             f"({self.fund_coverage:.0%} of fund history)",
             f"Fund-only periods dropped: {self.fund_only_periods}",
             f"Benchmark-only periods:    {self.benchmark_only_periods}",
-            f"Overlap:                   {self.overlap_start or 'n/a'} to {self.overlap_end or 'n/a'}",
+            f"Overlap:                   {self.overlap_start or 'n/a'} to "
+            f"{self.overlap_end or 'n/a'}",
         ]
         lines.extend(f"  - {w}" for w in self.warnings)
         return "\n".join(lines)

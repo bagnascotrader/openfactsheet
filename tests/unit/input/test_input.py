@@ -53,7 +53,8 @@ def test_percent_hint_only_from_strings() -> None:
 def test_numpy_and_tuple_inputs() -> None:
     a = ofs.load(np.array([0.01, 0.02, -0.01]))
     b = ofs.load((0.01, 0.02, -0.01))
-    assert isinstance(a, ofs.ReturnSeries) and isinstance(b, ofs.ReturnSeries)
+    assert isinstance(a, ofs.ReturnSeries)
+    assert isinstance(b, ofs.ReturnSeries)
     np.testing.assert_array_equal(a.values, b.values)
     assert a.source_type == "numpy.ndarray"
 
@@ -86,7 +87,8 @@ def test_pasted_monthly_table_text() -> None:
     assert isinstance(series, ofs.ReturnSeries)
     assert series.n == 19
     assert series.values[0] == pytest.approx(0.012)
-    assert series.dates is not None and series.dates[-1] == pd.Timestamp("2023-07-31")
+    assert series.dates is not None
+    assert series.dates[-1] == pd.Timestamp("2023-07-31")
 
 
 def test_dataframe_with_date_column_and_multiple_series() -> None:

@@ -132,7 +132,9 @@ CANONICAL_ASSUMPTIONS: dict[str, Any] = {
     },
     "outliers": {
         "robust_z_threshold": 5.0,
-        "description": "robust z-score |r - median| / (1.4826 * MAD) above 5 is flagged (never removed)",
+        "description": (
+            "robust z-score |r - median| / (1.4826 * MAD) above 5 is flagged (never removed)"
+        ),
     },
     "stale_returns": {
         "zero_share_warning": 0.10,

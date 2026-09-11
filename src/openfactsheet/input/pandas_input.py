@@ -88,6 +88,7 @@ def from_frame(
                 date_col = first
         if date_col is not None:
             col_values = frame[date_col]
+            idx: pd.Index
             if isinstance(col_values.dtype, pd.PeriodDtype):
                 idx = pd.PeriodIndex(col_values)
             else:
@@ -97,6 +98,9 @@ def from_frame(
     columns = list(data.columns)
     if not columns:
         raise InputError("No return columns found in the supplied table.")
+    if data.columns.has_duplicates:
+        dupes = sorted({str(c) for c in data.columns[data.columns.duplicated()]})
+        raise InputError(f"Duplicate column names in the supplied table: {', '.join(dupes)}.")
     out: list[RawReturns] = []
     for col in columns:
         if name is not None and len(columns) == 1:
@@ -105,10 +109,7 @@ def from_frame(
             label = "Returns"  # the caller (e.g. a file loader) may supply a better name
         else:
             label = str(col)
-        series = data[col]
-        if isinstance(series, pd.DataFrame):
-            raise InputError(f"Duplicate column name {col!r} in the supplied table.")
-        raw = from_series(series, name=label, source_type=source)
+        raw = from_series(data[col], name=label, source_type=source)
         if "%" in str(col):  # a header such as "Return (%)" labels the whole column
             raw = replace(raw, percent_hint=True)
         out.append(raw)

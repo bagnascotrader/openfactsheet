@@ -122,6 +122,8 @@ def assess(definition: MetricDefinition, ctx: MetricContext, notes: tuple[str, .
             )
         shape = ctx.methodology.get("distribution_warning")
         if ctx.n >= int(shape["min_observations"]):
+            skew: float | None
+            kurt: float | None
             try:
                 skew = ctx.cache.skewness
                 kurt = ctx.cache.excess_kurtosis

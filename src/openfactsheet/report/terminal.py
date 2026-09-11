@@ -5,6 +5,7 @@ from __future__ import annotations
 import textwrap
 
 from openfactsheet.interpretation.glossary import CONFIDENCE_DISCLAIMER
+from openfactsheet.models.metric import MetricResult
 from openfactsheet.models.report import FactsheetReport
 from openfactsheet.policy.applicability import NO_BENCHMARK_REASON
 from openfactsheet.report.tables import (
@@ -12,6 +13,7 @@ from openfactsheet.report.tables import (
     STATISTICAL_SECTION_TEXT,
     Footnotes,
     confidence_counts,
+    data_quality_metrics,
     format_value,
     ordered_categories,
     result_notes,
@@ -19,10 +21,31 @@ from openfactsheet.report.tables import (
 )
 
 WIDTH = 100
+_LABEL_WIDTH = 27  # width of the "Label:   " column in key/value blocks
 
 
 def _indent(text: str, prefix: str = "  ") -> str:
-    return "\n".join(prefix + line if line else line for line in text.splitlines())
+    """Indent a key/value block, wrapping long values under their value column."""
+    lines: list[str] = []
+    for line in text.splitlines():
+        if not line:
+            lines.append(line)
+            continue
+        stripped = line.lstrip()
+        if stripped.startswith(("[", "-")):  # list items: hang under the item text
+            hang = " " * (len(line) - len(stripped) + 4)
+        else:  # "Label:   value" rows: hang under the value column
+            hang = " " * _LABEL_WIDTH
+        lines.append(
+            textwrap.fill(
+                line,
+                WIDTH,
+                initial_indent=prefix,
+                subsequent_indent=prefix + hang,
+                break_on_hyphens=False,
+            )
+        )
+    return "\n".join(lines)
 
 
 def _wrap(text: str, prefix: str = "  ") -> str:
@@ -31,6 +54,14 @@ def _wrap(text: str, prefix: str = "  ") -> str:
 
 def _heading(number: int, title: str) -> str:
     return f"\n{number}. {title.upper()}\n" + "-" * WIDTH
+
+
+def _metric_table(rows: list[MetricResult], notes: Footnotes) -> list[str]:
+    out = [f"  {'Metric':<44}{'Value':>14}  {'Confidence / status':<22}Notes"]
+    for r in rows:
+        ref_text = " ".join(f"[{notes.ref(t)}]" for t in result_notes(r))
+        out.append(f"  {r.name:<44}{format_value(r):>14}  {status_label(r):<22}{ref_text}")
+    return out
 
 
 def render_terminal(report: FactsheetReport) -> str:
@@ -50,6 +81,8 @@ def render_terminal(report: FactsheetReport) -> str:
 
     out.append(_heading(2, "Data-quality diagnostics"))
     out.append(_indent(report.diagnostics.to_text()))
+    out.append("\n  Serial dependence & smoothing:")
+    out.extend(_metric_table(data_quality_metrics(report), notes))
 
     number = 3
     for cat, title, rows in ordered_categories(report):
@@ -62,11 +95,7 @@ def render_terminal(report: FactsheetReport) -> str:
                 continue
             out.append(_indent(report.benchmark_summary.to_text()))
             out.append("")
-        out.append(f"  {'Metric':<44}{'Value':>14}  {'Confidence / status':<22}Notes")
-        for r in rows:
-            refs = [notes.ref(t) for t in result_notes(r)]
-            ref_text = " ".join(f"[{i}]" for i in refs)
-            out.append(f"  {r.name:<44}{format_value(r):>14}  {status_label(r):<22}{ref_text}")
+        out.extend(_metric_table(rows, notes))
 
     out.append(_heading(number, "Factor analysis"))
     number += 1

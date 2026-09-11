@@ -19,7 +19,8 @@ def report() -> ofs.FactsheetReport:
 
 def test_json_is_deterministic_and_nan_free(report: ofs.FactsheetReport) -> None:
     text = report.to_json()
-    assert "NaN" not in text and "Infinity" not in text
+    assert "NaN" not in text
+    assert "Infinity" not in text
     data = json.loads(text)
     assert data["canonical"] is True
     assert data["provenance"]["methodology_version"] == ofs.METHODOLOGY_VERSION
@@ -48,6 +49,15 @@ def test_all_renderers_include_canonical_sections(report: ofs.FactsheetReport) -
         ):
             assert section.lower() in text.lower(), section
         assert "Maximum drawdown" in text
+
+
+def test_canonical_report_has_fourteen_sections(report: ofs.FactsheetReport) -> None:
+    text = report.summary()
+    assert "\n14. ASSUMPTIONS & CAVEATS" in text
+    assert "\n15. " not in text
+    md = report.to_markdown()
+    assert "## 14. Assumptions & caveats" in md
+    assert "Serial dependence & smoothing" in md
 
 
 def test_html_escapes_names(tmp_path: Path) -> None:

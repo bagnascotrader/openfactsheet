@@ -65,9 +65,22 @@ def result_notes(result: MetricResult) -> list[str]:
     return notes
 
 
+# Serial-dependence metrics are data-quality evidence, so renderers show them inside
+# section 2 (data-quality diagnostics); the canonical report keeps the 14 sections of
+# CLAUDE.md section 30.
+DATA_QUALITY_CATEGORY = "dependence"
+
+
+def data_quality_metrics(report: FactsheetReport) -> list[MetricResult]:
+    return list(report.metrics.by_category(DATA_QUALITY_CATEGORY))
+
+
 def ordered_categories(report: FactsheetReport) -> list[tuple[str, str, list[MetricResult]]]:
+    """Metric categories rendered as their own sections (3 to 10), in canonical order."""
     out: list[tuple[str, str, list[MetricResult]]] = []
     for cat in CATEGORY_ORDER:
+        if cat == DATA_QUALITY_CATEGORY:
+            continue
         rows = list(report.metrics.by_category(cat))
         if rows:
             out.append((cat, CATEGORY_TITLES[cat], rows))

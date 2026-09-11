@@ -66,11 +66,13 @@ def test_identical_fund_and_benchmark(values: list[float]) -> None:
 def test_ordering_invariants(values: list[float]) -> None:
     rep = ofs.analyze(monthly(values), return_scale="decimal")
     m = rep.metrics
-    assert m["worst_period"].value is not None and m["best_period"].value is not None
+    assert m["worst_period"].value is not None
+    assert m["best_period"].value is not None
     assert m["worst_period"].value <= m["median_return"].value <= m["best_period"].value  # type: ignore[operator]
     mdd = m["max_drawdown"].value
     cur = m["current_drawdown"].value
-    assert mdd is not None and cur is not None
+    assert mdd is not None
+    assert cur is not None
     assert -1.0 <= mdd <= cur <= 0.0
     es, var = m["expected_shortfall_historical_95"].value, m["var_historical_95"].value
     if es is not None and var is not None:

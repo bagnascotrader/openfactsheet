@@ -96,10 +96,9 @@ def cumulative_return(ctx: MetricContext) -> float:
             lib(EMP, "annual_return"),
             lib(
                 QS,
-                "stats.cagr",
-                agrees=False,
-                note="QuantStats annualizes by calendar years elapsed between first and last "
-                "date rather than by observation count.",
+                "stats.cagr(periods=12)",
+                note="Agrees when periods=12 is passed for monthly data; the default "
+                "(periods=252) treats every observation as a trading day.",
             ),
         ),
         references=(BACON, GIPS),
@@ -281,8 +280,7 @@ def worst_period(ctx: MetricContext) -> Computed:
             lib(
                 QS,
                 "stats.gain_to_pain_ratio",
-                note="Agrees on per-period data; QuantStats resamples to daily resolution "
-                "by default.",
+                note="Agrees on the monthly test fixtures.",
             ),
         ),
         references=(SCHWAGER_2012,),

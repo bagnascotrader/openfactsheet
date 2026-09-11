@@ -113,3 +113,19 @@ def test_benchmark_agreement(pa_reference: dict[str, Any]) -> None:
     assert val(rep, "information_ratio") != pytest.approx(ref["information_ratio_pa"])
     assert val(rep, "active_return") != pytest.approx(ref["active_premium_pa"])
     assert val(rep, "upside_capture") != pytest.approx(ref["up_capture_pa"])
+    assert val(rep, "downside_capture") != pytest.approx(ref["down_capture_pa"])
+
+    # PA capture = ratio of summed returns, with zero-benchmark periods counted as "down".
+    fund, bench = rep.returns_frame(), fixture_series("benchmark_case_benchmark")
+    f = fund.set_axis(fund.index.to_period("M"))
+    b = bench.set_axis(bench.index.to_period("M"))
+    f, b = f.align(b, join="inner")
+    up, down = b > 0, b <= 0
+    assert ref["up_capture_pa"] == pytest.approx(f[up].sum() / b[up].sum(), **TOL)
+    assert ref["down_capture_pa"] == pytest.approx(f[down].sum() / b[down].sum(), **TOL)
+
+    # PA Treynor = geometric annualized return / beta; OpenFactsheet uses the arithmetic mean.
+    geometric = float((1 + f).prod() ** (12 / len(f)) - 1)
+    assert ref["treynor_ratio_pa"] == pytest.approx(geometric / ref["beta"], **TOL)
+    assert val(rep, "treynor_ratio") == pytest.approx(f.mean() * 12 / ref["beta"], **TOL)
+    assert val(rep, "treynor_ratio") != pytest.approx(ref["treynor_ratio_pa"])

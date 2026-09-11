@@ -163,7 +163,13 @@ def sortino_ratio(ctx: MetricContext) -> float:
         reference_implementations=(
             lib(PA, "CalmarRatio"),
             lib(EMP, "calmar_ratio"),
-            lib(QS, "stats.calmar", agrees=False, note="QuantStats CAGR uses calendar years."),
+            lib(
+                QS,
+                "stats.calmar",
+                agrees=False,
+                note="QuantStats' default CAGR assumes 252 periods per year whatever the data "
+                "frequency, so monthly results differ unless periods are adjusted.",
+            ),
         ),
         references=(YOUNG_1991, BACON),
         convention="Full history, geometric CAGR, signed max drawdown in absolute value "

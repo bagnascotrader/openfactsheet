@@ -105,7 +105,8 @@ class DataQualityReport:
             f"History:                   {years}",
             f"Missing expected periods:  {missing}",
             f"Duplicate periods:         {self.duplicate_periods}",
-            f"Zero-return periods:       {self.zero_return_count} ({fmt(self.zero_return_pct, True)})",
+            f"Zero-return periods:       {self.zero_return_count} "
+            f"({fmt(self.zero_return_pct, True)})",
             f"Longest identical run:     {self.longest_identical_run}",
             f"Impossible returns (<-100%): {self.impossible_return_count}",
             f"Lag-1 autocorrelation:     {fmt(self.autocorrelation[0])}",

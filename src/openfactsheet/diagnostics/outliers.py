@@ -7,7 +7,10 @@ import numpy.typing as npt
 
 
 def robust_outlier_count(r: npt.NDArray[np.float64], threshold: float) -> int:
-    """Count observations with robust z-score ``|r - median| / (1.4826 * MAD)`` above ``threshold``."""
+    """Count observations whose robust z-score exceeds ``threshold``.
+
+    Robust z-score: ``|r - median| / (1.4826 * MAD)``.
+    """
     if r.shape[0] < 5:
         return 0
     median = float(np.median(r))

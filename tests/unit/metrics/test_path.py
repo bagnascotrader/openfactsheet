@@ -35,7 +35,9 @@ def test_multiple_episodes_and_ongoing() -> None:
     eps = episodes([0.1, -0.1, 0.2, -0.05, -0.05])
     assert len(eps) == 2
     first, second = eps
-    assert first.recovered and first.peak_index == 1 and first.trough_index == 2
+    assert first.recovered
+    assert first.peak_index == 1
+    assert first.trough_index == 2
     assert not second.recovered
     assert second.duration_periods == 2  # from peak (index 3) to the end (index 5)
     assert second.depth == pytest.approx(0.95 * 0.95 - 1)

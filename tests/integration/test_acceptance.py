@@ -44,7 +44,8 @@ def test_first_acceptance_short_monthly_series() -> None:
     # explains why benchmark metrics are unavailable
     beta = report.metrics["beta"]
     assert beta.status == "not_applicable"
-    assert beta.reason is not None and "No benchmark was supplied" in beta.reason
+    assert beta.reason is not None
+    assert "No benchmark was supplied" in beta.reason
 
     # produces stable JSON
     first = report.to_json()
@@ -103,7 +104,8 @@ def test_third_acceptance_suspicious_hedge_fund(hedge_fund: pd.Series) -> None:
 
     # computes Sharpe
     sharpe = report.metrics["sharpe_ratio"]
-    assert sharpe.value is not None and sharpe.value > 1.5
+    assert sharpe.value is not None
+    assert sharpe.value > 1.5
 
     # flags smoothing / serial-correlation concerns
     assert report.diagnostics.smoothing_risk == "high"
@@ -119,7 +121,8 @@ def test_third_acceptance_suspicious_hedge_fund(hedge_fund: pd.Series) -> None:
     for mid in ("max_drawdown", "expected_shortfall_historical_95", "worst_period", "skewness"):
         assert report.metrics[mid].value is not None, mid
     text = report.summary()
-    assert "Maximum drawdown" in text and "Expected Shortfall" in text
+    assert "Maximum drawdown" in text
+    assert "Expected Shortfall" in text
 
 
 def test_csv_path_input_matches_series(fund_10y: pd.Series) -> None:

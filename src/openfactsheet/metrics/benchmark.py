@@ -378,7 +378,7 @@ def _annualized_geometric(x: npt.NDArray[np.float64], ppy: float) -> float:
     growth = float(np.prod(1.0 + x))
     if growth <= 0.0:
         return -1.0
-    return growth ** (ppy / x.shape[0]) - 1.0
+    return float(growth ** (ppy / x.shape[0]) - 1.0)
 
 
 def _capture(ctx: MetricContext, up: bool) -> Computed:

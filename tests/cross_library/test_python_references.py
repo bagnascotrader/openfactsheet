@@ -8,6 +8,7 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 import pytest
+from scipy import stats
 
 import openfactsheet as ofs
 from tests.conftest import SINGLE_FIXTURES, fixture_series
@@ -66,6 +67,20 @@ def test_empyrical_benchmark() -> None:
     )
 
 
+def test_quantstats_information_ratio_is_per_period() -> None:
+    qs = pytest.importorskip("quantstats")
+    fund, bench = fixture_series("benchmark_case_fund"), fixture_series("benchmark_case_benchmark")
+    rep = ofs.analyze(fund, benchmark=bench)
+    f, b = fund.copy(), bench.copy()
+    f.index, b.index = f.index.to_period("M"), b.index.to_period("M")
+    f, b = f.align(b, join="inner")
+    f.index, b.index = f.index.to_timestamp(how="end"), b.index.to_timestamp(how="end")
+    # QuantStats reports the non-annualized ratio; OpenFactsheet annualizes by sqrt(12).
+    assert val(rep, "information_ratio") / np.sqrt(12) == pytest.approx(
+        qs.stats.information_ratio(f, b), **TOL
+    )
+
+
 @pytest.mark.parametrize("fixture", SINGLE_FIXTURES)
 def test_quantstats(fixture: str) -> None:
     qs = pytest.importorskip("quantstats")
@@ -78,6 +93,19 @@ def test_quantstats(fixture: str) -> None:
     assert val(rep, "tail_ratio") == pytest.approx(qs.stats.tail_ratio(s), **TOL)
     assert val(rep, "best_period") == pytest.approx(float(np.max(s)), **TOL)
     assert val(rep, "worst_period") == pytest.approx(float(np.min(s)), **TOL)
+    assert val(rep, "gain_to_pain_ratio") == pytest.approx(qs.stats.gain_to_pain_ratio(s), **TOL)
+    # CAGR agrees when the frequency is passed; the default (252) treats months as days.
+    assert val(rep, "cagr") == pytest.approx(qs.stats.cagr(s, periods=12), **TOL)
+    assert qs.stats.cagr(s) != pytest.approx(val(rep, "cagr"))
+    # Calmar inherits the default CAGR, divided by |max drawdown|.
+    assert qs.stats.calmar(s) == pytest.approx(
+        qs.stats.cagr(s) / abs(val(rep, "max_drawdown")), **TOL
+    )
+    # QuantStats VaR is parametric (normal, sample std), not historical.
+    r = s.to_numpy()
+    normal_var = stats.norm.ppf(0.05, r.mean(), r.std(ddof=1))
+    assert qs.stats.value_at_risk(s) == pytest.approx(normal_var, **TOL)
+    assert qs.stats.value_at_risk(s) != pytest.approx(val(rep, "var_historical_95"))
     # QuantStats win_rate excludes zero returns; fixtures have none, so values coincide.
     assert (s == 0).sum() == 0
     assert val(rep, "positive_period_pct") == pytest.approx(qs.stats.win_rate(s), **TOL)

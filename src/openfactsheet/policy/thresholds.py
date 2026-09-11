@@ -38,7 +38,8 @@ class MinDataPolicy:
             return "high", None
         low = self.low_below
         moderate = self.moderate_below
-        assert low is not None and moderate is not None
+        if low is None or moderate is None:
+            raise ValueError(f"Policy {self.key!r} with basis {self.basis!r} needs both thresholds")
         if self.basis == "years":
             if years is None:
                 return (

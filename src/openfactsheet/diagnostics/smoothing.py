@@ -18,9 +18,10 @@ from openfactsheet.policy.defaults import canonical_methodology
 
 def assess_smoothing(lag1: float | None, n: int) -> tuple[SmoothingRisk, str]:
     conv = canonical_methodology().get("smoothing")
-    if n < int(conv["min_observations"]):
+    min_obs = int(conv["min_observations"])
+    if n < min_obs:
         return "not_assessable", (
-            f"Smoothing risk is not assessed with fewer than {conv['min_observations']} observations."
+            f"Smoothing risk is not assessed with fewer than {min_obs} observations."
         )
     if lag1 is None:
         return "not_assessable", "Lag-1 autocorrelation is undefined (e.g. constant returns)."

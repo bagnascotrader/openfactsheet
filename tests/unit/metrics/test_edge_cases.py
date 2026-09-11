@@ -52,8 +52,10 @@ def test_constant_zero_identities() -> None:
     assert rep.metrics["volatility"].value == 0.0
     assert rep.metrics["max_drawdown"].value == 0.0
     sharpe = rep.metrics["sharpe_ratio"]
-    assert sharpe.value is None and sharpe.status == "not_applicable"
-    assert sharpe.reason is not None and "zero" in sharpe.reason
+    assert sharpe.value is None
+    assert sharpe.status == "not_applicable"
+    assert sharpe.reason is not None
+    assert "zero" in sharpe.reason
 
 
 def test_all_positive_has_no_drawdown_and_undefined_downside_ratios() -> None:

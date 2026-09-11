@@ -37,7 +37,7 @@ classifiers = [
 ]
 dependencies = [
     "numpy>=1.24",
-    "pandas>=2.0",
+    "pandas>=2.2",
     "scipy>=1.10",
     "statsmodels>=0.14",
 ]
@@ -111,7 +111,7 @@ src = ["src", "tests", "scripts"]
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "B", "UP", "SIM", "RUF", "NPY", "PD", "C4", "PT", "RET"]
 ignore = [
-    "PD901",  # generic `df` names are fine in small helpers
+    "PD011",  # ReturnSeries.values is our own NumPy array attribute, not pandas `.values`
     "RET504", # explicit intermediate variables aid readability in formulas
     "RUF001", # unicode in docstrings/strings (e.g. minus sign handling) is intentional
     "RUF002",
@@ -122,11 +122,13 @@ ignore = [
 "tests/**" = ["PD", "B011"]
 
 [tool.mypy]
-python_version = "3.10"
+# Recent NumPy stubs use Python 3.12 syntax, so type analysis runs as 3.12.
+# Source compatibility with 3.10 is enforced by ruff (target-version) and CI.
+python_version = "3.12"
 strict = true
 warn_unreachable = true
 files = ["src/openfactsheet"]
 
 [[tool.mypy.overrides]]
-module = ["scipy.*", "statsmodels.*"]
+module = ["scipy.*", "statsmodels.*", "openpyxl.*"]
 ignore_missing_imports = true

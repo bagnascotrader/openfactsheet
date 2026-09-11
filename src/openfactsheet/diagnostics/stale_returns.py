@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from itertools import pairwise
+
 import numpy as np
 import numpy.typing as npt
 
@@ -15,7 +17,7 @@ def longest_identical_run(r: npt.NDArray[np.float64]) -> int:
     if r.shape[0] == 0:
         return 0
     longest = current = 1
-    for prev, cur in zip(r[:-1], r[1:], strict=True):
+    for prev, cur in pairwise(r):
         current = current + 1 if cur == prev else 1
         longest = max(longest, current)
     return longest

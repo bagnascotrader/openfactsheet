@@ -70,6 +70,7 @@ htmlcov/
 # Generated reports from local experiments
 /factsheet*.html
 /factsheet*.json
+examples/factsheet_example.*
 *.log
 
 # OS / editor

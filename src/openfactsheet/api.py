@@ -124,7 +124,11 @@ def analyze(
     )
     bench_series = bench_diag = None
     if benchmark is not None:
-        bench_name = benchmark.name if isinstance(benchmark, pd.Series) and benchmark.name else None
+        bench_name = (
+            str(benchmark.name)
+            if isinstance(benchmark, pd.Series) and benchmark.name is not None
+            else None
+        )
         bench_series, bench_diag = _normalize_one(
             benchmark,
             name=bench_name or (None if isinstance(benchmark, ReturnSeries) else "Benchmark"),

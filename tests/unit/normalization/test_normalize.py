@@ -20,7 +20,8 @@ def test_unsorted_dates_are_sorted_and_disclosed() -> None:
     s = monthly([0.01, -0.02, 0.015, 0.005]).iloc[[2, 0, 3, 1]]
     series = ofs.load(s)
     assert isinstance(series, ofs.ReturnSeries)
-    assert series.dates is not None and series.dates.is_monotonic_increasing
+    assert series.dates is not None
+    assert series.dates.is_monotonic_increasing
     assert series.input_diagnostics is not None
     assert not series.input_diagnostics.was_sorted
     assert "sorted" in " ".join(series.input_diagnostics.transformations)
@@ -70,7 +71,8 @@ def test_undated_list_has_unknown_frequency_and_no_annualization() -> None:
     assert report.returns.frequency is ofs.ObservationFrequency.UNKNOWN
     cagr = report.metrics["cagr"]
     assert cagr.status == "not_applicable"
-    assert cagr.reason is not None and "frequency" in cagr.reason
+    assert cagr.reason is not None
+    assert "frequency" in cagr.reason
     assert report.metrics["cumulative_return"].value is not None
 
 
@@ -90,7 +92,8 @@ def test_timezone_aware_dates() -> None:
     idx = pd.date_range("2020-01-31", periods=4, freq="ME", tz="US/Eastern")
     series = ofs.load(pd.Series([0.01, 0.02, -0.01, 0.0], index=idx))
     assert isinstance(series, ofs.ReturnSeries)
-    assert series.dates is not None and series.dates.tz is None
+    assert series.dates is not None
+    assert series.dates.tz is None
 
 
 def test_period_index() -> None:

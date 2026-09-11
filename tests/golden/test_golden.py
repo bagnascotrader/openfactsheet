@@ -28,7 +28,8 @@ def assert_same(actual: Any, expected: Any, path: str = "$") -> None:
         for key in expected:
             assert_same(actual[key], expected[key], f"{path}.{key}")
     elif isinstance(expected, list):
-        assert isinstance(actual, list) and len(actual) == len(expected), path
+        assert isinstance(actual, list), path
+        assert len(actual) == len(expected), path
         for i, (a, e) in enumerate(zip(actual, expected, strict=True)):
             assert_same(a, e, f"{path}[{i}]")
     else:

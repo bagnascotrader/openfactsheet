@@ -1,0 +1,15 @@
+cff-version: 1.2.0
+message: "If you use OpenFactsheet in research, please cite it and state the methodology version reported by your results."
+title: "OpenFactsheet: standardized, transparent investment performance analytics"
+type: software
+authors:
+  - name: "OpenFactsheet contributors"
+license: Apache-2.0
+version: 0.1.0
+repository-code: "https://github.com/bagnascotrader/openfactsheet"
+keywords:
+  - performance measurement
+  - risk analytics
+  - drawdown
+  - Sharpe ratio
+  - reproducibility

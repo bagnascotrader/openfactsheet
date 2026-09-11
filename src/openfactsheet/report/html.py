@@ -8,6 +8,7 @@ from __future__ import annotations
 from html import escape
 
 from openfactsheet.interpretation.glossary import CONFIDENCE_DISCLAIMER
+from openfactsheet.models.metric import MetricResult
 from openfactsheet.models.report import FactsheetReport
 from openfactsheet.policy.applicability import NO_BENCHMARK_REASON
 from openfactsheet.report.tables import (
@@ -15,6 +16,7 @@ from openfactsheet.report.tables import (
     STATISTICAL_SECTION_TEXT,
     Footnotes,
     confidence_counts,
+    data_quality_metrics,
     format_value,
     ordered_categories,
     result_notes,
@@ -38,6 +40,23 @@ def _pre(text: str) -> str:
     return f"<pre>{escape(text)}</pre>"
 
 
+def _metric_table(rows: list[MetricResult], notes: Footnotes) -> list[str]:
+    parts = [
+        "<table><thead><tr><th>Metric</th><th>Value</th><th>Confidence / status</th>"
+        "<th>Notes</th></tr></thead><tbody>"
+    ]
+    for r in rows:
+        refs = " ".join(f"[{notes.ref(t)}]" for t in result_notes(r))
+        css = "na" if r.value is None else ("low" if r.confidence == "low" else "")
+        parts.append(
+            f"<tr class='{css}'><td>{escape(r.name)}</td><td class='v'>"
+            f"{escape(format_value(r))}</td><td>{escape(status_label(r))}</td>"
+            f"<td>{escape(refs)}</td></tr>"
+        )
+    parts.append("</tbody></table>")
+    return parts
+
+
 def render_html(report: FactsheetReport) -> str:
     notes = Footnotes([])
     p = report.provenance
@@ -54,6 +73,8 @@ def render_html(report: FactsheetReport) -> str:
         "<strong>Risk-free rate:</strong> 0% in methodology 0.1.0.</p>",
         "<h2>2. Data-quality diagnostics</h2>",
         _pre(report.diagnostics.to_text()),
+        "<h3>Serial dependence &amp; smoothing</h3>",
+        *_metric_table(data_quality_metrics(report), notes),
     ]
     number = 3
     for cat, title, rows in ordered_categories(report):
@@ -64,19 +85,7 @@ def render_html(report: FactsheetReport) -> str:
                 parts.append(f"<p>Not applicable: {escape(NO_BENCHMARK_REASON)}</p>")
                 continue
             parts.append(_pre(report.benchmark_summary.to_text()))
-        parts.append(
-            "<table><thead><tr><th>Metric</th><th>Value</th><th>Confidence / status</th>"
-            "<th>Notes</th></tr></thead><tbody>"
-        )
-        for r in rows:
-            refs = " ".join(f"[{notes.ref(t)}]" for t in result_notes(r))
-            css = "na" if r.value is None else ("low" if r.confidence == "low" else "")
-            parts.append(
-                f"<tr class='{css}'><td>{escape(r.name)}</td><td class='v'>"
-                f"{escape(format_value(r))}</td><td>{escape(status_label(r))}</td>"
-                f"<td>{escape(refs)}</td></tr>"
-            )
-        parts.append("</tbody></table>")
+        parts += _metric_table(rows, notes)
     counts = confidence_counts(report)
     parts += [
         f"<h2>{number}. Factor analysis</h2><p>{escape(FACTOR_SECTION_TEXT)}</p>",

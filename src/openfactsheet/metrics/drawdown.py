@@ -172,9 +172,8 @@ def current_drawdown(ctx: MetricContext) -> float:
             lib(
                 PA,
                 "findDrawdowns (length)",
-                agrees=False,
-                note="PerformanceAnalytics counts from the first underwater period, giving "
-                "one period less for recovered episodes.",
+                note="Equal for recovered episodes; PerformanceAnalytics counts an episode "
+                "still open at the end of the data one period longer.",
             ),
         ),
         references=(BACON,),
