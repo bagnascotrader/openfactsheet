@@ -233,6 +233,16 @@
     "active_premium_pa": 0.0175516143933037,
     "treynor_ratio_pa": 0.211582101102028,
     "up_capture_pa": 0.913245873032422,
-    "down_capture_pa": 0.624977372456631
+    "down_capture_pa": 0.624977372456631,
+    "up_percent_pa": 0.46969696969697,
+    "down_percent_pa": 0.7,
+    "specific_risk_pa": 0.0488437758536728,
+    "appraisal_ratio_pa": 0.939755087928888,
+    "jensen_alpha_pa": 0.0459011868721472,
+    "modigliani_pa_per_period": 0.0151402634792405,
+    "bull_beta": 0.945149115147393,
+    "bear_beta": 0.753541296522042,
+    "timing_ratio": 1.25427646700946,
+    "residual_se_lm": 0.0142491938992421
   }
 }

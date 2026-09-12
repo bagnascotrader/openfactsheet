@@ -53,6 +53,63 @@ def _finite_or_none(x: float) -> float | None:
     return float(x) if math.isfinite(float(x)) else None
 
 
+def single_index_ols(
+    fund: npt.NDArray[np.float64], bench: npt.NDArray[np.float64], what: str = "aligned periods"
+) -> OLSResult:
+    """OLS of ``fund`` on a constant and ``bench`` (statsmodels), with i.i.d. standard errors.
+
+    Raises :class:`UndefinedMetric` with fewer than 3 observations or a constant
+    regressor; ``what`` names the sample in those reasons.
+    """
+    n = int(fund.shape[0])
+    if n < 3:
+        raise UndefinedMetric(
+            f"At least 3 observations are required for regression; the {what} contain {n}."
+        )
+    if float(np.ptp(bench)) == 0.0:
+        raise UndefinedMetric(f"Benchmark returns are constant over the {what}; beta is undefined.")
+    if float(np.ptp(fund)) == 0.0:
+        # Exact solution: a constant fund has slope 0, intercept equal to its return and
+        # zero residuals. Solving numerically would leave rounding noise (e.g. beta = 1e-17)
+        # that downstream ratios (Treynor, appraisal) would divide by. t-statistics are 0/0.
+        return OLSResult(
+            alpha=float(fund[0]),
+            beta=0.0,
+            alpha_se=0.0,
+            beta_se=0.0,
+            alpha_t=None,
+            beta_t=None,
+            alpha_pvalue=None,
+            beta_pvalue=None,
+            r_squared=math.nan,  # undefined (no variance to explain); guarded by r_squared
+            residual_std=0.0,
+            n=n,
+        )
+    import statsmodels.api as sm
+
+    x = sm.add_constant(bench, has_constant="add")
+    fit = sm.OLS(fund, x).fit()
+    params = np.asarray(fit.params, dtype=np.float64)
+    dof = n - 2
+    bse = np.asarray(fit.bse, dtype=np.float64)
+    tvals = np.asarray(fit.tvalues, dtype=np.float64)
+    pvals = np.asarray(fit.pvalues, dtype=np.float64)
+    resid_std = math.sqrt(float(fit.ssr) / dof)
+    return OLSResult(
+        alpha=float(params[0]),
+        beta=float(params[1]),
+        alpha_se=_finite_or_none(bse[0]),
+        beta_se=_finite_or_none(bse[1]),
+        alpha_t=_finite_or_none(tvals[0]),
+        beta_t=_finite_or_none(tvals[1]),
+        alpha_pvalue=_finite_or_none(pvals[0]),
+        beta_pvalue=_finite_or_none(pvals[1]),
+        r_squared=float(fit.rsquared),
+        residual_std=_finite_or_none(resid_std),
+        n=n,
+    )
+
+
 @dataclass(frozen=True, eq=False)
 class AlignedBenchmark:
     fund: npt.NDArray[np.float64]
@@ -71,35 +128,19 @@ class AlignedBenchmark:
 
     @cached_property
     def ols(self) -> OLSResult:
-        if self.n < 3:
-            raise UndefinedMetric("At least 3 aligned observations are required for regression.")
-        if float(np.ptp(self.bench)) == 0.0:
-            raise UndefinedMetric(
-                "Benchmark returns are constant over the aligned periods; beta is undefined."
-            )
-        import statsmodels.api as sm
+        return single_index_ols(self.fund, self.bench)
 
-        x = sm.add_constant(self.bench, has_constant="add")
-        fit = sm.OLS(self.fund, x).fit()
-        params = np.asarray(fit.params, dtype=np.float64)
-        dof = self.n - 2
-        bse = np.asarray(fit.bse, dtype=np.float64) if dof > 0 else np.array([np.nan, np.nan])
-        tvals = np.asarray(fit.tvalues, dtype=np.float64) if dof > 0 else np.array([np.nan, np.nan])
-        pvals = np.asarray(fit.pvalues, dtype=np.float64) if dof > 0 else np.array([np.nan, np.nan])
-        resid_std = math.sqrt(float(fit.ssr) / dof) if dof > 0 else math.nan
-        return OLSResult(
-            alpha=float(params[0]),
-            beta=float(params[1]),
-            alpha_se=_finite_or_none(bse[0]),
-            beta_se=_finite_or_none(bse[1]),
-            alpha_t=_finite_or_none(tvals[0]),
-            beta_t=_finite_or_none(tvals[1]),
-            alpha_pvalue=_finite_or_none(pvals[0]),
-            beta_pvalue=_finite_or_none(pvals[1]),
-            r_squared=float(fit.rsquared),
-            residual_std=_finite_or_none(resid_std),
-            n=self.n,
-        )
+    @cached_property
+    def bull_ols(self) -> OLSResult:
+        """Single-index regression on the periods with a strictly positive benchmark return."""
+        up = self.bench > 0.0
+        return single_index_ols(self.fund[up], self.bench[up], "benchmark up periods")
+
+    @cached_property
+    def bear_ols(self) -> OLSResult:
+        """Single-index regression on the periods with a strictly negative benchmark return."""
+        down = self.bench < 0.0
+        return single_index_ols(self.fund[down], self.bench[down], "benchmark down periods")
 
 
 def _keys(series: ReturnSeries, code: str | None) -> pd.Index:

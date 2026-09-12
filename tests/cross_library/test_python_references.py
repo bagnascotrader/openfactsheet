@@ -65,6 +65,9 @@ def test_empyrical_benchmark() -> None:
     assert val(rep, "downside_capture") == pytest.approx(
         ep.down_capture(fr, br, period="monthly"), **TOL
     )
+    assert val(rep, "capture_ratio") == pytest.approx(
+        ep.up_down_capture(fr, br, period="monthly"), **TOL
+    )
 
 
 @pytest.mark.parametrize("fixture", SINGLE_FIXTURES)

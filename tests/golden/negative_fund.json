@@ -93,6 +93,14 @@
       "plain": "The typical size of yearly swings implied by the period-to-period variability.",
       "professional": "Square-root-of-time scaling assumes serially uncorrelated returns; positive autocorrelation makes it understate true annual volatility (Lo, 2002)."
     },
+    "appraisal_ratio": {
+      "context": [
+        "No benchmark was supplied. Benchmark-relative metrics require explicitly supplied benchmark returns; OpenFactsheet never assumes a default benchmark."
+      ],
+      "metric_id": "appraisal_ratio",
+      "plain": "How much benchmark-independent return the fund earned for each unit of benchmark-independent risk it took.",
+      "professional": "Treynor & Black (1973) appraisal ratio: annualized OLS alpha over annualized residual volatility (the Information ratio of the beta-adjusted active return). It is approximately the alpha t-statistic divided by the square root of the overlap in years (exactly so when the benchmark's mean return is zero); details give that t-statistic and its p-value."
+    },
     "arithmetic_mean": {
       "context": [],
       "metric_id": "arithmetic_mean",
@@ -137,6 +145,22 @@
       "plain": "Once the bottom was reached, how long it typically took to climb back to the previous high.",
       "professional": "Average recovery length of completed episodes only; open episodes are excluded because their recovery time is unknown (disclosed in details)."
     },
+    "batting_average": {
+      "context": [
+        "No benchmark was supplied. Benchmark-relative metrics require explicitly supplied benchmark returns; OpenFactsheet never assumes a default benchmark."
+      ],
+      "metric_id": "batting_average",
+      "plain": "How often the fund beat its benchmark: 0.6 means in 6 periods out of 10. It says nothing about by how much it won or lost.",
+      "professional": "Frequency of positive active returns (ties count as not beating). Details give the up- and down-market batting averages (PerformanceAnalytics UpDownRatios 'Percent'). A high batting average with a negative active return indicates small frequent wins and large occasional losses."
+    },
+    "bear_beta": {
+      "context": [
+        "No benchmark was supplied. Benchmark-relative metrics require explicitly supplied benchmark returns; OpenFactsheet never assumes a default benchmark."
+      ],
+      "metric_id": "bear_beta",
+      "plain": "How strongly the fund followed the benchmark when the benchmark went down; lower means better protection in falling markets.",
+      "professional": "Single-index beta estimated on the benchmark-down subsample (Fabozzi & Francis 1977), rf = 0. Details give the standard error and number of periods."
+    },
     "best_calendar_year": {
       "context": [],
       "metric_id": "best_calendar_year",
@@ -163,6 +187,14 @@
       "plain": "A beta of 1 means the fund tended to move one-for-one with the benchmark; 0.5 means about half as much.",
       "professional": "OLS beta against the supplied benchmark with rf = 0; details include the standard error and t-statistic (conventional i.i.d. errors)."
     },
+    "bull_beta": {
+      "context": [
+        "No benchmark was supplied. Benchmark-relative metrics require explicitly supplied benchmark returns; OpenFactsheet never assumes a default benchmark."
+      ],
+      "metric_id": "bull_beta",
+      "plain": "How strongly the fund followed the benchmark when the benchmark went up.",
+      "professional": "Single-index beta estimated on the benchmark-up subsample (Fabozzi & Francis 1977), rf = 0; compare with bear-market beta for asymmetric participation. Details give the standard error and number of periods."
+    },
     "burke_ratio": {
       "context": [],
       "metric_id": "burke_ratio",
@@ -180,6 +212,14 @@
       "metric_id": "calmar_ratio",
       "plain": "How much yearly return was earned relative to the worst peak-to-trough loss.",
       "professional": "Young (1991) defined Calmar on a trailing 36-month window; OpenFactsheet canonically uses the full history so that no window is chosen. Maximum drawdown grows with history length, so values fall as track records lengthen."
+    },
+    "capture_ratio": {
+      "context": [
+        "No benchmark was supplied. Benchmark-relative metrics require explicitly supplied benchmark returns; OpenFactsheet never assumes a default benchmark."
+      ],
+      "metric_id": "capture_ratio",
+      "plain": "Above 1: the fund participated more in rising markets than in falling ones. A fund with 80% upside and 60% downside capture has a capture ratio of about 1.33.",
+      "professional": "Ratio of the Morningstar-style geometric capture ratios of this report. It hides the level of participation (a fund with 10% / 5% capture has the same ratio as one with 120% / 60%); always read it with both components."
     },
     "cdar_95": {
       "context": [],
@@ -331,6 +371,14 @@
       "plain": "The longest stretch of back-to-back gaining periods.",
       "professional": "Descriptive path statistic; unusually long streaks relative to the hit rate can indicate smoothing."
     },
+    "m_squared": {
+      "context": [
+        "No benchmark was supplied. Benchmark-relative metrics require explicitly supplied benchmark returns; OpenFactsheet never assumes a default benchmark."
+      ],
+      "metric_id": "m_squared",
+      "plain": "Puts the fund and the benchmark on the same risk footing: the return the fund would have delivered at the benchmark's volatility. Compare it with the benchmark's own return (details).",
+      "professional": "Modigliani & Modigliani (1997) M-squared with rf = 0 on the aligned overlap: the aligned-sample Sharpe ratio times the benchmark's annualized volatility. It ranks funds exactly as the Sharpe ratio does, but in return units. Details give the benchmark's annualized mean and the difference (M-squared excess)."
+    },
     "martin_ratio": {
       "context": [],
       "metric_id": "martin_ratio",
@@ -463,6 +511,14 @@
       "plain": "How many times over the investment earned back its worst decline.",
       "professional": "Net compounded profit over the maximum drawdown (a practitioner measure used in trading-system evaluation). Not annualized, so it grows with the length of the track record; compare only across equal histories."
     },
+    "residual_volatility": {
+      "context": [
+        "No benchmark was supplied. Benchmark-relative metrics require explicitly supplied benchmark returns; OpenFactsheet never assumes a default benchmark."
+      ],
+      "metric_id": "residual_volatility",
+      "plain": "How much the fund moved for reasons unrelated to its benchmark. Near zero means the fund behaves like the benchmark (scaled by beta).",
+      "professional": "Specific (idiosyncratic, non-systematic) risk: the regression standard error of the single-index model, annualized by sqrt(P). Details give the systematic risk |beta| x benchmark volatility. Unlike tracking error it is measured after scaling by beta."
+    },
     "semi_deviation": {
       "context": [],
       "metric_id": "semi_deviation",
@@ -510,6 +566,14 @@
       "metric_id": "time_underwater_pct",
       "plain": "The share of the time the investment was below a previous high.",
       "professional": "Complements depth measures with persistence; high values with shallow drawdowns indicate grinding rather than crash risk."
+    },
+    "timing_ratio": {
+      "context": [
+        "No benchmark was supplied. Benchmark-relative metrics require explicitly supplied benchmark returns; OpenFactsheet never assumes a default benchmark."
+      ],
+      "metric_id": "timing_ratio",
+      "plain": "Above 1: the fund was more sensitive to rising than to falling markets.",
+      "professional": "Ratio of subsample betas (PerformanceAnalytics TimingRatio). Both betas are noisy, so the ratio is very noisy; it is descriptive, not evidence of timing skill. Formal timing tests (Treynor-Mazuy, Henriksson-Merton) are not part of methodology 0.1.0."
     },
     "tracking_error": {
       "context": [
@@ -606,10 +670,17 @@
       "benchmark": {
         "alignment": "intersection of periods; never filled",
         "alpha_annualization": "arithmetic: per-period intercept x periods_per_year",
+        "appraisal_ratio": "annualized OLS alpha / annualized residual volatility",
+        "batting_average": "share of aligned periods with fund return strictly above benchmark",
         "capture": "geometric, annualized over up (benchmark > 0) or down (benchmark < 0) periods",
+        "capture_ratio": "upside capture / downside capture; undefined unless downside capture > 0",
         "description": "periods aligned on their intersection (monthly/quarterly/yearly by calendar period, daily/weekly by exact date); missing benchmark returns are never filled",
         "information_ratio": "annualized arithmetic mean active return / tracking error",
-        "regression": "OLS of fund on benchmark returns (risk-free = 0)"
+        "m_squared": "aligned Sharpe ratio x benchmark volatility, arithmetic annualization",
+        "regime_betas": "OLS with intercept on benchmark > 0 (bull) or < 0 (bear) periods",
+        "regression": "OLS of fund on benchmark returns (risk-free = 0)",
+        "residual_volatility": "OLS regression standard error (m - 2 dof) x sqrt(periods_per_year)",
+        "timing_ratio": "bull beta / bear beta; undefined unless bear beta > 0"
       },
       "calendar_years": {
         "daily_weekly_edge_tolerance_days": 7,
@@ -2471,6 +2542,177 @@
       "methodology_version": "0.1.0",
       "name": "Downside capture ratio",
       "nature": "derived",
+      "observations": 0,
+      "reason": "No benchmark was supplied. Benchmark-relative metrics require explicitly supplied benchmark returns; OpenFactsheet never assumes a default benchmark.",
+      "reference_values": null,
+      "status": "not_applicable",
+      "unit": "ratio",
+      "value": null,
+      "warnings": []
+    },
+    {
+      "assumptions": [
+        "Annualized with 12 periods per year (monthly frequency, inferred from dates)."
+      ],
+      "category": "benchmark",
+      "confidence": "not_assessable",
+      "details": {},
+      "direction": "higher_is_better",
+      "formula_id": "capture_ratio@v1",
+      "id": "capture_ratio",
+      "methodology_version": "0.1.0",
+      "name": "Capture ratio (upside / downside capture)",
+      "nature": "derived",
+      "observations": 0,
+      "reason": "No benchmark was supplied. Benchmark-relative metrics require explicitly supplied benchmark returns; OpenFactsheet never assumes a default benchmark.",
+      "reference_values": null,
+      "status": "not_applicable",
+      "unit": "ratio",
+      "value": null,
+      "warnings": []
+    },
+    {
+      "assumptions": [],
+      "category": "benchmark",
+      "confidence": "not_assessable",
+      "details": {},
+      "direction": "higher_is_better",
+      "formula_id": "batting_average@v1",
+      "id": "batting_average",
+      "methodology_version": "0.1.0",
+      "name": "Batting average (share of periods beating the benchmark)",
+      "nature": "observed",
+      "observations": 0,
+      "reason": "No benchmark was supplied. Benchmark-relative metrics require explicitly supplied benchmark returns; OpenFactsheet never assumes a default benchmark.",
+      "reference_values": null,
+      "status": "not_applicable",
+      "unit": "fraction",
+      "value": null,
+      "warnings": []
+    },
+    {
+      "assumptions": [
+        "Ordinary least squares of fund on benchmark returns (risk-free rate 0%); conventional i.i.d. standard errors.",
+        "Annualized with 12 periods per year (monthly frequency, inferred from dates)."
+      ],
+      "category": "benchmark",
+      "confidence": "not_assessable",
+      "details": {},
+      "direction": "context_dependent",
+      "formula_id": "residual_volatility@v1",
+      "id": "residual_volatility",
+      "methodology_version": "0.1.0",
+      "name": "Residual (specific) volatility (annualized)",
+      "nature": "model_dependent",
+      "observations": 0,
+      "reason": "No benchmark was supplied. Benchmark-relative metrics require explicitly supplied benchmark returns; OpenFactsheet never assumes a default benchmark.",
+      "reference_values": null,
+      "status": "not_applicable",
+      "unit": "decimal_return",
+      "value": null,
+      "warnings": []
+    },
+    {
+      "assumptions": [
+        "Ordinary least squares of fund on benchmark returns (risk-free rate 0%); conventional i.i.d. standard errors.",
+        "Risk-free rate assumed to be 0% (methodology 0.1.0); the ratio therefore uses total rather than excess returns and is higher than an excess-return version when cash yields are positive.",
+        "Annualized with 12 periods per year (monthly frequency, inferred from dates)."
+      ],
+      "category": "benchmark",
+      "confidence": "not_assessable",
+      "details": {},
+      "direction": "higher_is_better",
+      "formula_id": "appraisal_ratio@v1",
+      "id": "appraisal_ratio",
+      "methodology_version": "0.1.0",
+      "name": "Appraisal ratio",
+      "nature": "model_dependent",
+      "observations": 0,
+      "reason": "No benchmark was supplied. Benchmark-relative metrics require explicitly supplied benchmark returns; OpenFactsheet never assumes a default benchmark.",
+      "reference_values": null,
+      "status": "not_applicable",
+      "unit": "ratio",
+      "value": null,
+      "warnings": []
+    },
+    {
+      "assumptions": [
+        "Risk-free rate assumed to be 0% (methodology 0.1.0); the ratio therefore uses total rather than excess returns and is higher than an excess-return version when cash yields are positive.",
+        "Sample standard deviation (n - 1 denominator).",
+        "Annualized with 12 periods per year (monthly frequency, inferred from dates)."
+      ],
+      "category": "benchmark",
+      "confidence": "not_assessable",
+      "details": {},
+      "direction": "higher_is_better",
+      "formula_id": "m_squared@v1",
+      "id": "m_squared",
+      "methodology_version": "0.1.0",
+      "name": "M-squared (Modigliani risk-adjusted return)",
+      "nature": "derived",
+      "observations": 0,
+      "reason": "No benchmark was supplied. Benchmark-relative metrics require explicitly supplied benchmark returns; OpenFactsheet never assumes a default benchmark.",
+      "reference_values": null,
+      "status": "not_applicable",
+      "unit": "decimal_return",
+      "value": null,
+      "warnings": []
+    },
+    {
+      "assumptions": [
+        "Ordinary least squares of fund on benchmark returns (risk-free rate 0%); conventional i.i.d. standard errors."
+      ],
+      "category": "benchmark",
+      "confidence": "not_assessable",
+      "details": {},
+      "direction": "context_dependent",
+      "formula_id": "bull_beta@v1",
+      "id": "bull_beta",
+      "methodology_version": "0.1.0",
+      "name": "Bull-market beta",
+      "nature": "estimated",
+      "observations": 0,
+      "reason": "No benchmark was supplied. Benchmark-relative metrics require explicitly supplied benchmark returns; OpenFactsheet never assumes a default benchmark.",
+      "reference_values": null,
+      "status": "not_applicable",
+      "unit": "beta",
+      "value": null,
+      "warnings": []
+    },
+    {
+      "assumptions": [
+        "Ordinary least squares of fund on benchmark returns (risk-free rate 0%); conventional i.i.d. standard errors."
+      ],
+      "category": "benchmark",
+      "confidence": "not_assessable",
+      "details": {},
+      "direction": "context_dependent",
+      "formula_id": "bear_beta@v1",
+      "id": "bear_beta",
+      "methodology_version": "0.1.0",
+      "name": "Bear-market beta",
+      "nature": "estimated",
+      "observations": 0,
+      "reason": "No benchmark was supplied. Benchmark-relative metrics require explicitly supplied benchmark returns; OpenFactsheet never assumes a default benchmark.",
+      "reference_values": null,
+      "status": "not_applicable",
+      "unit": "beta",
+      "value": null,
+      "warnings": []
+    },
+    {
+      "assumptions": [
+        "Ordinary least squares of fund on benchmark returns (risk-free rate 0%); conventional i.i.d. standard errors."
+      ],
+      "category": "benchmark",
+      "confidence": "not_assessable",
+      "details": {},
+      "direction": "higher_is_better",
+      "formula_id": "timing_ratio@v1",
+      "id": "timing_ratio",
+      "methodology_version": "0.1.0",
+      "name": "Timing ratio (bull beta / bear beta)",
+      "nature": "estimated",
       "observations": 0,
       "reason": "No benchmark was supplied. Benchmark-relative metrics require explicitly supplied benchmark returns; OpenFactsheet never assumes a default benchmark.",
       "reference_values": null,
