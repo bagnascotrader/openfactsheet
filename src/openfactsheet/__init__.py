@@ -10,6 +10,7 @@ from openfactsheet.api import analyze, compare, load, methodology, metric_catalo
 from openfactsheet.exceptions import (
     AmbiguousReturnScaleError,
     BenchmarkAlignmentError,
+    FactorAlignmentError,
     FrequencyInferenceError,
     InputError,
     MetricCalculationError,
@@ -26,6 +27,7 @@ __all__ = [
     "METHODOLOGY_VERSION",
     "AmbiguousReturnScaleError",
     "BenchmarkAlignmentError",
+    "FactorAlignmentError",
     "FactsheetReport",
     "FrequencyInferenceError",
     "InputError",

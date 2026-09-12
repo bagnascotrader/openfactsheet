@@ -1,0 +1,3781 @@
+{
+  "benchmark": null,
+  "canonical": true,
+  "data_quality": {
+    "autocorrelation": {
+      "approx_95pct_significance_bound": 0.18860108793527774,
+      "lag1": 0.13144911887036112,
+      "lag2": 0.049935710096193846,
+      "lag3": 0.04551148499900097
+    },
+    "duplicate_periods": 0,
+    "findings": [
+      {
+        "id": "suspicious_large_returns",
+        "message": "1 return(s) are extreme relative to the rest of the series (robust z-score > 5). Check for data errors; they are kept in all calculations.",
+        "severity": "warning",
+        "value": 1
+      }
+    ],
+    "frequency": "monthly",
+    "impossible_return_count": 0,
+    "ljung_box_pvalue": 0.4876576876917179,
+    "longest_identical_run": 1,
+    "missing_expected_periods": 0,
+    "missing_values": 0,
+    "observations": 108,
+    "smoothing_evidence": "Lag-1 autocorrelation 0.13 (approx. z = 1.37 with 108 observations). Rule: high if >= 0.30 and z >= 1.96; moderate if >= 0.15 and z >= 1.645.",
+    "smoothing_risk": "none",
+    "suspicious_large_return_count": 1,
+    "total_loss": false,
+    "years": 9.0,
+    "zero_return_count": 0,
+    "zero_return_pct": 0.0
+  },
+  "drawdown_episodes": [
+    {
+      "area": 0.4194555164135406,
+      "depth": -0.12265214663544244,
+      "duration_periods": 7,
+      "peak_date": "2016-01-31",
+      "peak_index": 1,
+      "peak_to_trough_periods": 3,
+      "recovered": true,
+      "recovery_date": "2016-08-31",
+      "recovery_index": 8,
+      "recovery_periods": 4,
+      "total_underwater_periods": 6,
+      "trough_date": "2016-04-30",
+      "trough_index": 4
+    },
+    {
+      "area": 0.3932035658424534,
+      "depth": -0.09160125447910072,
+      "duration_periods": 7,
+      "peak_date": "2017-04-30",
+      "peak_index": 16,
+      "peak_to_trough_periods": 4,
+      "recovered": true,
+      "recovery_date": "2017-11-30",
+      "recovery_index": 23,
+      "recovery_periods": 3,
+      "total_underwater_periods": 6,
+      "trough_date": "2017-08-31",
+      "trough_index": 20
+    },
+    {
+      "area": 0.34976265623320557,
+      "depth": -0.1006564780621031,
+      "duration_periods": 7,
+      "peak_date": "2018-01-31",
+      "peak_index": 25,
+      "peak_to_trough_periods": 3,
+      "recovered": true,
+      "recovery_date": "2018-08-31",
+      "recovery_index": 32,
+      "recovery_periods": 4,
+      "total_underwater_periods": 6,
+      "trough_date": "2018-04-30",
+      "trough_index": 28
+    },
+    {
+      "area": 0.025190000000000046,
+      "depth": -0.025190000000000046,
+      "duration_periods": 2,
+      "peak_date": "2018-09-30",
+      "peak_index": 33,
+      "peak_to_trough_periods": 1,
+      "recovered": true,
+      "recovery_date": "2018-11-30",
+      "recovery_index": 35,
+      "recovery_periods": 1,
+      "total_underwater_periods": 1,
+      "trough_date": "2018-10-31",
+      "trough_index": 34
+    },
+    {
+      "area": 0.48677848511167277,
+      "depth": -0.11847432030820293,
+      "duration_periods": 7,
+      "peak_date": "2018-11-30",
+      "peak_index": 35,
+      "peak_to_trough_periods": 5,
+      "recovered": true,
+      "recovery_date": "2019-06-30",
+      "recovery_index": 42,
+      "recovery_periods": 2,
+      "total_underwater_periods": 6,
+      "trough_date": "2019-04-30",
+      "trough_index": 40
+    },
+    {
+      "area": 0.18467563512151142,
+      "depth": -0.054784976694482124,
+      "duration_periods": 7,
+      "peak_date": "2019-06-30",
+      "peak_index": 42,
+      "peak_to_trough_periods": 3,
+      "recovered": true,
+      "recovery_date": "2020-01-31",
+      "recovery_index": 49,
+      "recovery_periods": 4,
+      "total_underwater_periods": 6,
+      "trough_date": "2019-09-30",
+      "trough_index": 45
+    },
+    {
+      "area": 0.021291999999999978,
+      "depth": -0.021291999999999978,
+      "duration_periods": 2,
+      "peak_date": "2020-03-31",
+      "peak_index": 51,
+      "peak_to_trough_periods": 1,
+      "recovered": true,
+      "recovery_date": "2020-05-31",
+      "recovery_index": 53,
+      "recovery_periods": 1,
+      "total_underwater_periods": 1,
+      "trough_date": "2020-04-30",
+      "trough_index": 52
+    },
+    {
+      "area": 0.01492899999999997,
+      "depth": -0.01492899999999997,
+      "duration_periods": 2,
+      "peak_date": "2020-06-30",
+      "peak_index": 54,
+      "peak_to_trough_periods": 1,
+      "recovered": true,
+      "recovery_date": "2020-08-31",
+      "recovery_index": 56,
+      "recovery_periods": 1,
+      "total_underwater_periods": 1,
+      "trough_date": "2020-07-31",
+      "trough_index": 55
+    },
+    {
+      "area": 0.07208503590799986,
+      "depth": -0.049672035907999956,
+      "duration_periods": 3,
+      "peak_date": "2020-09-30",
+      "peak_index": 57,
+      "peak_to_trough_periods": 2,
+      "recovered": true,
+      "recovery_date": "2020-12-31",
+      "recovery_index": 60,
+      "recovery_periods": 1,
+      "total_underwater_periods": 2,
+      "trough_date": "2020-11-30",
+      "trough_index": 59
+    },
+    {
+      "area": 0.05126065390929668,
+      "depth": -0.021908449791999907,
+      "duration_periods": 4,
+      "peak_date": "2021-03-31",
+      "peak_index": 63,
+      "peak_to_trough_periods": 2,
+      "recovered": true,
+      "recovery_date": "2021-07-31",
+      "recovery_index": 67,
+      "recovery_periods": 2,
+      "total_underwater_periods": 3,
+      "trough_date": "2021-05-31",
+      "trough_index": 65
+    },
+    {
+      "area": 13.613086921374105,
+      "depth": -0.5003764009762672,
+      "duration_periods": 40,
+      "peak_date": "2021-08-31",
+      "peak_index": 68,
+      "peak_to_trough_periods": 39,
+      "recovered": false,
+      "recovery_date": null,
+      "recovery_index": null,
+      "recovery_periods": null,
+      "total_underwater_periods": 40,
+      "trough_date": "2024-11-30",
+      "trough_index": 107
+    }
+  ],
+  "factor_analysis": {
+    "alignment": {
+      "aligned_observations": 107,
+      "alignment_method": "calendar monthly period",
+      "factor_observations": 131,
+      "fund_coverage": 0.9907407407407407,
+      "fund_observations": 108,
+      "fund_only_periods": 1,
+      "overlap_end": "2024-12-31",
+      "overlap_start": "2016-01-31",
+      "warnings": [
+        "1 fund observation(s) have no matching return for every factor and are excluded from the factor regression (never filled)."
+      ]
+    },
+    "dependent": "fund return minus the supplied risk-free rate (RF)",
+    "factor_names": [
+      "Mkt-RF",
+      "SMB",
+      "HML"
+    ],
+    "fit": {
+      "adj_r_squared": 0.9242972678487974,
+      "alignment": {
+        "aligned_observations": 107,
+        "alignment_method": "calendar monthly period",
+        "factor_observations": 131,
+        "fund_coverage": 0.9907407407407407,
+        "fund_observations": 108,
+        "fund_only_periods": 1,
+        "overlap_end": "2024-12-31",
+        "overlap_start": "2016-01-31",
+        "warnings": [
+          "1 fund observation(s) have no matching return for every factor and are excluded from the factor regression (never filled)."
+        ]
+      },
+      "alpha_per_period": {
+        "ci_lower": -0.0009651229088824555,
+        "ci_upper": 0.005383905679261095,
+        "estimate": 0.00220939138518932,
+        "name": "alpha",
+        "p_value": 0.1704803064120756,
+        "standard_error": 0.0016006512810901406,
+        "t_statistic": 1.3803077605289458
+      },
+      "ci_level": 0.95,
+      "dependent": "fund return minus the supplied risk-free rate (RF)",
+      "df_resid": 103,
+      "factor_names": [
+        "Mkt-RF",
+        "SMB",
+        "HML"
+      ],
+      "factors": 3,
+      "hac_lags": 4,
+      "loadings": [
+        {
+          "ci_lower": 0.8481228059249927,
+          "ci_upper": 0.9499783388841522,
+          "estimate": 0.8990505724045724,
+          "name": "Mkt-RF",
+          "p_value": 5.182794238117047e-59,
+          "standard_error": 0.025678761255171628,
+          "t_statistic": 35.01144636498017
+        },
+        {
+          "ci_lower": 0.377242906652248,
+          "ci_upper": 0.5745539696632742,
+          "estimate": 0.4758984381577611,
+          "name": "SMB",
+          "p_value": 6.797613736223262e-16,
+          "standard_error": 0.04974402011224899,
+          "t_statistic": 9.566947687056272
+        },
+        {
+          "ci_lower": -0.39916547586067375,
+          "ci_upper": -0.23296230132491605,
+          "estimate": -0.3160638885927949,
+          "name": "HML",
+          "p_value": 1.8833666805858576e-11,
+          "standard_error": 0.04190142169759809,
+          "t_statistic": -7.543034956518255
+        }
+      ],
+      "max_vif": 1.1615240364533728,
+      "model": "Fama-French three-factor model",
+      "observations": 107,
+      "periods_per_year": 12.0,
+      "r_squared": 0.9264397980040201,
+      "residual_autocorrelation_lag1": 0.11397395763316043,
+      "residual_ljung_box_pvalue": 0.5896486175815245,
+      "residual_std_per_period": 0.014704950412944461,
+      "warnings": []
+    },
+    "model": "Fama-French three-factor model",
+    "reason": null,
+    "return_scale": "detected_percent",
+    "return_scale_evidence": "Median absolute value 2.205 exceeds the plausible decimal bound 0.2 for monthly returns; interpreted as percent. One scale is applied to every factor column and to the risk-free column."
+  },
+  "input": {
+    "duplicate_periods": 0,
+    "end": "2024-12-31",
+    "frequency": "monthly",
+    "frequency_evidence": "100% of consecutive observations are exactly one calendar month apart.",
+    "frequency_source": "inferred",
+    "leading_missing_trimmed": 0,
+    "missing_expected_periods": 0,
+    "missing_values": 0,
+    "name": "factor_case",
+    "observations": 108,
+    "periods_per_year": 12.0,
+    "return_scale": "detected_decimal",
+    "return_scale_evidence": "Median absolute value 0.0285005 is within the confident decimal bound 0.05 for monthly returns.",
+    "source_type": "pandas.Series",
+    "start": "2016-01-31",
+    "trailing_missing_trimmed": 0,
+    "transformations": [],
+    "warnings": [],
+    "was_sorted": true,
+    "years": 9.0
+  },
+  "interpretations": {
+    "active_return": {
+      "context": [
+        "No benchmark was supplied. Benchmark-relative metrics require explicitly supplied benchmark returns; OpenFactsheet never assumes a default benchmark."
+      ],
+      "metric_id": "active_return",
+      "plain": "How much the fund returned above (or below) the benchmark per year, on average.",
+      "professional": "Arithmetic active return, consistent with the Information Ratio numerator; differs from the difference of geometric annualized returns (the PerformanceAnalytics ActivePremium)."
+    },
+    "alpha": {
+      "context": [
+        "No benchmark was supplied. Benchmark-relative metrics require explicitly supplied benchmark returns; OpenFactsheet never assumes a default benchmark."
+      ],
+      "metric_id": "alpha",
+      "plain": "The part of the fund's yearly return that the benchmark does not explain; it depends heavily on which benchmark is used.",
+      "professional": "Jensen-style single-index alpha against the supplied benchmark with rf = 0, annualized arithmetically. Details report the per-period intercept, its standard error, t-statistic and p-value. Statistical significance, not the point estimate, indicates whether alpha is distinguishable from zero."
+    },
+    "annualized_arithmetic_mean": {
+      "context": [],
+      "metric_id": "annualized_arithmetic_mean",
+      "plain": "The average return per year if yearly results were simply added up; usually higher than the compounded annual return.",
+      "professional": "Linear annualization of the sample mean; the return component of the canonical annualized Sharpe ratio. Differs from CAGR by roughly half the variance."
+    },
+    "annualized_volatility": {
+      "context": [],
+      "metric_id": "annualized_volatility",
+      "plain": "The typical size of yearly swings implied by the period-to-period variability.",
+      "professional": "Square-root-of-time scaling assumes serially uncorrelated returns; positive autocorrelation makes it understate true annual volatility (Lo, 2002)."
+    },
+    "appraisal_ratio": {
+      "context": [
+        "No benchmark was supplied. Benchmark-relative metrics require explicitly supplied benchmark returns; OpenFactsheet never assumes a default benchmark."
+      ],
+      "metric_id": "appraisal_ratio",
+      "plain": "How much benchmark-independent return the fund earned for each unit of benchmark-independent risk it took.",
+      "professional": "Treynor & Black (1973) appraisal ratio: annualized OLS alpha over annualized residual volatility (the Information ratio of the beta-adjusted active return). It is approximately the alpha t-statistic divided by the square root of the overlap in years (exactly so when the benchmark's mean return is zero); details give that t-statistic and its p-value."
+    },
+    "arithmetic_mean": {
+      "context": [],
+      "metric_id": "arithmetic_mean",
+      "plain": "The typical return in one period (e.g. one month), ignoring compounding.",
+      "professional": "Sample mean; the numerator of Sharpe-type ratios. An estimate of the expected return with standard error roughly sigma / sqrt(n)."
+    },
+    "autocorrelation_lag1": {
+      "context": [],
+      "metric_id": "autocorrelation_lag1",
+      "plain": "Whether good or bad periods tend to be followed by similar periods. Values near zero are typical for liquid, market-priced investments.",
+      "professional": "Sample autocorrelation (full-sample variance denominator). Significant positive low-lag autocorrelation is a hallmark of return smoothing or illiquidity (Getmansky, Lo & Makarov, 2004) and biases square-root-of-time annualization. Approximate 95% significance bound: +/- 1.96 / sqrt(n)."
+    },
+    "autocorrelation_lag2": {
+      "context": [],
+      "metric_id": "autocorrelation_lag2",
+      "plain": "Whether good or bad periods tend to be followed by similar periods. Values near zero are typical for liquid, market-priced investments.",
+      "professional": "Sample autocorrelation (full-sample variance denominator). Significant positive low-lag autocorrelation is a hallmark of return smoothing or illiquidity (Getmansky, Lo & Makarov, 2004) and biases square-root-of-time annualization. Approximate 95% significance bound: +/- 1.96 / sqrt(n)."
+    },
+    "autocorrelation_lag3": {
+      "context": [],
+      "metric_id": "autocorrelation_lag3",
+      "plain": "Whether good or bad periods tend to be followed by similar periods. Values near zero are typical for liquid, market-priced investments.",
+      "professional": "Sample autocorrelation (full-sample variance denominator). Significant positive low-lag autocorrelation is a hallmark of return smoothing or illiquidity (Getmansky, Lo & Makarov, 2004) and biases square-root-of-time annualization. Approximate 95% significance bound: +/- 1.96 / sqrt(n)."
+    },
+    "average_drawdown": {
+      "context": [],
+      "metric_id": "average_drawdown",
+      "plain": "How deep the typical decline from a high point has been.",
+      "professional": "Episode-based average (PerformanceAnalytics AverageDrawdown convention); less dominated by a single event than maximum drawdown. Compare with the Pain Index, which averages over time instead of over episodes."
+    },
+    "average_drawdown_duration": {
+      "context": [],
+      "metric_id": "average_drawdown_duration",
+      "plain": "How long, on average, the investment took to get back to a previous high.",
+      "professional": "Episode-weighted average duration in observation periods; an open episode contributes a lower bound (flagged)."
+    },
+    "average_recovery_duration": {
+      "context": [],
+      "metric_id": "average_recovery_duration",
+      "plain": "Once the bottom was reached, how long it typically took to climb back to the previous high.",
+      "professional": "Average recovery length of completed episodes only; open episodes are excluded because their recovery time is unknown (disclosed in details)."
+    },
+    "batting_average": {
+      "context": [
+        "No benchmark was supplied. Benchmark-relative metrics require explicitly supplied benchmark returns; OpenFactsheet never assumes a default benchmark."
+      ],
+      "metric_id": "batting_average",
+      "plain": "How often the fund beat its benchmark: 0.6 means in 6 periods out of 10. It says nothing about by how much it won or lost.",
+      "professional": "Frequency of positive active returns (ties count as not beating). Details give the up- and down-market batting averages (PerformanceAnalytics UpDownRatios 'Percent'). A high batting average with a negative active return indicates small frequent wins and large occasional losses."
+    },
+    "bear_beta": {
+      "context": [
+        "No benchmark was supplied. Benchmark-relative metrics require explicitly supplied benchmark returns; OpenFactsheet never assumes a default benchmark."
+      ],
+      "metric_id": "bear_beta",
+      "plain": "How strongly the fund followed the benchmark when the benchmark went down; lower means better protection in falling markets.",
+      "professional": "Single-index beta estimated on the benchmark-down subsample (Fabozzi & Francis 1977), rf = 0. Details give the standard error and number of periods."
+    },
+    "best_calendar_year": {
+      "context": [],
+      "metric_id": "best_calendar_year",
+      "plain": "The best full January-to-December year.",
+      "professional": "Maximum complete-calendar-year return; partial first and last years are excluded and listed in the details, together with every complete year's return."
+    },
+    "best_period": {
+      "context": [],
+      "metric_id": "best_period",
+      "plain": "The best single period (e.g. month) the investment had.",
+      "professional": "Observed upper extreme; context for the dispersion and tail statistics."
+    },
+    "best_rolling_year": {
+      "context": [],
+      "metric_id": "best_rolling_year",
+      "plain": "The best twelve months (or one year of periods) an investor could have experienced, whatever the start date.",
+      "professional": "Maximum of all overlapping one-year compounded returns; every start date is considered, so no favorable start date can be chosen."
+    },
+    "beta": {
+      "context": [
+        "No benchmark was supplied. Benchmark-relative metrics require explicitly supplied benchmark returns; OpenFactsheet never assumes a default benchmark."
+      ],
+      "metric_id": "beta",
+      "plain": "A beta of 1 means the fund tended to move one-for-one with the benchmark; 0.5 means about half as much.",
+      "professional": "OLS beta against the supplied benchmark with rf = 0; details include the standard error and t-statistic (conventional i.i.d. errors)."
+    },
+    "bull_beta": {
+      "context": [
+        "No benchmark was supplied. Benchmark-relative metrics require explicitly supplied benchmark returns; OpenFactsheet never assumes a default benchmark."
+      ],
+      "metric_id": "bull_beta",
+      "plain": "How strongly the fund followed the benchmark when the benchmark went up.",
+      "professional": "Single-index beta estimated on the benchmark-up subsample (Fabozzi & Francis 1977), rf = 0; compare with bear-market beta for asymmetric participation. Details give the standard error and number of periods."
+    },
+    "burke_ratio": {
+      "context": [],
+      "metric_id": "burke_ratio",
+      "plain": "Return relative to the drawdowns suffered, where deep drawdowns weigh more than shallow ones.",
+      "professional": "Burke (1994): penalizes the square of every drawdown episode rather than only the worst one (Calmar) or their time-average (Martin, Pain)."
+    },
+    "cagr": {
+      "context": [],
+      "metric_id": "cagr",
+      "plain": "The average yearly growth rate, taking compounding and losses into account.",
+      "professional": "Geometric mean return annualized with the canonical periods-per-year factor; the standard GIPS-style annualized return. Always below the annualized arithmetic mean when returns vary."
+    },
+    "calmar_ratio": {
+      "context": [],
+      "metric_id": "calmar_ratio",
+      "plain": "How much yearly return was earned relative to the worst peak-to-trough loss.",
+      "professional": "Young (1991) defined Calmar on a trailing 36-month window; OpenFactsheet canonically uses the full history so that no window is chosen. Maximum drawdown grows with history length, so values fall as track records lengthen."
+    },
+    "capture_ratio": {
+      "context": [
+        "No benchmark was supplied. Benchmark-relative metrics require explicitly supplied benchmark returns; OpenFactsheet never assumes a default benchmark."
+      ],
+      "metric_id": "capture_ratio",
+      "plain": "Above 1: the fund participated more in rising markets than in falling ones. A fund with 80% upside and 60% downside capture has a capture ratio of about 1.33.",
+      "professional": "Ratio of the Morningstar-style geometric capture ratios of this report. It hides the level of participation (a fund with 10% / 5% capture has the same ratio as one with 120% / 60%); always read it with both components."
+    },
+    "cdar_95": {
+      "context": [],
+      "metric_id": "cdar_95",
+      "plain": "How deep the drawdowns were, on average, during the worst 5% of periods.",
+      "professional": "CDaR (Chekhlov, Uryasev & Zabarankin 2005): Expected Shortfall of the drawdown path, a coherent path-dependent risk measure between DaR and the maximum drawdown. Estimated exactly like historical ES (decision 0010)."
+    },
+    "correlation": {
+      "context": [
+        "No benchmark was supplied. Benchmark-relative metrics require explicitly supplied benchmark returns; OpenFactsheet never assumes a default benchmark."
+      ],
+      "metric_id": "correlation",
+      "plain": "+1 means the fund moved exactly with the benchmark, 0 no linear relation, -1 exactly opposite.",
+      "professional": "Pearson correlation; sensitive to outliers and to regime changes."
+    },
+    "cumulative_return": {
+      "context": [],
+      "metric_id": "cumulative_return",
+      "plain": "How much 1 unit invested at the start would have gained or lost by the end, with all returns reinvested.",
+      "professional": "Path-independent summary of realized compounded performance over the full track record; not comparable across different history lengths."
+    },
+    "current_drawdown": {
+      "context": [],
+      "metric_id": "current_drawdown",
+      "plain": "How far below its previous high the investment stands at the end of the data.",
+      "professional": "State variable at the reporting date; zero when the series ends at a high-water mark."
+    },
+    "downside_capture": {
+      "context": [
+        "No benchmark was supplied. Benchmark-relative metrics require explicitly supplied benchmark returns; OpenFactsheet never assumes a default benchmark."
+      ],
+      "metric_id": "downside_capture",
+      "plain": "Below 1 (100%): the fund lost less than the benchmark when the benchmark fell. Negative: the fund gained on average when the benchmark fell.",
+      "professional": "Morningstar-style geometric downside capture; read together with upside capture."
+    },
+    "downside_deviation": {
+      "context": [],
+      "metric_id": "downside_deviation",
+      "plain": "How large the losing periods typically are; gains do not count as risk here.",
+      "professional": "Lower partial moment of order 2 (root), full-sample denominator as in Sortino & Price (1994); the Sortino ratio denominator."
+    },
+    "downside_potential": {
+      "context": [],
+      "metric_id": "downside_potential",
+      "plain": "The average loss per period, counting gains as zero.",
+      "professional": "First lower partial moment at target 0; the denominator of the Omega ratio (Omega = 1 + mean / LPM1 at threshold 0). Per period, not annualized."
+    },
+    "drawdown_at_risk_95": {
+      "context": [],
+      "metric_id": "drawdown_at_risk_95",
+      "plain": "In about 1 period out of 20 the investment was at least this far below its previous high.",
+      "professional": "Drawdown-at-Risk (Chekhlov, Uryasev & Zabarankin 2005) on the compounded drawdown path, with the same linear quantile as historical VaR."
+    },
+    "drawdown_count": {
+      "context": [],
+      "metric_id": "drawdown_count",
+      "plain": "How often the investment fell below a previous high.",
+      "professional": "Context for average drawdown and durations; depends strongly on data frequency and history length."
+    },
+    "edar_95": {
+      "context": [],
+      "metric_id": "edar_95",
+      "plain": "A conservative measure of how deep drawdowns get, sitting between the Conditional Drawdown-at-Risk and the maximum drawdown.",
+      "professional": "EDaR (Cajas 2021): Entropic VaR (Ahmadi-Javid 2012) of the drawdown magnitudes; the tightest Chernoff-type bound on DaR, coherent and more tail-sensitive than CDaR. Computed by one-dimensional convex minimization."
+    },
+    "evar_95": {
+      "context": [],
+      "metric_id": "evar_95",
+      "plain": "A conservative loss threshold for bad periods, at least as severe as the Expected Shortfall and never worse than the worst period.",
+      "professional": "Entropic VaR (Ahmadi-Javid 2012) of the empirical loss distribution: the tightest Chernoff bound on VaR, coherent, and more sensitive to extreme losses than ES. Computed by one-dimensional convex minimization; signed return."
+    },
+    "excess_kurtosis": {
+      "context": [],
+      "metric_id": "excess_kurtosis",
+      "plain": "Positive values mean extreme periods (good or bad) happen more often than a bell curve would suggest.",
+      "professional": "Bias-corrected sample excess kurtosis (G2). Fat tails make volatility-based risk measures understate tail risk."
+    },
+    "expected_shortfall_historical_95": {
+      "context": [],
+      "metric_id": "expected_shortfall_historical_95",
+      "plain": "When things went badly (the worst 5% of periods), this was the average return.",
+      "professional": "Historical Expected Shortfall (CVaR); a coherent risk measure (Acerbi & Tasche, 2002) that accounts for the severity of tail losses."
+    },
+    "factor_alpha": {
+      "context": [],
+      "metric_id": "factor_alpha",
+      "plain": "The part of the fund's yearly return that the supplied factors (for example the market, size and value) do not explain. It depends entirely on which factors are used.",
+      "professional": "Multi-factor (Jensen-style) alpha, annualized arithmetically. Details report the per-period intercept with its Newey-West standard error, t-statistic, p-value and 95% confidence interval (annualized). Judge alpha by its uncertainty, not its point estimate; with smoothed returns it is biased upward."
+    },
+    "factor_alpha_t_statistic": {
+      "context": [],
+      "metric_id": "factor_alpha_t_statistic",
+      "plain": "A rough gauge of whether the unexplained return could be luck: values beyond about +2 or -2 are unlikely to arise by chance alone if the model is right.",
+      "professional": "Student-t statistic of the intercept with m - k - 1 degrees of freedom and heteroskedasticity- and autocorrelation-consistent standard errors; the p-value and interval are in the alpha details. Multiple testing across funds or models inflates apparent significance."
+    },
+    "factor_r_squared": {
+      "context": [],
+      "metric_id": "factor_r_squared",
+      "plain": "How much of the fund's ups and downs the factors account for (1 = all of it).",
+      "professional": "A low R-squared means the factor loadings and alpha describe little of the fund's risk; the factor set may be inappropriate for the strategy. Adjusted R-squared is in the details."
+    },
+    "factor_residual_volatility": {
+      "context": [],
+      "metric_id": "factor_residual_volatility",
+      "plain": "How much the fund moves for reasons the factors do not capture; the size of the manager's independent bets, whether they pay off or not.",
+      "professional": "Regression standard error annualized by the square root of time; the denominator of a factor-model appraisal ratio. Understated when returns are smoothed."
+    },
+    "gain_to_pain_ratio": {
+      "context": [],
+      "metric_id": "gain_to_pain_ratio",
+      "plain": "How much net return was earned for each unit of losses suffered along the way.",
+      "professional": "Schwager's gain-to-pain ratio on per-period returns; a simple, distribution-free complement to volatility-based ratios."
+    },
+    "gaussian_var_95": {
+      "context": [],
+      "metric_id": "gaussian_var_95",
+      "plain": "The 1-in-20 loss threshold if returns followed a bell curve. Compare it with the historical VaR: a large gap means the bell curve does not fit.",
+      "professional": "Parametric (delta-normal) VaR with population moments. Supplementary and model-dependent: it ignores skewness and fat tails, which the historical and Cornish-Fisher VaR capture."
+    },
+    "geometric_mean_return": {
+      "context": [],
+      "metric_id": "geometric_mean_return",
+      "plain": "The average compounded return per period (e.g. per month).",
+      "professional": "Per-period geometric mean; CAGR is its annualized form. Lies below the arithmetic mean by roughly half the variance (volatility drag). Needs no frequency."
+    },
+    "information_ratio": {
+      "context": [
+        "No benchmark was supplied. Benchmark-relative metrics require explicitly supplied benchmark returns; OpenFactsheet never assumes a default benchmark."
+      ],
+      "metric_id": "information_ratio",
+      "plain": "How consistently the fund beat (or lagged) its benchmark relative to how much it deviated from it.",
+      "professional": "Arithmetic ex-post Information Ratio (Grinold & Kahn), equal to the Sharpe ratio of active returns. PerformanceAnalytics divides the difference of geometric annualized returns instead."
+    },
+    "interquartile_range": {
+      "context": [],
+      "metric_id": "interquartile_range",
+      "plain": "How far apart typical good and typical bad periods are, ignoring the extremes.",
+      "professional": "Robust dispersion measure, insensitive to the tails (for normal returns IQR = 1.349 sigma). Contrast with volatility to see how much the tails drive risk. Per period."
+    },
+    "jarque_bera_pvalue": {
+      "context": [],
+      "metric_id": "jarque_bera_pvalue",
+      "plain": "A small value (below 0.05) indicates the returns are not bell-shaped, so volatility-based statistics tell only part of the story.",
+      "professional": "Jarque & Bera (1987) test with population moments and its asymptotic chi-squared(2) p-value. A diagnostic, not a performance measure: in small samples the test has low power and poor size; in very large samples trivial departures are significant."
+    },
+    "kappa_3_ratio": {
+      "context": [],
+      "metric_id": "kappa_3_ratio",
+      "plain": "Return per unit of downside risk, where large losses count much more than small ones.",
+      "professional": "Kaplan & Knowles (2004) Kappa of order 3 (Sortino is Kappa 2; Omega - 1 is Kappa 1). The cubic lower partial moment emphasizes tail losses. Per-period, not annualized."
+    },
+    "ljung_box_pvalue": {
+      "context": [],
+      "metric_id": "ljung_box_pvalue",
+      "plain": "A small value (below 0.05) suggests returns are not independent from one period to the next.",
+      "professional": "Ljung-Box portmanteau test with 3 lags (matching the reported autocorrelations). A diagnostic, not a performance measure; with very long samples trivial dependence becomes 'significant'."
+    },
+    "longest_drawdown_duration": {
+      "context": [],
+      "metric_id": "longest_drawdown_duration",
+      "plain": "The longest stretch an investor would have waited to get back to a previous high.",
+      "professional": "Peak-to-recovery duration in observation periods; an ongoing episode is a lower bound and is flagged as such."
+    },
+    "longest_losing_streak": {
+      "context": [],
+      "metric_id": "longest_losing_streak",
+      "plain": "The longest stretch of back-to-back losing periods.",
+      "professional": "Descriptive path statistic complementing drawdown duration."
+    },
+    "longest_winning_streak": {
+      "context": [],
+      "metric_id": "longest_winning_streak",
+      "plain": "The longest stretch of back-to-back gaining periods.",
+      "professional": "Descriptive path statistic; unusually long streaks relative to the hit rate can indicate smoothing."
+    },
+    "m_squared": {
+      "context": [
+        "No benchmark was supplied. Benchmark-relative metrics require explicitly supplied benchmark returns; OpenFactsheet never assumes a default benchmark."
+      ],
+      "metric_id": "m_squared",
+      "plain": "Puts the fund and the benchmark on the same risk footing: the return the fund would have delivered at the benchmark's volatility. Compare it with the benchmark's own return (details).",
+      "professional": "Modigliani & Modigliani (1997) M-squared with rf = 0 on the aligned overlap: the aligned-sample Sharpe ratio times the benchmark's annualized volatility. It ranks funds exactly as the Sharpe ratio does, but in return units. Details give the benchmark's annualized mean and the difference (M-squared excess)."
+    },
+    "martin_ratio": {
+      "context": [],
+      "metric_id": "martin_ratio",
+      "plain": "Return relative to how deep and prolonged the declines were.",
+      "professional": "Ulcer Performance Index (Martin & McCann, 1989); penalizes both depth and duration of drawdowns rather than volatility."
+    },
+    "max_drawdown": {
+      "context": [],
+      "metric_id": "max_drawdown",
+      "plain": "The worst loss an investor would have suffered buying at a high point and selling at the following low point.",
+      "professional": "Path-dependent realized loss; always shown. Expected maximum drawdown grows with history length and volatility (Magdon-Ismail & Atiya, 2004), so compare only across similar horizons."
+    },
+    "max_peak_to_trough_duration": {
+      "context": [],
+      "metric_id": "max_peak_to_trough_duration",
+      "plain": "The longest stretch during which losses kept deepening before the turnaround.",
+      "professional": "Maximum peak-to-trough length in observation periods; complements the total duration, which also includes the recovery."
+    },
+    "mean_absolute_deviation": {
+      "context": [],
+      "metric_id": "mean_absolute_deviation",
+      "plain": "The typical size of a period's deviation from the average, without squaring (so single extreme periods weigh less than in volatility).",
+      "professional": "Mean absolute deviation around the mean (the L1 dispersion used in Konno-Yamazaki portfolio models); for normal returns MAD = sqrt(2/pi) sigma. Per period."
+    },
+    "mean_return_standard_error": {
+      "context": [],
+      "metric_id": "mean_return_standard_error",
+      "plain": "How precisely the average return is known. If the confidence interval includes zero, the history cannot distinguish the average return from zero.",
+      "professional": "Student-t interval and two-sided t-test for the mean with n - 1 degrees of freedom (exact under normal i.i.d. returns, asymptotically valid otherwise). Serial correlation widens the true interval."
+    },
+    "median_drawdown": {
+      "context": [],
+      "metric_id": "median_drawdown",
+      "plain": "The depth of a typical decline from a previous high; unlike the average it is not pulled down by one extreme episode.",
+      "professional": "Robust counterpart of the episode-based average drawdown; many shallow episodes make it close to zero."
+    },
+    "median_return": {
+      "context": [],
+      "metric_id": "median_return",
+      "plain": "Half of the periods did better than this and half did worse.",
+      "professional": "Robust location estimate, insensitive to a few extreme periods. A median well above the mean indicates occasional large losses (negative skew)."
+    },
+    "minimum_track_record_length": {
+      "context": [
+        "The history is 120 period(s) shorter than the minimum track record length needed for the observed Sharpe ratio to be significant at 95%."
+      ],
+      "metric_id": "minimum_track_record_length",
+      "plain": "How long a track record this investment would need before its risk-adjusted return could be told apart from luck. If it exceeds the actual history, the record is too short to be conclusive.",
+      "professional": "Bailey & Lopez de Prado (2012) MinTRL at 95% one-sided confidence with SR* = 0, in observation periods (details give years and whether the actual history suffices). Depends on the observed Sharpe ratio, skewness and kurtosis."
+    },
+    "modified_es_95": {
+      "context": [],
+      "metric_id": "modified_es_95",
+      "plain": "The average loss in the worst 5% of periods implied by a skew- and fat-tail-adjusted distribution. Compare with the historical Expected Shortfall.",
+      "professional": "Modified ES of Boudt, Peterson & Croux (2008), the Cornish-Fisher analogue of the historical ES, with population moments and the full second-order expansion. Supplementary and model-dependent; for extreme skewness or kurtosis the expansion can make it less severe than the modified VaR, which is flagged."
+    },
+    "modified_var_95": {
+      "context": [],
+      "metric_id": "modified_var_95",
+      "plain": "A 1-in-20 loss threshold that accounts for lopsided and fat-tailed returns.",
+      "professional": "Cornish-Fisher modified VaR (Zangari 1996; Favre & Galeano 2002) with population moments as in Boudt, Peterson & Croux (2008). Reduces to the Gaussian VaR when S = K = 0. Supplementary and model-dependent."
+    },
+    "negative_period_pct": {
+      "context": [],
+      "metric_id": "negative_period_pct",
+      "plain": "How often the investment lost money in a period.",
+      "professional": "Loss frequency on the supplied frequency; together with positive periods it also reveals the share of exactly-zero periods."
+    },
+    "omega_ratio": {
+      "context": [],
+      "metric_id": "omega_ratio",
+      "plain": "Total gains divided by total losses; above 1 means gains outweighed losses.",
+      "professional": "Keating & Shadwick (2002) Omega at threshold 0, using the full empirical distribution (all moments). Equals 1 + mean / lower partial moment of order 1."
+    },
+    "pain_index": {
+      "context": [],
+      "metric_id": "pain_index",
+      "plain": "How far below its previous high the investment was, on average, over the whole history.",
+      "professional": "Zephyr Pain Index (see Bacon); time-weighted, unlike the episode-based average drawdown."
+    },
+    "pain_ratio": {
+      "context": [],
+      "metric_id": "pain_ratio",
+      "plain": "Return relative to how far below its previous highs the investment typically was.",
+      "professional": "Zephyr Pain ratio (see Bacon): like the Martin ratio but with the mean rather than the root-mean-square drawdown, so deep drawdowns weigh less."
+    },
+    "payoff_ratio": {
+      "context": [],
+      "metric_id": "payoff_ratio",
+      "plain": "How big the typical gain is compared with the typical loss. Read it together with the share of positive periods: a low payoff with a high hit rate can still be profitable, and vice versa.",
+      "professional": "Win/loss (payoff) ratio on the supplied frequency; zero-return periods are excluded from both averages. The expectation per period equals hit rate x average win - loss rate x average loss."
+    },
+    "positive_calendar_years_pct": {
+      "context": [],
+      "metric_id": "positive_calendar_years_pct",
+      "plain": "How many full years ended with a gain.",
+      "professional": "Calendar-year hit rate; the details list every complete year's return and every excluded partial year."
+    },
+    "positive_period_pct": {
+      "context": [],
+      "metric_id": "positive_period_pct",
+      "plain": "How often the investment made money in a period.",
+      "professional": "Win rate on the supplied frequency; says nothing about the size of wins and losses (see gain-to-pain, Omega). A very high hit rate with small gains can mask rare large losses."
+    },
+    "positive_rolling_year_pct": {
+      "context": [],
+      "metric_id": "positive_rolling_year_pct",
+      "plain": "If you had invested at any point and held for one year, how often you would have ended with a gain.",
+      "professional": "Rolling one-year hit rate over all start dates. Windows overlap, so it is a descriptive statistic, not a probability estimate."
+    },
+    "probabilistic_sharpe_ratio": {
+      "context": [
+        "PSR = 0.87: the Sharpe ratio is not statistically distinguishable from zero at the 95% level; the track record cannot separate skill from luck."
+      ],
+      "metric_id": "probabilistic_sharpe_ratio",
+      "plain": "How confident one can be, statistically, that the investment's risk-adjusted return is genuinely positive rather than luck. Values near 1 mean strong evidence; 0.5 means no evidence either way.",
+      "professional": "Bailey & Lopez de Prado (2012) PSR with benchmark SR* = 0 on the per-period (non-annualized) Sharpe ratio, using moment skewness and non-excess kurtosis. Unlike PerformanceAnalytics' default, kurtosis is not ignored: fat tails reduce confidence."
+    },
+    "r_squared": {
+      "context": [
+        "No benchmark was supplied. Benchmark-relative metrics require explicitly supplied benchmark returns; OpenFactsheet never assumes a default benchmark."
+      ],
+      "metric_id": "r_squared",
+      "plain": "How closely the fund's ups and downs followed the benchmark (1 = perfectly).",
+      "professional": "Low R-squared means beta and alpha say little about the fund; the benchmark may be inappropriate."
+    },
+    "recovery_factor": {
+      "context": [],
+      "metric_id": "recovery_factor",
+      "plain": "How many times over the investment earned back its worst decline.",
+      "professional": "Net compounded profit over the maximum drawdown (a practitioner measure used in trading-system evaluation). Not annualized, so it grows with the length of the track record; compare only across equal histories."
+    },
+    "residual_volatility": {
+      "context": [
+        "No benchmark was supplied. Benchmark-relative metrics require explicitly supplied benchmark returns; OpenFactsheet never assumes a default benchmark."
+      ],
+      "metric_id": "residual_volatility",
+      "plain": "How much the fund moved for reasons unrelated to its benchmark. Near zero means the fund behaves like the benchmark (scaled by beta).",
+      "professional": "Specific (idiosyncratic, non-systematic) risk: the regression standard error of the single-index model, annualized by sqrt(P). Details give the systematic risk |beta| x benchmark volatility. Unlike tracking error it is measured after scaling by beta."
+    },
+    "semi_deviation": {
+      "context": [],
+      "metric_id": "semi_deviation",
+      "plain": "How large the below-average periods typically are.",
+      "professional": "Downside deviation with the sample mean as target (Markowitz semi-variance, square root), full-sample denominator. Unlike downside deviation it measures dispersion below the mean, not losses."
+    },
+    "sharpe_ratio": {
+      "context": [
+        "The return distribution is negatively skewed and/or fat-tailed. Volatility-based ratios such as Sharpe do not reflect such tail risk; compare with maximum drawdown and Expected Shortfall."
+      ],
+      "metric_id": "sharpe_ratio",
+      "plain": "The Sharpe ratio compares excess return with total return variability. Higher values indicate more return per unit of measured volatility, but the statistic can be misleading when returns are smoothed, strongly skewed, serially correlated, or have significant tail risk.",
+      "professional": "Ex-post Sharpe (1994) with arithmetic mean and square-root-of-time annualization. Serial dependence biases the annualized value (Lo, 2002); smoothed returns inflate it (Getmansky, Lo & Makarov, 2004). Standard error is roughly sqrt((1 + SR^2/2) / years) under i.i.d. normality."
+    },
+    "sharpe_ratio_standard_error": {
+      "context": [],
+      "metric_id": "sharpe_ratio_standard_error",
+      "plain": "How precisely the Sharpe ratio is known. A Sharpe ratio of 1.0 with a standard error of 0.5 could plausibly be anywhere from about 0 to 2.",
+      "professional": "Non-normal i.i.d. asymptotic standard error (Mertens 2002; Opdyke 2007), scaled by sqrt(P) like the annualized Sharpe ratio. The details report the two-sided 95% interval (z = 1.96); PerformanceAnalytics' interval uses the one-sided quantile and is therefore a 90% interval."
+    },
+    "skewness": {
+      "context": [],
+      "metric_id": "skewness",
+      "plain": "Negative values mean occasional large losses and many small gains; positive values mean occasional large gains.",
+      "professional": "Bias-corrected sample skewness (Joanes & Gill type G1). Negative skew combined with a high Sharpe ratio is a classic signature of hidden tail risk."
+    },
+    "sortino_ratio": {
+      "context": [],
+      "metric_id": "sortino_ratio",
+      "plain": "Like the Sharpe ratio, but only losing periods count as risk.",
+      "professional": "Sortino & Price (1994) with MAR = 0 and full-sample downside deviation. Downside deviation from few losses is noisy; the ratio is undefined without losses."
+    },
+    "sterling_ratio": {
+      "context": [],
+      "metric_id": "sterling_ratio",
+      "plain": "Like the Calmar ratio, but the fixed 10% added to the worst loss keeps the ratio from exploding for investments with tiny drawdowns.",
+      "professional": "Sterling-type ratio in the form popularized by Kestner (1996) and Bacon, using the full-history maximum drawdown. The 10% adjustment is a historical convention, not an estimate; definitions in the literature vary (e.g. averages of annual maximum drawdowns)."
+    },
+    "tail_ratio": {
+      "context": [],
+      "metric_id": "tail_ratio",
+      "plain": "Above 1: the best periods were larger than the worst periods were bad.",
+      "professional": "Quantile-based asymmetry measure, robust to single extremes but noisy in short samples."
+    },
+    "time_underwater_pct": {
+      "context": [],
+      "metric_id": "time_underwater_pct",
+      "plain": "The share of the time the investment was below a previous high.",
+      "professional": "Complements depth measures with persistence; high values with shallow drawdowns indicate grinding rather than crash risk."
+    },
+    "timing_ratio": {
+      "context": [
+        "No benchmark was supplied. Benchmark-relative metrics require explicitly supplied benchmark returns; OpenFactsheet never assumes a default benchmark."
+      ],
+      "metric_id": "timing_ratio",
+      "plain": "Above 1: the fund was more sensitive to rising than to falling markets.",
+      "professional": "Ratio of subsample betas (PerformanceAnalytics TimingRatio). Both betas are noisy, so the ratio is very noisy; it is descriptive, not evidence of timing skill. Formal timing tests (Treynor-Mazuy, Henriksson-Merton) are not part of methodology 0.1.0."
+    },
+    "tracking_error": {
+      "context": [
+        "No benchmark was supplied. Benchmark-relative metrics require explicitly supplied benchmark returns; OpenFactsheet never assumes a default benchmark."
+      ],
+      "metric_id": "tracking_error",
+      "plain": "How much the fund's results differed from the benchmark from period to period.",
+      "professional": "Ex-post tracking error (active risk); the Information Ratio denominator."
+    },
+    "treynor_ratio": {
+      "context": [
+        "No benchmark was supplied. Benchmark-relative metrics require explicitly supplied benchmark returns; OpenFactsheet never assumes a default benchmark."
+      ],
+      "metric_id": "treynor_ratio",
+      "plain": "Return earned per unit of market (benchmark) risk taken.",
+      "professional": "Treynor (1965) with arithmetic annualized mean on the aligned sample; only meaningful for well-diversified portfolios with a stable, clearly positive beta."
+    },
+    "ulcer_index": {
+      "context": [],
+      "metric_id": "ulcer_index",
+      "plain": "A single number for how deep and how long-lasting the declines were; 0 means the investment never fell below a previous high.",
+      "professional": "Martin & McCann's Ulcer Index on the canonical drawdown path; the denominator of the Martin ratio (Ulcer Performance Index)."
+    },
+    "upside_capture": {
+      "context": [
+        "No benchmark was supplied. Benchmark-relative metrics require explicitly supplied benchmark returns; OpenFactsheet never assumes a default benchmark."
+      ],
+      "metric_id": "upside_capture",
+      "plain": "Above 1 (100%): the fund gained more than the benchmark when the benchmark rose.",
+      "professional": "Morningstar-style geometric upside capture; read together with downside capture."
+    },
+    "upside_potential_ratio": {
+      "context": [],
+      "metric_id": "upside_potential_ratio",
+      "plain": "How much upside the investment delivered for each unit of downside it exposed investors to.",
+      "professional": "Sortino, van der Meer & Plantinga (1999): first upper partial moment over the square root of the second lower partial moment, both at target 0 with full-sample denominators. Per-period, not annualized."
+    },
+    "var_historical_95": {
+      "context": [],
+      "metric_id": "var_historical_95",
+      "plain": "In about 1 period out of 20, the return was this bad or worse.",
+      "professional": "Historical-simulation VaR at 95% for one observation period; says nothing about losses beyond the threshold (see Expected Shortfall)."
+    },
+    "volatility": {
+      "context": [],
+      "metric_id": "volatility",
+      "plain": "How much returns typically swing from one period to the next; higher means a bumpier ride.",
+      "professional": "Sample standard deviation of per-period returns; symmetric, treats upside and downside deviations alike."
+    },
+    "worst_calendar_year": {
+      "context": [],
+      "metric_id": "worst_calendar_year",
+      "plain": "The worst full January-to-December year.",
+      "professional": "Minimum complete-calendar-year return; always shown, including when it is unfavorable."
+    },
+    "worst_period": {
+      "context": [],
+      "metric_id": "worst_period",
+      "plain": "The worst single period (e.g. month) the investment had.",
+      "professional": "Observed lower extreme; a model-free loss statistic that is always shown."
+    },
+    "worst_rolling_year": {
+      "context": [],
+      "metric_id": "worst_rolling_year",
+      "plain": "The worst twelve months (or one year of periods) an investor could have experienced, whatever the start date.",
+      "professional": "Minimum of all overlapping one-year compounded returns; a start-date-free worst case that is often much worse than the worst calendar year."
+    },
+    "zero_return_pct": {
+      "context": [],
+      "metric_id": "zero_return_pct",
+      "plain": "Many exactly-zero periods can mean prices were not updated (stale pricing).",
+      "professional": "Stale-price indicator; exact zeros are rare for marked-to-market portfolios and suppress measured volatility."
+    }
+  },
+  "methodology": {
+    "conventions": {
+      "annual_return": {
+        "description": "geometric (CAGR): (prod(1 + r))^(periods_per_year / n) - 1; the arithmetic mean x periods_per_year is reported separately",
+        "method": "geometric"
+      },
+      "annualization": {
+        "irregular": "not annualized",
+        "periods_per_year": {
+          "daily_business": 252.0,
+          "daily_calendar": 365.0,
+          "monthly": 12.0,
+          "quarterly": 4.0,
+          "weekly": 52.0,
+          "yearly": 1.0
+        },
+        "scaling": "square-root-of-time for volatility; linear for arithmetic means",
+        "unknown": "not annualized unless the caller declares the observation frequency"
+      },
+      "benchmark": {
+        "alignment": "intersection of periods; never filled",
+        "alpha_annualization": "arithmetic: per-period intercept x periods_per_year",
+        "appraisal_ratio": "annualized OLS alpha / annualized residual volatility",
+        "batting_average": "share of aligned periods with fund return strictly above benchmark",
+        "capture": "geometric, annualized over up (benchmark > 0) or down (benchmark < 0) periods",
+        "capture_ratio": "upside capture / downside capture; undefined unless downside capture > 0",
+        "description": "periods aligned on their intersection (monthly/quarterly/yearly by calendar period, daily/weekly by exact date); missing benchmark returns are never filled",
+        "information_ratio": "annualized arithmetic mean active return / tracking error",
+        "m_squared": "aligned Sharpe ratio x benchmark volatility, arithmetic annualization",
+        "regime_betas": "OLS with intercept on benchmark > 0 (bull) or < 0 (bear) periods",
+        "regression": "OLS of fund on benchmark returns (risk-free = 0)",
+        "residual_volatility": "OLS regression standard error (m - 2 dof) x sqrt(periods_per_year)",
+        "timing_ratio": "bull beta / bear beta; undefined unless bear beta > 0"
+      },
+      "calendar_years": {
+        "daily_weekly_edge_tolerance_days": 7,
+        "monthly": "all 12 calendar months observed",
+        "quarterly": "all 4 calendar quarters observed",
+        "yearly": "the year's observation"
+      },
+      "charts": {
+        "bar_baseline": "bars always grow from zero; the value axis always includes zero",
+        "benchmark": "compared only over the aligned overlap, both rebased to 1.0 at its start",
+        "episode_table": "deepest drawdown episodes first (ties: earliest peak); all in JSON",
+        "episode_table_rows": 10,
+        "heatmap_scale": "diverging, symmetric around zero at the largest absolute month",
+        "histogram_bins": "Freedman-Diaconis width clipped to 10 to 40 bins over the range; edges then aligned at zero, which can add one bin",
+        "histogram_max_bins": 40,
+        "histogram_min_bins": 10,
+        "history": "every chart spans the full analyzed history; no start date is chosen",
+        "partial_years": "shown outlined and labelled partial; never styled as full years",
+        "rolling_windows": "the one-year windows of the rolling metrics (rolling.*)",
+        "wealth_scale": "linear, starting at 1.0 one period before the first return"
+      },
+      "confidence": {
+        "annualization_min_years": 1.0,
+        "benchmark_min_coverage": 0.9,
+        "factor_min_coverage": 0.9
+      },
+      "dependence": {
+        "acf_lags": [
+          1,
+          2,
+          3
+        ],
+        "description": "sample autocorrelation (full-sample variance denominator)",
+        "ljung_box_lags": 3
+      },
+      "dispersion": {
+        "ddof": 1,
+        "description": "sample standard deviation (n - 1 denominator)"
+      },
+      "distribution": {
+        "description": "bias-corrected sample estimators G1 and G2 (as pandas / Excel)",
+        "kurtosis": "bias-corrected sample excess kurtosis G2",
+        "skewness": "adjusted Fisher-Pearson G1 (bias-corrected sample skewness)"
+      },
+      "distribution_warning": {
+        "excess_kurtosis_at_or_above": 3.0,
+        "min_observations": 24,
+        "skewness_at_or_below": -1.0
+      },
+      "downside": {
+        "denominator": "full_sample",
+        "description": "target (MAR) = 0% per period; downside deviation = sqrt(sum(min(r - MAR, 0)^2) / n) using all n observations",
+        "mar": 0.0
+      },
+      "drawdown": {
+        "description": "wealth index starts at 1 before the first return, so a first-period loss is a drawdown; drawdowns reported as signed returns (negative = loss)",
+        "initial_wealth_is_peak": true
+      },
+      "drawdown_risk": {
+        "confidence": 0.95,
+        "quantile_method": "linear"
+      },
+      "entropic": {
+        "confidence": 0.95
+      },
+      "factor_model": {
+        "alignment": "periods where the fund and every factor have a return; never filled",
+        "alpha_annualization": "arithmetic: per-period intercept x periods_per_year",
+        "ci_level": 0.95,
+        "covariance": "Newey-West HAC, Bartlett kernel, small-sample factor m / (m - k - 1)",
+        "estimator": "OLS with intercept of fund (excess) returns on the supplied factors",
+        "hac_lag_rule": "floor(4 * (m / 100) ** (2 / 9))",
+        "inference": "Student t with m - k - 1 degrees of freedom",
+        "ljung_box_min_observations": 10,
+        "risk_free": "a factor column named RF is subtracted from fund returns; without one the dependent variable is the fund return (risk-free rate 0%)",
+        "vif_warning": 10.0
+      },
+      "lower_partial_moments": {
+        "denominator": "full_sample",
+        "kappa_order": 3,
+        "target": 0.0
+      },
+      "mean_inference": {
+        "ci_level": 0.95
+      },
+      "missing_data": {
+        "description": "missing returns are never replaced by zero or forward-filled; leading and trailing gaps are trimmed, interior gaps are disclosed and the remaining observations are analyzed"
+      },
+      "modified_es": {
+        "confidence": 0.95,
+        "moments": "population"
+      },
+      "omega": {
+        "description": "threshold = 0% per period, simple (empirical) estimator",
+        "threshold": 0.0
+      },
+      "outliers": {
+        "description": "robust z-score |r - median| / (1.4826 * MAD) above 5 is flagged (never removed)",
+        "robust_z_threshold": 5.0
+      },
+      "parametric_var": {
+        "confidence": 0.95,
+        "moments": "population"
+      },
+      "return_scale": {
+        "confident_divisor": 4.0,
+        "decimal_median_abs_upper": {
+          "daily": 0.05,
+          "irregular": 0.3,
+          "monthly": 0.2,
+          "quarterly": 0.3,
+          "unknown": 0.3,
+          "weekly": 0.1,
+          "yearly": 0.6
+        }
+      },
+      "return_type": "simple",
+      "risk_free": {
+        "description": "0% per period in methodology 0.1.0 for all excess-return metrics (Sharpe, Sortino, Calmar, Martin, alpha, Treynor). Ratios are therefore total-return ratios; this is disclosed on every affected metric.",
+        "rate": 0.0
+      },
+      "rolling": {
+        "step_periods": 1,
+        "window_years": 1
+      },
+      "sharpe_inference": {
+        "ci_level": 0.95,
+        "min_track_record_confidence": 0.95,
+        "moments": "population skewness g1 and non-excess kurtosis m4 / m2^2",
+        "reference_sharpe": 0.0
+      },
+      "smoothing": {
+        "high": {
+          "lag1_min": 0.3,
+          "z_min": 1.96
+        },
+        "min_observations": 12,
+        "moderate": {
+          "lag1_min": 0.15,
+          "z_min": 1.645
+        },
+        "reference": "Getmansky, Lo & Makarov (2004), Journal of Financial Economics 74(3)"
+      },
+      "stale_returns": {
+        "identical_run_warning": 3,
+        "zero_share_warning": 0.1
+      },
+      "sterling": {
+        "excess": 0.1
+      },
+      "tail": {
+        "description": "historical 95% VaR = 5% empirical quantile (linear interpolation, R type 7); 95% ES = mean of returns at or below that quantile; both reported as signed returns (negative = loss)",
+        "es_confidence": 0.95,
+        "quantile_method": "linear",
+        "sign": "signed return (negative = loss)",
+        "var_confidence": 0.95
+      }
+    },
+    "name": "OpenFactsheet Methodology 0.1.0",
+    "version": "0.1.0"
+  },
+  "metrics": [
+    {
+      "assumptions": [],
+      "category": "returns",
+      "confidence": "high",
+      "details": {},
+      "direction": "higher_is_better",
+      "formula_id": "cumulative_return@v1",
+      "id": "cumulative_return",
+      "methodology_version": "0.1.0",
+      "name": "Cumulative return",
+      "nature": "observed",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "decimal_return",
+      "value": 0.5682279101105308,
+      "warnings": []
+    },
+    {
+      "assumptions": [
+        "Annualized with 12 periods per year (monthly frequency, inferred from dates)."
+      ],
+      "category": "returns",
+      "confidence": "high",
+      "details": {},
+      "direction": "higher_is_better",
+      "formula_id": "cagr@v1",
+      "id": "cagr",
+      "methodology_version": "0.1.0",
+      "name": "Annualized return (CAGR)",
+      "nature": "derived",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "decimal_return",
+      "value": 0.05126481939540395,
+      "warnings": []
+    },
+    {
+      "assumptions": [],
+      "category": "returns",
+      "confidence": "high",
+      "details": {},
+      "direction": "higher_is_better",
+      "formula_id": "arithmetic_mean@v1",
+      "id": "arithmetic_mean",
+      "methodology_version": "0.1.0",
+      "name": "Mean return per period",
+      "nature": "estimated",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "decimal_return",
+      "value": 0.005530296296296298,
+      "warnings": []
+    },
+    {
+      "assumptions": [],
+      "category": "returns",
+      "confidence": "high",
+      "details": {},
+      "direction": "higher_is_better",
+      "formula_id": "geometric_mean_return@v1",
+      "id": "geometric_mean_return",
+      "methodology_version": "0.1.0",
+      "name": "Geometric mean return per period",
+      "nature": "derived",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "decimal_return",
+      "value": 0.0041748596414927786,
+      "warnings": []
+    },
+    {
+      "assumptions": [
+        "Annualized with 12 periods per year (monthly frequency, inferred from dates)."
+      ],
+      "category": "returns",
+      "confidence": "high",
+      "details": {},
+      "direction": "higher_is_better",
+      "formula_id": "annualized_arithmetic_mean@v1",
+      "id": "annualized_arithmetic_mean",
+      "methodology_version": "0.1.0",
+      "name": "Annualized mean return (arithmetic)",
+      "nature": "estimated",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "decimal_return",
+      "value": 0.06636355555555558,
+      "warnings": []
+    },
+    {
+      "assumptions": [],
+      "category": "returns",
+      "confidence": "high",
+      "details": {},
+      "direction": "higher_is_better",
+      "formula_id": "median_return@v1",
+      "id": "median_return",
+      "methodology_version": "0.1.0",
+      "name": "Median return per period",
+      "nature": "estimated",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "decimal_return",
+      "value": 0.0005565,
+      "warnings": []
+    },
+    {
+      "assumptions": [],
+      "category": "returns",
+      "confidence": "high",
+      "details": {
+        "date": "2020-05-31",
+        "position": 53
+      },
+      "direction": "higher_is_better",
+      "formula_id": "best_period@v1",
+      "id": "best_period",
+      "methodology_version": "0.1.0",
+      "name": "Best period",
+      "nature": "observed",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "decimal_return",
+      "value": 0.281941,
+      "warnings": []
+    },
+    {
+      "assumptions": [],
+      "category": "returns",
+      "confidence": "high",
+      "details": {
+        "date": "2021-09-30",
+        "position": 69
+      },
+      "direction": "higher_is_better",
+      "formula_id": "worst_period@v1",
+      "id": "worst_period",
+      "methodology_version": "0.1.0",
+      "name": "Worst period",
+      "nature": "observed",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "decimal_return",
+      "value": -0.167464,
+      "warnings": []
+    },
+    {
+      "assumptions": [],
+      "category": "returns",
+      "confidence": "high",
+      "details": {},
+      "direction": "higher_is_better",
+      "formula_id": "gain_to_pain_ratio@v1",
+      "id": "gain_to_pain_ratio",
+      "methodology_version": "0.1.0",
+      "name": "Gain-to-pain ratio",
+      "nature": "derived",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "ratio",
+      "value": 0.3429172470256722,
+      "warnings": []
+    },
+    {
+      "assumptions": [],
+      "category": "returns",
+      "confidence": "high",
+      "details": {
+        "average_gain": 0.041768035714285716,
+        "average_loss": -0.03349496153846153
+      },
+      "direction": "higher_is_better",
+      "formula_id": "payoff_ratio@v1",
+      "id": "payoff_ratio",
+      "methodology_version": "0.1.0",
+      "name": "Payoff ratio (average win / average loss)",
+      "nature": "derived",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "ratio",
+      "value": 1.2469945865238388,
+      "warnings": []
+    },
+    {
+      "assumptions": [
+        "Sample standard deviation (n - 1 denominator)."
+      ],
+      "category": "volatility",
+      "confidence": "high",
+      "details": {},
+      "direction": "lower_is_better",
+      "formula_id": "volatility@v1",
+      "id": "volatility",
+      "methodology_version": "0.1.0",
+      "name": "Volatility per period",
+      "nature": "estimated",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "decimal_return",
+      "value": 0.05323182027017181,
+      "warnings": [
+        "Returns are far from normal (skewness 1.14, excess kurtosis 6.44); volatility does not capture tail risk. See the drawdown and tail sections."
+      ]
+    },
+    {
+      "assumptions": [
+        "Sample standard deviation (n - 1 denominator).",
+        "Annualized with 12 periods per year (monthly frequency, inferred from dates)."
+      ],
+      "category": "volatility",
+      "confidence": "high",
+      "details": {},
+      "direction": "lower_is_better",
+      "formula_id": "annualized_volatility@v1",
+      "id": "annualized_volatility",
+      "methodology_version": "0.1.0",
+      "name": "Annualized volatility",
+      "nature": "estimated",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "decimal_return",
+      "value": 0.18440043457462482,
+      "warnings": [
+        "Returns are far from normal (skewness 1.14, excess kurtosis 6.44); volatility does not capture tail risk. See the drawdown and tail sections."
+      ]
+    },
+    {
+      "assumptions": [],
+      "category": "volatility",
+      "confidence": "high",
+      "details": {},
+      "direction": "lower_is_better",
+      "formula_id": "mean_absolute_deviation@v1",
+      "id": "mean_absolute_deviation",
+      "methodology_version": "0.1.0",
+      "name": "Mean absolute deviation",
+      "nature": "estimated",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "decimal_return",
+      "value": 0.038117890260631004,
+      "warnings": [
+        "Returns are far from normal (skewness 1.14, excess kurtosis 6.44); volatility does not capture tail risk. See the drawdown and tail sections."
+      ]
+    },
+    {
+      "assumptions": [],
+      "category": "volatility",
+      "confidence": "high",
+      "details": {},
+      "direction": "lower_is_better",
+      "formula_id": "interquartile_range@v1",
+      "id": "interquartile_range",
+      "methodology_version": "0.1.0",
+      "name": "Interquartile range",
+      "nature": "estimated",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "decimal_return",
+      "value": 0.0550215,
+      "warnings": [
+        "Returns are far from normal (skewness 1.14, excess kurtosis 6.44); volatility does not capture tail risk. See the drawdown and tail sections."
+      ]
+    },
+    {
+      "assumptions": [
+        "Minimum acceptable return (target) = 0% per period; downside deviation uses all observations in the denominator.",
+        "Annualized with 12 periods per year (monthly frequency, inferred from dates)."
+      ],
+      "category": "volatility",
+      "confidence": "high",
+      "details": {},
+      "direction": "lower_is_better",
+      "formula_id": "downside_deviation@v1",
+      "id": "downside_deviation",
+      "methodology_version": "0.1.0",
+      "name": "Downside deviation (annualized)",
+      "nature": "estimated",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "decimal_return",
+      "value": 0.1055731096886576,
+      "warnings": [
+        "Returns are far from normal (skewness 1.14, excess kurtosis 6.44); volatility does not capture tail risk. See the drawdown and tail sections."
+      ]
+    },
+    {
+      "assumptions": [
+        "Annualized with 12 periods per year (monthly frequency, inferred from dates)."
+      ],
+      "category": "volatility",
+      "confidence": "high",
+      "details": {},
+      "direction": "lower_is_better",
+      "formula_id": "semi_deviation@v1",
+      "id": "semi_deviation",
+      "methodology_version": "0.1.0",
+      "name": "Semi-deviation (annualized)",
+      "nature": "estimated",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "decimal_return",
+      "value": 0.11608961927997843,
+      "warnings": [
+        "Returns are far from normal (skewness 1.14, excess kurtosis 6.44); volatility does not capture tail risk. See the drawdown and tail sections."
+      ]
+    },
+    {
+      "assumptions": [
+        "Minimum acceptable return (target) = 0% per period; downside deviation uses all observations in the denominator."
+      ],
+      "category": "volatility",
+      "confidence": "high",
+      "details": {},
+      "direction": "lower_is_better",
+      "formula_id": "downside_potential@v1",
+      "id": "downside_potential",
+      "methodology_version": "0.1.0",
+      "name": "Downside potential (LPM 1)",
+      "nature": "estimated",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "decimal_return",
+      "value": 0.016127203703703703,
+      "warnings": []
+    },
+    {
+      "assumptions": [
+        "Wealth index starts at 1 before the first return; drawdowns are measured from running peaks of compounded wealth."
+      ],
+      "category": "drawdown",
+      "confidence": "high",
+      "details": {
+        "duration_periods": 40,
+        "peak_date": "2021-08-31",
+        "peak_to_trough_periods": 39,
+        "recovered": false,
+        "recovery_date": null,
+        "trough_date": "2024-11-30"
+      },
+      "direction": "higher_is_better",
+      "formula_id": "max_drawdown@v1",
+      "id": "max_drawdown",
+      "methodology_version": "0.1.0",
+      "name": "Maximum drawdown",
+      "nature": "observed",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "decimal_return",
+      "value": -0.5003764009762672,
+      "warnings": [
+        "The deepest drawdown has not recovered by the end of the data; the loss is still open."
+      ]
+    },
+    {
+      "assumptions": [
+        "Wealth index starts at 1 before the first return; drawdowns are measured from running peaks of compounded wealth."
+      ],
+      "category": "drawdown",
+      "confidence": "high",
+      "details": {
+        "episodes": 11
+      },
+      "direction": "higher_is_better",
+      "formula_id": "average_drawdown@v1",
+      "id": "average_drawdown",
+      "methodology_version": "0.1.0",
+      "name": "Average drawdown (per episode)",
+      "nature": "observed",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "decimal_return",
+      "value": -0.10195791480505441,
+      "warnings": []
+    },
+    {
+      "assumptions": [
+        "Wealth index starts at 1 before the first return; drawdowns are measured from running peaks of compounded wealth."
+      ],
+      "category": "drawdown",
+      "confidence": "high",
+      "details": {},
+      "direction": "higher_is_better",
+      "formula_id": "current_drawdown@v1",
+      "id": "current_drawdown",
+      "methodology_version": "0.1.0",
+      "name": "Current drawdown",
+      "nature": "observed",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "decimal_return",
+      "value": -0.48139370195495956,
+      "warnings": []
+    },
+    {
+      "assumptions": [
+        "Wealth index starts at 1 before the first return; drawdowns are measured from running peaks of compounded wealth."
+      ],
+      "category": "drawdown",
+      "confidence": "high",
+      "details": {
+        "ongoing": true,
+        "peak_date": "2021-08-31",
+        "recovery_date": null,
+        "years": 3.3333333333333335
+      },
+      "direction": "lower_is_better",
+      "formula_id": "longest_drawdown_duration@v1",
+      "id": "longest_drawdown_duration",
+      "methodology_version": "0.1.0",
+      "name": "Longest drawdown duration",
+      "nature": "observed",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "periods",
+      "value": 40.0,
+      "warnings": [
+        "The longest drawdown has not recovered by the end of the data; the duration is a lower bound."
+      ]
+    },
+    {
+      "assumptions": [
+        "Wealth index starts at 1 before the first return; drawdowns are measured from running peaks of compounded wealth."
+      ],
+      "category": "drawdown",
+      "confidence": "high",
+      "details": {
+        "ongoing": 1
+      },
+      "direction": "neutral",
+      "formula_id": "drawdown_count@v1",
+      "id": "drawdown_count",
+      "methodology_version": "0.1.0",
+      "name": "Number of drawdown episodes",
+      "nature": "observed",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "count",
+      "value": 11.0,
+      "warnings": []
+    },
+    {
+      "assumptions": [
+        "Wealth index starts at 1 before the first return; drawdowns are measured from running peaks of compounded wealth."
+      ],
+      "category": "drawdown",
+      "confidence": "high",
+      "details": {},
+      "direction": "lower_is_better",
+      "formula_id": "time_underwater_pct@v1",
+      "id": "time_underwater_pct",
+      "methodology_version": "0.1.0",
+      "name": "Time under water",
+      "nature": "observed",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "fraction",
+      "value": 0.7222222222222222,
+      "warnings": []
+    },
+    {
+      "assumptions": [
+        "Wealth index starts at 1 before the first return; drawdowns are measured from running peaks of compounded wealth."
+      ],
+      "category": "drawdown",
+      "confidence": "high",
+      "details": {},
+      "direction": "lower_is_better",
+      "formula_id": "ulcer_index@v1",
+      "id": "ulcer_index",
+      "methodology_version": "0.1.0",
+      "name": "Ulcer Index",
+      "nature": "observed",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "decimal_return",
+      "value": 0.2156215033245652,
+      "warnings": []
+    },
+    {
+      "assumptions": [
+        "Wealth index starts at 1 before the first return; drawdowns are measured from running peaks of compounded wealth."
+      ],
+      "category": "drawdown",
+      "confidence": "high",
+      "details": {},
+      "direction": "lower_is_better",
+      "formula_id": "pain_index@v1",
+      "id": "pain_index",
+      "methodology_version": "0.1.0",
+      "name": "Pain Index",
+      "nature": "observed",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "decimal_return",
+      "value": 0.14473814323994244,
+      "warnings": []
+    },
+    {
+      "assumptions": [
+        "Wealth index starts at 1 before the first return; drawdowns are measured from running peaks of compounded wealth."
+      ],
+      "category": "drawdown",
+      "confidence": "high",
+      "details": {
+        "episodes": 11
+      },
+      "direction": "higher_is_better",
+      "formula_id": "median_drawdown@v1",
+      "id": "median_drawdown",
+      "methodology_version": "0.1.0",
+      "name": "Median drawdown (per episode)",
+      "nature": "observed",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "decimal_return",
+      "value": -0.054784976694482124,
+      "warnings": []
+    },
+    {
+      "assumptions": [
+        "Wealth index starts at 1 before the first return; drawdowns are measured from running peaks of compounded wealth."
+      ],
+      "category": "drawdown",
+      "confidence": "high",
+      "details": {
+        "episodes": 11,
+        "ongoing": 1,
+        "years": 0.6666666666666666
+      },
+      "direction": "lower_is_better",
+      "formula_id": "average_drawdown_duration@v1",
+      "id": "average_drawdown_duration",
+      "methodology_version": "0.1.0",
+      "name": "Average drawdown duration",
+      "nature": "observed",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "periods",
+      "value": 8.0,
+      "warnings": [
+        "An open drawdown is included up to the last observation; the average is a lower bound."
+      ]
+    },
+    {
+      "assumptions": [
+        "Wealth index starts at 1 before the first return; drawdowns are measured from running peaks of compounded wealth."
+      ],
+      "category": "drawdown",
+      "confidence": "high",
+      "details": {
+        "peak_date": "2021-08-31",
+        "trough_date": "2024-11-30",
+        "years": 3.25
+      },
+      "direction": "lower_is_better",
+      "formula_id": "max_peak_to_trough_duration@v1",
+      "id": "max_peak_to_trough_duration",
+      "methodology_version": "0.1.0",
+      "name": "Longest decline (peak to trough)",
+      "nature": "observed",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "periods",
+      "value": 39.0,
+      "warnings": []
+    },
+    {
+      "assumptions": [
+        "Wealth index starts at 1 before the first return; drawdowns are measured from running peaks of compounded wealth."
+      ],
+      "category": "drawdown",
+      "confidence": "high",
+      "details": {
+        "excluded_open_episodes": 1,
+        "recovered_episodes": 10,
+        "years": 0.19166666666666665
+      },
+      "direction": "lower_is_better",
+      "formula_id": "average_recovery_duration@v1",
+      "id": "average_recovery_duration",
+      "methodology_version": "0.1.0",
+      "name": "Average recovery time (trough to recovery)",
+      "nature": "observed",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "periods",
+      "value": 2.3,
+      "warnings": [
+        "1 open episode(s) excluded: their recovery time is unknown."
+      ]
+    },
+    {
+      "assumptions": [
+        "Wealth index starts at 1 before the first return; drawdowns are measured from running peaks of compounded wealth.",
+        "95% confidence; historical (empirical) quantile with linear interpolation; no distributional assumption; reported as a signed return (negative = loss)."
+      ],
+      "category": "drawdown",
+      "confidence": "moderate",
+      "details": {},
+      "direction": "higher_is_better",
+      "formula_id": "drawdown_at_risk_95@v1",
+      "id": "drawdown_at_risk_95",
+      "methodology_version": "0.1.0",
+      "name": "Drawdown-at-Risk (95%)",
+      "nature": "estimated",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "decimal_return",
+      "value": -0.40618526359149115,
+      "warnings": [
+        "About 5.4 observations are expected in the 5% tail (< 10)."
+      ]
+    },
+    {
+      "assumptions": [
+        "Wealth index starts at 1 before the first return; drawdowns are measured from running peaks of compounded wealth.",
+        "95% confidence; historical (empirical) quantile with linear interpolation; no distributional assumption; reported as a signed return (negative = loss)."
+      ],
+      "category": "drawdown",
+      "confidence": "moderate",
+      "details": {
+        "tail_observations": 6
+      },
+      "direction": "higher_is_better",
+      "formula_id": "cdar_95@v1",
+      "id": "cdar_95",
+      "methodology_version": "0.1.0",
+      "name": "Conditional Drawdown-at-Risk (95%)",
+      "nature": "estimated",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "decimal_return",
+      "value": -0.45416914888647275,
+      "warnings": [
+        "About 5.4 observations are expected in the 5% tail (< 10)."
+      ]
+    },
+    {
+      "assumptions": [
+        "Wealth index starts at 1 before the first return; drawdowns are measured from running peaks of compounded wealth.",
+        "95% confidence; entropic VaR of the empirical distribution (exponential-moment bound), computed by one-dimensional convex minimization; signed return (negative = loss)."
+      ],
+      "category": "drawdown",
+      "confidence": "moderate",
+      "details": {},
+      "direction": "higher_is_better",
+      "formula_id": "edar_95@v1",
+      "id": "edar_95",
+      "methodology_version": "0.1.0",
+      "name": "Entropic Drawdown-at-Risk (95%)",
+      "nature": "estimated",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "decimal_return",
+      "value": -0.4760615720859387,
+      "warnings": [
+        "About 5.4 observations are expected in the 5% tail (< 10)."
+      ]
+    },
+    {
+      "assumptions": [
+        "Risk-free rate assumed to be 0% (methodology 0.1.0); the ratio therefore uses total rather than excess returns and is higher than an excess-return version when cash yields are positive.",
+        "Sample standard deviation (n - 1 denominator).",
+        "Annualized with 12 periods per year (monthly frequency, inferred from dates)."
+      ],
+      "category": "risk_adjusted",
+      "confidence": "high",
+      "details": {},
+      "direction": "higher_is_better",
+      "formula_id": "sharpe_ratio@v1",
+      "id": "sharpe_ratio",
+      "methodology_version": "0.1.0",
+      "name": "Sharpe ratio",
+      "nature": "estimated",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "ratio",
+      "value": 0.3598882817637774,
+      "warnings": [
+        "Returns are far from normal (skewness 1.14, excess kurtosis 6.44); volatility does not capture tail risk. See the drawdown and tail sections."
+      ]
+    },
+    {
+      "assumptions": [
+        "Risk-free rate assumed to be 0% (methodology 0.1.0); the ratio therefore uses total rather than excess returns and is higher than an excess-return version when cash yields are positive.",
+        "Minimum acceptable return (target) = 0% per period; downside deviation uses all observations in the denominator.",
+        "Annualized with 12 periods per year (monthly frequency, inferred from dates)."
+      ],
+      "category": "risk_adjusted",
+      "confidence": "high",
+      "details": {},
+      "direction": "higher_is_better",
+      "formula_id": "sortino_ratio@v1",
+      "id": "sortino_ratio",
+      "methodology_version": "0.1.0",
+      "name": "Sortino ratio",
+      "nature": "estimated",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "ratio",
+      "value": 0.6286028303160367,
+      "warnings": [
+        "Returns are far from normal (skewness 1.14, excess kurtosis 6.44); volatility does not capture tail risk. See the drawdown and tail sections."
+      ]
+    },
+    {
+      "assumptions": [
+        "Annualized with 12 periods per year (monthly frequency, inferred from dates).",
+        "Wealth index starts at 1 before the first return; drawdowns are measured from running peaks of compounded wealth.",
+        "Risk-free rate assumed to be 0% (methodology 0.1.0); the ratio therefore uses total rather than excess returns and is higher than an excess-return version when cash yields are positive."
+      ],
+      "category": "risk_adjusted",
+      "confidence": "high",
+      "details": {},
+      "direction": "higher_is_better",
+      "formula_id": "calmar_ratio@v1",
+      "id": "calmar_ratio",
+      "methodology_version": "0.1.0",
+      "name": "Calmar ratio",
+      "nature": "derived",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "ratio",
+      "value": 0.10245251233947668,
+      "warnings": []
+    },
+    {
+      "assumptions": [
+        "Annualized with 12 periods per year (monthly frequency, inferred from dates).",
+        "Wealth index starts at 1 before the first return; drawdowns are measured from running peaks of compounded wealth.",
+        "Risk-free rate assumed to be 0% (methodology 0.1.0); the ratio therefore uses total rather than excess returns and is higher than an excess-return version when cash yields are positive."
+      ],
+      "category": "risk_adjusted",
+      "confidence": "high",
+      "details": {},
+      "direction": "higher_is_better",
+      "formula_id": "martin_ratio@v1",
+      "id": "martin_ratio",
+      "methodology_version": "0.1.0",
+      "name": "Martin ratio (Ulcer Performance Index)",
+      "nature": "derived",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "ratio",
+      "value": 0.23775374257658038,
+      "warnings": []
+    },
+    {
+      "assumptions": [
+        "Omega threshold = 0% per period."
+      ],
+      "category": "risk_adjusted",
+      "confidence": "high",
+      "details": {},
+      "direction": "higher_is_better",
+      "formula_id": "omega_ratio@v1",
+      "id": "omega_ratio",
+      "methodology_version": "0.1.0",
+      "name": "Omega ratio",
+      "nature": "derived",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "ratio",
+      "value": 1.3429172470256723,
+      "warnings": []
+    },
+    {
+      "assumptions": [
+        "Minimum acceptable return (target) = 0% per period; downside deviation uses all observations in the denominator."
+      ],
+      "category": "risk_adjusted",
+      "confidence": "high",
+      "details": {},
+      "direction": "higher_is_better",
+      "formula_id": "kappa_3_ratio@v1",
+      "id": "kappa_3_ratio",
+      "methodology_version": "0.1.0",
+      "name": "Kappa 3 ratio",
+      "nature": "estimated",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "ratio",
+      "value": 0.1272016054068595,
+      "warnings": [
+        "Returns are far from normal (skewness 1.14, excess kurtosis 6.44); volatility does not capture tail risk. See the drawdown and tail sections."
+      ]
+    },
+    {
+      "assumptions": [
+        "Minimum acceptable return (target) = 0% per period; downside deviation uses all observations in the denominator."
+      ],
+      "category": "risk_adjusted",
+      "confidence": "high",
+      "details": {},
+      "direction": "higher_is_better",
+      "formula_id": "upside_potential_ratio@v1",
+      "id": "upside_potential_ratio",
+      "methodology_version": "0.1.0",
+      "name": "Upside potential ratio",
+      "nature": "estimated",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "ratio",
+      "value": 0.7106334269313107,
+      "warnings": [
+        "Returns are far from normal (skewness 1.14, excess kurtosis 6.44); volatility does not capture tail risk. See the drawdown and tail sections."
+      ]
+    },
+    {
+      "assumptions": [
+        "Annualized with 12 periods per year (monthly frequency, inferred from dates).",
+        "Wealth index starts at 1 before the first return; drawdowns are measured from running peaks of compounded wealth.",
+        "Risk-free rate assumed to be 0% (methodology 0.1.0); the ratio therefore uses total rather than excess returns and is higher than an excess-return version when cash yields are positive."
+      ],
+      "category": "risk_adjusted",
+      "confidence": "high",
+      "details": {},
+      "direction": "higher_is_better",
+      "formula_id": "burke_ratio@v1",
+      "id": "burke_ratio",
+      "methodology_version": "0.1.0",
+      "name": "Burke ratio",
+      "nature": "derived",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "ratio",
+      "value": 0.09278974407917705,
+      "warnings": []
+    },
+    {
+      "assumptions": [
+        "Annualized with 12 periods per year (monthly frequency, inferred from dates).",
+        "Wealth index starts at 1 before the first return; drawdowns are measured from running peaks of compounded wealth.",
+        "Sterling adjustment: 10% added to the absolute maximum drawdown (a historical convention, not an estimate).",
+        "Risk-free rate assumed to be 0% (methodology 0.1.0); the ratio therefore uses total rather than excess returns and is higher than an excess-return version when cash yields are positive."
+      ],
+      "category": "risk_adjusted",
+      "confidence": "high",
+      "details": {},
+      "direction": "higher_is_better",
+      "formula_id": "sterling_ratio@v1",
+      "id": "sterling_ratio",
+      "methodology_version": "0.1.0",
+      "name": "Sterling ratio",
+      "nature": "derived",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "ratio",
+      "value": 0.08538779890755639,
+      "warnings": []
+    },
+    {
+      "assumptions": [
+        "Annualized with 12 periods per year (monthly frequency, inferred from dates).",
+        "Wealth index starts at 1 before the first return; drawdowns are measured from running peaks of compounded wealth.",
+        "Risk-free rate assumed to be 0% (methodology 0.1.0); the ratio therefore uses total rather than excess returns and is higher than an excess-return version when cash yields are positive."
+      ],
+      "category": "risk_adjusted",
+      "confidence": "high",
+      "details": {
+        "pain_index": 0.14473814323994244
+      },
+      "direction": "higher_is_better",
+      "formula_id": "pain_ratio@v1",
+      "id": "pain_ratio",
+      "methodology_version": "0.1.0",
+      "name": "Pain ratio",
+      "nature": "derived",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "ratio",
+      "value": 0.354190113593061,
+      "warnings": []
+    },
+    {
+      "assumptions": [
+        "Wealth index starts at 1 before the first return; drawdowns are measured from running peaks of compounded wealth."
+      ],
+      "category": "risk_adjusted",
+      "confidence": "high",
+      "details": {},
+      "direction": "higher_is_better",
+      "formula_id": "recovery_factor@v1",
+      "id": "recovery_factor",
+      "methodology_version": "0.1.0",
+      "name": "Recovery factor",
+      "nature": "derived",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "ratio",
+      "value": 1.1356009376179228,
+      "warnings": []
+    },
+    {
+      "assumptions": [
+        "95% confidence; historical (empirical) quantile with linear interpolation; no distributional assumption; reported as a signed return (negative = loss)."
+      ],
+      "category": "tail",
+      "confidence": "moderate",
+      "details": {},
+      "direction": "higher_is_better",
+      "formula_id": "var_historical_95@v1",
+      "id": "var_historical_95",
+      "methodology_version": "0.1.0",
+      "name": "Value at Risk (historical, 95%)",
+      "nature": "estimated",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "decimal_return",
+      "value": -0.06582924999999998,
+      "warnings": [
+        "About 5.4 observations are expected in the 5% tail (< 10)."
+      ]
+    },
+    {
+      "assumptions": [
+        "95% confidence; historical (empirical) quantile with linear interpolation; no distributional assumption; reported as a signed return (negative = loss)."
+      ],
+      "category": "tail",
+      "confidence": "moderate",
+      "details": {
+        "tail_observations": 6
+      },
+      "direction": "higher_is_better",
+      "formula_id": "expected_shortfall_historical_95@v1",
+      "id": "expected_shortfall_historical_95",
+      "methodology_version": "0.1.0",
+      "name": "Expected Shortfall / CVaR (historical, 95%)",
+      "nature": "estimated",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "decimal_return",
+      "value": -0.09218633333333333,
+      "warnings": [
+        "About 5.4 observations are expected in the 5% tail (< 10)."
+      ]
+    },
+    {
+      "assumptions": [],
+      "category": "tail",
+      "confidence": "moderate",
+      "details": {},
+      "direction": "higher_is_better",
+      "formula_id": "tail_ratio@v1",
+      "id": "tail_ratio",
+      "methodology_version": "0.1.0",
+      "name": "Tail ratio (95th / 5th percentile)",
+      "nature": "estimated",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "ratio",
+      "value": 1.3581006923214225,
+      "warnings": [
+        "About 5.4 observations are expected in the 5% tail (< 10)."
+      ]
+    },
+    {
+      "assumptions": [
+        "Model-dependent: return distribution approximated from population moments (normal, or Cornish-Fisher expansion with skewness and excess kurtosis); not a historical estimate."
+      ],
+      "category": "tail",
+      "confidence": "high",
+      "details": {},
+      "direction": "higher_is_better",
+      "formula_id": "gaussian_var_95@v1",
+      "id": "gaussian_var_95",
+      "methodology_version": "0.1.0",
+      "name": "Value at Risk (Gaussian, 95%)",
+      "nature": "model_dependent",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "supplementary",
+      "unit": "decimal_return",
+      "value": -0.08162194996338522,
+      "warnings": [
+        "Returns are far from normal (skewness 1.14, excess kurtosis 6.44); volatility does not capture tail risk. See the drawdown and tail sections."
+      ]
+    },
+    {
+      "assumptions": [
+        "Model-dependent: return distribution approximated from population moments (normal, or Cornish-Fisher expansion with skewness and excess kurtosis); not a historical estimate."
+      ],
+      "category": "tail",
+      "confidence": "low",
+      "details": {
+        "cornish_fisher_quantile": -1.1784711185355239,
+        "excess_kurtosis": 6.090113545240834,
+        "skewness": 1.124749466152779
+      },
+      "direction": "higher_is_better",
+      "formula_id": "modified_var_95@v1",
+      "id": "modified_var_95",
+      "methodology_version": "0.1.0",
+      "name": "Modified VaR (Cornish-Fisher, 95%)",
+      "nature": "model_dependent",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "supplementary",
+      "unit": "decimal_return",
+      "value": -0.0569107643851235,
+      "warnings": [
+        "Only 108 observations (< 120).",
+        "Returns are far from normal (skewness 1.14, excess kurtosis 6.44); volatility does not capture tail risk. See the drawdown and tail sections."
+      ]
+    },
+    {
+      "assumptions": [
+        "Model-dependent: return distribution approximated from population moments (normal, or Cornish-Fisher expansion with skewness and excess kurtosis); not a historical estimate."
+      ],
+      "category": "tail",
+      "confidence": "low",
+      "details": {
+        "cornish_fisher_quantile": -1.1784711185355239
+      },
+      "direction": "higher_is_better",
+      "formula_id": "modified_es_95@v1",
+      "id": "modified_es_95",
+      "methodology_version": "0.1.0",
+      "name": "Modified Expected Shortfall (Cornish-Fisher, 95%)",
+      "nature": "model_dependent",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "supplementary",
+      "unit": "decimal_return",
+      "value": -0.04480681745592835,
+      "warnings": [
+        "Modified ES is less severe than the modified VaR: the Cornish-Fisher expansion is unreliable for these moments; rely on the historical Expected Shortfall.",
+        "Only 108 observations (< 120).",
+        "Returns are far from normal (skewness 1.14, excess kurtosis 6.44); volatility does not capture tail risk. See the drawdown and tail sections."
+      ]
+    },
+    {
+      "assumptions": [
+        "95% confidence; entropic VaR of the empirical distribution (exponential-moment bound), computed by one-dimensional convex minimization; signed return (negative = loss)."
+      ],
+      "category": "tail",
+      "confidence": "moderate",
+      "details": {},
+      "direction": "higher_is_better",
+      "formula_id": "evar_95@v1",
+      "id": "evar_95",
+      "methodology_version": "0.1.0",
+      "name": "Entropic Value at Risk (95%)",
+      "nature": "estimated",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "decimal_return",
+      "value": -0.13316671733270197,
+      "warnings": [
+        "About 5.4 observations are expected in the 5% tail (< 10)."
+      ]
+    },
+    {
+      "assumptions": [],
+      "category": "distribution",
+      "confidence": "moderate",
+      "details": {},
+      "direction": "context_dependent",
+      "formula_id": "skewness@v1",
+      "id": "skewness",
+      "methodology_version": "0.1.0",
+      "name": "Skewness",
+      "nature": "estimated",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "ratio",
+      "value": 1.140653393925792,
+      "warnings": [
+        "108 observations (< 120)."
+      ]
+    },
+    {
+      "assumptions": [],
+      "category": "distribution",
+      "confidence": "low",
+      "details": {},
+      "direction": "context_dependent",
+      "formula_id": "excess_kurtosis@v1",
+      "id": "excess_kurtosis",
+      "methodology_version": "0.1.0",
+      "name": "Excess kurtosis",
+      "nature": "estimated",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "low_confidence",
+      "unit": "ratio",
+      "value": 6.439442432897021,
+      "warnings": [
+        "Only 108 observations (< 120)."
+      ]
+    },
+    {
+      "assumptions": [],
+      "category": "distribution",
+      "confidence": "moderate",
+      "details": {
+        "statistic": 189.67377798166376
+      },
+      "direction": "context_dependent",
+      "formula_id": "jarque_bera_pvalue@v1",
+      "id": "jarque_bera_pvalue",
+      "methodology_version": "0.1.0",
+      "name": "Jarque-Bera normality p-value",
+      "nature": "model_dependent",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "supplementary",
+      "unit": "probability",
+      "value": 6.499237841793869e-42,
+      "warnings": [
+        "108 observations (< 120)."
+      ]
+    },
+    {
+      "assumptions": [],
+      "category": "consistency",
+      "confidence": "high",
+      "details": {},
+      "direction": "higher_is_better",
+      "formula_id": "positive_period_pct@v1",
+      "id": "positive_period_pct",
+      "methodology_version": "0.1.0",
+      "name": "Positive periods",
+      "nature": "observed",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "fraction",
+      "value": 0.5185185185185185,
+      "warnings": []
+    },
+    {
+      "assumptions": [],
+      "category": "consistency",
+      "confidence": "high",
+      "details": {},
+      "direction": "lower_is_better",
+      "formula_id": "negative_period_pct@v1",
+      "id": "negative_period_pct",
+      "methodology_version": "0.1.0",
+      "name": "Negative periods",
+      "nature": "observed",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "fraction",
+      "value": 0.48148148148148145,
+      "warnings": []
+    },
+    {
+      "assumptions": [],
+      "category": "consistency",
+      "confidence": "high",
+      "details": {},
+      "direction": "neutral",
+      "formula_id": "longest_winning_streak@v1",
+      "id": "longest_winning_streak",
+      "methodology_version": "0.1.0",
+      "name": "Longest run of positive periods",
+      "nature": "observed",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "periods",
+      "value": 12.0,
+      "warnings": []
+    },
+    {
+      "assumptions": [],
+      "category": "consistency",
+      "confidence": "high",
+      "details": {},
+      "direction": "lower_is_better",
+      "formula_id": "longest_losing_streak@v1",
+      "id": "longest_losing_streak",
+      "methodology_version": "0.1.0",
+      "name": "Longest run of negative periods",
+      "nature": "observed",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "periods",
+      "value": 7.0,
+      "warnings": []
+    },
+    {
+      "assumptions": [],
+      "category": "consistency",
+      "confidence": "high",
+      "details": {
+        "calendar_year_returns": {
+          "2016": 0.11863507434623566,
+          "2017": 0.24405470452504052,
+          "2018": 0.03201853548580247,
+          "2019": 0.06289324537687291,
+          "2020": 0.6438201231758569,
+          "2021": -0.01644574018630951,
+          "2022": -0.23451377441312005,
+          "2023": 0.05772143179203226,
+          "2024": -0.21522922193877658
+        },
+        "excluded_partial_years": {},
+        "year": 2020
+      },
+      "direction": "higher_is_better",
+      "formula_id": "best_calendar_year@v1",
+      "id": "best_calendar_year",
+      "methodology_version": "0.1.0",
+      "name": "Best calendar year",
+      "nature": "observed",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "decimal_return",
+      "value": 0.6438201231758569,
+      "warnings": []
+    },
+    {
+      "assumptions": [],
+      "category": "consistency",
+      "confidence": "high",
+      "details": {
+        "year": 2022
+      },
+      "direction": "higher_is_better",
+      "formula_id": "worst_calendar_year@v1",
+      "id": "worst_calendar_year",
+      "methodology_version": "0.1.0",
+      "name": "Worst calendar year",
+      "nature": "observed",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "decimal_return",
+      "value": -0.23451377441312005,
+      "warnings": []
+    },
+    {
+      "assumptions": [],
+      "category": "consistency",
+      "confidence": "high",
+      "details": {
+        "calendar_year_returns": {
+          "2016": 0.11863507434623566,
+          "2017": 0.24405470452504052,
+          "2018": 0.03201853548580247,
+          "2019": 0.06289324537687291,
+          "2020": 0.6438201231758569,
+          "2021": -0.01644574018630951,
+          "2022": -0.23451377441312005,
+          "2023": 0.05772143179203226,
+          "2024": -0.21522922193877658
+        },
+        "complete_years": 9,
+        "excluded_partial_years": {},
+        "positive_years": 6
+      },
+      "direction": "higher_is_better",
+      "formula_id": "positive_calendar_years_pct@v1",
+      "id": "positive_calendar_years_pct",
+      "methodology_version": "0.1.0",
+      "name": "Positive calendar years",
+      "nature": "observed",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "fraction",
+      "value": 0.6666666666666666,
+      "warnings": []
+    },
+    {
+      "assumptions": [
+        "Annualized with 12 periods per year (monthly frequency, inferred from dates)."
+      ],
+      "category": "consistency",
+      "confidence": "high",
+      "details": {
+        "window_end": "2021-01-31",
+        "window_periods": 12,
+        "windows": 97
+      },
+      "direction": "higher_is_better",
+      "formula_id": "best_rolling_year@v1",
+      "id": "best_rolling_year",
+      "methodology_version": "0.1.0",
+      "name": "Best rolling one-year return",
+      "nature": "observed",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "decimal_return",
+      "value": 0.740636814427529,
+      "warnings": []
+    },
+    {
+      "assumptions": [
+        "Annualized with 12 periods per year (monthly frequency, inferred from dates)."
+      ],
+      "category": "consistency",
+      "confidence": "high",
+      "details": {
+        "window_end": "2022-05-31",
+        "window_periods": 12,
+        "windows": 97
+      },
+      "direction": "higher_is_better",
+      "formula_id": "worst_rolling_year@v1",
+      "id": "worst_rolling_year",
+      "methodology_version": "0.1.0",
+      "name": "Worst rolling one-year return",
+      "nature": "observed",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "decimal_return",
+      "value": -0.2883014164225528,
+      "warnings": []
+    },
+    {
+      "assumptions": [
+        "Annualized with 12 periods per year (monthly frequency, inferred from dates)."
+      ],
+      "category": "consistency",
+      "confidence": "high",
+      "details": {
+        "window_periods": 12,
+        "windows": 97
+      },
+      "direction": "higher_is_better",
+      "formula_id": "positive_rolling_year_pct@v1",
+      "id": "positive_rolling_year_pct",
+      "methodology_version": "0.1.0",
+      "name": "Positive rolling one-year windows",
+      "nature": "observed",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "fraction",
+      "value": 0.6288659793814433,
+      "warnings": []
+    },
+    {
+      "assumptions": [],
+      "category": "dependence",
+      "confidence": "high",
+      "details": {
+        "approx_95pct_bound": 0.18860108793527774,
+        "significant": false
+      },
+      "direction": "context_dependent",
+      "formula_id": "autocorrelation_lag1@v1",
+      "id": "autocorrelation_lag1",
+      "methodology_version": "0.1.0",
+      "name": "Autocorrelation (lag 1)",
+      "nature": "estimated",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "correlation",
+      "value": 0.13144911887036112,
+      "warnings": []
+    },
+    {
+      "assumptions": [],
+      "category": "dependence",
+      "confidence": "high",
+      "details": {
+        "approx_95pct_bound": 0.18860108793527774,
+        "significant": false
+      },
+      "direction": "context_dependent",
+      "formula_id": "autocorrelation_lag2@v1",
+      "id": "autocorrelation_lag2",
+      "methodology_version": "0.1.0",
+      "name": "Autocorrelation (lag 2)",
+      "nature": "estimated",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "correlation",
+      "value": 0.049935710096193846,
+      "warnings": []
+    },
+    {
+      "assumptions": [],
+      "category": "dependence",
+      "confidence": "high",
+      "details": {
+        "approx_95pct_bound": 0.18860108793527774,
+        "significant": false
+      },
+      "direction": "context_dependent",
+      "formula_id": "autocorrelation_lag3@v1",
+      "id": "autocorrelation_lag3",
+      "methodology_version": "0.1.0",
+      "name": "Autocorrelation (lag 3)",
+      "nature": "estimated",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "correlation",
+      "value": 0.04551148499900097,
+      "warnings": []
+    },
+    {
+      "assumptions": [],
+      "category": "dependence",
+      "confidence": "high",
+      "details": {
+        "lags": 3,
+        "q_statistic": 2.432259993691209
+      },
+      "direction": "context_dependent",
+      "formula_id": "ljung_box_pvalue@v1",
+      "id": "ljung_box_pvalue",
+      "methodology_version": "0.1.0",
+      "name": "Ljung-Box p-value (3 lags)",
+      "nature": "model_dependent",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "supplementary",
+      "unit": "probability",
+      "value": 0.4876576876917179,
+      "warnings": []
+    },
+    {
+      "assumptions": [],
+      "category": "dependence",
+      "confidence": "high",
+      "details": {},
+      "direction": "context_dependent",
+      "formula_id": "zero_return_pct@v1",
+      "id": "zero_return_pct",
+      "methodology_version": "0.1.0",
+      "name": "Zero-return periods",
+      "nature": "observed",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "fraction",
+      "value": 0.0,
+      "warnings": []
+    },
+    {
+      "assumptions": [
+        "Ordinary least squares of fund on benchmark returns (risk-free rate 0%); conventional i.i.d. standard errors."
+      ],
+      "category": "benchmark",
+      "confidence": "not_assessable",
+      "details": {},
+      "direction": "context_dependent",
+      "formula_id": "beta@v1",
+      "id": "beta",
+      "methodology_version": "0.1.0",
+      "name": "Beta",
+      "nature": "estimated",
+      "observations": 0,
+      "reason": "No benchmark was supplied. Benchmark-relative metrics require explicitly supplied benchmark returns; OpenFactsheet never assumes a default benchmark.",
+      "reference_values": null,
+      "status": "not_applicable",
+      "unit": "beta",
+      "value": null,
+      "warnings": []
+    },
+    {
+      "assumptions": [
+        "Ordinary least squares of fund on benchmark returns (risk-free rate 0%); conventional i.i.d. standard errors.",
+        "Annualized with 12 periods per year (monthly frequency, inferred from dates)."
+      ],
+      "category": "benchmark",
+      "confidence": "not_assessable",
+      "details": {},
+      "direction": "higher_is_better",
+      "formula_id": "alpha@v1",
+      "id": "alpha",
+      "methodology_version": "0.1.0",
+      "name": "Alpha (annualized, CAPM regression)",
+      "nature": "model_dependent",
+      "observations": 0,
+      "reason": "No benchmark was supplied. Benchmark-relative metrics require explicitly supplied benchmark returns; OpenFactsheet never assumes a default benchmark.",
+      "reference_values": null,
+      "status": "not_applicable",
+      "unit": "decimal_return",
+      "value": null,
+      "warnings": []
+    },
+    {
+      "assumptions": [
+        "Ordinary least squares of fund on benchmark returns (risk-free rate 0%); conventional i.i.d. standard errors."
+      ],
+      "category": "benchmark",
+      "confidence": "not_assessable",
+      "details": {},
+      "direction": "neutral",
+      "formula_id": "r_squared@v1",
+      "id": "r_squared",
+      "methodology_version": "0.1.0",
+      "name": "R-squared",
+      "nature": "estimated",
+      "observations": 0,
+      "reason": "No benchmark was supplied. Benchmark-relative metrics require explicitly supplied benchmark returns; OpenFactsheet never assumes a default benchmark.",
+      "reference_values": null,
+      "status": "not_applicable",
+      "unit": "fraction",
+      "value": null,
+      "warnings": []
+    },
+    {
+      "assumptions": [],
+      "category": "benchmark",
+      "confidence": "not_assessable",
+      "details": {},
+      "direction": "neutral",
+      "formula_id": "correlation@v1",
+      "id": "correlation",
+      "methodology_version": "0.1.0",
+      "name": "Correlation with benchmark",
+      "nature": "estimated",
+      "observations": 0,
+      "reason": "No benchmark was supplied. Benchmark-relative metrics require explicitly supplied benchmark returns; OpenFactsheet never assumes a default benchmark.",
+      "reference_values": null,
+      "status": "not_applicable",
+      "unit": "correlation",
+      "value": null,
+      "warnings": []
+    },
+    {
+      "assumptions": [
+        "Sample standard deviation (n - 1 denominator).",
+        "Annualized with 12 periods per year (monthly frequency, inferred from dates)."
+      ],
+      "category": "benchmark",
+      "confidence": "not_assessable",
+      "details": {},
+      "direction": "context_dependent",
+      "formula_id": "tracking_error@v1",
+      "id": "tracking_error",
+      "methodology_version": "0.1.0",
+      "name": "Tracking error (annualized)",
+      "nature": "estimated",
+      "observations": 0,
+      "reason": "No benchmark was supplied. Benchmark-relative metrics require explicitly supplied benchmark returns; OpenFactsheet never assumes a default benchmark.",
+      "reference_values": null,
+      "status": "not_applicable",
+      "unit": "decimal_return",
+      "value": null,
+      "warnings": []
+    },
+    {
+      "assumptions": [
+        "Annualized with 12 periods per year (monthly frequency, inferred from dates)."
+      ],
+      "category": "benchmark",
+      "confidence": "not_assessable",
+      "details": {},
+      "direction": "higher_is_better",
+      "formula_id": "active_return@v1",
+      "id": "active_return",
+      "methodology_version": "0.1.0",
+      "name": "Active return (annualized, arithmetic)",
+      "nature": "estimated",
+      "observations": 0,
+      "reason": "No benchmark was supplied. Benchmark-relative metrics require explicitly supplied benchmark returns; OpenFactsheet never assumes a default benchmark.",
+      "reference_values": null,
+      "status": "not_applicable",
+      "unit": "decimal_return",
+      "value": null,
+      "warnings": []
+    },
+    {
+      "assumptions": [
+        "Sample standard deviation (n - 1 denominator).",
+        "Annualized with 12 periods per year (monthly frequency, inferred from dates)."
+      ],
+      "category": "benchmark",
+      "confidence": "not_assessable",
+      "details": {},
+      "direction": "higher_is_better",
+      "formula_id": "information_ratio@v1",
+      "id": "information_ratio",
+      "methodology_version": "0.1.0",
+      "name": "Information ratio",
+      "nature": "estimated",
+      "observations": 0,
+      "reason": "No benchmark was supplied. Benchmark-relative metrics require explicitly supplied benchmark returns; OpenFactsheet never assumes a default benchmark.",
+      "reference_values": null,
+      "status": "not_applicable",
+      "unit": "ratio",
+      "value": null,
+      "warnings": []
+    },
+    {
+      "assumptions": [
+        "Ordinary least squares of fund on benchmark returns (risk-free rate 0%); conventional i.i.d. standard errors.",
+        "Risk-free rate assumed to be 0% (methodology 0.1.0); the ratio therefore uses total rather than excess returns and is higher than an excess-return version when cash yields are positive.",
+        "Annualized with 12 periods per year (monthly frequency, inferred from dates)."
+      ],
+      "category": "benchmark",
+      "confidence": "not_assessable",
+      "details": {},
+      "direction": "higher_is_better",
+      "formula_id": "treynor_ratio@v1",
+      "id": "treynor_ratio",
+      "methodology_version": "0.1.0",
+      "name": "Treynor ratio",
+      "nature": "model_dependent",
+      "observations": 0,
+      "reason": "No benchmark was supplied. Benchmark-relative metrics require explicitly supplied benchmark returns; OpenFactsheet never assumes a default benchmark.",
+      "reference_values": null,
+      "status": "not_applicable",
+      "unit": "ratio",
+      "value": null,
+      "warnings": []
+    },
+    {
+      "assumptions": [
+        "Annualized with 12 periods per year (monthly frequency, inferred from dates)."
+      ],
+      "category": "benchmark",
+      "confidence": "not_assessable",
+      "details": {},
+      "direction": "higher_is_better",
+      "formula_id": "upside_capture@v1",
+      "id": "upside_capture",
+      "methodology_version": "0.1.0",
+      "name": "Upside capture ratio",
+      "nature": "derived",
+      "observations": 0,
+      "reason": "No benchmark was supplied. Benchmark-relative metrics require explicitly supplied benchmark returns; OpenFactsheet never assumes a default benchmark.",
+      "reference_values": null,
+      "status": "not_applicable",
+      "unit": "ratio",
+      "value": null,
+      "warnings": []
+    },
+    {
+      "assumptions": [
+        "Annualized with 12 periods per year (monthly frequency, inferred from dates)."
+      ],
+      "category": "benchmark",
+      "confidence": "not_assessable",
+      "details": {},
+      "direction": "lower_is_better",
+      "formula_id": "downside_capture@v1",
+      "id": "downside_capture",
+      "methodology_version": "0.1.0",
+      "name": "Downside capture ratio",
+      "nature": "derived",
+      "observations": 0,
+      "reason": "No benchmark was supplied. Benchmark-relative metrics require explicitly supplied benchmark returns; OpenFactsheet never assumes a default benchmark.",
+      "reference_values": null,
+      "status": "not_applicable",
+      "unit": "ratio",
+      "value": null,
+      "warnings": []
+    },
+    {
+      "assumptions": [
+        "Annualized with 12 periods per year (monthly frequency, inferred from dates)."
+      ],
+      "category": "benchmark",
+      "confidence": "not_assessable",
+      "details": {},
+      "direction": "higher_is_better",
+      "formula_id": "capture_ratio@v1",
+      "id": "capture_ratio",
+      "methodology_version": "0.1.0",
+      "name": "Capture ratio (upside / downside capture)",
+      "nature": "derived",
+      "observations": 0,
+      "reason": "No benchmark was supplied. Benchmark-relative metrics require explicitly supplied benchmark returns; OpenFactsheet never assumes a default benchmark.",
+      "reference_values": null,
+      "status": "not_applicable",
+      "unit": "ratio",
+      "value": null,
+      "warnings": []
+    },
+    {
+      "assumptions": [],
+      "category": "benchmark",
+      "confidence": "not_assessable",
+      "details": {},
+      "direction": "higher_is_better",
+      "formula_id": "batting_average@v1",
+      "id": "batting_average",
+      "methodology_version": "0.1.0",
+      "name": "Batting average (share of periods beating the benchmark)",
+      "nature": "observed",
+      "observations": 0,
+      "reason": "No benchmark was supplied. Benchmark-relative metrics require explicitly supplied benchmark returns; OpenFactsheet never assumes a default benchmark.",
+      "reference_values": null,
+      "status": "not_applicable",
+      "unit": "fraction",
+      "value": null,
+      "warnings": []
+    },
+    {
+      "assumptions": [
+        "Ordinary least squares of fund on benchmark returns (risk-free rate 0%); conventional i.i.d. standard errors.",
+        "Annualized with 12 periods per year (monthly frequency, inferred from dates)."
+      ],
+      "category": "benchmark",
+      "confidence": "not_assessable",
+      "details": {},
+      "direction": "context_dependent",
+      "formula_id": "residual_volatility@v1",
+      "id": "residual_volatility",
+      "methodology_version": "0.1.0",
+      "name": "Residual (specific) volatility (annualized)",
+      "nature": "model_dependent",
+      "observations": 0,
+      "reason": "No benchmark was supplied. Benchmark-relative metrics require explicitly supplied benchmark returns; OpenFactsheet never assumes a default benchmark.",
+      "reference_values": null,
+      "status": "not_applicable",
+      "unit": "decimal_return",
+      "value": null,
+      "warnings": []
+    },
+    {
+      "assumptions": [
+        "Ordinary least squares of fund on benchmark returns (risk-free rate 0%); conventional i.i.d. standard errors.",
+        "Risk-free rate assumed to be 0% (methodology 0.1.0); the ratio therefore uses total rather than excess returns and is higher than an excess-return version when cash yields are positive.",
+        "Annualized with 12 periods per year (monthly frequency, inferred from dates)."
+      ],
+      "category": "benchmark",
+      "confidence": "not_assessable",
+      "details": {},
+      "direction": "higher_is_better",
+      "formula_id": "appraisal_ratio@v1",
+      "id": "appraisal_ratio",
+      "methodology_version": "0.1.0",
+      "name": "Appraisal ratio",
+      "nature": "model_dependent",
+      "observations": 0,
+      "reason": "No benchmark was supplied. Benchmark-relative metrics require explicitly supplied benchmark returns; OpenFactsheet never assumes a default benchmark.",
+      "reference_values": null,
+      "status": "not_applicable",
+      "unit": "ratio",
+      "value": null,
+      "warnings": []
+    },
+    {
+      "assumptions": [
+        "Risk-free rate assumed to be 0% (methodology 0.1.0); the ratio therefore uses total rather than excess returns and is higher than an excess-return version when cash yields are positive.",
+        "Sample standard deviation (n - 1 denominator).",
+        "Annualized with 12 periods per year (monthly frequency, inferred from dates)."
+      ],
+      "category": "benchmark",
+      "confidence": "not_assessable",
+      "details": {},
+      "direction": "higher_is_better",
+      "formula_id": "m_squared@v1",
+      "id": "m_squared",
+      "methodology_version": "0.1.0",
+      "name": "M-squared (Modigliani risk-adjusted return)",
+      "nature": "derived",
+      "observations": 0,
+      "reason": "No benchmark was supplied. Benchmark-relative metrics require explicitly supplied benchmark returns; OpenFactsheet never assumes a default benchmark.",
+      "reference_values": null,
+      "status": "not_applicable",
+      "unit": "decimal_return",
+      "value": null,
+      "warnings": []
+    },
+    {
+      "assumptions": [
+        "Ordinary least squares of fund on benchmark returns (risk-free rate 0%); conventional i.i.d. standard errors."
+      ],
+      "category": "benchmark",
+      "confidence": "not_assessable",
+      "details": {},
+      "direction": "context_dependent",
+      "formula_id": "bull_beta@v1",
+      "id": "bull_beta",
+      "methodology_version": "0.1.0",
+      "name": "Bull-market beta",
+      "nature": "estimated",
+      "observations": 0,
+      "reason": "No benchmark was supplied. Benchmark-relative metrics require explicitly supplied benchmark returns; OpenFactsheet never assumes a default benchmark.",
+      "reference_values": null,
+      "status": "not_applicable",
+      "unit": "beta",
+      "value": null,
+      "warnings": []
+    },
+    {
+      "assumptions": [
+        "Ordinary least squares of fund on benchmark returns (risk-free rate 0%); conventional i.i.d. standard errors."
+      ],
+      "category": "benchmark",
+      "confidence": "not_assessable",
+      "details": {},
+      "direction": "context_dependent",
+      "formula_id": "bear_beta@v1",
+      "id": "bear_beta",
+      "methodology_version": "0.1.0",
+      "name": "Bear-market beta",
+      "nature": "estimated",
+      "observations": 0,
+      "reason": "No benchmark was supplied. Benchmark-relative metrics require explicitly supplied benchmark returns; OpenFactsheet never assumes a default benchmark.",
+      "reference_values": null,
+      "status": "not_applicable",
+      "unit": "beta",
+      "value": null,
+      "warnings": []
+    },
+    {
+      "assumptions": [
+        "Ordinary least squares of fund on benchmark returns (risk-free rate 0%); conventional i.i.d. standard errors."
+      ],
+      "category": "benchmark",
+      "confidence": "not_assessable",
+      "details": {},
+      "direction": "higher_is_better",
+      "formula_id": "timing_ratio@v1",
+      "id": "timing_ratio",
+      "methodology_version": "0.1.0",
+      "name": "Timing ratio (bull beta / bear beta)",
+      "nature": "estimated",
+      "observations": 0,
+      "reason": "No benchmark was supplied. Benchmark-relative metrics require explicitly supplied benchmark returns; OpenFactsheet never assumes a default benchmark.",
+      "reference_values": null,
+      "status": "not_applicable",
+      "unit": "ratio",
+      "value": null,
+      "warnings": []
+    },
+    {
+      "assumptions": [
+        "Fama-French three-factor model (Mkt-RF, SMB, HML) estimated by OLS on 107 aligned observations (calendar monthly period); dependent variable: fund return minus the supplied risk-free rate (RF); Newey-West (HAC) standard errors with the canonical lag floor(4 (m/100)^(2/9)).",
+        "Annualized with 12 periods per year (monthly frequency, inferred from dates)."
+      ],
+      "category": "factors",
+      "confidence": "high",
+      "details": {
+        "ci_level": 0.95,
+        "ci_lower": -0.011581474906589466,
+        "ci_upper": 0.06460686815113315,
+        "dependent": "fund return minus the supplied risk-free rate (RF)",
+        "df_resid": 103,
+        "factors": [
+          "Mkt-RF",
+          "SMB",
+          "HML"
+        ],
+        "hac_lags": 4,
+        "model": "Fama-French three-factor model",
+        "p_value": 0.1704803064120756,
+        "per_period": 0.00220939138518932,
+        "standard_error_per_period": 0.0016006512810901406,
+        "t_statistic": 1.3803077605289458
+      },
+      "direction": "higher_is_better",
+      "formula_id": "factor_alpha@v1",
+      "id": "factor_alpha",
+      "methodology_version": "0.1.0",
+      "name": "Factor-model alpha (annualized)",
+      "nature": "model_dependent",
+      "observations": 107,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "decimal_return",
+      "value": 0.02651269662227184,
+      "warnings": []
+    },
+    {
+      "assumptions": [
+        "Fama-French three-factor model (Mkt-RF, SMB, HML) estimated by OLS on 107 aligned observations (calendar monthly period); dependent variable: fund return minus the supplied risk-free rate (RF); Newey-West (HAC) standard errors with the canonical lag floor(4 (m/100)^(2/9))."
+      ],
+      "category": "factors",
+      "confidence": "high",
+      "details": {
+        "dependent": "fund return minus the supplied risk-free rate (RF)",
+        "df_resid": 103,
+        "factors": [
+          "Mkt-RF",
+          "SMB",
+          "HML"
+        ],
+        "hac_lags": 4,
+        "model": "Fama-French three-factor model",
+        "p_value": 0.1704803064120756
+      },
+      "direction": "context_dependent",
+      "formula_id": "factor_alpha_t_statistic@v1",
+      "id": "factor_alpha_t_statistic",
+      "methodology_version": "0.1.0",
+      "name": "Factor-model alpha t-statistic (Newey-West)",
+      "nature": "model_dependent",
+      "observations": 107,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "ratio",
+      "value": 1.3803077605289458,
+      "warnings": []
+    },
+    {
+      "assumptions": [
+        "Fama-French three-factor model (Mkt-RF, SMB, HML) estimated by OLS on 107 aligned observations (calendar monthly period); dependent variable: fund return minus the supplied risk-free rate (RF); Newey-West (HAC) standard errors with the canonical lag floor(4 (m/100)^(2/9))."
+      ],
+      "category": "factors",
+      "confidence": "high",
+      "details": {
+        "adjusted_r_squared": 0.9242972678487974,
+        "dependent": "fund return minus the supplied risk-free rate (RF)",
+        "df_resid": 103,
+        "factors": [
+          "Mkt-RF",
+          "SMB",
+          "HML"
+        ],
+        "hac_lags": 4,
+        "model": "Fama-French three-factor model"
+      },
+      "direction": "neutral",
+      "formula_id": "factor_r_squared@v1",
+      "id": "factor_r_squared",
+      "methodology_version": "0.1.0",
+      "name": "Factor-model R-squared",
+      "nature": "estimated",
+      "observations": 107,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "fraction",
+      "value": 0.9264397980040201,
+      "warnings": []
+    },
+    {
+      "assumptions": [
+        "Fama-French three-factor model (Mkt-RF, SMB, HML) estimated by OLS on 107 aligned observations (calendar monthly period); dependent variable: fund return minus the supplied risk-free rate (RF); Newey-West (HAC) standard errors with the canonical lag floor(4 (m/100)^(2/9)).",
+        "Annualized with 12 periods per year (monthly frequency, inferred from dates)."
+      ],
+      "category": "factors",
+      "confidence": "high",
+      "details": {
+        "dependent": "fund return minus the supplied risk-free rate (RF)",
+        "df_resid": 103,
+        "factors": [
+          "Mkt-RF",
+          "SMB",
+          "HML"
+        ],
+        "hac_lags": 4,
+        "model": "Fama-French three-factor model",
+        "per_period": 0.014704950412944461
+      },
+      "direction": "neutral",
+      "formula_id": "factor_residual_volatility@v1",
+      "id": "factor_residual_volatility",
+      "methodology_version": "0.1.0",
+      "name": "Factor-model residual volatility (annualized)",
+      "nature": "estimated",
+      "observations": 107,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "decimal_return",
+      "value": 0.0509394424760015,
+      "warnings": []
+    },
+    {
+      "assumptions": [
+        "Asymptotic normal approximation for independent, identically distributed returns, allowing for skewness and kurtosis (Mertens 2002; Bailey & Lopez de Prado 2012); serial correlation is not modelled.",
+        "Risk-free rate assumed to be 0% (methodology 0.1.0); the ratio therefore uses total rather than excess returns and is higher than an excess-return version when cash yields are positive."
+      ],
+      "category": "statistical",
+      "confidence": "high",
+      "details": {
+        "moment_kurtosis": 9.090113545240834,
+        "moment_skewness": 1.124749466152779,
+        "sharpe_per_period": 0.10389079817725438,
+        "z_statistic": 1.1296653536889651
+      },
+      "direction": "higher_is_better",
+      "formula_id": "probabilistic_sharpe_ratio@v1",
+      "id": "probabilistic_sharpe_ratio",
+      "methodology_version": "0.1.0",
+      "name": "Probabilistic Sharpe Ratio (vs 0)",
+      "nature": "estimated",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "probability",
+      "value": 0.8706913692861696,
+      "warnings": [
+        "Returns are far from normal (skewness 1.14, excess kurtosis 6.44); volatility does not capture tail risk. See the drawdown and tail sections."
+      ]
+    },
+    {
+      "assumptions": [
+        "Asymptotic normal approximation for independent, identically distributed returns, allowing for skewness and kurtosis (Mertens 2002; Bailey & Lopez de Prado 2012); serial correlation is not modelled.",
+        "Annualized with 12 periods per year (monthly frequency, inferred from dates).",
+        "Risk-free rate assumed to be 0% (methodology 0.1.0); the ratio therefore uses total rather than excess returns and is higher than an excess-return version when cash yields are positive."
+      ],
+      "category": "statistical",
+      "confidence": "high",
+      "details": {
+        "ci_level": 0.95,
+        "ci_lower": -0.26451616545734036,
+        "ci_upper": 0.9842927289848952,
+        "sharpe_ratio": 0.3598882817637774,
+        "standard_error_per_period": 0.09196599491875627
+      },
+      "direction": "neutral",
+      "formula_id": "sharpe_ratio_standard_error@v1",
+      "id": "sharpe_ratio_standard_error",
+      "methodology_version": "0.1.0",
+      "name": "Sharpe ratio standard error (annualized)",
+      "nature": "estimated",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "ratio",
+      "value": 0.31857955153581413,
+      "warnings": [
+        "Returns are far from normal (skewness 1.14, excess kurtosis 6.44); volatility does not capture tail risk. See the drawdown and tail sections."
+      ]
+    },
+    {
+      "assumptions": [
+        "Asymptotic normal approximation for independent, identically distributed returns, allowing for skewness and kurtosis (Mertens 2002; Bailey & Lopez de Prado 2012); serial correlation is not modelled.",
+        "Risk-free rate assumed to be 0% (methodology 0.1.0); the ratio therefore uses total rather than excess returns and is higher than an excess-return version when cash yields are positive."
+      ],
+      "category": "statistical",
+      "confidence": "high",
+      "details": {
+        "additional_periods_needed": 120,
+        "observed_periods": 108,
+        "sufficient": false,
+        "years": 18.987495167020942
+      },
+      "direction": "neutral",
+      "formula_id": "minimum_track_record_length@v1",
+      "id": "minimum_track_record_length",
+      "methodology_version": "0.1.0",
+      "name": "Minimum track record length",
+      "nature": "estimated",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "periods",
+      "value": 227.84994200425132,
+      "warnings": [
+        "Returns are far from normal (skewness 1.14, excess kurtosis 6.44); volatility does not capture tail risk. See the drawdown and tail sections."
+      ]
+    },
+    {
+      "assumptions": [],
+      "category": "statistical",
+      "confidence": "high",
+      "details": {
+        "ci_level": 0.95,
+        "ci_lower": -0.004623935785756666,
+        "ci_upper": 0.01568452837834926,
+        "p_value": 0.2827191362023892,
+        "t_statistic": 1.0796648452913322
+      },
+      "direction": "neutral",
+      "formula_id": "mean_return_standard_error@v1",
+      "id": "mean_return_standard_error",
+      "methodology_version": "0.1.0",
+      "name": "Mean return standard error (per period)",
+      "nature": "estimated",
+      "observations": 108,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "decimal_return",
+      "value": 0.0051222342937395785,
+      "warnings": [
+        "Returns are far from normal (skewness 1.14, excess kurtosis 6.44); volatility does not capture tail risk. See the drawdown and tail sections."
+      ]
+    }
+  ],
+  "name": "factor_case",
+  "provenance": {
+    "annualization": "Annualized with 12 periods per year (monthly frequency, inferred from dates).",
+    "benchmark_name": null,
+    "benchmark_sha256": null,
+    "canonical": true,
+    "date_range": [
+      "2016-01-31",
+      "2024-12-31"
+    ],
+    "factor_names": [
+      "Mkt-RF",
+      "SMB",
+      "HML"
+    ],
+    "factors_sha256": "cc844c104a7199cdec4b2ba0a7e4174a13e5dfd4f3456d9db43560d3ce1e5a06",
+    "frequency": "monthly",
+    "input_sha256": "a0c79cc6398e704a945bf038e5dbec38a7a4e412e3c205d1ac42c1a60e6f0b06",
+    "input_type": "pandas.Series",
+    "methodology_version": "0.1.0",
+    "observations": 108,
+    "package_version": "0.1.0",
+    "transformations": []
+  },
+  "returns": [
+    {
+      "date": "2016-01-31",
+      "value": 0.017604
+    },
+    {
+      "date": "2016-02-29",
+      "value": -0.074335
+    },
+    {
+      "date": "2016-03-31",
+      "value": 0.004619
+    },
+    {
+      "date": "2016-04-30",
+      "value": -0.056555
+    },
+    {
+      "date": "2016-05-31",
+      "value": 0.005419
+    },
+    {
+      "date": "2016-06-30",
+      "value": 0.108889
+    },
+    {
+      "date": "2016-07-31",
+      "value": 0.009387
+    },
+    {
+      "date": "2016-08-31",
+      "value": 0.033315
+    },
+    {
+      "date": "2016-09-30",
+      "value": 0.002045
+    },
+    {
+      "date": "2016-10-31",
+      "value": 0.017207
+    },
+    {
+      "date": "2016-11-30",
+      "value": 0.001905
+    },
+    {
+      "date": "2016-12-31",
+      "value": 0.055089
+    },
+    {
+      "date": "2017-01-31",
+      "value": 0.02985
+    },
+    {
+      "date": "2017-02-28",
+      "value": 0.1061
+    },
+    {
+      "date": "2017-03-31",
+      "value": 0.01708
+    },
+    {
+      "date": "2017-04-30",
+      "value": 0.051202
+    },
+    {
+      "date": "2017-05-31",
+      "value": -0.006531
+    },
+    {
+      "date": "2017-06-30",
+      "value": -0.074507
+    },
+    {
+      "date": "2017-07-31",
+      "value": -0.010503
+    },
+    {
+      "date": "2017-08-31",
+      "value": -0.001531
+    },
+    {
+      "date": "2017-09-30",
+      "value": 0.01871
+    },
+    {
+      "date": "2017-10-31",
+      "value": 0.026906
+    },
+    {
+      "date": "2017-11-30",
+      "value": 0.074042
+    },
+    {
+      "date": "2017-12-31",
+      "value": 0.000808
+    },
+    {
+      "date": "2018-01-31",
+      "value": 0.03597
+    },
+    {
+      "date": "2018-02-28",
+      "value": -0.040617
+    },
+    {
+      "date": "2018-03-31",
+      "value": -0.051381
+    },
+    {
+      "date": "2018-04-30",
+      "value": -0.011807
+    },
+    {
+      "date": "2018-05-31",
+      "value": 0.05424
+    },
+    {
+      "date": "2018-06-30",
+      "value": 0.030685
+    },
+    {
+      "date": "2018-07-31",
+      "value": -0.021629
+    },
+    {
+      "date": "2018-08-31",
+      "value": 0.080087
+    },
+    {
+      "date": "2018-09-30",
+      "value": 0.009066
+    },
+    {
+      "date": "2018-10-31",
+      "value": -0.02519
+    },
+    {
+      "date": "2018-11-30",
+      "value": 0.057558
+    },
+    {
+      "date": "2018-12-31",
+      "value": -0.072651
+    },
+    {
+      "date": "2019-01-31",
+      "value": 0.000555
+    },
+    {
+      "date": "2019-02-28",
+      "value": -0.026138
+    },
+    {
+      "date": "2019-03-31",
+      "value": 0.000457
+    },
+    {
+      "date": "2019-04-30",
+      "value": -0.024887
+    },
+    {
+      "date": "2019-05-31",
+      "value": 0.099058
+    },
+    {
+      "date": "2019-06-30",
+      "value": 0.033273
+    },
+    {
+      "date": "2019-07-31",
+      "value": -0.024233
+    },
+    {
+      "date": "2019-08-31",
+      "value": -0.017695
+    },
+    {
+      "date": "2019-09-30",
+      "value": -0.013861
+    },
+    {
+      "date": "2019-10-31",
+      "value": 0.023238
+    },
+    {
+      "date": "2019-11-30",
+      "value": 0.017449
+    },
+    {
+      "date": "2019-12-31",
+      "value": 0.000558
+    },
+    {
+      "date": "2020-01-31",
+      "value": 0.030759
+    },
+    {
+      "date": "2020-02-29",
+      "value": 0.037221
+    },
+    {
+      "date": "2020-03-31",
+      "value": 0.025006
+    },
+    {
+      "date": "2020-04-30",
+      "value": -0.021292
+    },
+    {
+      "date": "2020-05-31",
+      "value": 0.281941
+    },
+    {
+      "date": "2020-06-30",
+      "value": 0.087859
+    },
+    {
+      "date": "2020-07-31",
+      "value": -0.014929
+    },
+    {
+      "date": "2020-08-31",
+      "value": 0.053231
+    },
+    {
+      "date": "2020-09-30",
+      "value": 0.022401
+    },
+    {
+      "date": "2020-10-31",
+      "value": -0.022413
+    },
+    {
+      "date": "2020-11-30",
+      "value": -0.027884
+    },
+    {
+      "date": "2020-12-31",
+      "value": 0.090234
+    },
+    {
+      "date": "2021-01-31",
+      "value": 0.091468
+    },
+    {
+      "date": "2021-02-28",
+      "value": 0.02664
+    },
+    {
+      "date": "2021-03-31",
+      "value": 0.011342
+    },
+    {
+      "date": "2021-04-30",
+      "value": -0.021094
+    },
+    {
+      "date": "2021-05-31",
+      "value": -0.000832
+    },
+    {
+      "date": "2021-06-30",
+      "value": 0.013956
+    },
+    {
+      "date": "2021-07-31",
+      "value": 0.020897
+    },
+    {
+      "date": "2021-08-31",
+      "value": 0.050278
+    },
+    {
+      "date": "2021-09-30",
+      "value": -0.167464
+    },
+    {
+      "date": "2021-10-31",
+      "value": -0.012137
+    },
+    {
+      "date": "2021-11-30",
+      "value": -0.014726
+    },
+    {
+      "date": "2021-12-31",
+      "value": 0.007232
+    },
+    {
+      "date": "2022-01-31",
+      "value": -0.097112
+    },
+    {
+      "date": "2022-02-28",
+      "value": -0.029292
+    },
+    {
+      "date": "2022-03-31",
+      "value": -0.016651
+    },
+    {
+      "date": "2022-04-30",
+      "value": -0.06058
+    },
+    {
+      "date": "2022-05-31",
+      "value": -0.009363
+    },
+    {
+      "date": "2022-06-30",
+      "value": 0.029693
+    },
+    {
+      "date": "2022-07-31",
+      "value": 0.063354
+    },
+    {
+      "date": "2022-08-31",
+      "value": -0.000994
+    },
+    {
+      "date": "2022-09-30",
+      "value": -0.019464
+    },
+    {
+      "date": "2022-10-31",
+      "value": -0.03398
+    },
+    {
+      "date": "2022-11-30",
+      "value": -0.041085
+    },
+    {
+      "date": "2022-12-31",
+      "value": -0.039385
+    },
+    {
+      "date": "2023-01-31",
+      "value": -0.03307
+    },
+    {
+      "date": "2023-02-28",
+      "value": -0.048621
+    },
+    {
+      "date": "2023-03-31",
+      "value": 0.055544
+    },
+    {
+      "date": "2023-04-30",
+      "value": 0.029117
+    },
+    {
+      "date": "2023-05-31",
+      "value": -0.009974
+    },
+    {
+      "date": "2023-06-30",
+      "value": 0.077178
+    },
+    {
+      "date": "2023-07-31",
+      "value": 0.071305
+    },
+    {
+      "date": "2023-08-31",
+      "value": -0.030231
+    },
+    {
+      "date": "2023-09-30",
+      "value": -0.031378
+    },
+    {
+      "date": "2023-10-31",
+      "value": -0.037068
+    },
+    {
+      "date": "2023-11-30",
+      "value": 0.070119
+    },
+    {
+      "date": "2023-12-31",
+      "value": -0.042841
+    },
+    {
+      "date": "2024-01-31",
+      "value": 0.027516
+    },
+    {
+      "date": "2024-02-29",
+      "value": -0.019278
+    },
+    {
+      "date": "2024-03-31",
+      "value": -0.036162
+    },
+    {
+      "date": "2024-04-30",
+      "value": -0.023744
+    },
+    {
+      "date": "2024-05-31",
+      "value": -0.040709
+    },
+    {
+      "date": "2024-06-30",
+      "value": -0.007697
+    },
+    {
+      "date": "2024-07-31",
+      "value": -0.005974
+    },
+    {
+      "date": "2024-08-31",
+      "value": 0.004354
+    },
+    {
+      "date": "2024-09-30",
+      "value": -0.067049
+    },
+    {
+      "date": "2024-10-31",
+      "value": -0.03965
+    },
+    {
+      "date": "2024-11-30",
+      "value": -0.063564
+    },
+    {
+      "date": "2024-12-31",
+      "value": 0.037994
+    }
+  ],
+  "schema_version": "0.1"
+}

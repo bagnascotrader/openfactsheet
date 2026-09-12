@@ -25,7 +25,7 @@ from openfactsheet.exceptions import BenchmarkAlignmentError, UndefinedMetric
 from openfactsheet.models.input import ObservationFrequency, ReturnSeries
 from openfactsheet.models.report import BenchmarkDiagnostics
 
-_PERIOD_CODES = {
+PERIOD_CODES = {
     ObservationFrequency.MONTHLY: "M",
     ObservationFrequency.QUARTERLY: "Q",
     ObservationFrequency.YEARLY: "Y",
@@ -143,7 +143,7 @@ class AlignedBenchmark:
         return single_index_ols(self.fund[down], self.bench[down], "benchmark down periods")
 
 
-def _keys(series: ReturnSeries, code: str | None) -> pd.Index:
+def period_keys(series: ReturnSeries, code: str | None) -> pd.Index:
     assert series.dates is not None
     if code is not None:
         return pd.Index(series.dates.to_period(code))
@@ -167,9 +167,9 @@ def align_benchmark(fund: ReturnSeries, bench: ReturnSeries) -> AlignedBenchmark
             )
         # One key type for both series: the calendar period of whichever series has a
         # period-based frequency (the other may be irregular because of gaps).
-        period_freq = f_freq if f_freq in _PERIOD_CODES else b_freq
-        code = _PERIOD_CODES.get(period_freq)
-        fk, bk = _keys(fund, code), _keys(bench, code)
+        period_freq = f_freq if f_freq in PERIOD_CODES else b_freq
+        code = PERIOD_CODES.get(period_freq)
+        fk, bk = period_keys(fund, code), period_keys(bench, code)
         if fk.has_duplicates or bk.has_duplicates:
             raise BenchmarkAlignmentError(
                 "Several observations fall in the same calendar period; they cannot be aligned "

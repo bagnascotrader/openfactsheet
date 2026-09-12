@@ -92,6 +92,14 @@ def assumption_texts(definition: MetricDefinition, ctx: MetricContext) -> tuple[
                 "Ordinary least squares of fund on benchmark returns (risk-free rate 0%); "
                 "conventional i.i.d. standard errors."
             )
+        elif key == "factor_model" and ctx.factors is not None:
+            f = ctx.factors
+            texts.append(
+                f"{f.model} ({', '.join(f.names)}) estimated by OLS on {f.n} aligned "
+                f"observations ({f.alignment.alignment_method}); dependent variable: "
+                f"{f.dependent}; Newey-West (HAC) standard errors with the canonical lag "
+                "floor(4 (m/100)^(2/9))."
+            )
         elif key == "iid_asymptotics":
             texts.append(IID_ASYMPTOTICS_ASSUMPTION)
         elif key == "parametric":
@@ -118,6 +126,9 @@ def assess(definition: MetricDefinition, ctx: MetricContext, notes: tuple[str, .
     if definition.requires_benchmark and ctx.benchmark is not None:
         n = ctx.benchmark.n
         ppy = ctx.benchmark.periods_per_year
+    elif definition.requires_factors and ctx.factors is not None:
+        n = ctx.factors.n
+        ppy = ctx.factors.periods_per_year
     else:
         n = ctx.n
         ppy = ctx.returns.periods_per_year
@@ -202,6 +213,29 @@ def assess(definition: MetricDefinition, ctx: MetricContext, notes: tuple[str, .
             warnings.append(f"Benchmark overlaps only {b.fund_coverage:.0%} of the fund history.")
         if b.alignment_method.startswith("by position"):
             warnings.append("Fund and benchmark were paired by position, not by date.")
+
+    # Factor overlap and smoothing (decision 0028).
+    if definition.requires_factors and ctx.factors is not None:
+        fa = ctx.factors.alignment
+        if fa.fund_coverage < float(thresholds["factor_min_coverage"]):
+            confidence = _cap(confidence, "moderate")
+            warnings.append(
+                f"Factor returns overlap only {fa.fund_coverage:.0%} of the fund history."
+            )
+        if fa.alignment_method.startswith("by position"):
+            warnings.append("Fund and factor returns were paired by position, not by date.")
+        if diag.smoothing_risk == "high":
+            confidence = "low"
+            warnings.append(
+                "High serial correlation suggests smoothed returns, which bias factor loadings "
+                "toward zero and alpha upward (Asness, Krail & Liew 2001)."
+            )
+        elif diag.smoothing_risk == "moderate":
+            confidence = _cap(confidence, "moderate")
+            warnings.append(
+                "Moderate serial correlation: smoothed returns may understate factor loadings "
+                "and overstate alpha."
+            )
 
     if definition.supplementary:
         status: MetricStatus = "supplementary"

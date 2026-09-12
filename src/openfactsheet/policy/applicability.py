@@ -29,15 +29,25 @@ class Inapplicable:
     reason: str
 
 
+NO_FACTORS_REASON = (
+    "No factor returns were supplied. Factor-model metrics require explicitly supplied factor "
+    "returns (ofs.analyze(returns, factors=...)); OpenFactsheet never downloads factor data."
+)
+
+
 def observations_for(definition: MetricDefinition, ctx: MetricContext) -> int:
     if definition.requires_benchmark:
         return ctx.benchmark.n if ctx.benchmark is not None else 0
+    if definition.requires_factors:
+        return ctx.factors.n if ctx.factors is not None else 0
     return ctx.n
 
 
 def precheck(definition: MetricDefinition, ctx: MetricContext) -> Inapplicable | None:
     if definition.requires_benchmark and ctx.benchmark is None:
         return Inapplicable("not_applicable", NO_BENCHMARK_REASON)
+    if definition.requires_factors and ctx.factors is None:
+        return Inapplicable("not_applicable", NO_FACTORS_REASON)
     if definition.annualized and ctx.returns.periods_per_year is None:
         freq = ctx.returns.frequency.value
         return Inapplicable(
@@ -53,10 +63,15 @@ def precheck(definition: MetricDefinition, ctx: MetricContext) -> Inapplicable |
         )
     n = observations_for(definition, ctx)
     policy = get_policy(definition.min_data_policy)
-    if n < policy.math_min_obs:
-        basis = "aligned observations" if definition.requires_benchmark else "observations"
+    minimum = policy.math_min_obs
+    if definition.requires_factors and ctx.factors is not None:
+        # k + 1 coefficients and at least one residual degree of freedom.
+        minimum = max(minimum, ctx.factors.k + 2)
+    if n < minimum:
+        aligned = definition.requires_benchmark or definition.requires_factors
+        basis = "aligned observations" if aligned else "observations"
         return Inapplicable(
             "insufficient_data",
-            f"Requires at least {policy.math_min_obs} {basis}; {n} available.",
+            f"Requires at least {minimum} {basis}; {n} available.",
         )
     return None

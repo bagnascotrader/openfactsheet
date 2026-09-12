@@ -401,13 +401,14 @@ evaluated before calculation, first match wins:
 | # | Condition | Status | Reason (abridged) |
 |---|---|---|---|
 | 1 | metric requires a benchmark and none was supplied | `not_applicable` | no benchmark supplied; no default benchmark is ever assumed |
-| 2 | metric is annualized and `P` is `null` | `not_applicable` | annualization requires a regular frequency |
-| 3 | metric uses the wealth path and any `r_t < −1` | `not_applicable` | compounded wealth path not meaningful |
-| 4 | observations `<` the policy's mathematical minimum | `insufficient_data` | requires at least *k* observations |
+| 2 | metric requires factor returns and none were supplied | `not_applicable` | no factor returns supplied; factor data are never downloaded |
+| 3 | metric is annualized and `P` is `null` | `not_applicable` | annualization requires a regular frequency |
+| 4 | metric uses the wealth path and any `r_t < −1` | `not_applicable` | compounded wealth path not meaningful |
+| 5 | observations `<` the policy's mathematical minimum (for factor metrics `max(3, k + 2)` with *k* factors) | `insufficient_data` | requires at least *N* observations |
 
 The observation count is `n` for single-series metrics and the number of
-**aligned** observations for benchmark metrics. For benchmark metrics, check 2
-uses the fund's `P`. Mathematical minimums per policy are listed in
+**aligned** observations for benchmark and factor metrics. For benchmark and
+factor metrics, check 3 uses the fund's `P`. Mathematical minimums per policy are listed in
 [policies.md](policies.md).
 
 A metric is never withheld because its value is unfavorable or because its
@@ -476,8 +477,11 @@ Every reduction adds a warning stating the reason. Thresholds per policy are in
 | h | annualized metrics | `frequency_source == "declared"` | warning only |
 | i | benchmark metrics | benchmark covers `< 90%` of fund observations (`confidence.benchmark_min_coverage`) | cap at `moderate`, warning |
 | j | benchmark metrics | alignment method starts with "by position" | warning only |
+| k | factor metrics | factors cover `< 90%` of fund observations (`confidence.factor_min_coverage`) | cap at `moderate`, warning |
+| l | factor metrics | alignment method starts with "by position" | warning only |
+| m | factor metrics | smoothing risk `high` / `moderate` | set to `low` / cap at `moderate`, warning (smoothed returns bias loadings toward zero and alpha upward) |
 
-Thresholds in modifiers a–i are read from the canonical methodology
+Thresholds in modifiers a–k are read from the canonical methodology
 ([policy/defaults.py](../../src/openfactsheet/policy/defaults.py): `stale_returns`,
 `distribution_warning`, `confidence`), so they are embedded in every report.
 
@@ -505,7 +509,8 @@ assumption keys: annualization statement, risk-free rate 0%, MAR 0%, Omega
 threshold 0%, 95% historical tail convention, drawdown convention, sample
 standard deviation, the benchmark name and alignment, the OLS convention, i.i.d.
 asymptotics (statistical-confidence metrics), the parametric-moment convention
-(Gaussian / Cornish-Fisher VaR) and the Sterling 10% adjustment. The keys per
+(Gaussian / Cornish-Fisher VaR), the Sterling 10% adjustment and the factor model
+(model, factors, aligned periods, dependent variable, Newey-West lag). The keys per
 metric are listed in the [metric flags table](policies.md#metric-flags).
 
 ---
@@ -536,6 +541,27 @@ conventional i.i.d. standard errors, residual degrees of freedom `n − 2`.
 Undefined (metric not applicable) when `n < 3` or the benchmark returns are
 constant. Standard errors, t-statistics and p-values are `null` when
 non-finite.
+
+### Factor returns (decision 0028)
+
+[factors/data.py](../../src/openfactsheet/factors/data.py) `load_factor_set` and
+[factors/regressions.py](../../src/openfactsheet/factors/regressions.py):
+
+| Step | Rule |
+|---|---|
+| Parsing | Same parsers as fund returns; one column per factor; duplicate names → `InputError`. A column named `RF` (case-insensitive, spaces ignored) is the risk-free rate, not a factor; only an RF column → `InputError`. |
+| Frequency | Every column normalized separately (missing values dropped, never filled); different frequencies across columns → `InputError`. |
+| Scale | The classifier of section 6 runs once on the pooled non-RF values (`%` labels in any column count as evidence); the result, or a declared `return_scale`, is applied to every column including RF. |
+| Alignment | Both dated: key type as for benchmarks (calendar period of the fund's frequency if monthly/quarterly/yearly, else of the factors', else exact date); different regular frequencies → `FactorAlignmentError`; duplicate keys → `FactorAlignmentError`; the intersection of the fund's keys with the keys present in **every** column is used, in fund order. Otherwise equal lengths are paired by position (warning), else `FactorAlignmentError`. |
+| Dependent variable | `y_t = r_t − RF_t` when an RF column exists, else `y_t = r_t`. |
+| Estimation | statsmodels OLS with intercept; HAC covariance, Bartlett kernel, lag `floor(4 (m/100)^(2/9))`, small-sample factor `m/(m−k−1)`; Student t with `m − k − 1` df; 95% intervals. |
+| Not identified (`not_applicable`) | a factor is constant over the aligned periods; the design matrix has rank `< k + 1` (collinear factors). |
+| Exact fit | constant `y`, or residual sum of squares `≤ m (16 ε max\|y\|)²`: loadings as solved, standard errors 0, t / p `null`; R² undefined (constant `y`) or 1. |
+| Fit warnings | maximum VIF `≥ 10` (`factor_model.vif_warning`); residual Ljung-Box p `< 0.05` with `m ≥ 10`. |
+
+Reported (`FactorAnalysis`): model label, factor names, dependent variable,
+factor return scale and evidence, alignment counts and overlap, and the fit (or
+the reason it could not be estimated).
 
 ---
 
@@ -601,7 +627,11 @@ The canonical report has exactly 14 sections; none can be removed by a flag:
 9. Consistency
 10. Benchmark-relative analysis (without a benchmark: the reason and the list
     of metrics that are not applicable)
-11. Factor analysis (not available in methodology 0.1.0; stated)
+11. Factor analysis — without factor returns: the reason and the list of
+    factor metrics that are not applicable; with them: the model summary,
+    alignment, a coefficient table (alpha per period and every loading with
+    Newey-West standard error, t, p and 95% interval), fit statistics and the
+    `factors` category metrics
 12. Statistical confidence — counts of confidence labels and statuses, then the
     `statistical` category metrics (`probabilistic_sharpe_ratio`,
     `sharpe_ratio_standard_error`, `minimum_track_record_length`,
@@ -610,6 +640,19 @@ The canonical report has exactly 14 sections; none can be removed by a flag:
 13. Metric catalog (pointer)
 14. Assumptions & caveats (methodology description and all warning/critical
     findings)
+
+**Charts and episode table** (decision 0026,
+[report/charts.py](../../src/openfactsheet/report/charts.py)): the HTML report
+draws eight fixed charts in their sections (growth of 1, calendar-year returns
+and the monthly heatmap in 3; rolling one-year volatility in 4; the underwater
+chart in 5; the return distribution in 8; the rolling one-year return in 9;
+growth over the benchmark overlap in 10). A chart that cannot be drawn is
+replaced by its reason: returns below −100% (wealth-path charts), no regular
+frequency or fewer than `window + 1` observations (rolling charts), undated or
+non-monthly data (heatmap), fewer than 5 or identical returns (histogram), no
+benchmark or fewer than 2 aligned periods (benchmark chart). Section 5 of every
+renderer lists the `charts.episode_table_rows` (10) deepest drawdown episodes,
+deepest first, ties by earlier peak.
 
 **Display rounding** (presentation only; stored values are raw `float64`):
 

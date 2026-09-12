@@ -45,6 +45,7 @@ _ASSUMPTION_LABELS = {
     "parametric": "parametric (population moments)",
     "sterling_excess": "+10% adjustment",
     "entropic": "95% entropic",
+    "factor_model": "supplied factors, OLS + Newey-West",
 }
 
 _UNIT_OUTPUT = {
@@ -125,6 +126,13 @@ def _assumption_doc(key: str) -> str:
             "distribution (exponential-moment bound), one-dimensional convex minimization; "
             "signed return."
         ),
+        "factor_model": lambda: (
+            "OLS with an intercept of y_t (fund return minus a supplied RF column, or the fund "
+            "return when none is supplied) on the m aligned factor returns; Newey-West (HAC) "
+            "covariance with lag floor(4 (m/100)^(2/9)), Bartlett kernel, small-sample factor "
+            "m / (m - k - 1) and Student t with m - k - 1 degrees of freedom; periods missing "
+            "for the fund or any factor are dropped, never filled."
+        ),
         "sterling_excess": lambda: (
             f"Sterling adjustment of {_pct(_get('sterling.excess'))} added to the absolute "
             "maximum drawdown (a historical convention, not an estimate)."
@@ -163,7 +171,8 @@ def _criteria_section(d: MetricDefinition) -> list[str]:
     smoothing = _get("smoothing")
     shape = _get("distribution_warning")
     zero_share = _get("stale_returns.zero_share_warning")
-    basis = "aligned observations" if d.requires_benchmark else "observations"
+    aligned = d.requires_benchmark or d.requires_factors
+    basis = "aligned observations" if aligned else "observations"
 
     out = [
         "## Calculation criteria",
@@ -178,6 +187,12 @@ def _criteria_section(d: MetricDefinition) -> list[str]:
             "`not_applicable` (no default benchmark is ever assumed)."
         )
         step += 1
+    if d.requires_factors:
+        out.append(
+            f"{step}. Factor returns must be supplied explicitly; otherwise status "
+            "`not_applicable` (factor data are never downloaded)."
+        )
+        step += 1
     if d.annualized:
         out.append(
             f"{step}. The observation frequency must be regular so that P is defined; otherwise "
@@ -190,9 +205,14 @@ def _criteria_section(d: MetricDefinition) -> list[str]:
             "`not_applicable`."
         )
         step += 1
+    minimum = (
+        f"max({policy.math_min_obs}, k + 2) {basis} for k factors"
+        if d.requires_factors
+        else f"{policy.math_min_obs} {basis}"
+    )
     out.append(
-        f"{step}. At least {policy.math_min_obs} {basis} (mathematical minimum of policy "
-        f"`{policy.key}`); otherwise `insufficient_data`."
+        f"{step}. At least {minimum} (mathematical minimum of policy `{policy.key}`); "
+        "otherwise `insufficient_data`."
     )
     step += 1
     if d.docs.undefined_when:
@@ -245,6 +265,14 @@ def _criteria_section(d: MetricDefinition) -> list[str]:
             "observations caps at **moderate**.",
             "  - Fund and benchmark paired by position (undated) adds a warning.",
         ]
+    if d.requires_factors:
+        mods += [
+            f"  - Factor overlap below {_pct(conf['factor_min_coverage'])} of the fund's "
+            "observations caps at **moderate**.",
+            "  - Fund and factors paired by position (undated) adds a warning.",
+            "  - Smoothing risk **high** sets confidence to **low**; **moderate** caps at "
+            "**moderate** (smoothed returns bias loadings toward zero and alpha upward).",
+        ]
     out += mods or ["  - None apply to this metric."]
     status_line = (
         "- Status: always `supplementary` when a value exists (diagnostic statistic)."
@@ -278,6 +306,14 @@ def _references_summary(d: MetricDefinition) -> str:
     return ", ".join(parts) or "—"
 
 
+def _needs(d: MetricDefinition) -> str:
+    if d.requires_benchmark:
+        return "benchmark"
+    if d.requires_factors:
+        return "factors"
+    return "no"
+
+
 def render_catalog() -> str:
     lines = [
         GENERATED_NOTE,
@@ -301,7 +337,7 @@ def render_catalog() -> str:
         lines += [
             f"## {title}",
             "",
-            "| ID | Name | Nature | Unit | Direction | Benchmark | Annualized | "
+            "| ID | Name | Nature | Unit | Direction | Benchmark / factors | Annualized | "
             "Canonical parameters | Minimum-data policy | Status | References |",
             "|---|---|---|---|---|---|---|---|---|---|---|",
         ]
@@ -309,7 +345,7 @@ def render_catalog() -> str:
             params = ", ".join(_ASSUMPTION_LABELS[k] for k in d.assumption_keys) or "—"
             lines.append(
                 f"| [`{d.id}`](interpretation/{d.id}.md) | {_cell(d.name)} | {d.nature} | "
-                f"{d.unit} | {_DIRECTION[d.direction]} | {'yes' if d.requires_benchmark else 'no'} "
+                f"{d.unit} | {_DIRECTION[d.direction]} | {_needs(d)} "
                 f"| {'yes' if d.annualized else 'no'} | {params} | `{d.min_data_policy}` | "
                 f"implemented ({d.formula_id}) | {_references_summary(d)} |"
             )
@@ -345,7 +381,9 @@ def render_metric_page(d: MetricDefinition) -> str:
         "",
         "## 3. Required inputs",
         "",
-        docs.inputs + (" A benchmark is required." if d.requires_benchmark else ""),
+        docs.inputs
+        + (" A benchmark is required." if d.requires_benchmark else "")
+        + (" Factor returns are required." if d.requires_factors else ""),
         "",
         "## 4. Is higher or lower better?",
         "",
@@ -471,15 +509,16 @@ def render_policies() -> str:
         "metric (see [criteria](criteria.md#10-confidence-and-status-algorithm)).",
         "",
         "| Metric | Category | Volatility-based | Wealth path | Annualized | Benchmark | "
-        "Supplementary | Minimum-data policy | Assumption keys |",
-        "|---|---|---|---|---|---|---|---|---|",
+        "Factors | Supplementary | Minimum-data policy | Assumption keys |",
+        "|---|---|---|---|---|---|---|---|---|---|",
     ]
     for d in all_metrics():
         keys = ", ".join(f"`{k}`" for k in d.assumption_keys) or "—"
         lines.append(
             f"| [`{d.id}`](../interpretation/{d.id}.md) | {d.category} | "
             f"{flag(d.volatility_based)} | {flag(d.uses_wealth_path)} | {flag(d.annualized)} | "
-            f"{flag(d.requires_benchmark)} | {flag(d.supplementary)} | `{d.min_data_policy}` | "
+            f"{flag(d.requires_benchmark)} | {flag(d.requires_factors)} | "
+            f"{flag(d.supplementary)} | `{d.min_data_policy}` | "
             f"{keys} |"
         )
 
@@ -538,6 +577,8 @@ def render_policies() -> str:
         f"| Ljung-Box lags | {m.get('dependence.ljung_box_lags')} | `dependence.ljung_box_lags` |",
         f"| Benchmark coverage cap | overlap < {conf['benchmark_min_coverage']:.0%} of fund "
         "observations → at most moderate | `confidence.benchmark_min_coverage` |",
+        f"| Factor coverage cap | overlap < {conf['factor_min_coverage']:.0%} of fund "
+        "observations → at most moderate | `confidence.factor_min_coverage` |",
         f"| Short annualization | years < {conf['annualization_min_years']:g} → low | "
         "`confidence.annualization_min_years` |",
         "",

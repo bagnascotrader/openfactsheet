@@ -11,11 +11,15 @@ from openfactsheet.policy.applicability import NO_BENCHMARK_REASON
 from openfactsheet.report.tables import (
     EPISODE_TABLE_HEADER,
     FACTOR_SECTION_TEXT,
+    LOADING_TABLE_HEADER,
     STATISTICAL_SECTION_TEXT,
     Footnotes,
     confidence_counts,
     data_quality_metrics,
     drawdown_episode_table,
+    factor_fit_summary,
+    factor_loading_rows,
+    factor_metrics,
     format_value,
     ordered_categories,
     result_notes,
@@ -87,6 +91,37 @@ def _episode_table(report: FactsheetReport) -> list[str]:
     return out
 
 
+def _factor_section(report: FactsheetReport, notes: Footnotes) -> list[str]:
+    rows = factor_metrics(report)
+    fa = report.factor_analysis
+    if fa is None:
+        return [
+            _wrap(FACTOR_SECTION_TEXT),
+            _wrap("Metrics: " + ", ".join(r.name for r in rows) + "."),
+        ]
+    out = [_indent(fa.to_text()), ""]
+    loadings = factor_loading_rows(report)
+    if loadings:
+        widths = [
+            max(len(h), *(len(r[i]) for r in loadings)) for i, h in enumerate(LOADING_TABLE_HEADER)
+        ]
+
+        def line(cells: tuple[str, ...]) -> str:
+            # Names left-aligned, numbers right-aligned.
+            padded = (
+                c.rjust(w) if i else c.ljust(w)
+                for i, (c, w) in enumerate(zip(cells, widths, strict=True))
+            )
+            return ("  " + "  ".join(padded)).rstrip()
+
+        out.append(line(LOADING_TABLE_HEADER))
+        out.extend(line(row) for row in loadings)
+        out.append(_wrap(factor_fit_summary(report)))
+        out.append("")
+    out.extend(_metric_table(rows, notes))
+    return out
+
+
 def render_terminal(report: FactsheetReport) -> str:
     notes = Footnotes([])
     p = report.provenance
@@ -124,7 +159,7 @@ def render_terminal(report: FactsheetReport) -> str:
 
     out.append(_heading(number, "Factor analysis"))
     number += 1
-    out.append(_wrap(FACTOR_SECTION_TEXT))
+    out.extend(_factor_section(report, notes))
 
     out.append(_heading(number, "Statistical confidence"))
     number += 1

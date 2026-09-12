@@ -16,6 +16,7 @@ from typing import TYPE_CHECKING, Any
 import pandas as pd
 
 from openfactsheet.exceptions import InputError
+from openfactsheet.factors.data import load_factor_set
 from openfactsheet.input.dispatcher import to_raw
 from openfactsheet.metrics.registry import all_metrics
 from openfactsheet.models.assumptions import Methodology
@@ -97,6 +98,7 @@ def analyze(
     returns: Any,
     benchmark: Any = None,
     *,
+    factors: Any = None,
     name: str | None = None,
     return_scale: DeclaredScale | None = None,
     frequency: str | ObservationFrequency | None = None,
@@ -109,11 +111,17 @@ def analyze(
             text, or a :class:`ReturnSeries` from :func:`load`.
         benchmark: Optional benchmark returns in any of the same forms. Benchmark-
             relative metrics are computed only when a benchmark is supplied.
+        factors: Optional factor returns, one column per factor (a DataFrame, a
+            CSV/Excel path or table text, e.g. Fama-French factors). A column named
+            ``RF`` is the risk-free rate and is subtracted from fund returns. Factor-
+            model metrics are computed only when factors are supplied; OpenFactsheet
+            never downloads factor data.
         name: Display name for the report.
         return_scale: Declare ``"decimal"`` or ``"percent"`` only when automatic
-            detection reports ambiguity. Applies to fund and benchmark.
+            detection reports ambiguity. Applies to fund, benchmark and factors.
         frequency: Declare the observation frequency of *undated* values. It is
-            checked against dates when dates exist. Applies to fund and benchmark.
+            checked against dates when dates exist. Applies to fund, benchmark and
+            factors.
 
     Returns:
         A :class:`FactsheetReport` containing every canonical metric with its
@@ -136,13 +144,19 @@ def analyze(
             frequency=frequency,
             role="benchmark",
         )
-    return build_report(series, diag, bench_series, bench_diag)
+    factor_set = (
+        load_factor_set(factors, return_scale=return_scale, frequency=frequency)
+        if factors is not None
+        else None
+    )
+    return build_report(series, diag, bench_series, bench_diag, factor_set)
 
 
 def compare(
     funds: Mapping[str, Any] | pd.DataFrame | Sequence[Any] | ReturnTable,
     benchmark: Any = None,
     *,
+    factors: Any = None,
     return_scale: DeclaredScale | None = None,
     frequency: str | ObservationFrequency | None = None,
 ) -> Comparison:
@@ -150,12 +164,17 @@ def compare(
 
     Metrics are shown side by side; nothing is ranked. When the histories cover
     different periods, an additional common-period analysis (the intersection of
-    all histories) is provided so that track-record differences are visible.
+    all histories) is provided so that track-record differences are visible. The
+    same benchmark and factor returns, if supplied, are used for every investment.
     """
     from openfactsheet.compare.comparison import build_comparison
 
     return build_comparison(
-        funds, benchmark=benchmark, return_scale=return_scale, frequency=frequency
+        funds,
+        benchmark=benchmark,
+        factors=factors,
+        return_scale=return_scale,
+        frequency=frequency,
     )
 
 

@@ -19,11 +19,15 @@ from openfactsheet.report.charts import Chart, build_charts
 from openfactsheet.report.tables import (
     EPISODE_TABLE_HEADER,
     FACTOR_SECTION_TEXT,
+    LOADING_TABLE_HEADER,
     STATISTICAL_SECTION_TEXT,
     Footnotes,
     confidence_counts,
     data_quality_metrics,
     drawdown_episode_table,
+    factor_fit_summary,
+    factor_loading_rows,
+    factor_metrics,
     format_value,
     ordered_categories,
     result_notes,
@@ -240,6 +244,29 @@ def _episode_table(report: FactsheetReport) -> list[str]:
     return parts
 
 
+def _factor_section(report: FactsheetReport, notes: Footnotes) -> list[str]:
+    rows = factor_metrics(report)
+    fa = report.factor_analysis
+    if fa is None:
+        names = ", ".join(r.name for r in rows)
+        return [f"<p>{escape(FACTOR_SECTION_TEXT)}</p><p>Metrics: {escape(names)}.</p>"]
+    parts = [_pre(fa.to_text())]
+    loadings = factor_loading_rows(report)
+    if loadings:
+        head = "".join(f"<th>{escape(h)}</th>" for h in LOADING_TABLE_HEADER)
+        body = "".join(
+            "<tr>" + "".join(
+                f"<td class='v'>{escape(c)}</td>" if i else f"<td>{escape(c)}</td>"
+                for i, c in enumerate(row)
+            ) + "</tr>"
+            for row in loadings
+        )  # fmt: skip
+        parts.append(f"<table><thead><tr>{head}</tr></thead><tbody>{body}</tbody></table>")
+        parts.append(f"<p class='tiles-note'>{escape(factor_fit_summary(report))}</p>")
+    parts += _metric_table(rows, notes)
+    return parts
+
+
 def _headline(report: FactsheetReport) -> list[str]:
     parts = ["<div class='tiles'>"]
     for mid in HEADLINE_METRICS:
@@ -316,8 +343,9 @@ def render_html(report: FactsheetReport) -> str:
         if cat == "drawdown":
             parts += _episode_table(report)
     counts = confidence_counts(report)
+    parts.append(f"<h2>{number}. Factor analysis</h2>")
+    parts += _factor_section(report, notes)
     parts += [
-        f"<h2>{number}. Factor analysis</h2><p>{escape(FACTOR_SECTION_TEXT)}</p>",
         f"<h2>{number + 1}. Statistical confidence</h2><p>"
         + escape(", ".join(f"{k.replace('_', ' ')}: {v}" for k, v in sorted(counts.items())))
         + f"</p><p>{escape(CONFIDENCE_DISCLAIMER + ' ' + STATISTICAL_SECTION_TEXT)}</p>",

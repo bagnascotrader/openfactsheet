@@ -67,6 +67,20 @@ with $r_{(n+1)} := r_{(n)}$ when $j = n$.
 | $\hat\alpha, \hat\beta$ | OLS intercept and slope of $r_t = \alpha + \beta b_t + \varepsilon_t$. |
 | $\hat\varepsilon_t$ | OLS residuals $r_t - \hat\alpha - \hat\beta b_t$. |
 
+## Factor-model quantities
+
+| Symbol | Meaning |
+|---|---|
+| $f_{j,t}$ | Return of supplied factor $j = 1, \dots, k$ in the same period as $r_t$, after alignment (never filled). |
+| $k$ | Number of supplied factors (the risk-free column is not a factor). |
+| $m$ | Number of periods where the fund and every factor (and the RF column, if supplied) have a return. Factor-model sums run over these periods. |
+| $r^{\mathrm{RF}}_t$ | Value of a supplied factor-file column named `RF` (risk-free rate); taken as 0 when no such column is supplied. |
+| $y_t = r_t - r^{\mathrm{RF}}_t$ | Dependent variable of the factor regression. |
+| $\hat\alpha, \hat\beta_j$ | OLS intercept and loadings of $y_t = \alpha + \sum_j \beta_j f_{j,t} + \varepsilon_t$. |
+| $X$ | $m \times (k + 1)$ design matrix: a column of ones and the factor returns. |
+| $\hat\Gamma_\ell$ | $\frac{1}{m}\sum_{t=\ell+1}^{m} \hat\varepsilon_t \hat\varepsilon_{t-\ell}\, x_t x_{t-\ell}^\top$ (and its transpose for $\ell < 0$), with $x_t$ the $t$-th row of $X$. |
+| $q$ | Newey-West lag $\lfloor 4 (m/100)^{2/9} \rfloor$. |
+
 ## Canonical constants (methodology 0.1.0)
 
 | Symbol | Value | Meaning |

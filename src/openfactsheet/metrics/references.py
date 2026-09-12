@@ -162,7 +162,36 @@ MORNINGSTAR_BATTING = AcademicReference(
     "Morningstar, Inc. Batting average: share of periods in which a fund outperformed its "
     "benchmark (Morningstar Direct data definitions)."
 )
+FAMA_FRENCH_1993 = AcademicReference(
+    "Fama, E. F., & French, K. R. (1993). Common Risk Factors in the Returns on Stocks and "
+    "Bonds. Journal of Financial Economics, 33(1), 3-56."
+)
+CARHART_1997 = AcademicReference(
+    "Carhart, M. M. (1997). On Persistence in Mutual Fund Performance. Journal of Finance, "
+    "52(1), 57-82."
+)
+FAMA_FRENCH_2015 = AcademicReference(
+    "Fama, E. F., & French, K. R. (2015). A Five-Factor Asset Pricing Model. Journal of "
+    "Financial Economics, 116(1), 1-22."
+)
+NEWEY_WEST_1987 = AcademicReference(
+    "Newey, W. K., & West, K. D. (1987). A Simple, Positive Semi-Definite, Heteroskedasticity "
+    "and Autocorrelation Consistent Covariance Matrix. Econometrica, 55(3), 703-708."
+)
+NEWEY_WEST_1994 = AcademicReference(
+    "Newey, W. K., & West, K. D. (1994). Automatic Lag Selection in Covariance Matrix "
+    "Estimation. Review of Economic Studies, 61(4), 631-653 (lag rule floor(4 (T/100)^(2/9)))."
+)
+ASNESS_KRAIL_LIEW_2001 = AcademicReference(
+    "Asness, C., Krail, R., & Liew, J. (2001). Do Hedge Funds Hedge? Journal of Portfolio "
+    "Management, 28(1), 6-19 (stale prices bias betas down and alphas up)."
+)
+FUNG_HSIEH_2004 = AcademicReference(
+    "Fung, W., & Hsieh, D. A. (2004). Hedge Fund Benchmarks: A Risk-Based Approach. Financial "
+    "Analysts Journal, 60(5), 65-80."
+)
 # --- Library references ----------------------------------------------------
+R_SANDWICH = "R lm + sandwich::NeweyWest + lmtest::coeftest"
 PA = "PerformanceAnalytics 2.0.4 (R)"
 EMP = "empyrical-reloaded 0.5.12"
 QS = "QuantStats 0.0.81"

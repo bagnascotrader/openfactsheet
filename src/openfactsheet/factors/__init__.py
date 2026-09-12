@@ -1,7 +1,9 @@
-"""Factor analysis — roadmap phase 7, not part of methodology 0.1.0.
+"""Factor analysis with caller-supplied factor returns (decision 0028).
 
-Planned: CAPM with factor data, Fama-French 3/5, Carhart 4, and custom factors
-in an advanced API, estimated with statsmodels (coefficients, standard errors,
-t-statistics, confidence intervals, R², residual diagnostics). Factor data will
-always be supplied explicitly; OpenFactsheet never downloads it silently.
+:mod:`~openfactsheet.factors.data` parses and normalizes factor returns (one
+return scale for all columns; an ``RF`` column is the risk-free rate);
+:mod:`~openfactsheet.factors.regressions` aligns them with the fund (never
+filling gaps) and estimates the regression with statsmodels OLS and Newey-West
+standard errors; :mod:`~openfactsheet.factors.models` holds the results. Factor
+data are always supplied explicitly; OpenFactsheet never downloads them.
 """

@@ -40,6 +40,7 @@ Conventions used throughout:
 | `metrics` | array | One entry per canonical metric, in canonical order ([metrics](#metrics)). |
 | `drawdown_episodes` | array | All drawdown episodes ([drawdown_episodes](#drawdown_episodes)). |
 | `benchmark` | object \| null | Benchmark alignment and input summaries; `null` without a benchmark ([benchmark](#benchmark)). |
+| `factor_analysis` | object \| null | Factor-model regression; `null` without factor returns ([factor_analysis](#factor_analysis)). |
 | `interpretations` | object | Map metric id → interpretation ([interpretations](#interpretations)). |
 | `provenance` | object | Audit information ([provenance](#provenance)). |
 
@@ -130,14 +131,14 @@ it could be computed.
 |---|---|---|
 | `id` | string | Stable metric identifier (see the [metric catalog](../metric_catalog.md)). |
 | `name` | string | Display name. |
-| `category` | string | `returns`, `volatility`, `drawdown`, `risk_adjusted`, `tail`, `distribution`, `consistency`, `dependence`, `benchmark`, `statistical`. |
+| `category` | string | `returns`, `volatility`, `drawdown`, `risk_adjusted`, `tail`, `distribution`, `consistency`, `dependence`, `benchmark`, `factors`, `statistical`. |
 | `value` | number \| null | Raw `float64` value (never rounded, never non-finite); `null` when not computable. |
 | `unit` | string | `decimal_return`, `fraction` (0–1), `ratio`, `periods`, `count`, `correlation`, `probability`, `beta`. |
 | `status` | string | `applicable`, `low_confidence`, `supplementary`, `not_applicable`, `insufficient_data`, `error`. |
 | `confidence` | string | `high`, `moderate`, `low`; `not_assessable` when `value` is `null`. Describes estimation reliability, not investment quality. |
 | `direction` | string | `higher_is_better`, `lower_is_better`, `context_dependent`, `neutral`. Applies to the signed value (e.g. a max drawdown closer to 0 is better). |
 | `nature` | string | `observed`, `derived`, `estimated`, `model_dependent`. |
-| `observations` | integer | Observations used: `n`, or the aligned count `m` for benchmark metrics. |
+| `observations` | integer | Observations used: `n`, or the aligned count `m` for benchmark and factor metrics. |
 | `formula_id` | string | `<id>@v<version>`; changes when the formula changes. |
 | `methodology_version` | string | Methodology that produced the value. |
 | `assumptions` | array of string | Assumptions behind this value (annualization factor, risk-free rate, targets, benchmark, ...). Present even when `value` is `null`. |
@@ -218,6 +219,15 @@ listed emit `{}`.
 | `positive_rolling_year_pct` | `windows`, `window_periods` | integer | Number of windows and window length. |
 | `mean_return_standard_error` | `ci_level`, `ci_lower`, `ci_upper` | number | Student-t confidence interval of the per-period mean. |
 | | `t_statistic`, `p_value` | number | Two-sided t-test of the mean against zero. |
+| `factor_alpha`, `factor_alpha_t_statistic`, `factor_r_squared`, `factor_residual_volatility` | `model`, `dependent` | string | Model label and dependent variable of the factor regression. |
+| | `factors` | array of string | Factor names. |
+| | `hac_lags`, `df_resid` | integer | Newey-West lag and residual degrees of freedom. |
+| `factor_alpha` | `per_period` | number | OLS intercept per period (the value is `per_period × P`). |
+| | `standard_error_per_period`, `t_statistic`, `p_value` | number \| null | Newey-West inference for the intercept. |
+| | `ci_level`, `ci_lower`, `ci_upper` | number \| null | Confidence interval of the **annualized** alpha. |
+| `factor_alpha_t_statistic` | `p_value` | number \| null | Two-sided Student-t p-value. |
+| `factor_r_squared` | `adjusted_r_squared` | number \| null | Adjusted R-squared. |
+| `factor_residual_volatility` | `per_period` | number | Regression standard error per period. |
 
 ---
 
@@ -271,6 +281,32 @@ wealth after the k-th return.
 
 ---
 
+## factor_analysis
+
+`null` unless factor returns were supplied. Otherwise
+[factors/models.py](../../src/openfactsheet/factors/models.py) `FactorAnalysis.to_dict`
+(decision 0028):
+
+| Key | Type | Meaning |
+|---|---|---|
+| `model` | string | Descriptive label, e.g. `Fama-French three-factor model` or `Custom factor model (2 factors)`. |
+| `factor_names` | array of string | Factor columns in regression order. |
+| `dependent` | string | Dependent variable: fund return minus RF, or the fund return when no RF column was supplied. |
+| `return_scale`, `return_scale_evidence` | string | Scale applied to every factor column and why. |
+| `alignment` | object | `fund_observations`, `factor_observations` (periods with every factor), `aligned_observations` (`m`), `fund_only_periods`, `fund_coverage`, `overlap_start`, `overlap_end`, `alignment_method`, `warnings`. |
+| `fit` | object \| null | The regression, or `null` when it is not identified (see `reason`). |
+| `reason` | string \| null | Why the regression could not be estimated. |
+
+`fit`: `model`, `factor_names`, `dependent`, `observations` (`m`), `factors`
+(`k`), `df_resid` (`m − k − 1`), `hac_lags`, `ci_level`, `alpha_per_period` and each
+entry of `loadings` (`name`, `estimate`, `standard_error`, `t_statistic`, `p_value`,
+`ci_lower`, `ci_upper`; inference is Newey-West), `r_squared`, `adj_r_squared`,
+`residual_std_per_period`, `residual_autocorrelation_lag1`,
+`residual_ljung_box_pvalue`, `max_vif`, `periods_per_year`, `alignment` and
+`warnings`. Undefined statistics are `null`.
+
+---
+
 ## interpretations
 
 Map of metric id → [models/report.py](../../src/openfactsheet/models/report.py) `Interpretation.to_dict`:
@@ -301,6 +337,8 @@ Map of metric id → [models/report.py](../../src/openfactsheet/models/report.py
 | `transformations` | array of string | Same as `input.transformations`. |
 | `benchmark_name` | string \| null | Benchmark name. |
 | `benchmark_sha256` | string \| null | Fingerprint of the analyzed benchmark returns. |
+| `factor_names` | array of string \| null | Factor columns supplied (the RF column excluded). |
+| `factors_sha256` | string \| null | SHA-256 of the compact JSON map column name → fingerprint of that column (same construction as `input_sha256`), RF included. |
 | `canonical` | boolean | Same as the top-level `canonical`. |
 
 ---

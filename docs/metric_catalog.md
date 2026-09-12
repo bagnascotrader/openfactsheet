@@ -8,7 +8,7 @@ Reference column: ✓ agrees with the OpenFactsheet convention, ≠ documented c
 
 ## Return summary
 
-| ID | Name | Nature | Unit | Direction | Benchmark | Annualized | Canonical parameters | Minimum-data policy | Status | References |
+| ID | Name | Nature | Unit | Direction | Benchmark / factors | Annualized | Canonical parameters | Minimum-data policy | Status | References |
 |---|---|---|---|---|---|---|---|---|---|---|
 | [`cumulative_return`](interpretation/cumulative_return.md) | Cumulative return | observed | decimal_return | Higher is better | no | no | — | `observed_point` | implemented (cumulative_return@v1) | PerformanceAnalytics ✓, empyrical-reloaded ✓, QuantStats ✓ |
 | [`cagr`](interpretation/cagr.md) | Annualized return (CAGR) | derived | decimal_return | Higher is better | no | yes | annualization factor | `location` | implemented (cagr@v1) | PerformanceAnalytics ✓, empyrical-reloaded ✓, QuantStats ✓ |
@@ -23,7 +23,7 @@ Reference column: ✓ agrees with the OpenFactsheet convention, ≠ documented c
 
 ## Risk summary
 
-| ID | Name | Nature | Unit | Direction | Benchmark | Annualized | Canonical parameters | Minimum-data policy | Status | References |
+| ID | Name | Nature | Unit | Direction | Benchmark / factors | Annualized | Canonical parameters | Minimum-data policy | Status | References |
 |---|---|---|---|---|---|---|---|---|---|---|
 | [`volatility`](interpretation/volatility.md) | Volatility per period | estimated | decimal_return | Lower is better | no | no | sample std (n-1) | `dispersion` | implemented (volatility@v1) | NumPy ✓, PerformanceAnalytics ✓ |
 | [`annualized_volatility`](interpretation/annualized_volatility.md) | Annualized volatility | estimated | decimal_return | Lower is better | no | yes | sample std (n-1), annualization factor | `dispersion` | implemented (annualized_volatility@v1) | PerformanceAnalytics ✓, empyrical-reloaded ✓, QuantStats ✓ |
@@ -35,7 +35,7 @@ Reference column: ✓ agrees with the OpenFactsheet convention, ≠ documented c
 
 ## Drawdowns
 
-| ID | Name | Nature | Unit | Direction | Benchmark | Annualized | Canonical parameters | Minimum-data policy | Status | References |
+| ID | Name | Nature | Unit | Direction | Benchmark / factors | Annualized | Canonical parameters | Minimum-data policy | Status | References |
 |---|---|---|---|---|---|---|---|---|---|---|
 | [`max_drawdown`](interpretation/max_drawdown.md) | Maximum drawdown | observed | decimal_return | Higher is better | no | no | wealth starts at 1 | `path_risk` | implemented (max_drawdown@v1) | PerformanceAnalytics ✓, empyrical-reloaded ✓, QuantStats ✓ |
 | [`average_drawdown`](interpretation/average_drawdown.md) | Average drawdown (per episode) | observed | decimal_return | Higher is better | no | no | wealth starts at 1 | `path_risk` | implemented (average_drawdown@v1) | PerformanceAnalytics ✓ |
@@ -55,7 +55,7 @@ Reference column: ✓ agrees with the OpenFactsheet convention, ≠ documented c
 
 ## Risk-adjusted performance
 
-| ID | Name | Nature | Unit | Direction | Benchmark | Annualized | Canonical parameters | Minimum-data policy | Status | References |
+| ID | Name | Nature | Unit | Direction | Benchmark / factors | Annualized | Canonical parameters | Minimum-data policy | Status | References |
 |---|---|---|---|---|---|---|---|---|---|---|
 | [`sharpe_ratio`](interpretation/sharpe_ratio.md) | Sharpe ratio | estimated | ratio | Higher is better | no | yes | risk-free = 0, sample std (n-1), annualization factor | `ratio_standard` | implemented (sharpe_ratio@v1) | PerformanceAnalytics ✓, empyrical-reloaded ✓, QuantStats ✓ |
 | [`sortino_ratio`](interpretation/sortino_ratio.md) | Sortino ratio | estimated | ratio | Higher is better | no | yes | risk-free = 0, MAR = 0, annualization factor | `ratio_standard` | implemented (sortino_ratio@v1) | PerformanceAnalytics ✓, empyrical-reloaded ✓, QuantStats ✓ |
@@ -71,7 +71,7 @@ Reference column: ✓ agrees with the OpenFactsheet convention, ≠ documented c
 
 ## Tail behavior
 
-| ID | Name | Nature | Unit | Direction | Benchmark | Annualized | Canonical parameters | Minimum-data policy | Status | References |
+| ID | Name | Nature | Unit | Direction | Benchmark / factors | Annualized | Canonical parameters | Minimum-data policy | Status | References |
 |---|---|---|---|---|---|---|---|---|---|---|
 | [`var_historical_95`](interpretation/var_historical_95.md) | Value at Risk (historical, 95%) | estimated | decimal_return | Higher is better | no | no | 95% confidence | `tail` | implemented (var_historical_95@v1) | PerformanceAnalytics ✓, NumPy ✓, QuantStats ≠ |
 | [`expected_shortfall_historical_95`](interpretation/expected_shortfall_historical_95.md) | Expected Shortfall / CVaR (historical, 95%) | estimated | decimal_return | Higher is better | no | no | 95% confidence | `tail` | implemented (expected_shortfall_historical_95@v1) | PerformanceAnalytics ✓, QuantStats ≠, empyrical-reloaded ✓ |
@@ -83,7 +83,7 @@ Reference column: ✓ agrees with the OpenFactsheet convention, ≠ documented c
 
 ## Distribution
 
-| ID | Name | Nature | Unit | Direction | Benchmark | Annualized | Canonical parameters | Minimum-data policy | Status | References |
+| ID | Name | Nature | Unit | Direction | Benchmark / factors | Annualized | Canonical parameters | Minimum-data policy | Status | References |
 |---|---|---|---|---|---|---|---|---|---|---|
 | [`skewness`](interpretation/skewness.md) | Skewness | estimated | ratio | Context dependent | no | no | — | `skewness` | implemented (skewness@v1) | SciPy ✓, pandas ✓, QuantStats ✓, PerformanceAnalytics ≠ |
 | [`excess_kurtosis`](interpretation/excess_kurtosis.md) | Excess kurtosis | estimated | ratio | Context dependent | no | no | — | `kurtosis` | implemented (excess_kurtosis@v1) | SciPy ✓, pandas ✓, QuantStats ✓, PerformanceAnalytics ✓ |
@@ -91,7 +91,7 @@ Reference column: ✓ agrees with the OpenFactsheet convention, ≠ documented c
 
 ## Consistency
 
-| ID | Name | Nature | Unit | Direction | Benchmark | Annualized | Canonical parameters | Minimum-data policy | Status | References |
+| ID | Name | Nature | Unit | Direction | Benchmark / factors | Annualized | Canonical parameters | Minimum-data policy | Status | References |
 |---|---|---|---|---|---|---|---|---|---|---|
 | [`positive_period_pct`](interpretation/positive_period_pct.md) | Positive periods | observed | fraction | Higher is better | no | no | — | `location` | implemented (positive_period_pct@v1) | QuantStats ≠ |
 | [`negative_period_pct`](interpretation/negative_period_pct.md) | Negative periods | observed | fraction | Lower is better | no | no | — | `location` | implemented (negative_period_pct@v1) | — |
@@ -106,7 +106,7 @@ Reference column: ✓ agrees with the OpenFactsheet convention, ≠ documented c
 
 ## Serial dependence & smoothing
 
-| ID | Name | Nature | Unit | Direction | Benchmark | Annualized | Canonical parameters | Minimum-data policy | Status | References |
+| ID | Name | Nature | Unit | Direction | Benchmark / factors | Annualized | Canonical parameters | Minimum-data policy | Status | References |
 |---|---|---|---|---|---|---|---|---|---|---|
 | [`autocorrelation_lag1`](interpretation/autocorrelation_lag1.md) | Autocorrelation (lag 1) | estimated | correlation | Context dependent | no | no | — | `autocorrelation` | implemented (autocorrelation_lag1@v1) | statsmodels ✓ |
 | [`autocorrelation_lag2`](interpretation/autocorrelation_lag2.md) | Autocorrelation (lag 2) | estimated | correlation | Context dependent | no | no | — | `autocorrelation` | implemented (autocorrelation_lag2@v1) | statsmodels ✓ |
@@ -116,30 +116,39 @@ Reference column: ✓ agrees with the OpenFactsheet convention, ≠ documented c
 
 ## Benchmark-relative analysis
 
-| ID | Name | Nature | Unit | Direction | Benchmark | Annualized | Canonical parameters | Minimum-data policy | Status | References |
+| ID | Name | Nature | Unit | Direction | Benchmark / factors | Annualized | Canonical parameters | Minimum-data policy | Status | References |
 |---|---|---|---|---|---|---|---|---|---|---|
-| [`beta`](interpretation/beta.md) | Beta | estimated | beta | Context dependent | yes | no | supplied benchmark, OLS | `benchmark_regression` | implemented (beta@v1) | PerformanceAnalytics ✓, empyrical-reloaded ✓, statsmodels ✓ |
-| [`alpha`](interpretation/alpha.md) | Alpha (annualized, CAPM regression) | model_dependent | decimal_return | Higher is better | yes | yes | supplied benchmark, OLS, annualization factor | `benchmark_regression` | implemented (alpha@v1) | PerformanceAnalytics ✓, empyrical-reloaded ≠ |
-| [`r_squared`](interpretation/r_squared.md) | R-squared | estimated | fraction | Neutral (descriptive) | yes | no | supplied benchmark, OLS | `benchmark_regression` | implemented (r_squared@v1) | statsmodels ✓ |
-| [`correlation`](interpretation/correlation.md) | Correlation with benchmark | estimated | correlation | Neutral (descriptive) | yes | no | supplied benchmark | `benchmark_regression` | implemented (correlation@v1) | NumPy ✓ |
-| [`tracking_error`](interpretation/tracking_error.md) | Tracking error (annualized) | estimated | decimal_return | Context dependent | yes | yes | supplied benchmark, sample std (n-1), annualization factor | `benchmark_simple` | implemented (tracking_error@v1) | PerformanceAnalytics ✓, empyrical-reloaded ✓ |
-| [`active_return`](interpretation/active_return.md) | Active return (annualized, arithmetic) | estimated | decimal_return | Higher is better | yes | yes | supplied benchmark, annualization factor | `benchmark_simple` | implemented (active_return@v1) | PerformanceAnalytics ≠ |
-| [`information_ratio`](interpretation/information_ratio.md) | Information ratio | estimated | ratio | Higher is better | yes | yes | supplied benchmark, sample std (n-1), annualization factor | `benchmark_simple` | implemented (information_ratio@v1) | PerformanceAnalytics ≠, QuantStats ≠ |
-| [`treynor_ratio`](interpretation/treynor_ratio.md) | Treynor ratio | model_dependent | ratio | Higher is better | yes | yes | supplied benchmark, OLS, risk-free = 0, annualization factor | `benchmark_regression` | implemented (treynor_ratio@v1) | PerformanceAnalytics ≠ |
-| [`upside_capture`](interpretation/upside_capture.md) | Upside capture ratio | derived | ratio | Higher is better | yes | yes | supplied benchmark, annualization factor | `benchmark_simple` | implemented (upside_capture@v1) | empyrical-reloaded ✓, PerformanceAnalytics ≠ |
-| [`downside_capture`](interpretation/downside_capture.md) | Downside capture ratio | derived | ratio | Lower is better | yes | yes | supplied benchmark, annualization factor | `benchmark_simple` | implemented (downside_capture@v1) | empyrical-reloaded ✓, PerformanceAnalytics ≠ |
-| [`capture_ratio`](interpretation/capture_ratio.md) | Capture ratio (upside / downside capture) | derived | ratio | Higher is better | yes | yes | supplied benchmark, annualization factor | `benchmark_simple` | implemented (capture_ratio@v1) | empyrical-reloaded ✓, PerformanceAnalytics ≠ |
-| [`batting_average`](interpretation/batting_average.md) | Batting average (share of periods beating the benchmark) | observed | fraction | Higher is better | yes | no | supplied benchmark | `benchmark_simple` | implemented (batting_average@v1) | PerformanceAnalytics ✓ |
-| [`residual_volatility`](interpretation/residual_volatility.md) | Residual (specific) volatility (annualized) | model_dependent | decimal_return | Context dependent | yes | yes | supplied benchmark, OLS, annualization factor | `benchmark_regression` | implemented (residual_volatility@v1) | statsmodels ✓, PerformanceAnalytics ≠ |
-| [`appraisal_ratio`](interpretation/appraisal_ratio.md) | Appraisal ratio | model_dependent | ratio | Higher is better | yes | yes | supplied benchmark, OLS, risk-free = 0, annualization factor | `benchmark_regression` | implemented (appraisal_ratio@v1) | PerformanceAnalytics ≠ |
-| [`m_squared`](interpretation/m_squared.md) | M-squared (Modigliani risk-adjusted return) | derived | decimal_return | Higher is better | yes | yes | supplied benchmark, risk-free = 0, sample std (n-1), annualization factor | `benchmark_simple` | implemented (m_squared@v1) | PerformanceAnalytics ✓ |
-| [`bull_beta`](interpretation/bull_beta.md) | Bull-market beta | estimated | beta | Context dependent | yes | no | supplied benchmark, OLS | `benchmark_regression` | implemented (bull_beta@v1) | PerformanceAnalytics ✓ |
-| [`bear_beta`](interpretation/bear_beta.md) | Bear-market beta | estimated | beta | Context dependent | yes | no | supplied benchmark, OLS | `benchmark_regression` | implemented (bear_beta@v1) | PerformanceAnalytics ✓ |
-| [`timing_ratio`](interpretation/timing_ratio.md) | Timing ratio (bull beta / bear beta) | estimated | ratio | Higher is better | yes | no | supplied benchmark, OLS | `benchmark_regression` | implemented (timing_ratio@v1) | PerformanceAnalytics ✓ |
+| [`beta`](interpretation/beta.md) | Beta | estimated | beta | Context dependent | benchmark | no | supplied benchmark, OLS | `benchmark_regression` | implemented (beta@v1) | PerformanceAnalytics ✓, empyrical-reloaded ✓, statsmodels ✓ |
+| [`alpha`](interpretation/alpha.md) | Alpha (annualized, CAPM regression) | model_dependent | decimal_return | Higher is better | benchmark | yes | supplied benchmark, OLS, annualization factor | `benchmark_regression` | implemented (alpha@v1) | PerformanceAnalytics ✓, empyrical-reloaded ≠ |
+| [`r_squared`](interpretation/r_squared.md) | R-squared | estimated | fraction | Neutral (descriptive) | benchmark | no | supplied benchmark, OLS | `benchmark_regression` | implemented (r_squared@v1) | statsmodels ✓ |
+| [`correlation`](interpretation/correlation.md) | Correlation with benchmark | estimated | correlation | Neutral (descriptive) | benchmark | no | supplied benchmark | `benchmark_regression` | implemented (correlation@v1) | NumPy ✓ |
+| [`tracking_error`](interpretation/tracking_error.md) | Tracking error (annualized) | estimated | decimal_return | Context dependent | benchmark | yes | supplied benchmark, sample std (n-1), annualization factor | `benchmark_simple` | implemented (tracking_error@v1) | PerformanceAnalytics ✓, empyrical-reloaded ✓ |
+| [`active_return`](interpretation/active_return.md) | Active return (annualized, arithmetic) | estimated | decimal_return | Higher is better | benchmark | yes | supplied benchmark, annualization factor | `benchmark_simple` | implemented (active_return@v1) | PerformanceAnalytics ≠ |
+| [`information_ratio`](interpretation/information_ratio.md) | Information ratio | estimated | ratio | Higher is better | benchmark | yes | supplied benchmark, sample std (n-1), annualization factor | `benchmark_simple` | implemented (information_ratio@v1) | PerformanceAnalytics ≠, QuantStats ≠ |
+| [`treynor_ratio`](interpretation/treynor_ratio.md) | Treynor ratio | model_dependent | ratio | Higher is better | benchmark | yes | supplied benchmark, OLS, risk-free = 0, annualization factor | `benchmark_regression` | implemented (treynor_ratio@v1) | PerformanceAnalytics ≠ |
+| [`upside_capture`](interpretation/upside_capture.md) | Upside capture ratio | derived | ratio | Higher is better | benchmark | yes | supplied benchmark, annualization factor | `benchmark_simple` | implemented (upside_capture@v1) | empyrical-reloaded ✓, PerformanceAnalytics ≠ |
+| [`downside_capture`](interpretation/downside_capture.md) | Downside capture ratio | derived | ratio | Lower is better | benchmark | yes | supplied benchmark, annualization factor | `benchmark_simple` | implemented (downside_capture@v1) | empyrical-reloaded ✓, PerformanceAnalytics ≠ |
+| [`capture_ratio`](interpretation/capture_ratio.md) | Capture ratio (upside / downside capture) | derived | ratio | Higher is better | benchmark | yes | supplied benchmark, annualization factor | `benchmark_simple` | implemented (capture_ratio@v1) | empyrical-reloaded ✓, PerformanceAnalytics ≠ |
+| [`batting_average`](interpretation/batting_average.md) | Batting average (share of periods beating the benchmark) | observed | fraction | Higher is better | benchmark | no | supplied benchmark | `benchmark_simple` | implemented (batting_average@v1) | PerformanceAnalytics ✓ |
+| [`residual_volatility`](interpretation/residual_volatility.md) | Residual (specific) volatility (annualized) | model_dependent | decimal_return | Context dependent | benchmark | yes | supplied benchmark, OLS, annualization factor | `benchmark_regression` | implemented (residual_volatility@v1) | statsmodels ✓, PerformanceAnalytics ≠ |
+| [`appraisal_ratio`](interpretation/appraisal_ratio.md) | Appraisal ratio | model_dependent | ratio | Higher is better | benchmark | yes | supplied benchmark, OLS, risk-free = 0, annualization factor | `benchmark_regression` | implemented (appraisal_ratio@v1) | PerformanceAnalytics ≠ |
+| [`m_squared`](interpretation/m_squared.md) | M-squared (Modigliani risk-adjusted return) | derived | decimal_return | Higher is better | benchmark | yes | supplied benchmark, risk-free = 0, sample std (n-1), annualization factor | `benchmark_simple` | implemented (m_squared@v1) | PerformanceAnalytics ✓ |
+| [`bull_beta`](interpretation/bull_beta.md) | Bull-market beta | estimated | beta | Context dependent | benchmark | no | supplied benchmark, OLS | `benchmark_regression` | implemented (bull_beta@v1) | PerformanceAnalytics ✓ |
+| [`bear_beta`](interpretation/bear_beta.md) | Bear-market beta | estimated | beta | Context dependent | benchmark | no | supplied benchmark, OLS | `benchmark_regression` | implemented (bear_beta@v1) | PerformanceAnalytics ✓ |
+| [`timing_ratio`](interpretation/timing_ratio.md) | Timing ratio (bull beta / bear beta) | estimated | ratio | Higher is better | benchmark | no | supplied benchmark, OLS | `benchmark_regression` | implemented (timing_ratio@v1) | PerformanceAnalytics ✓ |
+
+## Factor analysis
+
+| ID | Name | Nature | Unit | Direction | Benchmark / factors | Annualized | Canonical parameters | Minimum-data policy | Status | References |
+|---|---|---|---|---|---|---|---|---|---|---|
+| [`factor_alpha`](interpretation/factor_alpha.md) | Factor-model alpha (annualized) | model_dependent | decimal_return | Higher is better | factors | yes | supplied factors, OLS + Newey-West, annualization factor | `factor_regression` | implemented (factor_alpha@v1) | R ✓, statsmodels ✓ |
+| [`factor_alpha_t_statistic`](interpretation/factor_alpha_t_statistic.md) | Factor-model alpha t-statistic (Newey-West) | model_dependent | ratio | Context dependent | factors | no | supplied factors, OLS + Newey-West | `factor_regression` | implemented (factor_alpha_t_statistic@v1) | R ✓, statsmodels ✓ |
+| [`factor_r_squared`](interpretation/factor_r_squared.md) | Factor-model R-squared | estimated | fraction | Neutral (descriptive) | factors | no | supplied factors, OLS + Newey-West | `factor_regression` | implemented (factor_r_squared@v1) | R ✓, statsmodels ✓ |
+| [`factor_residual_volatility`](interpretation/factor_residual_volatility.md) | Factor-model residual volatility (annualized) | estimated | decimal_return | Neutral (descriptive) | factors | yes | supplied factors, OLS + Newey-West, annualization factor | `factor_regression` | implemented (factor_residual_volatility@v1) | R ✓ |
 
 ## Statistical confidence
 
-| ID | Name | Nature | Unit | Direction | Benchmark | Annualized | Canonical parameters | Minimum-data policy | Status | References |
+| ID | Name | Nature | Unit | Direction | Benchmark / factors | Annualized | Canonical parameters | Minimum-data policy | Status | References |
 |---|---|---|---|---|---|---|---|---|---|---|
 | [`probabilistic_sharpe_ratio`](interpretation/probabilistic_sharpe_ratio.md) | Probabilistic Sharpe Ratio (vs 0) | estimated | probability | Higher is better | no | no | i.i.d. asymptotics, risk-free = 0 | `asymptotic_inference` | implemented (probabilistic_sharpe_ratio@v1) | PerformanceAnalytics ✓ |
 | [`sharpe_ratio_standard_error`](interpretation/sharpe_ratio_standard_error.md) | Sharpe ratio standard error (annualized) | estimated | ratio | Neutral (descriptive) | no | yes | i.i.d. asymptotics, annualization factor, risk-free = 0 | `asymptotic_inference` | implemented (sharpe_ratio_standard_error@v1) | PerformanceAnalytics ≠ |

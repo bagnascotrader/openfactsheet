@@ -71,6 +71,8 @@ def result_notes(result: MetricResult) -> list[str]:
 DATA_QUALITY_CATEGORY = "dependence"
 # Statistical-confidence metrics are rendered in section 12, after factor analysis.
 STATISTICAL_CATEGORY = "statistical"
+# Factor-model metrics are rendered in section 11 with the factor loadings.
+FACTOR_CATEGORY = "factors"
 
 
 def data_quality_metrics(report: FactsheetReport) -> list[MetricResult]:
@@ -81,11 +83,15 @@ def statistical_metrics(report: FactsheetReport) -> list[MetricResult]:
     return list(report.metrics.by_category(STATISTICAL_CATEGORY))
 
 
+def factor_metrics(report: FactsheetReport) -> list[MetricResult]:
+    return list(report.metrics.by_category(FACTOR_CATEGORY))
+
+
 def ordered_categories(report: FactsheetReport) -> list[tuple[str, str, list[MetricResult]]]:
     """Metric categories rendered as their own sections (3 to 10), in canonical order."""
     out: list[tuple[str, str, list[MetricResult]]] = []
     for cat in CATEGORY_ORDER:
-        if cat in (DATA_QUALITY_CATEGORY, STATISTICAL_CATEGORY):
+        if cat in (DATA_QUALITY_CATEGORY, STATISTICAL_CATEGORY, FACTOR_CATEGORY):
             continue
         rows = list(report.metrics.by_category(cat))
         if rows:
@@ -180,10 +186,65 @@ def drawdown_episode_table(report: FactsheetReport) -> EpisodeTable | None:
 
 
 FACTOR_SECTION_TEXT = (
-    "Not available in methodology 0.1.0. Factor models (CAPM with factor data, Fama-French, "
-    "Carhart) are planned and will require explicitly supplied factor returns; OpenFactsheet "
-    "never downloads factor data silently."
+    "No factor returns were supplied. Factor models (CAPM, Fama-French, Carhart or custom "
+    "factors) are estimated only from factor returns supplied explicitly, e.g. "
+    "ofs.analyze(returns, factors=factor_frame); OpenFactsheet never downloads factor data."
 )
+
+LOADING_TABLE_HEADER = ("Coefficient", "Estimate", "Std. error (HAC)", "t", "p-value", "95% CI")
+
+
+def _num(x: float | None, fmt: str) -> str:
+    return "—" if x is None else format(x, fmt)
+
+
+def factor_loading_rows(report: FactsheetReport) -> tuple[tuple[str, ...], ...]:
+    """Alpha (per period) and every factor loading with Newey-West inference."""
+    fa = report.factor_analysis
+    if fa is None or fa.fit is None:
+        return ()
+    rows: list[tuple[str, ...]] = []
+    fit = fa.fit
+    for c in (fit.alpha, *fit.loadings):
+        is_alpha = c.name == "alpha"
+        fmt = ".3%" if is_alpha else ".3f"
+        ci = (
+            f"[{_num(c.ci_lower, fmt)}, {_num(c.ci_upper, fmt)}]"
+            if c.ci_lower is not None and c.ci_upper is not None
+            else "—"
+        )
+        rows.append(
+            (
+                "alpha (per period)" if is_alpha else c.name,
+                _num(c.estimate, fmt),
+                _num(c.standard_error, fmt),
+                _num(c.t_statistic, ".2f"),
+                _num(c.p_value, ".3f"),
+                ci,
+            )
+        )
+    return tuple(rows)
+
+
+def factor_fit_summary(report: FactsheetReport) -> str:
+    fa = report.factor_analysis
+    if fa is None or fa.fit is None:
+        return ""
+    f = fa.fit
+    parts = [
+        f"R-squared {f.r_squared:.3f}" if f.r_squared is not None else "R-squared undefined",
+        f"adjusted {f.adj_r_squared:.3f}" if f.adj_r_squared is not None else "",
+        f"residual lag-1 autocorrelation {f.residual_autocorrelation_lag1:.2f}"
+        if f.residual_autocorrelation_lag1 is not None
+        else "",
+        f"maximum VIF {f.max_vif:.1f}" if f.max_vif is not None else "",
+    ]
+    return (
+        "; ".join(p for p in parts if p)
+        + ". Loadings describe average sensitivity to each supplied factor over the aligned "
+        "periods; they do not establish causality."
+    )
+
 
 STATISTICAL_SECTION_TEXT = (
     "Confidence labels summarize estimation reliability from sample length, data quality and "

@@ -7,6 +7,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
+from openfactsheet.factors.models import FactorAnalysis
 from openfactsheet.models.assumptions import Methodology
 from openfactsheet.models.diagnostics import DataQualityReport
 from openfactsheet.models.input import InputDiagnostics, ReturnSeries
@@ -103,6 +104,8 @@ class Provenance:
     transformations: tuple[str, ...]
     benchmark_name: str | None
     benchmark_sha256: str | None
+    factor_names: tuple[str, ...] | None = None
+    factors_sha256: str | None = None
     canonical: bool = True
 
     def to_dict(self) -> dict[str, Any]:
@@ -118,6 +121,8 @@ class Provenance:
             "transformations": list(self.transformations),
             "benchmark_name": self.benchmark_name,
             "benchmark_sha256": self.benchmark_sha256,
+            "factor_names": list(self.factor_names) if self.factor_names is not None else None,
+            "factors_sha256": self.factors_sha256,
             "canonical": self.canonical,
         }
 
@@ -138,6 +143,7 @@ class FactsheetReport:
     provenance: Provenance
     drawdown_episodes: tuple[Any, ...] = field(default_factory=tuple)
     benchmark_returns: ReturnSeries | None = None
+    factor_analysis: FactorAnalysis | None = None
 
     # -- convenience ------------------------------------------------------
     @property

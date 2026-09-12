@@ -42,6 +42,7 @@
       "trough_index": 60
     }
   ],
+  "factor_analysis": null,
   "input": {
     "duplicate_periods": 0,
     "end": "2023-12-31",
@@ -302,6 +303,38 @@
       "metric_id": "expected_shortfall_historical_95",
       "plain": "When things went badly (the worst 5% of periods), this was the average return.",
       "professional": "Historical Expected Shortfall (CVaR); a coherent risk measure (Acerbi & Tasche, 2002) that accounts for the severity of tail losses."
+    },
+    "factor_alpha": {
+      "context": [
+        "No factor returns were supplied. Factor-model metrics require explicitly supplied factor returns (ofs.analyze(returns, factors=...)); OpenFactsheet never downloads factor data."
+      ],
+      "metric_id": "factor_alpha",
+      "plain": "The part of the fund's yearly return that the supplied factors (for example the market, size and value) do not explain. It depends entirely on which factors are used.",
+      "professional": "Multi-factor (Jensen-style) alpha, annualized arithmetically. Details report the per-period intercept with its Newey-West standard error, t-statistic, p-value and 95% confidence interval (annualized). Judge alpha by its uncertainty, not its point estimate; with smoothed returns it is biased upward."
+    },
+    "factor_alpha_t_statistic": {
+      "context": [
+        "No factor returns were supplied. Factor-model metrics require explicitly supplied factor returns (ofs.analyze(returns, factors=...)); OpenFactsheet never downloads factor data."
+      ],
+      "metric_id": "factor_alpha_t_statistic",
+      "plain": "A rough gauge of whether the unexplained return could be luck: values beyond about +2 or -2 are unlikely to arise by chance alone if the model is right.",
+      "professional": "Student-t statistic of the intercept with m - k - 1 degrees of freedom and heteroskedasticity- and autocorrelation-consistent standard errors; the p-value and interval are in the alpha details. Multiple testing across funds or models inflates apparent significance."
+    },
+    "factor_r_squared": {
+      "context": [
+        "No factor returns were supplied. Factor-model metrics require explicitly supplied factor returns (ofs.analyze(returns, factors=...)); OpenFactsheet never downloads factor data."
+      ],
+      "metric_id": "factor_r_squared",
+      "plain": "How much of the fund's ups and downs the factors account for (1 = all of it).",
+      "professional": "A low R-squared means the factor loadings and alpha describe little of the fund's risk; the factor set may be inappropriate for the strategy. Adjusted R-squared is in the details."
+    },
+    "factor_residual_volatility": {
+      "context": [
+        "No factor returns were supplied. Factor-model metrics require explicitly supplied factor returns (ofs.analyze(returns, factors=...)); OpenFactsheet never downloads factor data."
+      ],
+      "metric_id": "factor_residual_volatility",
+      "plain": "How much the fund moves for reasons the factors do not capture; the size of the manager's independent bets, whether they pay off or not.",
+      "professional": "Regression standard error annualized by the square root of time; the denominator of a factor-model appraisal ratio. Understated when returns are smoothed."
     },
     "gain_to_pain_ratio": {
       "context": [],
@@ -704,7 +737,8 @@
       },
       "confidence": {
         "annualization_min_years": 1.0,
-        "benchmark_min_coverage": 0.9
+        "benchmark_min_coverage": 0.9,
+        "factor_min_coverage": 0.9
       },
       "dependence": {
         "acf_lags": [
@@ -744,6 +778,18 @@
       },
       "entropic": {
         "confidence": 0.95
+      },
+      "factor_model": {
+        "alignment": "periods where the fund and every factor have a return; never filled",
+        "alpha_annualization": "arithmetic: per-period intercept x periods_per_year",
+        "ci_level": 0.95,
+        "covariance": "Newey-West HAC, Bartlett kernel, small-sample factor m / (m - k - 1)",
+        "estimator": "OLS with intercept of fund (excess) returns on the supplied factors",
+        "hac_lag_rule": "floor(4 * (m / 100) ** (2 / 9))",
+        "inference": "Student t with m - k - 1 degrees of freedom",
+        "ljung_box_min_observations": 10,
+        "risk_free": "a factor column named RF is subtracted from fund returns; without one the dependent variable is the fund return (risk-free rate 0%)",
+        "vif_warning": 10.0
       },
       "lower_partial_moments": {
         "denominator": "full_sample",
@@ -2737,6 +2783,86 @@
     },
     {
       "assumptions": [
+        "Annualized with 12 periods per year (monthly frequency, inferred from dates)."
+      ],
+      "category": "factors",
+      "confidence": "not_assessable",
+      "details": {},
+      "direction": "higher_is_better",
+      "formula_id": "factor_alpha@v1",
+      "id": "factor_alpha",
+      "methodology_version": "0.1.0",
+      "name": "Factor-model alpha (annualized)",
+      "nature": "model_dependent",
+      "observations": 0,
+      "reason": "No factor returns were supplied. Factor-model metrics require explicitly supplied factor returns (ofs.analyze(returns, factors=...)); OpenFactsheet never downloads factor data.",
+      "reference_values": null,
+      "status": "not_applicable",
+      "unit": "decimal_return",
+      "value": null,
+      "warnings": []
+    },
+    {
+      "assumptions": [],
+      "category": "factors",
+      "confidence": "not_assessable",
+      "details": {},
+      "direction": "context_dependent",
+      "formula_id": "factor_alpha_t_statistic@v1",
+      "id": "factor_alpha_t_statistic",
+      "methodology_version": "0.1.0",
+      "name": "Factor-model alpha t-statistic (Newey-West)",
+      "nature": "model_dependent",
+      "observations": 0,
+      "reason": "No factor returns were supplied. Factor-model metrics require explicitly supplied factor returns (ofs.analyze(returns, factors=...)); OpenFactsheet never downloads factor data.",
+      "reference_values": null,
+      "status": "not_applicable",
+      "unit": "ratio",
+      "value": null,
+      "warnings": []
+    },
+    {
+      "assumptions": [],
+      "category": "factors",
+      "confidence": "not_assessable",
+      "details": {},
+      "direction": "neutral",
+      "formula_id": "factor_r_squared@v1",
+      "id": "factor_r_squared",
+      "methodology_version": "0.1.0",
+      "name": "Factor-model R-squared",
+      "nature": "estimated",
+      "observations": 0,
+      "reason": "No factor returns were supplied. Factor-model metrics require explicitly supplied factor returns (ofs.analyze(returns, factors=...)); OpenFactsheet never downloads factor data.",
+      "reference_values": null,
+      "status": "not_applicable",
+      "unit": "fraction",
+      "value": null,
+      "warnings": []
+    },
+    {
+      "assumptions": [
+        "Annualized with 12 periods per year (monthly frequency, inferred from dates)."
+      ],
+      "category": "factors",
+      "confidence": "not_assessable",
+      "details": {},
+      "direction": "neutral",
+      "formula_id": "factor_residual_volatility@v1",
+      "id": "factor_residual_volatility",
+      "methodology_version": "0.1.0",
+      "name": "Factor-model residual volatility (annualized)",
+      "nature": "estimated",
+      "observations": 0,
+      "reason": "No factor returns were supplied. Factor-model metrics require explicitly supplied factor returns (ofs.analyze(returns, factors=...)); OpenFactsheet never downloads factor data.",
+      "reference_values": null,
+      "status": "not_applicable",
+      "unit": "decimal_return",
+      "value": null,
+      "warnings": []
+    },
+    {
+      "assumptions": [
         "Asymptotic normal approximation for independent, identically distributed returns, allowing for skewness and kurtosis (Mertens 2002; Bailey & Lopez de Prado 2012); serial correlation is not modelled.",
         "Risk-free rate assumed to be 0% (methodology 0.1.0); the ratio therefore uses total rather than excess returns and is higher than an excess-return version when cash yields are positive."
       ],
@@ -2849,6 +2975,8 @@
       "2019-01-31",
       "2023-12-31"
     ],
+    "factor_names": null,
+    "factors_sha256": null,
     "frequency": "monthly",
     "input_sha256": "0bb5fae418738ba07bcaf271b425117a41e888a6901541858b5e2112e623bb63",
     "input_type": "pandas.Series",

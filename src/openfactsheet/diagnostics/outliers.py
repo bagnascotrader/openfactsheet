@@ -17,5 +17,7 @@ def robust_outlier_count(r: npt.NDArray[np.float64], threshold: float) -> int:
     mad = float(np.median(np.abs(r - median)))
     if mad == 0.0:
         return 0
-    z = np.abs(r - median) / (1.4826 * mad)
+    # A subnormal MAD can overflow the ratio to +inf, which is correctly an outlier.
+    with np.errstate(over="ignore"):
+        z = np.abs(r - median) / (1.4826 * mad)
     return int(np.sum(z > threshold))
