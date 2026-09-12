@@ -44,7 +44,7 @@ report, and JSON output that is stable and never contains a `NaN`.
 > [!NOTE]
 > **Status: alpha (methodology 0.1.0).** The numerical core is implemented and
 > cross-validated against independent R and Python implementations.
-> PDF/screenshot ingestion is on the [roadmap](#roadmap).
+> Screenshot (OCR) ingestion is on the [roadmap](#roadmap).
 
 ## Why OpenFactsheet
 
@@ -247,7 +247,8 @@ sensible data, and its academic and library references. See the
 | Wide monthly tables (Year × Jan…Dec, `%` labels understood) | ✅ |
 | Pasted table text | ✅ |
 | Price / NAV levels | Detected and flagged, never silently treated as returns |
-| PDF factsheets, screenshots of monthly-return tables | Planned (roadmap phase 6, with extraction confidence) |
+| PDF factsheets with a monthly-return table (embedded text) | ✅ `pip install -e ".[pdf]"`: columns assigned by position, every year reconciled with its YTD, unreliable tables refused |
+| Screenshots / scanned PDFs (OCR) | Planned |
 
 The percent-or-decimal scale is detected by a deterministic classifier, and
 frequency is inferred from calendar spacing. `report.input_summary` and
@@ -265,7 +266,7 @@ received.
   [reference implementations](docs/validation/reference_implementations.md).
 - **Independent implementations.** Formulas are implemented from their academic
   definitions, not copied from other libraries' source code.
-- **29 methodology decision records.** Every contested convention (sample vs.
+- **30 methodology decision records.** Every contested convention (sample vs.
   population deviation, VaR quantile interpolation, the Sortino denominator,
   drawdown episode definitions, partial calendar years, and so on) has a written
   [decision](docs/methodology/decisions/README.md) with its rationale.
@@ -293,7 +294,7 @@ received.
 | 3 | Applicability and confidence engine | ✅ Done |
 | 4 | Reporting: terminal, Markdown, HTML, JSON; canonical charts and drawdown-episode table | ✅ Done |
 | 5 | Comparison engine (`ofs.compare`) | ✅ Done |
-| 6 | Optional PDF and screenshot ingestion with extraction confidence | Planned |
+| 6 | Optional document ingestion: PDF with embedded text ✅ · screenshots / OCR | 🚧 PDF done |
 | 7 | Factor models (CAPM, Fama-French, Carhart, custom) using factor data you supply | ✅ Done |
 
 ## Development

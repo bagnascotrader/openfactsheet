@@ -3431,6 +3431,7 @@
       "2016-01-31",
       "2024-12-31"
     ],
+    "extraction": null,
     "factor_names": [
       "Mkt-RF",
       "SMB",

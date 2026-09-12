@@ -45,7 +45,7 @@ def normalize_returns(
     values = np.array(raw.values, dtype=np.float64)
     dates = raw.dates
     transformations = list(raw.transformations)
-    warnings: list[str] = []
+    warnings: list[str] = list(raw.warnings)
 
     validate_values(values, name)
 

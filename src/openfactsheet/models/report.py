@@ -106,6 +106,8 @@ class Provenance:
     benchmark_sha256: str | None
     factor_names: tuple[str, ...] | None = None
     factors_sha256: str | None = None
+    # How a document (PDF) was turned into returns: engine, source hash, checks.
+    extraction: Mapping[str, Any] | None = None
     canonical: bool = True
 
     def to_dict(self) -> dict[str, Any]:
@@ -123,6 +125,7 @@ class Provenance:
             "benchmark_sha256": self.benchmark_sha256,
             "factor_names": list(self.factor_names) if self.factor_names is not None else None,
             "factors_sha256": self.factors_sha256,
+            "extraction": dict(self.extraction) if self.extraction is not None else None,
             "canonical": self.canonical,
         }
 

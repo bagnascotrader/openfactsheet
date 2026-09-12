@@ -55,8 +55,8 @@ Checked in this order:
 
 File suffixes (case-insensitive): `.csv`, `.txt`, `.tsv` → CSV reader;
 `.xlsx`, `.xlsm`, `.xls` → Excel reader; `.png .jpg .jpeg .gif .bmp .tif .tiff
-.webp` → `OCRExtractionError` (image ingestion is roadmap phase 6); `.pdf` →
-`OCRExtractionError`; any other suffix → `InputError`; a non-existent path →
+.webp` → `OCRExtractionError` (image ingestion needs OCR, roadmap phase 6); `.pdf` →
+embedded-text PDF reader (2.8); any other suffix → `InputError`; a non-existent path →
 `InputError("File not found")`. When a file yields exactly one series whose
 name is the default `"Returns"` and no `name` was passed, the series is named
 after the file stem. The file name is stored in metadata.
@@ -172,6 +172,44 @@ A `%` in a column header sets the percent hint to `True` for that column.
   no `.` and do contain whitespace); else runs of whitespace. If the header has
   one field fewer than the data rows (blank top-left cell), the first column is
   restored and named `Year`.
+
+### 2.8 PDF factsheets — [input/pdf.py](../../src/openfactsheet/input/pdf.py) (decision 0030)
+
+Requires the `pdf` extra (pypdf); otherwise `OCRExtractionError` naming it.
+
+1. Each page's embedded text is extracted **with layout** (character positions
+   kept). No page has any text → `OCRExtractionError` (scanned PDF; OCR is not
+   part of the core library).
+2. **Header line**: its tokens include exactly one month name for each month,
+   January to December, left to right (month names as in 2.5). A token to the
+   right of December whose letters are `ytd`, `year`, `total`, `annual`, `yr`,
+   `fy`, `cum` or `cumulative` is the total column. A detached `%` token joins
+   the number before it.
+3. **Year rows**: the following lines whose first token is a year
+   `^(18|19|20|21)\d{2}$`; up to two blank lines are skipped; any other line ends
+   the table. No header followed by a year row anywhere → `OCRExtractionError`.
+4. **Column assignment**: each value goes to the column (12 months + total)
+   whose header centre is nearest to the value's centre, if within half the
+   median month spacing. Problems (any one refuses the table): a value under no
+   column; two values under one column; a token that is not a return (2.2); a
+   year in two rows; a table with no monthly values.
+5. **Reconciliation** of each year with a total cell: the months compound (as
+   percentages; also as decimals unless the table is labelled in percent) to the
+   total within `0.5·10^−d_total + 0.5·10^−d_cells × months` (worst-case
+   rounding) → check passed; else if their arithmetic sum matches → warning (the
+   total is a sum); else a **problem** (refused).
+6. **Warnings** (confidence `moderate`, table still used): no total column (no
+   cross-check possible); months missing inside the history (they stay missing,
+   never zero); totals that are sums. No problems and no warnings → confidence
+   `high`.
+7. A refused table raises `OCRExtractionError` listing every problem and the
+   reconstructed table. Accepted tables become a wide monthly table (2.6); the
+   percent hint is `True` if a cell or one of the three lines above the header
+   contains `%`. Several tables → several series (named `<name> (table k, page p)`).
+8. Recorded: a transformation naming the page, engine version, value count and
+   confidence; the warnings in `InputDiagnostics.warnings`; and
+   `provenance.extraction` (engine, source SHA-256, page, confidence, checks,
+   warnings, reconstructed table).
 
 ---
 

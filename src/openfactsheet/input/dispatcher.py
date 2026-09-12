@@ -41,8 +41,7 @@ def _from_path(path: Path, name: str | None) -> list[RawReturns]:
         read_image(path)
         raise AssertionError("unreachable")  # pragma: no cover
     elif suffix == ".pdf":
-        read_pdf(path)
-        raise AssertionError("unreachable")  # pragma: no cover
+        raws = read_pdf(path, name=name)
     else:
         raise InputError(f"Unsupported file type {suffix!r} for {path.name}.")
     out: list[RawReturns] = []

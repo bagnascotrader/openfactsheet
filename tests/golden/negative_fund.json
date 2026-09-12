@@ -3077,6 +3077,7 @@
       "2019-01-31",
       "2023-12-31"
     ],
+    "extraction": null,
     "factor_names": null,
     "factors_sha256": null,
     "frequency": "monthly",
