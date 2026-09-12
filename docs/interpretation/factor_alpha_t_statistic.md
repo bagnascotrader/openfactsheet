@@ -11,7 +11,7 @@ How many (Newey-West) standard errors the factor-model alpha lies from zero.
 ## 2. Formula
 
 ```math
-t_\alpha = \frac{\hat\alpha}{\widehat{\mathrm{SE}}_{\mathrm{HAC}}(\hat\alpha)}, \quad \widehat{V}_{\mathrm{HAC}} = \frac{m}{m-k-1} (X^\top X)^{-1} \hat S (X^\top X)^{-1}, \quad \hat S = \sum_{\ell=-q}^{q} \Big(1 - \frac{|\ell|}{q+1}\Big) \hat\Gamma_\ell, \quad q = \big\lfloor 4 (m/100)^{2/9} \big\rfloor
+t_\alpha = \frac{\hat\alpha}{\widehat{\mathrm{SE}}_{\mathrm{HAC}}(\hat\alpha)}, \quad \widehat{V}_{\mathrm{HAC}} = \frac{m}{m-k-1} (X^\top X)^{-1} \hat S (X^\top X)^{-1}, \quad \hat S = \sum_{\ell=-q}^{q} \Big(1 - \frac{|\ell|}{q+1}\Big) \hat\Gamma_\ell, \quad q = \left\lfloor 4 (m/100)^{2/9} \right\rfloor
 ```
 
 Plain text: `a / SE_HAC(a)`. Symbols are defined in [notation](../reference/notation.md).

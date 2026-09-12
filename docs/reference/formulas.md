@@ -663,7 +663,7 @@ Undefined (`not_applicable`) when: A factor is constant over the aligned periods
 ### Factor-model alpha t-statistic (Newey-West) — [`factor_alpha_t_statistic`](../interpretation/factor_alpha_t_statistic.md)
 
 ```math
-t_\alpha = \frac{\hat\alpha}{\widehat{\mathrm{SE}}_{\mathrm{HAC}}(\hat\alpha)}, \quad \widehat{V}_{\mathrm{HAC}} = \frac{m}{m-k-1} (X^\top X)^{-1} \hat S (X^\top X)^{-1}, \quad \hat S = \sum_{\ell=-q}^{q} \Big(1 - \frac{|\ell|}{q+1}\Big) \hat\Gamma_\ell, \quad q = \big\lfloor 4 (m/100)^{2/9} \big\rfloor
+t_\alpha = \frac{\hat\alpha}{\widehat{\mathrm{SE}}_{\mathrm{HAC}}(\hat\alpha)}, \quad \widehat{V}_{\mathrm{HAC}} = \frac{m}{m-k-1} (X^\top X)^{-1} \hat S (X^\top X)^{-1}, \quad \hat S = \sum_{\ell=-q}^{q} \Big(1 - \frac{|\ell|}{q+1}\Big) \hat\Gamma_\ell, \quad q = \left\lfloor 4 (m/100)^{2/9} \right\rfloor
 ```
 
 Undefined (`not_applicable`) when: A factor is constant or the factors are perfectly collinear. The factors reproduce the fund exactly (residuals zero or below floating-point resolution), so the standard error is zero.

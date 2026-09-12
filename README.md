@@ -44,7 +44,7 @@ report, and JSON output that is stable and never contains a `NaN`.
 > [!NOTE]
 > **Status: alpha (methodology 0.1.0).** The numerical core is implemented and
 > cross-validated against independent R and Python implementations.
-> Fund-profile extraction and the PDF reference manual are on the [roadmap](#roadmap).
+> Linking every result to the PDF reference manual is on the [roadmap](#roadmap).
 
 ## Why OpenFactsheet
 
@@ -266,7 +266,7 @@ received.
   [reference implementations](docs/validation/reference_implementations.md).
 - **Independent implementations.** Formulas are implemented from their academic
   definitions, not copied from other libraries' source code.
-- **33 methodology decision records.** Every contested convention (sample vs.
+- **34 methodology decision records.** Every contested convention (sample vs.
   population deviation, VaR quantile interpolation, the Sortino denominator,
   drawdown episode definitions, partial calendar years, and so on) has a written
   [decision](docs/methodology/decisions/README.md) with its rationale.
@@ -283,6 +283,7 @@ received.
 | **Specification** | [Exact formulas](docs/reference/formulas.md) · [Notation](docs/reference/notation.md) · [Decision criteria](docs/reference/criteria.md) · [Policies & thresholds](docs/reference/policies.md) · [JSON schema](docs/reference/report_schema.md) |
 | **Rationale** | [Methodology decisions](docs/methodology/decisions/README.md) |
 | **Validation** | [Reference implementations & validation](docs/validation/reference_implementations.md) |
+| **Reference manual** | A CRAN-style PDF of all of the above, generated from the code: `python scripts/build_manual.py` ([how it is built](docs/manual/README.md)) |
 
 ## Roadmap
 
@@ -296,7 +297,7 @@ received.
 | 5 | Comparison engine (`ofs.compare`) | ✅ Done |
 | 6 | Optional document ingestion: PDF with embedded text, screenshots and scanned PDFs (OCR) | ✅ Done |
 | 8 | Fund profile from documents: name, objective, identifiers, share classes and table attribution, benchmark tables | ✅ Done |
-| 9 | CRAN-style PDF reference manual, linked from every result | Planned |
+| 9 | CRAN-style PDF reference manual, linked from every result | 🚧 Manual built from the code; links from results next |
 | 7 | Factor models (CAPM, Fama-French, Carhart, custom) using factor data you supply | ✅ Done |
 
 ## Development
@@ -307,6 +308,7 @@ pip install -e ".[dev,validation]"
 pytest                                            # unit, property, golden, cross-library
 ruff check . && ruff format --check . && mypy
 python scripts/generate_docs.py --check           # generated docs up to date
+pip install -e ".[docs]" && python scripts/build_manual.py   # PDF reference manual
 ```
 
 Contributions are welcome. [CONTRIBUTING.md](CONTRIBUTING.md) describes the

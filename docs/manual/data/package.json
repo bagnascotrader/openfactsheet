@@ -1,0 +1,58 @@
+{
+ "authors": [
+  "OpenFactsheet contributors"
+ ],
+ "dependencies": [
+  "numpy>=1.24",
+  "pandas>=2.2",
+  "scipy>=1.10",
+  "statsmodels>=0.14"
+ ],
+ "description": "Standardized, transparent investment performance analytics without metric cherry-picking.",
+ "extras": {
+  "all": [
+   "openfactsheet[excel,pdf,ocr]"
+  ],
+  "docs": [
+   "typst>=0.15,<0.16",
+   "pypdf>=4.0"
+  ],
+  "excel": [
+   "openpyxl>=3.1"
+  ],
+  "images": [
+   "openfactsheet[ocr]"
+  ],
+  "ocr": [
+   "rapidocr>=3.9,<4",
+   "onnxruntime>=1.17",
+   "pypdfium2>=4",
+   "Pillow>=10",
+   "pypdf>=4.0"
+  ],
+  "pdf": [
+   "pypdf>=4.0"
+  ],
+  "tesseract": [
+   "pytesseract>=0.3.10",
+   "pypdfium2>=4",
+   "Pillow>=10",
+   "pypdf>=4.0"
+  ],
+  "validation": [
+   "empyrical-reloaded>=0.5",
+   "quantstats>=0.0.62",
+   "skfolio>=0.7"
+  ]
+ },
+ "license": "Apache-2.0",
+ "methodology_version": "0.1.0",
+ "name": "openfactsheet",
+ "requires_python": ">=3.10",
+ "urls": {
+  "Documentation": "https://github.com/bagnascotrader/openfactsheet/tree/main/docs",
+  "Homepage": "https://github.com/bagnascotrader/openfactsheet",
+  "Issues": "https://github.com/bagnascotrader/openfactsheet/issues"
+ },
+ "version": "0.1.0"
+}

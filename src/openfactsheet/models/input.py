@@ -32,6 +32,7 @@ class ObservationFrequency(str, Enum):
 
     @property
     def is_regular(self) -> bool:
+        """Whether the frequency has a canonical annualization factor."""
         return self not in (ObservationFrequency.IRREGULAR, ObservationFrequency.UNKNOWN)
 
 
@@ -93,6 +94,7 @@ class ReturnSeries:
         return_type: Always ``"simple"`` in methodology 0.1.
         return_scale: How percent/decimal scale was established.
         metadata: Free-form provenance metadata.
+        input_diagnostics: What OpenFactsheet believes it received.
     """
 
     name: str
@@ -118,6 +120,7 @@ class ReturnSeries:
 
     @property
     def n(self) -> int:
+        """Number of observations."""
         return len(self)
 
     @property
@@ -135,7 +138,11 @@ class ReturnSeries:
 
 @dataclass(frozen=True, eq=False)
 class ReturnTable:
-    """Several named return series (e.g. columns of a DataFrame, used by ``compare``)."""
+    """Several named return series (e.g. columns of a DataFrame, used by ``compare``).
+
+    Attributes:
+        series: The :class:`ReturnSeries` by name, in source order.
+    """
 
     series: Mapping[str, ReturnSeries]
 

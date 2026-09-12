@@ -30,6 +30,18 @@ _PERIOD = {
 
 @dataclass(frozen=True, eq=False)
 class Comparison:
+    """Several investments analyzed under one identical methodology, returned by :func:`compare`.
+
+    Nothing is ranked or scored. Each investment keeps its full canonical report.
+
+    Attributes:
+        reports: The full-history :class:`FactsheetReport` of each investment, by name.
+        common_period_reports: Reports restricted to the period all histories share,
+            or ``None`` when the histories cover the same period or share fewer than two.
+        common_period: First and last date of the common period, or ``None``.
+        notes: Explanations of track-record and alignment differences.
+    """
+
     reports: Mapping[str, FactsheetReport]
     common_period_reports: Mapping[str, FactsheetReport] | None
     common_period: tuple[str, str] | None
@@ -43,7 +55,15 @@ class Comparison:
         return self.reports
 
     def table(self, *, common_period: bool = False) -> pd.DataFrame:
-        """Raw metric values (rows) by investment (columns)."""
+        """Raw metric values (rows) by investment (columns).
+
+        Args:
+            common_period: Use the common-period reports instead of the full histories.
+
+        Returns:
+            A DataFrame indexed by metric id with a ``name`` column and one column
+            per investment; unavailable values are missing (see ``status_table``).
+        """
         reports = self._source(common_period)
         first = next(iter(reports.values()))
         data = {name: [m.value for m in rep.metrics] for name, rep in reports.items()}
@@ -53,13 +73,18 @@ class Comparison:
         return frame
 
     def status_table(self, *, common_period: bool = False) -> pd.DataFrame:
-        """Confidence / status labels by investment."""
+        """Confidence / status labels by investment.
+
+        Args:
+            common_period: Use the common-period reports instead of the full histories.
+        """
         reports = self._source(common_period)
         first = next(iter(reports.values()))
         data = {name: [status_label(m) for m in rep.metrics] for name, rep in reports.items()}
         return pd.DataFrame(data, index=pd.Index([m.id for m in first.metrics], name="metric"))
 
     def track_records(self) -> pd.DataFrame:
+        """Start, end, length, frequency, smoothing risk and benchmark overlap by investment."""
         rows = []
         for name, rep in self.reports.items():
             s = rep.input_summary
@@ -82,6 +107,7 @@ class Comparison:
         return pd.DataFrame(rows).set_index("name")
 
     def summary(self) -> str:
+        """Track records and every metric side by side, as plain text."""
         reports = self.reports
         names = list(reports)
         first = next(iter(reports.values()))
@@ -110,6 +136,7 @@ class Comparison:
         return "\n".join(lines)
 
     def to_dict(self) -> dict[str, Any]:
+        """Every report (and common-period report) as JSON-compatible Python objects."""
         return {
             "reports": {k: report_to_dict(v) for k, v in self.reports.items()},
             "common_period": list(self.common_period) if self.common_period else None,
@@ -122,6 +149,11 @@ class Comparison:
         }
 
     def to_json(self, indent: int = 2) -> str:
+        """The comparison as deterministic JSON.
+
+        Args:
+            indent: Indentation of the JSON text.
+        """
         return json.dumps(self.to_dict(), indent=indent, sort_keys=True, allow_nan=False)
 
     def __str__(self) -> str:

@@ -140,12 +140,28 @@ def load(
 ) -> ReturnSeries | ReturnTable:
     """Parse and normalize input without computing metrics.
 
-    Returns a :class:`ReturnSeries` for a single series or a :class:`ReturnTable`
-    when the source contains several return columns. Inspect
-    ``series.input_diagnostics`` to see exactly what OpenFactsheet believes it
-    received. ``ocr_engine`` (``'rapidocr'`` or ``'tesseract'``) selects the OCR
-    engine for images and scanned PDF pages; it never changes an accepted value,
-    because recognized tables must reconcile with their printed totals.
+    Inspect ``series.input_diagnostics`` to see exactly what OpenFactsheet
+    believes it received before analyzing it.
+
+    Args:
+        source: Returns in any form :func:`analyze` accepts, including CSV, Excel,
+            pasted monthly tables, PDF factsheets and screenshots.
+        name: Display name for a single series.
+        return_scale: Declare ``"decimal"`` or ``"percent"`` only when automatic
+            detection reports ambiguity.
+        frequency: Declare the observation frequency of *undated* values.
+        ocr_engine: ``"rapidocr"`` (default) or ``"tesseract"`` for images and
+            scanned PDF pages. It never changes an accepted value, because
+            recognized tables must reconcile with their printed totals.
+
+    Returns:
+        A :class:`ReturnSeries` for a single series, or a :class:`ReturnTable`
+        when the source contains several return columns (for example a fund and
+        the benchmark printed in a factsheet).
+
+    Examples:
+        >>> series = ofs.load("monthly_returns.csv")
+        >>> print(series.input_diagnostics.to_text())
     """
     raws = to_raw(source, name=name, ocr_engine=ocr_engine)
     normalized = [
@@ -188,6 +204,13 @@ def analyze(
     Returns:
         A :class:`FactsheetReport` containing every canonical metric with its
         status, confidence, warnings and assumptions.
+
+    Examples:
+        >>> report = ofs.analyze(returns)
+        >>> print(report.summary())
+        >>> report.metrics["sharpe_ratio"].value
+        >>> report = ofs.analyze(returns, benchmark=benchmark_returns)
+        >>> report.to_html("factsheet.html")
     """
     series, diag = _normalize_one(
         returns, name=name, return_scale=return_scale, frequency=frequency, role="returns"
@@ -219,6 +242,23 @@ def compare(
     different periods, an additional common-period analysis (the intersection of
     all histories) is provided so that track-record differences are visible. The
     same benchmark and factor returns, if supplied, are used for every investment.
+
+    Args:
+        funds: A mapping of name to returns, a DataFrame with one column per
+            investment, a sequence of return series, or a :class:`ReturnTable`.
+        benchmark: Optional benchmark returns, used for every investment.
+        factors: Optional factor returns, used for every investment.
+        return_scale: Declare ``"decimal"`` or ``"percent"`` only when automatic
+            detection reports ambiguity.
+        frequency: Declare the observation frequency of *undated* values.
+
+    Returns:
+        A :class:`Comparison` holding the full report of every investment.
+
+    Examples:
+        >>> comparison = ofs.compare({"Fund A": fund_a, "Fund B": fund_b, "ETF": etf})
+        >>> print(comparison.summary())
+        >>> comparison.table(common_period=True)
     """
     from openfactsheet.compare.comparison import build_comparison
 
@@ -232,7 +272,15 @@ def compare(
 
 
 def metric_catalog() -> pd.DataFrame:
-    """Every canonical metric with its definition, conventions and data requirements."""
+    """Every canonical metric with its definition, conventions and data requirements.
+
+    Returns:
+        A DataFrame indexed by metric id, one row per canonical metric.
+
+    Examples:
+        >>> catalog = ofs.metric_catalog()
+        >>> catalog.loc["sharpe_ratio", "formula"]
+    """
     rows = []
     for d in all_metrics():
         row = d.to_dict()
@@ -243,5 +291,14 @@ def metric_catalog() -> pd.DataFrame:
 
 
 def methodology() -> Methodology:
-    """The canonical, versioned methodology used by every report."""
+    """The canonical, versioned methodology used by every report.
+
+    Returns:
+        The methodology object; ``.version`` is its version and ``.to_json()``
+        the complete set of canonical conventions embedded in every report.
+
+    Examples:
+        >>> ofs.methodology().get("tail.var_confidence")
+        0.95
+    """
     return canonical_methodology()
