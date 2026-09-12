@@ -11,6 +11,7 @@ import json
 
 from openfactsheet.compare.alignment import align_benchmark
 from openfactsheet.diagnostics.data_quality import run_diagnostics
+from openfactsheet.documents.profile import DocumentProfile
 from openfactsheet.exceptions import UndefinedMetric
 from openfactsheet.factors.models import FactorAnalysis, FactorModelFit, FactorSet
 from openfactsheet.factors.regressions import AlignedFactors, align_factors
@@ -66,6 +67,11 @@ def _factor_analysis(aligned: AlignedFactors, factor_set: FactorSet) -> FactorAn
     )
 
 
+def _document(series: ReturnSeries) -> DocumentProfile | None:
+    doc = series.metadata.get("document")
+    return doc if isinstance(doc, DocumentProfile) else None
+
+
 def build_report(
     series: ReturnSeries,
     input_diag: InputDiagnostics,
@@ -119,6 +125,7 @@ def build_report(
         provenance=provenance,
         drawdown_episodes=episodes,
         benchmark_returns=benchmark,
+        document=_document(series),
         factor_analysis=(
             _factor_analysis(factors, factor_set)
             if factors is not None and factor_set is not None

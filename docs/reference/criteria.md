@@ -236,6 +236,25 @@ files, passed as explicit paths) and never access the network.
    files and SHA-256), `image_sha256`, `repairs`, `min_cell_confidence` and, for
    PDFs, `renderer` and `dpi`.
 
+### 2.10 Fund profile of a document — [documents/profile.py](../../src/openfactsheet/documents/profile.py) (decision 0032)
+
+For PDF and image inputs, the page layouts are also searched for:
+
+| Field | Rule | Confidence |
+|---|---|---|
+| Identifiers | ISIN anywhere if its check digit passes; CUSIP / SEDOL / LEI / FIGI only on a line with their label; a labelled code failing its check digit is kept as `valid: false` with a note, never corrected; WKN / Valor / Bloomberg ticker / RIC only immediately after their label; a code equal to the national code embedded in an ISIN gets `linked_isin` | — |
+| Fund name | text after a name label (`fund name`, `Fondsname`, `nom du fonds`, ...) | high |
+| Fund name (fallback) | a page-1 line (first 15) with a fund word, at most 12 words, no colon, not a table row; tallest wins | moderate |
+| Objective | text after an objective / policy heading up to a blank line, another heading or a table, at most 8 lines | high |
+| Benchmark name(s) | text after a benchmark label at the start of a line (duplicates removed) | high |
+| Currency | first ISO 4217 code after a currency label | high |
+| Launch date | ISO as printed; dotted day-first; slash dates converted only when day and month cannot be swapped, else kept as printed | high / low |
+
+Labels are matched at the start of a line, case- and accent-insensitively,
+longest first (vocabulary in [documents/labels.py](../../src/openfactsheet/documents/labels.py)).
+The profile never changes a metric; a named benchmark adds a note to the
+benchmark section when no benchmark returns were supplied.
+
 ---
 
 ## 3. Validation criteria (input corruption fails early)

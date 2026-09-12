@@ -24,6 +24,18 @@ Package 0.1.0 · Methodology 0.1.0
 - Tests: unit, property-based, golden reports, CLAUDE.md acceptance tests 1–3,
   cross-library validation against PerformanceAnalytics, empyrical, QuantStats.
 
+### Added — Fund profile from documents (decision 0032)
+- PDF and image inputs yield a `DocumentProfile` (`report.document`, JSON
+  `document`): fund name, objective, benchmark name(s), currency, launch date
+  and identifiers, each with evidence (page, line, snippet, rule) and a
+  confidence. Shown in section 1 of every renderer.
+- Identifier validation by check digit (ISIN, CUSIP, SEDOL, LEI, FIGI; never
+  corrected), label-only codes (WKN, Valor, Bloomberg ticker, RIC), and links
+  to the national code embedded in an ISIN (DE/WKN, US/CA/CUSIP, GB/IE/SEDOL,
+  CH/LI/Valor). Labels in English, German, French, Spanish and Italian.
+- A benchmark named in the document is shown with a note that its returns were
+  not supplied; it is never used as benchmark returns.
+
 ### Added — OCR of screenshots and scanned PDFs
 - `ofs.analyze("table.png")` and scanned (image-only) PDF pages are recognized
   by a local OCR engine: RapidOCR by default with the models bundled in its

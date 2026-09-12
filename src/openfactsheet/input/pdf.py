@@ -14,10 +14,12 @@ could not read reliably.
 from __future__ import annotations
 
 import hashlib
+from dataclasses import replace
 from pathlib import Path
 from typing import Any
 
 from openfactsheet.documents.layout import PageLayout
+from openfactsheet.documents.profile import extract_profile
 from openfactsheet.documents.tables import (
     MONTH_LABELS,
     ExtractedTable,
@@ -99,7 +101,7 @@ def read_pdf(
             }
         return "embedded PDF text", {"engine": pypdf_engine(), "source_sha256": sha}
 
-    return tables_to_raw(
+    raws = tables_to_raw(
         tables,
         file_name=path.name,
         stem=path.stem,
@@ -107,3 +109,5 @@ def read_pdf(
         source_type="pdf",
         describe=describe,
     )
+    profile = extract_profile([layouts[n] for n in sorted(layouts)], path.name)
+    return [replace(r, metadata={**r.metadata, "document": profile}) for r in raws]

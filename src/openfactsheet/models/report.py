@@ -16,6 +16,8 @@ from openfactsheet.models.metric import MetricCollection
 if TYPE_CHECKING:
     import pandas as pd
 
+    from openfactsheet.documents.profile import DocumentProfile
+
 
 @dataclass(frozen=True)
 class BenchmarkDiagnostics:
@@ -147,6 +149,8 @@ class FactsheetReport:
     drawdown_episodes: tuple[Any, ...] = field(default_factory=tuple)
     benchmark_returns: ReturnSeries | None = None
     factor_analysis: FactorAnalysis | None = None
+    # What the source document (PDF, image) says about the fund (decision 0032).
+    document: DocumentProfile | None = None
 
     # -- convenience ------------------------------------------------------
     @property

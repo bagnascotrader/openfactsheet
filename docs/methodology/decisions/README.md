@@ -41,6 +41,7 @@ All decisions below are **Accepted** for methodology **0.1.0**.
 | [0029](0029-serial-correlation-and-annualization.md) | Serial correlation and annualization | One-year horizon q = round(P); variance ratio from the sample autocorrelations (supplementary, with i.i.d. z-test); Lo (2002) adjusted Sharpe = per-period SR × sqrt(q / VR); at least two years; profit factor = gross gains / gross losses. |
 | [0030](0030-pdf-ingestion.md) | PDF ingestion | Embedded text only (optional pypdf extra); twelve-month header; values assigned to columns by position; each year reconciled with its YTD; any inconsistency refuses the table and prints the reconstruction; provenance records engine, file hash and checks. |
 | [0031](0031-ocr-ingestion.md) | OCR ingestion | Screenshots and scanned pages via a local engine (RapidOCR default with its bundled models, Tesseract optional; no network); same reconstruction as PDF text; any cell below 0.90 confidence, a missing or unreconciled YTD, or an unreadable table refuses it; repairs and inferred headers recorded. |
+| [0032](0032-identifiers-and-fund-profile.md) | Identifiers and fund profile | Fixed fields with evidence (name, objective, benchmark name, currency, launch date, identifiers); ISIN/CUSIP/SEDOL/LEI/FIGI validated by check digit and never corrected; WKN/Valor/tickers only after their label; national codes linked to ISINs; the profile never changes a metric. |
 
 ## Adding or changing a decision
 

@@ -40,6 +40,7 @@ Conventions used throughout:
 | `metrics` | array | One entry per canonical metric, in canonical order ([metrics](#metrics)). |
 | `drawdown_episodes` | array | All drawdown episodes ([drawdown_episodes](#drawdown_episodes)). |
 | `benchmark` | object \| null | Benchmark alignment and input summaries; `null` without a benchmark ([benchmark](#benchmark)). |
+| `document` | object \| null | For PDF / image input: the fund profile read from the document (decision 0032): `source`, `name`, `objective`, `benchmarks`, `currency`, `launch_date` (each `{value, confidence, evidence: {page, line, snippet, rule}, note}`), `identifiers` (`kind`, `value`, `valid` — true / false / null without a check digit —, `linked_isin`, `evidence`) and `notes`; `null` otherwise. |
 | `factor_analysis` | object \| null | Factor-model regression; `null` without factor returns ([factor_analysis](#factor_analysis)). |
 | `interpretations` | object | Map metric id → interpretation ([interpretations](#interpretations)). |
 | `provenance` | object | Audit information ([provenance](#provenance)). |

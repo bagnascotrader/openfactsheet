@@ -266,7 +266,7 @@ received.
   [reference implementations](docs/validation/reference_implementations.md).
 - **Independent implementations.** Formulas are implemented from their academic
   definitions, not copied from other libraries' source code.
-- **31 methodology decision records.** Every contested convention (sample vs.
+- **32 methodology decision records.** Every contested convention (sample vs.
   population deviation, VaR quantile interpolation, the Sortino denominator,
   drawdown episode definitions, partial calendar years, and so on) has a written
   [decision](docs/methodology/decisions/README.md) with its rationale.
@@ -295,7 +295,7 @@ received.
 | 4 | Reporting: terminal, Markdown, HTML, JSON; canonical charts and drawdown-episode table | ✅ Done |
 | 5 | Comparison engine (`ofs.compare`) | ✅ Done |
 | 6 | Optional document ingestion: PDF with embedded text, screenshots and scanned PDFs (OCR) | ✅ Done |
-| 8 | Fund profile from documents: name, objective, identifiers, share classes, benchmark | Planned |
+| 8 | Fund profile from documents: name, objective, identifiers ✅ · share classes and table attribution | 🚧 In progress |
 | 9 | CRAN-style PDF reference manual, linked from every result | Planned |
 | 7 | Factor models (CAPM, Fama-French, Carhart, custom) using factor data you supply | ✅ Done |
 

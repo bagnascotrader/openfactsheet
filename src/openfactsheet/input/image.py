@@ -10,9 +10,11 @@ every year. A table that fails is refused with the reconstructed table.
 from __future__ import annotations
 
 import hashlib
+from dataclasses import replace
 from pathlib import Path
 from typing import Any
 
+from openfactsheet.documents.profile import extract_profile
 from openfactsheet.documents.tables import ExtractedTable, find_monthly_tables, tables_to_raw
 from openfactsheet.exceptions import OCRExtractionError
 from openfactsheet.models.input import RawReturns
@@ -56,7 +58,7 @@ def read_image(
             "image_sha256": layout.image_sha256,
         }
 
-    return tables_to_raw(
+    raws = tables_to_raw(
         tables,
         file_name=path.name,
         stem=path.stem,
@@ -64,3 +66,5 @@ def read_image(
         source_type="image",
         describe=describe,
     )
+    profile = extract_profile([layout], path.name)
+    return [replace(r, metadata={**r.metadata, "document": profile}) for r in raws]
