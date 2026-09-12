@@ -24,6 +24,7 @@ from openfactsheet.report.tables import (
     Footnotes,
     confidence_counts,
     data_quality_metrics,
+    document_benchmark_note,
     drawdown_episode_table,
     extraction_summary,
     factor_fit_summary,
@@ -350,6 +351,8 @@ def render_html(report: FactsheetReport) -> str:
         if cat == "benchmark":
             if report.benchmark_summary is None:
                 parts.append(f"<p>Not applicable: {escape(NO_BENCHMARK_REASON)}</p>")
+                if (note := document_benchmark_note(report)) is not None:
+                    parts.append(f"<p>{escape(note)}</p>")
                 continue
             parts.append(_pre(report.benchmark_summary.to_text()))
         for chart in by_section.get(cat, []):

@@ -16,6 +16,7 @@ from openfactsheet.report.tables import (
     Footnotes,
     confidence_counts,
     data_quality_metrics,
+    document_benchmark_note,
     drawdown_episode_table,
     extraction_summary,
     factor_fit_summary,
@@ -157,6 +158,8 @@ def render_terminal(report: FactsheetReport) -> str:
         if cat == "benchmark":
             if report.benchmark_summary is None:
                 out.append(_wrap("Not applicable: " + NO_BENCHMARK_REASON))
+                if (note := document_benchmark_note(report)) is not None:
+                    out.append(_wrap(note))
                 out.append(_wrap("Metrics: " + ", ".join(r.name for r in rows) + "."))
                 continue
             out.append(_indent(report.benchmark_summary.to_text()))

@@ -67,6 +67,7 @@ def report_to_dict(report: FactsheetReport) -> dict[str, Any]:
         "metrics": [m.to_dict() for m in report.metrics],
         "drawdown_episodes": [e.to_dict() for e in report.drawdown_episodes],
         "benchmark": benchmark,
+        "document": report.document.to_dict() if report.document is not None else None,
         "factor_analysis": (
             report.factor_analysis.to_dict() if report.factor_analysis is not None else None
         ),

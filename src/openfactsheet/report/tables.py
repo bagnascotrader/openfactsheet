@@ -107,12 +107,25 @@ def confidence_counts(report: FactsheetReport) -> dict[str, int]:
     return counts
 
 
+def document_benchmark_note(report: FactsheetReport) -> str | None:
+    """When the document names a benchmark whose returns were not supplied (decision 0032)."""
+    doc = report.document
+    if doc is None or not doc.benchmarks or report.benchmark_summary is not None:
+        return None
+    names = "; ".join(b.value for b in doc.benchmarks)
+    return (
+        f"The source document names its benchmark ({names}); its returns were not supplied, so "
+        "benchmark-relative metrics are not computed. Pass them explicitly with benchmark=... ."
+    )
+
+
 def extraction_summary(report: FactsheetReport) -> tuple[str, str] | None:
     """Key/value text and the reconstructed table for document inputs (PDF, OCR), else None."""
     ex = report.provenance.extraction
     if not ex:
         return None
-    lines = [
+    lines = [report.document.to_text()] if report.document is not None else []
+    lines += [
         f"Extracted by:              {ex.get('engine', 'unknown')} (page {ex.get('page', '?')})",
         f"Extraction confidence:     {ex.get('confidence', 'unknown')}",
         f"Monthly values read:       {ex.get('monthly_values', '?')}",
