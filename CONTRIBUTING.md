@@ -13,8 +13,12 @@ pre-commit install
 pytest
 ruff check . && ruff format --check . && mypy
 python scripts/generate_docs.py --check
-pip install -e ".[docs]" && python scripts/build_manual.py --check
+pip install -e ".[docs]" && python scripts/build_manual.py
 ```
+
+The reference manual (`docs/manual/openfactsheet-manual.pdf`) is committed and a
+test fails when it no longer matches its sources: after changing a metric, a public
+docstring or a document, rebuild it and commit it with your change.
 
 Docstrings of public functions and classes are printed in the reference manual
 (decision 0034): write them in Google style (`Args:`, `Returns:`, `Examples:`)
@@ -71,7 +75,7 @@ Record every reference in `docs/validation/reference_implementations.md`.
 - [ ] cross-library comparison where possible; differences documented and pinned
 - [ ] appears correctly in the canonical report and JSON; no NaN/inf possible
 - [ ] generated docs refreshed (`python scripts/generate_docs.py`) and the
-      reference manual builds (`python scripts/build_manual.py --check`)
+      reference manual rebuilt (`python scripts/build_manual.py`)
 
 ## Pull requests
 

@@ -13,6 +13,7 @@
 #let documents = json("/data/documents.json").documents
 #let date = sys.inputs.at("date", default: "unreleased")
 #let compiler = sys.inputs.at("typst", default: "")
+#let digest = sys.inputs.at("digest", default: "none")
 
 #let citations = (:)
 #for e in bib.entries { citations.insert(e.citation, e) }
@@ -22,14 +23,14 @@
 #for m in metrics.metrics { metric-names.insert(m.id, m.name) }
 #let docs-in(part) = documents.filter(d => d.part == part)
 
-#show: setup.with(package: package, date: date)
+#show: setup.with(package: package, date: date, digest: digest)
 
 // --- Title page (the DESCRIPTION of an R package) ----------------------------
 #page(header: none, footer: none)[
   #v(3cm)
   #text(size: 26pt, weight: "bold")[Package '#package.name']
   #v(0.2em)
-  #text(size: 12pt, fill: muted)[Reference manual #sym.dot.c #date]
+  #text(size: 12pt, fill: muted)[Reference manual #sym.dot.c version #package.version #sym.dot.c #date]
   #v(1.2cm)
   #let dep(d) = d.replace(regex("^([A-Za-z0-9_.\-]+(?:\[[^\]]*\])?)(.*)$"), m => {
     let (name, spec) = m.captures

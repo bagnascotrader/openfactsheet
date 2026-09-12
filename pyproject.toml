@@ -50,8 +50,9 @@ pdf = ["pypdf>=4.0"]
 ocr = ["rapidocr>=3.9,<4", "onnxruntime>=1.17", "pypdfium2>=4", "Pillow>=10", "pypdf>=4.0"]
 tesseract = ["pytesseract>=0.3.10", "pypdfium2>=4", "Pillow>=10", "pypdf>=4.0"]
 images = ["openfactsheet[ocr]"]
-# Builds the PDF reference manual from a source checkout (decision 0034).
-docs = ["typst>=0.15,<0.16", "pypdf>=4.0"]
+# Builds the PDF reference manual from a source checkout (decision 0034). The
+# compiler is pinned exactly: the committed PDF records the version it was built with.
+docs = ["typst==0.15.0", "pikepdf>=9", "pypdf>=4.0"]
 validation = [
     "empyrical-reloaded>=0.5",
     "quantstats>=0.0.62",
@@ -149,5 +150,6 @@ module = [
     "pypdfium2.*",
     "typst.*",
     "tomli.*",
+    "pikepdf.*",
 ]
 ignore_missing_imports = true

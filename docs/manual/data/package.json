@@ -14,7 +14,8 @@
    "openfactsheet[excel,pdf,ocr]"
   ],
   "docs": [
-   "typst>=0.15,<0.16",
+   "typst==0.15.0",
+   "pikepdf>=9",
    "pypdf>=4.0"
   ],
   "excel": [

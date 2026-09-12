@@ -76,15 +76,17 @@ jobs:
           python-version: "3.12"
           cache: pip
       - run: pip install -e ".[dev,docs]"
+      # The committed PDF must have been built from the current sources.
+      - run: python scripts/build_manual.py --check
       # Fails on any formula, link or named destination that does not compile.
-      - run: python scripts/build_manual.py
+      - run: python scripts/build_manual.py --output build/openfactsheet-manual.pdf
       - run: pytest -m manual -rs
         env:
           OFS_REQUIRE_TYPST: "1"  # a missing compiler fails instead of skipping
       - uses: actions/upload-artifact@v4
         with:
           name: openfactsheet-manual
-          path: docs/manual/build/openfactsheet-manual.pdf
+          path: build/openfactsheet-manual.pdf
           if-no-files-found: error
 
   cross-library:
