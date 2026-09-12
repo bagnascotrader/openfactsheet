@@ -22,7 +22,7 @@ Periodic simple returns.
 
 ## 4. Is higher or lower better?
 
-Higher is better.
+Smaller loss is better: losses are negative numbers, so −10% is better than −25% (the higher, less negative value is better).
 
 ## 5. Plain-language interpretation
 
@@ -83,6 +83,6 @@ An unexpected calculation failure or a non-finite result is reported as `error` 
 ### Output
 
 - Unit: Decimal return (0.01 = 1%); displayed as a percentage with 2 decimals. Values are stored unrounded (float64).
-- Direction: Higher is better.
+- Direction: Smaller loss is better: losses are negative numbers, so −10% is better than −25% (the higher, less negative value is better).
 - Nature: Observed: a fact about the supplied path (no estimation).
 - Formula id `current_drawdown@v1`; the version increments if the definition changes.

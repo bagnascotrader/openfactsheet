@@ -77,6 +77,7 @@ def metric(
     uses_wealth_path: bool = False,
     volatility_based: bool = False,
     supplementary: bool = False,
+    signed_loss: bool = False,
     assumptions: tuple[str, ...] = (),
     formula_version: int = 1,
 ) -> Callable[[MetricFunction], MetricFunction]:
@@ -85,6 +86,17 @@ def metric(
     def decorator(func: MetricFunction) -> MetricFunction:
         if id in _REGISTRY:
             raise ValueError(f"Metric {id!r} is already registered")
+        if signed_loss and (direction != "higher_is_better" or unit != "decimal_return"):
+            raise ValueError(f"Signed-loss metric {id!r} must be a higher-is-better return")
+        # Drawdown and tail returns are losses stated as negative numbers; "higher is
+        # better" alone reads as "a bigger loss is better", so they must be declared.
+        if (
+            category in ("drawdown", "tail")
+            and unit == "decimal_return"
+            and direction == "higher_is_better"
+            and not signed_loss
+        ):
+            raise ValueError(f"Metric {id!r} is a signed loss; declare signed_loss=True")
         get_policy(min_data_policy)
         unknown = set(assumptions) - ASSUMPTION_KEYS
         if unknown:
@@ -105,6 +117,7 @@ def metric(
             uses_wealth_path=uses_wealth_path,
             volatility_based=volatility_based,
             supplementary=supplementary,
+            signed_loss=signed_loss,
             assumption_keys=assumptions,
             formula_version=formula_version,
         )

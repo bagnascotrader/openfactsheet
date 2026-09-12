@@ -157,6 +157,10 @@ class MetricDefinition:
     uses_wealth_path: bool = False
     volatility_based: bool = False
     supplementary: bool = False
+    # A loss stated as a signed (negative) return: max drawdown, VaR, worst period, ...
+    # ``direction`` is then "higher_is_better" (-10% beats -25%), and the documentation
+    # says "smaller loss is better" so that the sign convention cannot be misread.
+    signed_loss: bool = False
     assumption_keys: tuple[str, ...] = ()
     formula_version: int = 1
 
@@ -181,6 +185,7 @@ class MetricDefinition:
             "uses_wealth_path": self.uses_wealth_path,
             "volatility_based": self.volatility_based,
             "supplementary": self.supplementary,
+            "signed_loss": self.signed_loss,
             "measures": d.measures,
             "formula": d.formula,
             "inputs": d.inputs,

@@ -31,6 +31,22 @@ _DIRECTION = {
     "neutral": "Neutral (descriptive)",
 }
 
+# Losses stated as signed returns (max drawdown, VaR, worst period, ...): "higher is
+# better" is true of the signed value but reads as "a bigger loss is better".
+_SIGNED_LOSS_DIRECTION = (
+    "Smaller loss is better: losses are negative numbers, so −10% is better than −25% "
+    "(the higher, less negative value is better)"
+)
+_SIGNED_LOSS_SHORT = "Smaller loss is better (−10% beats −25%)"
+
+
+def direction_text(d: MetricDefinition, *, short: bool = False) -> str:
+    """How to read the value, in words (no final period)."""
+    if d.signed_loss:
+        return _SIGNED_LOSS_SHORT if short else _SIGNED_LOSS_DIRECTION
+    return _DIRECTION[d.direction]
+
+
 _ASSUMPTION_LABELS = {
     "annualization": "annualization factor",
     "risk_free": "risk-free = 0",
@@ -289,7 +305,7 @@ def _criteria_section(d: MetricDefinition) -> list[str]:
         "### Output",
         "",
         f"- Unit: {_UNIT_OUTPUT[d.unit]} Values are stored unrounded (float64).",
-        f"- Direction: {_DIRECTION[d.direction]}.",
+        f"- Direction: {direction_text(d)}.",
         f"- Nature: {_NATURE[d.nature]}",
         f"- Formula id `{d.formula_id}`; the version increments if the definition changes.",
         "",
@@ -344,7 +360,7 @@ def render_catalog() -> str:
             params = ", ".join(_ASSUMPTION_LABELS[k] for k in d.assumption_keys) or "—"
             lines.append(
                 f"| [`{d.id}`](interpretation/{d.id}.md) | {_cell(d.name)} | {d.nature} | "
-                f"{d.unit} | {_DIRECTION[d.direction]} | {_needs(d)} "
+                f"{d.unit} | {direction_text(d, short=True)} | {_needs(d)} "
                 f"| {'yes' if d.annualized else 'no'} | {params} | `{d.min_data_policy}` | "
                 f"implemented ({d.formula_id}) | {_references_summary(d)} |"
             )
@@ -373,7 +389,8 @@ def metric_record(d: MetricDefinition) -> dict[str, Any]:
         "unit": d.unit,
         "unit_text": _UNIT_OUTPUT[d.unit],
         "direction": d.direction,
-        "direction_text": _DIRECTION[d.direction],
+        "direction_text": direction_text(d),
+        "signed_loss": d.signed_loss,
         "formula_id": d.formula_id,
         "formula": docs.formula,
         "formula_latex": docs.formula_latex,
@@ -564,8 +581,8 @@ def render_policies() -> str:
         "metric (see [criteria](criteria.md#10-confidence-and-status-algorithm)).",
         "",
         "| Metric | Category | Volatility-based | Wealth path | Annualized | Benchmark | "
-        "Factors | Supplementary | Minimum-data policy | Assumption keys |",
-        "|---|---|---|---|---|---|---|---|---|---|",
+        "Factors | Supplementary | Signed loss | Minimum-data policy | Assumption keys |",
+        "|---|---|---|---|---|---|---|---|---|---|---|",
     ]
     for d in all_metrics():
         keys = ", ".join(f"`{k}`" for k in d.assumption_keys) or "—"
@@ -573,9 +590,15 @@ def render_policies() -> str:
             f"| [`{d.id}`](../interpretation/{d.id}.md) | {d.category} | "
             f"{flag(d.volatility_based)} | {flag(d.uses_wealth_path)} | {flag(d.annualized)} | "
             f"{flag(d.requires_benchmark)} | {flag(d.requires_factors)} | "
-            f"{flag(d.supplementary)} | `{d.min_data_policy}` | "
+            f"{flag(d.supplementary)} | {flag(d.signed_loss)} | `{d.min_data_policy}` | "
             f"{keys} |"
         )
+    lines += [
+        "",
+        "*Signed loss*: the value is a loss stated as a negative return (for example a "
+        "maximum drawdown of −25%). Its `direction` is `higher_is_better` because −10% is a "
+        'smaller loss than −25%; the documentation says "smaller loss is better".',
+    ]
 
     ppy = m.get("annualization.periods_per_year")
     lines += [

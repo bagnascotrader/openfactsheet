@@ -54,6 +54,13 @@ Package 0.1.0 · Methodology 0.1.0
   argument to be documented.
 
 ### Changed (pre-release)
+- Documentation of the 16 metrics that state a loss as a negative number (drawdowns,
+  VaR, expected shortfall, worst period/calendar year/rolling year) now says
+  "smaller loss is better (−10% beats −25%)" instead of "higher is better", which
+  read as "a bigger drawdown is better". The machine field `direction` is unchanged
+  (`higher_is_better` on the signed value); the metrics are flagged `signed_loss`
+  in the registry and `ofs.metric_catalog()`, and registration rejects an unflagged
+  drawdown or tail return.
 - `factor_alpha_t_statistic` formula written with `\left\lfloor`/`\right\rfloor`
   (display only) so every formula compiles in the manual.
 - A PDF with a fund table and a benchmark table no longer raises in `analyze()`;

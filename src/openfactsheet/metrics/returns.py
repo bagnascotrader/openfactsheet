@@ -277,6 +277,7 @@ def best_period(ctx: MetricContext) -> Computed:
     category="returns",
     unit="decimal_return",
     direction="higher_is_better",
+    signed_loss=True,
     nature="observed",
     min_data_policy="observed_point",
     docs=MetricDocs(
