@@ -122,6 +122,14 @@ class ExtractedTable:
     total_label: str | None
     percent_hint: bool | None
     source: str = "text"
+    # Decision 0033: what the table is (fund, benchmark, relative or unknown returns),
+    # the row label it came from, and the lines around it (for share-class attribution).
+    role: str = "fund"
+    role_evidence: str = "the only series of its table"
+    series_label: str | None = None
+    caption: tuple[str, ...] = ()
+    footer: tuple[str, ...] = ()
+    line_index: int = 0  # the header line on its page
     checks: list[str] = field(default_factory=list)
     problems: list[str] = field(default_factory=list)
     warnings: list[str] = field(default_factory=list)
@@ -149,7 +157,9 @@ class ExtractedTable:
         """The reconstructed table, as OpenFactsheet read it."""
         label = self.total_label or "YTD"
         head = f"{'Year':<6}" + "".join(f"{m:>9}" for m in MONTH_LABELS) + f"{label:>10}"
-        lines = [head]
+        lines = (
+            [f"Series: {self.series_label} ({self.role})", head] if self.series_label else [head]
+        )
         for year in self.years:
             row = self.cells[year]
             lines.append(
@@ -176,27 +186,55 @@ def _decimals(text: str) -> int:
     return len(digits.split(sep, 1)[1]) if sep else 0
 
 
+Row = tuple[int, str | None, list[Word]]  # (year, series label or None, value words)
+
+
+def _is_number(text: str) -> bool:
+    try:
+        parse_cell(text)
+    except InputError:
+        return False
+    return True
+
+
 def parse_rows(
     lines: Sequence[Line], header: Header, repairs: Mapping[str, str] | None = None
-) -> tuple[list[tuple[int, list[Word]]], int]:
-    """Year rows under ``header``: returns ``[(year, value words)]`` and the last line used."""
-    rows: list[tuple[int, list[Word]]] = []
+) -> tuple[list[Row], int]:
+    """Year rows under ``header``: returns ``[(year, label, value words)]`` and the last line.
+
+    Rows may carry a series label left of the January column ("2023 Fund ...",
+    "Benchmark ..."): a labelled line without a year continues the previous year,
+    which is the common layout of a fund row followed by a benchmark row.
+    """
+    centers = header.month_centers
+    spacing = statistics.median(b - a for a, b in pairwise(centers))
+    label_edge = centers[0] - 0.5 * spacing
+    rows: list[Row] = []
     last = header.line_index
     blank_run = 0
+    year: int | None = None
     for i in range(header.line_index + 1, len(lines)):
-        words = lines[i].words
+        words = list(lines[i].words)
         if not words:
             blank_run += 1
             if blank_run > 2:
                 break
             continue
         blank_run = 0
-        label = words[0].text
-        if repairs is not None and not _YEAR.match(label):
-            label = "".join(repairs.get(ch, ch) for ch in label)
-        if not _YEAR.match(label):
+        first = words[0].text
+        if repairs is not None and not _YEAR.match(first):
+            first = "".join(repairs.get(ch, ch) for ch in first)
+        if _YEAR.match(first):
+            year = int(first)
+            words = words[1:]
+        elif year is None:
             break
-        rows.append((int(label), list(words[1:])))
+        label_words = [w for w in words if w.center < label_edge and not _is_number(w.text)]
+        values = [w for w in words if w not in label_words]
+        label = " ".join(w.text for w in label_words) or None
+        if not _YEAR.match(first) and label is None:
+            break  # neither a year nor a series label: the table has ended
+        rows.append((year, label, values))
         last = i
     return rows, last
 
@@ -227,7 +265,7 @@ def repair_numeric(text: str, repairs: Mapping[str, str]) -> str:
 def assign(
     table: ExtractedTable,
     header: Header,
-    rows: list[tuple[int, list[Word]]],
+    rows: Sequence[tuple[int, list[Word]]],
     unit: str = "characters",
     repairs: Mapping[str, str] | None = None,
 ) -> None:
@@ -409,7 +447,13 @@ def find_monthly_tables(layout: PageLayout) -> list[ExtractedTable]:
             i += 1
             continue
         rows, last = parse_rows(lines, header, conv["numeric_repairs"] if ocr else None)
-        if rows:
+        # Caption: the nearest three non-blank lines within six lines above the header.
+        caption = tuple([line.text for line in lines[max(0, i - 6) : i] if not line.is_blank][-3:])
+        footer = tuple(line.text for line in lines[last + 1 : last + 4] if not line.is_blank)
+        # One table per series label (rows without a label form the first series).
+        labels = list(dict.fromkeys(label for _, label, _ in rows))
+        for label in labels:
+            series_rows = [(y, values) for y, lab, values in rows if lab == label]
             table = ExtractedTable(
                 page=layout.page,
                 cells={},
@@ -417,11 +461,16 @@ def find_monthly_tables(layout: PageLayout) -> list[ExtractedTable]:
                 total_label=header.total_label,
                 percent_hint=None,
                 source=layout.source,
+                series_label=label,
+                caption=caption,
+                footer=footer,
+                line_index=i,
             )
+            table.role, table.role_evidence = classify_role(label, caption, len(labels))
             assign(
                 table,
                 header,
-                rows,
+                series_rows,
                 layout.unit,
                 repairs=conv["numeric_repairs"] if ocr else None,
             )
@@ -438,6 +487,52 @@ def find_monthly_tables(layout: PageLayout) -> list[ExtractedTable]:
             tables.append(table)
         i = last + 1
     return tables
+
+
+_BENCHMARK_WORDS = (
+    "benchmark", "index", "indice", "indices", "bm", "vergleichsindex", "referenzindex",
+    "referencia", "riferimento", "reference", "comparator", "msci", "s&p", "ftse", "stoxx",
+    "bloomberg", "barclays", "ice", "jpm", "iboxx", "russell", "euro stoxx",
+)  # fmt: skip
+_RELATIVE_WORDS = (
+    "relative", "difference", "excess", "active", "over/under", "outperformance",
+    "differenz", "difference", "diferencia", "differenza", "delta", "+/-",
+)  # fmt: skip
+_FUND_WORDS = (
+    "fund", "fonds", "fondo", "portfolio", "class", "classe", "clase", "klasse", "sicav",
+    "share", "anteil", "net", "strategy", "strategie",
+)  # fmt: skip
+
+
+def _has(text: str, words: Sequence[str]) -> bool:
+    folded = f" {re.sub(r'[^a-z0-9&/+-]+', ' ', text.lower())} "
+    return any(f" {w} " in folded for w in words)
+
+
+def classify_role(label: str | None, caption: Sequence[str], n_series: int) -> tuple[str, str]:
+    """Role of a return series: ``fund``, ``benchmark``, ``relative`` or ``unknown`` (0033).
+
+    A row label decides when present (relative words first, then benchmark, then
+    fund words); an unlabelled series sharing its table with labelled ones is the
+    fund; a single-series table is a benchmark only when its caption says so.
+    """
+    if label is not None:
+        if _has(label, _RELATIVE_WORDS):
+            return "relative", f"row label {label!r}"
+        if _has(label, _BENCHMARK_WORDS) and not _has(label, ("fund", "fonds", "fondo")):
+            return "benchmark", f"row label {label!r}"
+        if _has(label, _FUND_WORDS):
+            return "fund", f"row label {label!r}"
+        return "unknown", f"row label {label!r} is not a known series label"
+    if n_series > 1:
+        return "fund", "the unlabelled series of a table with labelled rows"
+    text = " ".join(caption)
+    benchmark_caption = _has(
+        text, ("benchmark", "vergleichsindex", "indice de reference", "indice di riferimento")
+    )
+    if benchmark_caption and not _has(text, ("fund", "fonds", "fondo", "portfolio")):
+        return "benchmark", f"caption {text!r}"
+    return "fund", "the only series of its table"
 
 
 def refuse(table: ExtractedTable, file_name: str) -> OCRExtractionError:
@@ -465,18 +560,40 @@ def tables_to_raw(
 
     ``describe(table)`` returns how the table was obtained, for the transformation
     note (e.g. "embedded PDF text"), and the provenance merged into the series'
-    ``metadata["extraction"]``.
+    ``metadata["extraction"]``. Relative (difference) rows are not return series and
+    are ignored; a benchmark table that cannot be read reliably is left out (it is
+    never used for metrics) with a note, while any other unreliable table refuses
+    the document (decision 0033).
     """
+    notes: list[str] = []
+    usable: list[ExtractedTable] = []
     for table in tables:
+        if table.role == "relative":
+            notes.append(
+                f"The row {table.series_label!r} (page {table.page}) shows relative returns, not a "
+                "return series, and was ignored."
+            )
+            continue
         if table.confidence == "low":
+            if table.role == "benchmark":
+                notes.append(
+                    f"The benchmark returns on page {table.page} could not be read reliably and "
+                    "are not returned: " + " ".join(table.problems)
+                )
+                continue
             raise refuse(table, file_name)
+        usable.append(table)
+    funds = [t for t in usable if t.role != "benchmark"]
     out: list[RawReturns] = []
-    for k, table in enumerate(tables, start=1):
+    for k, table in enumerate(usable, start=1):
         how, extraction = describe(table)
         raw = from_monthly_table(table.to_frame(), None, source_type)
-        label = name if (name and len(tables) == 1) else ("Returns" if len(tables) == 1 else None)
-        if label is None:
-            label = f"{name or stem} (table {k}, page {table.page})"
+        if table.role == "benchmark":
+            label = f"{table.series_label or 'Benchmark'} (benchmark, from document)"
+        elif len(funds) == 1:
+            label = name or ("Returns" if len(usable) == 1 else stem)
+        else:
+            label = f"{name or stem} ({table.series_label or f'table {k}'}, page {table.page})"
         engine = extraction.get("engine", "")
         transformations = (
             f"monthly table extracted from {how} (table on page {table.page}, {engine}); "
@@ -486,6 +603,9 @@ def tables_to_raw(
         details: dict[str, Any] = {
             **extraction,
             "page": table.page,
+            "role": table.role,
+            "role_evidence": table.role_evidence,
+            "series_label": table.series_label,
             "confidence": table.confidence,
             "monthly_values": table.n_values,
             "checks": list(table.checks),
@@ -505,7 +625,7 @@ def tables_to_raw(
                 source_type=f"{source_type} (monthly table)",
                 percent_hint=table.percent_hint if table.percent_hint else raw.percent_hint,
                 transformations=transformations,
-                warnings=tuple(table.warnings),
+                warnings=(*table.warnings, *notes),
                 metadata={"extraction": details},
             )
         )

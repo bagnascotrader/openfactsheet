@@ -42,6 +42,7 @@ All decisions below are **Accepted** for methodology **0.1.0**.
 | [0030](0030-pdf-ingestion.md) | PDF ingestion | Embedded text only (optional pypdf extra); twelve-month header; values assigned to columns by position; each year reconciled with its YTD; any inconsistency refuses the table and prints the reconstruction; provenance records engine, file hash and checks. |
 | [0031](0031-ocr-ingestion.md) | OCR ingestion | Screenshots and scanned pages via a local engine (RapidOCR default with its bundled models, Tesseract optional; no network); same reconstruction as PDF text; any cell below 0.90 confidence, a missing or unreconciled YTD, or an unreadable table refuses it; repairs and inferred headers recorded. |
 | [0032](0032-identifiers-and-fund-profile.md) | Identifiers and fund profile | Fixed fields with evidence (name, objective, benchmark name, currency, launch date, identifiers); ISIN/CUSIP/SEDOL/LEI/FIGI validated by check digit and never corrected; WKN/Valor/tickers only after their label; national codes linked to ISINs; the profile never changes a metric. |
+| [0033](0033-share-classes-and-table-roles.md) | Share classes and table roles | Series-labelled rows become separate series with roles (fund / benchmark / relative / unknown); document benchmark returns are returned by load() but never used; the returns table is attributed to a share class by caption, heading, single-class or currency rules, otherwise reported as ambiguous. |
 
 ## Adding or changing a decision
 

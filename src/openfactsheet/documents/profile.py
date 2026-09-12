@@ -24,7 +24,14 @@ from openfactsheet.documents.labels import (
     match_label,
 )
 from openfactsheet.documents.layout import Line, PageLayout
-from openfactsheet.documents.tables import find_header, month_of
+from openfactsheet.documents.share_classes import (
+    Attribution,
+    ShareClass,
+    attribute,
+    detect_share_classes,
+    heading_lines,
+)
+from openfactsheet.documents.tables import ExtractedTable, find_header, month_of
 
 FieldConfidence = Literal["high", "moderate", "low"]
 _SNIPPET = 160
@@ -87,6 +94,8 @@ class DocumentProfile:
     currency: Field | None = None
     launch_date: Field | None = None
     identifiers: tuple[Identifier, ...] = ()
+    share_classes: tuple[ShareClass, ...] = ()
+    attribution: Attribution | None = None  # which class the returns table shows (0033)
     notes: tuple[str, ...] = field(default_factory=tuple)
 
     def valid_identifiers(self) -> tuple[Identifier, ...]:
@@ -104,6 +113,8 @@ class DocumentProfile:
             "currency": opt(self.currency),
             "launch_date": opt(self.launch_date),
             "identifiers": [i.to_dict() for i in self.identifiers],
+            "share_classes": [c.to_dict() for c in self.share_classes],
+            "attribution": self.attribution.to_dict() if self.attribution else None,
             "notes": list(self.notes),
         }
 
@@ -112,7 +123,17 @@ class DocumentProfile:
         if self.name:
             lines.append(f"Fund name:                 {self.name.value} ({self.name.confidence})")
         ids = self.valid_identifiers()
-        if ids:
+        if self.share_classes:
+            lines.append(
+                "Share classes:             "
+                + "; ".join(
+                    f"{c.label} ({', '.join(c.isins)})" if c.isins else c.label
+                    for c in self.share_classes
+                )
+            )
+            if self.attribution is not None and self.attribution.to_text():
+                lines.append(self.attribution.to_text())
+        elif ids:
             lines.append(
                 "Identifiers:               " + ", ".join(f"{i.kind} {i.value}" for i in ids)
             )
@@ -327,8 +348,25 @@ def _launch_date(layouts: Sequence[PageLayout]) -> Field | None:
     return None
 
 
-def extract_profile(layouts: Sequence[PageLayout], source: str) -> DocumentProfile:
+def _attribution(
+    layouts: Sequence[PageLayout],
+    tables: Sequence[ExtractedTable],
+    classes: Sequence[ShareClass],
+) -> Attribution | None:
+    funds = [t for t in tables if t.role != "benchmark"]
+    if not funds:
+        return None
+    table = funds[0]
+    layout = next((lay for lay in layouts if lay.page == table.page), None)
+    headings = heading_lines(layout, table.line_index) if layout is not None else []
+    return attribute(classes, table.caption, table.footer, headings)
+
+
+def extract_profile(
+    layouts: Sequence[PageLayout], source: str, tables: Sequence[ExtractedTable] = ()
+) -> DocumentProfile:
     """The fund profile of a document, from its page layouts (text or OCR)."""
+    classes = detect_share_classes(layouts)
     identifiers, id_notes = _identifiers(layouts)
     name, name_notes = _name(layouts)
     benchmarks: list[Field] = []
@@ -346,6 +384,8 @@ def extract_profile(layouts: Sequence[PageLayout], source: str) -> DocumentProfi
         currency=_currency(layouts),
         launch_date=_launch_date(layouts),
         identifiers=tuple(identifiers),
+        share_classes=tuple(classes),
+        attribution=_attribution(layouts, tables, classes),
         notes=tuple(id_notes + name_notes),
     )
 

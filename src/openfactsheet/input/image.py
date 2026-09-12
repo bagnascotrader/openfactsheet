@@ -66,5 +66,5 @@ def read_image(
         source_type="image",
         describe=describe,
     )
-    profile = extract_profile([layout], path.name)
+    profile = extract_profile([layout], path.name, tables)
     return [replace(r, metadata={**r.metadata, "document": profile}) for r in raws]

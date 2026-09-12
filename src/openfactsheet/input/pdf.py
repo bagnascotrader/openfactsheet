@@ -109,5 +109,5 @@ def read_pdf(
         source_type="pdf",
         describe=describe,
     )
-    profile = extract_profile([layouts[n] for n in sorted(layouts)], path.name)
+    profile = extract_profile([layouts[n] for n in sorted(layouts)], path.name, tables)
     return [replace(r, metadata={**r.metadata, "document": profile}) for r in raws]
