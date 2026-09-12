@@ -120,3 +120,37 @@ def annualized_volatility(ctx: MetricContext) -> float:
 )
 def mean_absolute_deviation(ctx: MetricContext) -> float:
     return float(np.mean(np.abs(ctx.r - ctx.cache.mean)))
+
+
+@metric(
+    id="interquartile_range",
+    name="Interquartile range",
+    category="volatility",
+    unit="decimal_return",
+    direction="lower_is_better",
+    nature="estimated",
+    min_data_policy="dispersion",
+    volatility_based=True,
+    docs=MetricDocs(
+        measures="Spread of the middle 50% of single-period returns.",
+        formula="Q_0.75(r) - Q_0.25(r), linear interpolation",
+        formula_latex=r"\mathrm{IQR} = Q_{0.75}(r) - Q_{0.25}(r)",
+        inputs="Periodic simple returns.",
+        retail="How far apart typical good and typical bad periods are, ignoring the extremes.",
+        institutional="Robust dispersion measure, insensitive to the tails (for normal returns "
+        "IQR = 1.349 sigma). Contrast with volatility to see how much the tails drive risk. Per "
+        "period.",
+        assumptions=("Linear-interpolated empirical quantiles (Hyndman-Fan type 7).",),
+        misleading_when=(
+            "It deliberately ignores tail risk; never use it alone.",
+            "Compared across data frequencies (per-period quantity).",
+        ),
+        minimum_data="At least 2 observations; low confidence below 3 years.",
+        reference_implementations=(lib(NUMPY, "quantile(method='linear')"), lib(PA, "R IQR()")),
+        references=(BACON,),
+        convention="Linear quantiles, per period (decision 0025).",
+    ),
+)
+def interquartile_range(ctx: MetricContext) -> float:
+    q75, q25 = np.quantile(ctx.r, [0.75, 0.25], method="linear")
+    return float(q75 - q25)

@@ -12,6 +12,7 @@ from openfactsheet.exceptions import UndefinedMetric
 from openfactsheet.metrics.context import MetricContext
 from openfactsheet.metrics.references import (
     ACERBI_TASCHE_2002,
+    AHMADI_JAVID_2012,
     BACON,
     BOUDT_PETERSON_CROUX_2008,
     EMP,
@@ -21,11 +22,13 @@ from openfactsheet.metrics.references import (
     NUMPY,
     PA,
     QS,
+    SKFOLIO,
     ZANGARI_1996,
     lib,
 )
 from openfactsheet.metrics.registry import metric
 from openfactsheet.models.metric import Computed, MetricDocs
+from openfactsheet.utils.math import entropic_value_at_risk
 
 _TAIL_CAVEATS = (
     "Few observations fall in the 5% tail: with monthly data a 95% estimate rests on "
@@ -279,3 +282,113 @@ def modified_var_95(ctx: MetricContext) -> Computed:
     return Computed(
         value, details={"cornish_fisher_quantile": h, "skewness": s, "excess_kurtosis": k}
     )
+
+
+@metric(
+    id="modified_es_95",
+    name="Modified Expected Shortfall (Cornish-Fisher, 95%)",
+    category="tail",
+    unit="decimal_return",
+    direction="higher_is_better",
+    nature="model_dependent",
+    min_data_policy="kurtosis",
+    volatility_based=True,
+    supplementary=True,
+    assumptions=("parametric",),
+    docs=MetricDocs(
+        measures="Parametric 95% Expected Shortfall adjusted for skewness and excess kurtosis.",
+        formula="mean - sqrt(m2)/a * phi(h) * [1 + h^3 S/6 + (h^6 - 9h^4 + 9h^2 + 3) S^2/72 "
+        "+ (h^4 - 2h^2 - 1) K/24], h = Cornish-Fisher quantile, a = 0.05",
+        formula_latex=(
+            r"\mathrm{mES}_{95} = \bar r - \frac{\sqrt{m_2}}{a}\,\varphi(h)\left[1 + "
+            r"\frac{h^3 S}{6} + \frac{(h^6 - 9h^4 + 9h^2 + 3) S^2}{72} + "
+            r"\frac{(h^4 - 2h^2 - 1) K}{24}\right], \quad a = 0.05, \ h = \text{CF quantile of "
+            r"modified\_var\_95}"
+        ),
+        undefined_when=(
+            "Return variance is zero or underflows in floating point (e.g. identical returns).",
+        ),
+        inputs="Periodic simple returns.",
+        retail="The average loss in the worst 5% of periods implied by a skew- and fat-tail-"
+        "adjusted distribution. Compare with the historical Expected Shortfall.",
+        institutional="Modified ES of Boudt, Peterson & Croux (2008), the Cornish-Fisher "
+        "analogue of the historical ES, with population moments and the full second-order "
+        "expansion. Supplementary and model-dependent; for extreme skewness or kurtosis the "
+        "expansion can make it less severe than the modified VaR, which is flagged.",
+        assumptions=("The Cornish-Fisher expansion adequately approximates the tail.",),
+        misleading_when=(
+            "Skewness or kurtosis are extreme (the expansion breaks down).",
+            "Samples are short: higher moments are estimated imprecisely.",
+        ),
+        minimum_data="At least 4 observations; low confidence below 120 observations.",
+        reference_implementations=(lib(PA, "ES(p=0.95, method='modified')"),),
+        references=(BOUDT_PETERSON_CROUX_2008,),
+        convention="Population moments, full expansion, signed return, per period (decision 0022).",
+    ),
+)
+def modified_es_95(ctx: MetricContext) -> Computed:
+    from scipy.stats import norm
+
+    a = 1.0 - float(ctx.methodology.get("modified_es.confidence"))
+    z = float(norm.ppf(a))
+    s = ctx.cache.population_skewness
+    k = ctx.cache.population_kurtosis - 3.0
+    h = z + (z**2 - 1) * s / 6 + (z**3 - 3 * z) * k / 24 - (2 * z**3 - 5 * z) * s**2 / 36
+    bracket = (
+        1
+        + h**3 * s / 6
+        + (h**6 - 9 * h**4 + 9 * h**2 + 3) * s**2 / 72
+        + (h**4 - 2 * h**2 - 1) * k / 24
+    )
+    sigma = float(np.sqrt(ctx.cache.central_moment(2)))
+    value = ctx.cache.mean - sigma / a * float(norm.pdf(h)) * bracket
+    modified_var = ctx.cache.mean + h * sigma
+    notes: tuple[str, ...] = ()
+    if value > modified_var:
+        notes = (
+            "Modified ES is less severe than the modified VaR: the Cornish-Fisher expansion is "
+            "unreliable for these moments; rely on the historical Expected Shortfall.",
+        )
+    return Computed(value, details={"cornish_fisher_quantile": h}, notes=notes)
+
+
+@metric(
+    id="evar_95",
+    name="Entropic Value at Risk (95%)",
+    category="tail",
+    unit="decimal_return",
+    direction="higher_is_better",
+    nature="estimated",
+    min_data_policy="tail",
+    assumptions=("entropic",),
+    docs=MetricDocs(
+        measures="Entropic (exponential-moment) bound on the 5% tail of single-period returns.",
+        formula="-EVaR_0.05(-r), EVaR_a(X) = inf_{z>0} z * ln( mean(exp(X/z)) / a )",
+        formula_latex=(
+            r"\mathrm{EVaR}_{95} = -\mathrm{EVaR}_{0.05}(-r), \quad "
+            r"\mathrm{EVaR}_{a}(X) = \inf_{z > 0} \, z \ln\!\left( \frac{1}{a\,n} "
+            r"\sum_{t=1}^{n} e^{X_t / z} \right)"
+        ),
+        inputs="Periodic simple returns.",
+        retail="A conservative loss threshold for bad periods, at least as severe as the "
+        "Expected Shortfall and never worse than the worst period.",
+        institutional="Entropic VaR (Ahmadi-Javid 2012) of the empirical loss distribution: "
+        "the tightest Chernoff bound on VaR, coherent, and more sensitive to extreme losses than "
+        "ES. Computed by one-dimensional convex minimization; signed return.",
+        assumptions=("The supplied history is representative of the tail.",),
+        misleading_when=(
+            *_TAIL_CAVEATS,
+            "With 20 or fewer observations (n <= 1/0.05) the empirical EVaR equals the worst "
+            "period exactly.",
+        ),
+        minimum_data="At least 2 observations; low confidence below n = 100.",
+        reference_implementations=(
+            lib(SKFOLIO, "measures.evar", note="Agrees to solver tolerance (about 1e-8)."),
+        ),
+        references=(AHMADI_JAVID_2012,),
+        convention="Empirical distribution of per-period returns, 95%, signed (decision 0021).",
+    ),
+)
+def evar_95(ctx: MetricContext) -> float:
+    alpha = 1.0 - float(ctx.methodology.get("entropic.confidence"))
+    return -entropic_value_at_risk(-ctx.r, alpha)

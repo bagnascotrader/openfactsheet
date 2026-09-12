@@ -79,6 +79,36 @@ CANONICAL_ASSUMPTIONS: dict[str, Any] = {
         "confidence": 0.95,
         "moments": "population",
     },
+    "drawdown_risk": {
+        # Decision 0021. Tail measures of the compounded drawdown path D_1..D_n
+        # (the inception point is excluded), using the historical-ES estimator of
+        # decision 0010 so DaR / CDaR are consistent with VaR / ES.
+        "confidence": 0.95,
+        "quantile_method": "linear",
+    },
+    "entropic": {
+        # Decision 0021. Entropic VaR (Ahmadi-Javid 2012) of losses at 95%.
+        "confidence": 0.95,
+    },
+    "modified_es": {
+        # Decision 0022. Cornish-Fisher ES (Boudt, Peterson & Croux 2008),
+        # population moments, full second-order expansion.
+        "confidence": 0.95,
+        "moments": "population",
+    },
+    "calendar_years": {
+        # Decision 0023. Only complete calendar years are used.
+        "monthly": "all 12 calendar months observed",
+        "quarterly": "all 4 calendar quarters observed",
+        "yearly": "the year's observation",
+        "daily_weekly_edge_tolerance_days": 7,
+    },
+    "rolling": {
+        # Decision 0024. One-year windows of round(periods_per_year) consecutive
+        # observations, advanced one observation at a time.
+        "window_years": 1,
+        "step_periods": 1,
+    },
     "sharpe_inference": {
         # Decision 0019. Non-normal i.i.d. asymptotics (Mertens 2002; Bailey &
         # Lopez de Prado 2012) on the per-period Sharpe ratio.

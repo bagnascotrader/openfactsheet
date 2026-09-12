@@ -11,13 +11,13 @@ Below the mathematical minimum a metric is `insufficient_data`; the statistical 
 | Policy | Mathematical minimum | Basis | Low below | Moderate below | Metrics |
 |---|---|---|---|---|---|
 | `observed_point` | 1 obs | none (always high) | — | — | `cumulative_return`, `best_period`, `worst_period`, `current_drawdown`, `zero_return_pct` |
-| `path_risk` | 1 obs | years of history | 3 | 5 | `max_drawdown`, `average_drawdown`, `longest_drawdown_duration`, `drawdown_count`, `time_underwater_pct`, `ulcer_index`, `pain_index`, `longest_winning_streak`, `longest_losing_streak` |
-| `location` | 1 obs | years of history | 3 | 5 | `cagr`, `arithmetic_mean`, `annualized_arithmetic_mean`, `median_return`, `positive_period_pct`, `negative_period_pct` |
-| `dispersion` | 2 obs | years of history | 3 | 5 | `volatility`, `annualized_volatility`, `mean_absolute_deviation`, `downside_deviation`, `semi_deviation`, `downside_potential`, `gaussian_var_95`, `mean_return_standard_error` |
-| `ratio_standard` | 2 obs | years of history | 3 | 5 | `gain_to_pain_ratio`, `payoff_ratio`, `sharpe_ratio`, `sortino_ratio`, `calmar_ratio`, `martin_ratio`, `omega_ratio`, `kappa_3_ratio`, `upside_potential_ratio`, `burke_ratio`, `sterling_ratio`, `pain_ratio` |
+| `path_risk` | 1 obs | years of history | 3 | 5 | `max_drawdown`, `average_drawdown`, `longest_drawdown_duration`, `drawdown_count`, `time_underwater_pct`, `ulcer_index`, `pain_index`, `median_drawdown`, `average_drawdown_duration`, `max_peak_to_trough_duration`, `average_recovery_duration`, `longest_winning_streak`, `longest_losing_streak`, `best_calendar_year`, `worst_calendar_year`, `positive_calendar_years_pct`, `best_rolling_year`, `worst_rolling_year`, `positive_rolling_year_pct` |
+| `location` | 1 obs | years of history | 3 | 5 | `cagr`, `arithmetic_mean`, `geometric_mean_return`, `annualized_arithmetic_mean`, `median_return`, `positive_period_pct`, `negative_period_pct` |
+| `dispersion` | 2 obs | years of history | 3 | 5 | `volatility`, `annualized_volatility`, `mean_absolute_deviation`, `interquartile_range`, `downside_deviation`, `semi_deviation`, `downside_potential`, `gaussian_var_95`, `mean_return_standard_error` |
+| `ratio_standard` | 2 obs | years of history | 3 | 5 | `gain_to_pain_ratio`, `payoff_ratio`, `sharpe_ratio`, `sortino_ratio`, `calmar_ratio`, `martin_ratio`, `omega_ratio`, `kappa_3_ratio`, `upside_potential_ratio`, `burke_ratio`, `sterling_ratio`, `pain_ratio`, `recovery_factor` |
 | `skewness` | 3 obs | observations | 60 | 120 | `skewness`, `jarque_bera_pvalue` |
-| `kurtosis` | 4 obs | observations | 120 | 240 | `modified_var_95`, `excess_kurtosis` |
-| `tail` | 2 obs | expected tail observations | 5 | 10 | `var_historical_95`, `expected_shortfall_historical_95`, `tail_ratio` |
+| `kurtosis` | 4 obs | observations | 120 | 240 | `modified_var_95`, `modified_es_95`, `excess_kurtosis` |
+| `tail` | 2 obs | expected tail observations | 5 | 10 | `drawdown_at_risk_95`, `cdar_95`, `edar_95`, `var_historical_95`, `expected_shortfall_historical_95`, `tail_ratio`, `evar_95` |
 | `autocorrelation` | 5 obs | observations | 36 | 60 | `autocorrelation_lag1`, `autocorrelation_lag2`, `autocorrelation_lag3` |
 | `ljung_box` | 10 obs | observations | 36 | 60 | `ljung_box_pvalue` |
 | `asymptotic_inference` | 4 obs | observations | 36 | 60 | `probabilistic_sharpe_ratio`, `sharpe_ratio_standard_error`, `minimum_track_record_length` |
@@ -49,6 +49,7 @@ Flags that decide which applicability checks and confidence modifiers apply to e
 | [`cumulative_return`](../interpretation/cumulative_return.md) | returns |  | yes |  |  |  | `observed_point` | — |
 | [`cagr`](../interpretation/cagr.md) | returns |  | yes | yes |  |  | `location` | `annualization` |
 | [`arithmetic_mean`](../interpretation/arithmetic_mean.md) | returns |  |  |  |  |  | `location` | — |
+| [`geometric_mean_return`](../interpretation/geometric_mean_return.md) | returns |  | yes |  |  |  | `location` | — |
 | [`annualized_arithmetic_mean`](../interpretation/annualized_arithmetic_mean.md) | returns |  |  | yes |  |  | `location` | `annualization` |
 | [`median_return`](../interpretation/median_return.md) | returns |  |  |  |  |  | `location` | — |
 | [`best_period`](../interpretation/best_period.md) | returns |  |  |  |  |  | `observed_point` | — |
@@ -58,6 +59,7 @@ Flags that decide which applicability checks and confidence modifiers apply to e
 | [`volatility`](../interpretation/volatility.md) | volatility | yes |  |  |  |  | `dispersion` | `sample_std` |
 | [`annualized_volatility`](../interpretation/annualized_volatility.md) | volatility | yes |  | yes |  |  | `dispersion` | `sample_std`, `annualization` |
 | [`mean_absolute_deviation`](../interpretation/mean_absolute_deviation.md) | volatility | yes |  |  |  |  | `dispersion` | — |
+| [`interquartile_range`](../interpretation/interquartile_range.md) | volatility | yes |  |  |  |  | `dispersion` | — |
 | [`downside_deviation`](../interpretation/downside_deviation.md) | volatility | yes |  | yes |  |  | `dispersion` | `mar`, `annualization` |
 | [`semi_deviation`](../interpretation/semi_deviation.md) | volatility | yes |  | yes |  |  | `dispersion` | `annualization` |
 | [`downside_potential`](../interpretation/downside_potential.md) | volatility |  |  |  |  |  | `dispersion` | `mar` |
@@ -69,6 +71,13 @@ Flags that decide which applicability checks and confidence modifiers apply to e
 | [`time_underwater_pct`](../interpretation/time_underwater_pct.md) | drawdown |  | yes |  |  |  | `path_risk` | `drawdown` |
 | [`ulcer_index`](../interpretation/ulcer_index.md) | drawdown |  | yes |  |  |  | `path_risk` | `drawdown` |
 | [`pain_index`](../interpretation/pain_index.md) | drawdown |  | yes |  |  |  | `path_risk` | `drawdown` |
+| [`median_drawdown`](../interpretation/median_drawdown.md) | drawdown |  | yes |  |  |  | `path_risk` | `drawdown` |
+| [`average_drawdown_duration`](../interpretation/average_drawdown_duration.md) | drawdown |  | yes |  |  |  | `path_risk` | `drawdown` |
+| [`max_peak_to_trough_duration`](../interpretation/max_peak_to_trough_duration.md) | drawdown |  | yes |  |  |  | `path_risk` | `drawdown` |
+| [`average_recovery_duration`](../interpretation/average_recovery_duration.md) | drawdown |  | yes |  |  |  | `path_risk` | `drawdown` |
+| [`drawdown_at_risk_95`](../interpretation/drawdown_at_risk_95.md) | drawdown |  | yes |  |  |  | `tail` | `drawdown`, `tail` |
+| [`cdar_95`](../interpretation/cdar_95.md) | drawdown |  | yes |  |  |  | `tail` | `drawdown`, `tail` |
+| [`edar_95`](../interpretation/edar_95.md) | drawdown |  | yes |  |  |  | `tail` | `drawdown`, `entropic` |
 | [`sharpe_ratio`](../interpretation/sharpe_ratio.md) | risk_adjusted | yes |  | yes |  |  | `ratio_standard` | `risk_free`, `sample_std`, `annualization` |
 | [`sortino_ratio`](../interpretation/sortino_ratio.md) | risk_adjusted | yes |  | yes |  |  | `ratio_standard` | `risk_free`, `mar`, `annualization` |
 | [`calmar_ratio`](../interpretation/calmar_ratio.md) | risk_adjusted |  | yes | yes |  |  | `ratio_standard` | `annualization`, `drawdown`, `risk_free` |
@@ -79,11 +88,14 @@ Flags that decide which applicability checks and confidence modifiers apply to e
 | [`burke_ratio`](../interpretation/burke_ratio.md) | risk_adjusted |  | yes | yes |  |  | `ratio_standard` | `annualization`, `drawdown`, `risk_free` |
 | [`sterling_ratio`](../interpretation/sterling_ratio.md) | risk_adjusted |  | yes | yes |  |  | `ratio_standard` | `annualization`, `drawdown`, `sterling_excess`, `risk_free` |
 | [`pain_ratio`](../interpretation/pain_ratio.md) | risk_adjusted |  | yes | yes |  |  | `ratio_standard` | `annualization`, `drawdown`, `risk_free` |
+| [`recovery_factor`](../interpretation/recovery_factor.md) | risk_adjusted |  | yes |  |  |  | `ratio_standard` | `drawdown` |
 | [`var_historical_95`](../interpretation/var_historical_95.md) | tail |  |  |  |  |  | `tail` | `tail` |
 | [`expected_shortfall_historical_95`](../interpretation/expected_shortfall_historical_95.md) | tail |  |  |  |  |  | `tail` | `tail` |
 | [`tail_ratio`](../interpretation/tail_ratio.md) | tail |  |  |  |  |  | `tail` | — |
 | [`gaussian_var_95`](../interpretation/gaussian_var_95.md) | tail | yes |  |  |  | yes | `dispersion` | `parametric` |
 | [`modified_var_95`](../interpretation/modified_var_95.md) | tail | yes |  |  |  | yes | `kurtosis` | `parametric` |
+| [`modified_es_95`](../interpretation/modified_es_95.md) | tail | yes |  |  |  | yes | `kurtosis` | `parametric` |
+| [`evar_95`](../interpretation/evar_95.md) | tail |  |  |  |  |  | `tail` | `entropic` |
 | [`skewness`](../interpretation/skewness.md) | distribution |  |  |  |  |  | `skewness` | — |
 | [`excess_kurtosis`](../interpretation/excess_kurtosis.md) | distribution |  |  |  |  |  | `kurtosis` | — |
 | [`jarque_bera_pvalue`](../interpretation/jarque_bera_pvalue.md) | distribution |  |  |  |  | yes | `skewness` | — |
@@ -91,6 +103,12 @@ Flags that decide which applicability checks and confidence modifiers apply to e
 | [`negative_period_pct`](../interpretation/negative_period_pct.md) | consistency |  |  |  |  |  | `location` | — |
 | [`longest_winning_streak`](../interpretation/longest_winning_streak.md) | consistency |  |  |  |  |  | `path_risk` | — |
 | [`longest_losing_streak`](../interpretation/longest_losing_streak.md) | consistency |  |  |  |  |  | `path_risk` | — |
+| [`best_calendar_year`](../interpretation/best_calendar_year.md) | consistency |  | yes |  |  |  | `path_risk` | — |
+| [`worst_calendar_year`](../interpretation/worst_calendar_year.md) | consistency |  | yes |  |  |  | `path_risk` | — |
+| [`positive_calendar_years_pct`](../interpretation/positive_calendar_years_pct.md) | consistency |  | yes |  |  |  | `path_risk` | — |
+| [`best_rolling_year`](../interpretation/best_rolling_year.md) | consistency |  | yes | yes |  |  | `path_risk` | `annualization` |
+| [`worst_rolling_year`](../interpretation/worst_rolling_year.md) | consistency |  | yes | yes |  |  | `path_risk` | `annualization` |
+| [`positive_rolling_year_pct`](../interpretation/positive_rolling_year_pct.md) | consistency |  | yes | yes |  |  | `path_risk` | `annualization` |
 | [`autocorrelation_lag1`](../interpretation/autocorrelation_lag1.md) | dependence |  |  |  |  |  | `autocorrelation` | — |
 | [`autocorrelation_lag2`](../interpretation/autocorrelation_lag2.md) | dependence |  |  |  |  |  | `autocorrelation` | — |
 | [`autocorrelation_lag3`](../interpretation/autocorrelation_lag3.md) | dependence |  |  |  |  |  | `autocorrelation` | — |
@@ -187,6 +205,12 @@ This is the `methodology` object embedded in every JSON report.
       "information_ratio": "annualized arithmetic mean active return / tracking error",
       "regression": "OLS of fund on benchmark returns (risk-free = 0)"
     },
+    "calendar_years": {
+      "daily_weekly_edge_tolerance_days": 7,
+      "monthly": "all 12 calendar months observed",
+      "quarterly": "all 4 calendar quarters observed",
+      "yearly": "the year's observation"
+    },
     "confidence": {
       "annualization_min_years": 1.0,
       "benchmark_min_coverage": 0.9
@@ -223,6 +247,13 @@ This is the `methodology` object embedded in every JSON report.
       "description": "wealth index starts at 1 before the first return, so a first-period loss is a drawdown; drawdowns reported as signed returns (negative = loss)",
       "initial_wealth_is_peak": true
     },
+    "drawdown_risk": {
+      "confidence": 0.95,
+      "quantile_method": "linear"
+    },
+    "entropic": {
+      "confidence": 0.95
+    },
     "lower_partial_moments": {
       "denominator": "full_sample",
       "kappa_order": 3,
@@ -233,6 +264,10 @@ This is the `methodology` object embedded in every JSON report.
     },
     "missing_data": {
       "description": "missing returns are never replaced by zero or forward-filled; leading and trailing gaps are trimmed, interior gaps are disclosed and the remaining observations are analyzed"
+    },
+    "modified_es": {
+      "confidence": 0.95,
+      "moments": "population"
     },
     "omega": {
       "description": "threshold = 0% per period, simple (empirical) estimator",
@@ -262,6 +297,10 @@ This is the `methodology` object embedded in every JSON report.
     "risk_free": {
       "description": "0% per period in methodology 0.1.0 for all excess-return metrics (Sharpe, Sortino, Calmar, Martin, alpha, Treynor). Ratios are therefore total-return ratios; this is disclosed on every affected metric.",
       "rate": 0.0
+    },
+    "rolling": {
+      "step_periods": 1,
+      "window_years": 1
     },
     "sharpe_inference": {
       "ci_level": 0.95,

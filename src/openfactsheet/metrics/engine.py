@@ -70,6 +70,16 @@ def evaluate(definition: MetricDefinition, ctx: MetricContext) -> MetricResult:
 
     computed = out if isinstance(out, Computed) else Computed(value=float(out))
     value = float(computed.value)
+    if math.isinf(value):
+        # A ratio whose denominator is non-zero but below floating-point resolution (e.g. a
+        # single subnormal loss) overflows: the metric is undefined for these data.
+        return _empty(
+            definition,
+            ctx,
+            "not_applicable",
+            "The result overflows floating point because a denominator is effectively zero "
+            "(below numerical resolution); the metric is undefined for these data.",
+        )
     if not math.isfinite(value):
         return _empty(
             definition,

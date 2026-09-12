@@ -516,3 +516,48 @@ def pain_ratio(ctx: MetricContext) -> Computed:
     if pain == 0.0:
         raise UndefinedMetric("No drawdown occurred; the Pain ratio is undefined.")
     return Computed(ctx.cagr / pain, details={"pain_index": pain})
+
+
+@metric(
+    id="recovery_factor",
+    name="Recovery factor",
+    category="risk_adjusted",
+    unit="ratio",
+    direction="higher_is_better",
+    nature="derived",
+    min_data_policy="ratio_standard",
+    uses_wealth_path=True,
+    assumptions=("drawdown",),
+    docs=MetricDocs(
+        measures="Total compounded return relative to the maximum drawdown.",
+        formula="cumulative return / |max drawdown|",
+        formula_latex=r"\mathrm{RF} = \frac{W_n - 1}{\left| \mathrm{MDD} \right|}",
+        undefined_when=("No drawdown occurred (maximum drawdown is zero).",),
+        inputs="Periodic simple returns.",
+        retail="How many times over the investment earned back its worst decline.",
+        institutional="Net compounded profit over the maximum drawdown (a practitioner "
+        "measure used in trading-system evaluation). Not annualized, so it grows with the "
+        "length of the track record; compare only across equal histories.",
+        assumptions=("Full history.",),
+        misleading_when=(
+            "Histories of different lengths are compared.",
+            "Compared with implementations that use the arithmetic sum of returns.",
+        ),
+        minimum_data="At least 2 observations and one drawdown; low confidence below 3 years.",
+        reference_implementations=(
+            lib(
+                QS,
+                "stats.recovery_factor",
+                agrees=False,
+                note="QuantStats uses the arithmetic sum of returns in the numerator.",
+            ),
+        ),
+        references=(BACON,),
+        convention="Compounded cumulative return over |MDD| (decision 0025).",
+    ),
+)
+def recovery_factor(ctx: MetricContext) -> float:
+    mdd = ctx.cache.max_drawdown
+    if mdd == 0.0:
+        raise UndefinedMetric("No drawdown occurred; the recovery factor is undefined.")
+    return ctx.cache.cumulative_return / abs(mdd)

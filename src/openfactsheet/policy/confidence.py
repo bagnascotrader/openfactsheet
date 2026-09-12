@@ -96,6 +96,12 @@ def assumption_texts(definition: MetricDefinition, ctx: MetricContext) -> tuple[
             texts.append(IID_ASYMPTOTICS_ASSUMPTION)
         elif key == "parametric":
             texts.append(PARAMETRIC_ASSUMPTION)
+        elif key == "entropic":
+            texts.append(
+                f"{m.get('entropic.confidence'):.0%} confidence; entropic VaR of the empirical "
+                "distribution (exponential-moment bound), computed by one-dimensional convex "
+                "minimization; signed return (negative = loss)."
+            )
         elif key == "sterling_excess":
             texts.append(
                 f"Sterling adjustment: {m.get('sterling.excess'):.0%} added to the absolute "

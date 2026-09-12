@@ -44,6 +44,7 @@ _ASSUMPTION_LABELS = {
     "iid_asymptotics": "i.i.d. asymptotics",
     "parametric": "parametric (population moments)",
     "sterling_excess": "+10% adjustment",
+    "entropic": "95% entropic",
 }
 
 _UNIT_OUTPUT = {
@@ -119,6 +120,11 @@ def _assumption_doc(key: str) -> str:
         ),
         "iid_asymptotics": lambda: IID_ASYMPTOTICS_ASSUMPTION,
         "parametric": lambda: PARAMETRIC_ASSUMPTION,
+        "entropic": lambda: (
+            f"{_pct(_get('entropic.confidence'))} confidence; entropic VaR of the empirical "
+            "distribution (exponential-moment bound), one-dimensional convex minimization; "
+            "signed return."
+        ),
         "sterling_excess": lambda: (
             f"Sterling adjustment of {_pct(_get('sterling.excess'))} added to the absolute "
             "maximum drawdown (a historical convention, not an estimate)."

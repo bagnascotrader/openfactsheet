@@ -32,6 +32,13 @@ def test_phase_one_catalog_is_complete() -> None:
         "mean_absolute_deviation", "gaussian_var_95", "modified_var_95",
         "jarque_bera_pvalue", "probabilistic_sharpe_ratio", "sharpe_ratio_standard_error",
         "minimum_track_record_length", "mean_return_standard_error",
+        # Phase 2 (second increment)
+        "drawdown_at_risk_95", "cdar_95", "edar_95", "evar_95", "modified_es_95",
+        "best_calendar_year", "worst_calendar_year", "positive_calendar_years_pct",
+        "best_rolling_year", "worst_rolling_year", "positive_rolling_year_pct",
+        "median_drawdown", "average_drawdown_duration", "max_peak_to_trough_duration",
+        "average_recovery_duration", "recovery_factor", "geometric_mean_return",
+        "interquartile_range",
     }  # fmt: skip
     assert required <= ids
 

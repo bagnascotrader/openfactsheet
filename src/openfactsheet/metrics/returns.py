@@ -147,6 +147,40 @@ def arithmetic_mean(ctx: MetricContext) -> float:
 
 
 @metric(
+    id="geometric_mean_return",
+    name="Geometric mean return per period",
+    category="returns",
+    unit="decimal_return",
+    direction="higher_is_better",
+    nature="derived",
+    min_data_policy="location",
+    uses_wealth_path=True,
+    docs=MetricDocs(
+        measures="Constant per-period growth rate that reproduces the cumulative return.",
+        formula="(prod(1 + r_t))^(1/n) - 1",
+        formula_latex=(
+            r"\bar r_g = \begin{cases} W_n^{1/n} - 1 & W_n > 0 \\ -1 & W_n \le 0 \end{cases}"
+        ),
+        inputs="Periodic simple returns.",
+        retail="The average compounded return per period (e.g. per month).",
+        institutional="Per-period geometric mean; CAGR is its annualized form. Lies below the "
+        "arithmetic mean by roughly half the variance (volatility drag). Needs no frequency.",
+        assumptions=("Returns are reinvested each period.",),
+        misleading_when=("Histories of different lengths or frequencies are compared.",),
+        minimum_data="One observation; low confidence below 3 years.",
+        reference_implementations=(lib(PA, "mean.geometric"),),
+        references=(BACON,),
+        convention="Geometric compounding of simple returns; -100% after a total loss.",
+    ),
+)
+def geometric_mean_return(ctx: MetricContext) -> float:
+    wealth_end = float(ctx.cache.wealth[-1])
+    if wealth_end <= 0.0:
+        return -1.0
+    return float(wealth_end ** (1.0 / ctx.n) - 1.0)
+
+
+@metric(
     id="annualized_arithmetic_mean",
     name="Annualized mean return (arithmetic)",
     category="returns",

@@ -54,6 +54,7 @@ ASSUMPTION_KEYS = frozenset(
         "iid_asymptotics",
         "parametric",
         "sterling_excess",
+        "entropic",
     }
 )
 

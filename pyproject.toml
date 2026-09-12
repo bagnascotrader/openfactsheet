@@ -51,6 +51,7 @@ pdf = []
 validation = [
     "empyrical-reloaded>=0.5",
     "quantstats>=0.0.62",
+    "skfolio>=0.7",
 ]
 dev = [
     "pytest>=8",

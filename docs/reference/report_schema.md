@@ -198,6 +198,24 @@ listed emit `{}`.
 | | `observed_periods` | integer | Actual number of observations. |
 | | `sufficient` | boolean | Whether the history is at least MinTRL long. |
 | | `additional_periods_needed` | integer | `max(0, ceil(MinTRL - n))`. |
+| `median_drawdown` | `episodes` | integer | Number of episodes. |
+| `average_drawdown_duration` | `years` | number \| null | Average duration in years. |
+| | `episodes`, `ongoing` | integer | Episodes averaged; how many are still open (lower bound). |
+| `max_peak_to_trough_duration` | `years` | number \| null | Longest decline in years. |
+| | `peak_date`, `trough_date` | string \| null | Dates of that decline (or `episodes: 0` when none). |
+| `average_recovery_duration` | `years` | number \| null | Average recovery time in years. |
+| | `recovered_episodes`, `excluded_open_episodes` | integer | Episodes used and open episodes excluded. |
+| `cdar_95` | `tail_observations` | integer | Drawdown observations at or below the 5% quantile. |
+| `modified_es_95` | `cornish_fisher_quantile` | number | Cornish-Fisher quantile `h` used by the expansion. |
+| `best_calendar_year` | `year` | integer | Year of the best complete calendar year. |
+| | `calendar_year_returns` | object | Map year (string) → compounded return of every complete calendar year. |
+| | `excluded_partial_years` | object | Map year (string) → why it is incomplete. |
+| `worst_calendar_year` | `year` | integer | Year of the worst complete calendar year. |
+| `positive_calendar_years_pct` | `complete_years`, `positive_years` | integer | Counts behind the share. |
+| | `calendar_year_returns`, `excluded_partial_years` | object | As for `best_calendar_year`. |
+| `best_rolling_year`, `worst_rolling_year` | `window_end` | string \| null | Last date of the extreme one-year window. |
+| | `windows`, `window_periods` | integer | Number of windows and window length in observations. |
+| `positive_rolling_year_pct` | `windows`, `window_periods` | integer | Number of windows and window length. |
 | `mean_return_standard_error` | `ci_level`, `ci_lower`, `ci_upper` | number | Student-t confidence interval of the per-period mean. |
 | | `t_statistic`, `p_value` | number | Two-sided t-test of the mean against zero. |
 

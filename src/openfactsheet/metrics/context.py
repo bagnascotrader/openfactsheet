@@ -22,6 +22,12 @@ from openfactsheet.models.diagnostics import DataQualityReport
 from openfactsheet.models.input import ReturnSeries
 
 
+@dataclass(frozen=True)
+class CalendarYears:
+    complete: dict[int, float]  # year -> compounded return of a complete calendar year
+    partial: dict[int, str]  # year -> why it is incomplete (excluded)
+
+
 class MetricCache:
     """Lazily computed quantities shared by many metrics."""
 
@@ -89,8 +95,12 @@ class MetricCache:
         overflows; such shape statistics are reported as undefined, never NaN.
         """
         m2 = self.central_moment(2)
-        if m2 == 0.0:
-            raise UndefinedMetric(f"Return variance is zero (numerically); {what} is undefined.")
+        # Identical returns, or a variance below floating-point resolution relative to the
+        # size of the returns (e.g. [0.01] * 8, whose computed mean is inexact), carry no
+        # shape information: the moment ratio would be pure rounding noise.
+        resolution = (np.finfo(np.float64).eps * float(np.max(np.abs(self.r)))) ** 2 * 16.0
+        if float(np.ptp(self.r)) == 0.0 or m2 <= resolution:
+            raise UndefinedMetric(f"Returns are (numerically) constant; {what} is undefined.")
         denominator = m2 ** (k / 2)
         value = self.central_moment(k) / denominator if denominator != 0.0 else math.inf
         if not math.isfinite(value):
@@ -179,6 +189,71 @@ class MetricContext:
         if self.benchmark is None:  # pragma: no cover - guarded by the applicability engine
             raise UndefinedMetric("No benchmark supplied.")
         return self.benchmark
+
+    @cached_property
+    def calendar_years(self) -> CalendarYears:
+        """Compounded returns of complete calendar years (decision 0023).
+
+        A year is complete when the observations cover it: all 12 months (monthly),
+        all 4 quarters (quarterly), its single observation (yearly), or, for daily and
+        weekly data, a first observation within the tolerance of 1 January and a last
+        observation within the tolerance of 31 December. Partial years are reported
+        separately and never enter calendar-year statistics.
+        """
+        from openfactsheet.models.input import ObservationFrequency as F
+
+        dates = self.returns.dates
+        freq = self.returns.frequency
+        if dates is None:
+            raise UndefinedMetric("Calendar-year statistics require dated returns.")
+        if not freq.is_regular:
+            raise UndefinedMetric(
+                f"Calendar-year statistics require a regular frequency; this series is "
+                f"{freq.value}."
+            )
+        import pandas as pd
+
+        tol = int(self.methodology.get("calendar_years.daily_weekly_edge_tolerance_days"))
+        years = np.asarray(dates.year)
+        complete: dict[int, float] = {}
+        partial: dict[int, str] = {}
+        for year in sorted(set(years.tolist())):
+            mask = years == year
+            dy = dates[mask]
+            if freq is F.MONTHLY:
+                ok = len(set(dy.month.tolist())) == 12
+                why = f"{len(dy)} of 12 months"
+            elif freq is F.QUARTERLY:
+                ok = len(set(dy.quarter.tolist())) == 4
+                why = f"{len(dy)} of 4 quarters"
+            elif freq is F.YEARLY:
+                ok, why = True, ""
+            else:
+                start_ok = dy.min() <= pd.Timestamp(year=year, month=1, day=1) + pd.Timedelta(
+                    days=tol
+                )
+                end_ok = dy.max() >= pd.Timestamp(year=year, month=12, day=31) - pd.Timedelta(
+                    days=tol
+                )
+                ok = bool(start_ok and end_ok)
+                why = f"observations from {dy.min():%Y-%m-%d} to {dy.max():%Y-%m-%d}"
+            if ok:
+                complete[year] = float(np.prod(1.0 + self.r[mask]) - 1.0)
+            else:
+                partial[year] = why
+        return CalendarYears(complete=complete, partial=partial)
+
+    @cached_property
+    def rolling_year_returns(self) -> tuple[npt.NDArray[np.float64], int]:
+        """Compounded returns of every window of one year of consecutive observations."""
+        window = round(self.ppy * float(self.methodology.get("rolling.window_years")))
+        if self.n < window:
+            raise UndefinedMetric(
+                f"Fewer observations ({self.n}) than one year ({window}): no complete rolling "
+                "one-year window."
+            )
+        windows = np.lib.stride_tricks.sliding_window_view(self.r, window)
+        return np.prod(1.0 + windows, axis=1) - 1.0, window
 
     @cached_property
     def cagr(self) -> float:

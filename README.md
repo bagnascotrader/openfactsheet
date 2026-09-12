@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/assets/openfactsheet_logo.png" alt="OpenFactsheet logo: See the full picture. No cherry-picking. Just performance." width="360">
+</p>
+
 # OpenFactsheet
 
 **Standardized, transparent investment performance analytics without metric cherry-picking.**
@@ -70,13 +74,16 @@ table text. OpenFactsheet shows exactly which returns it believes it received
 
 ## Metric coverage (methodology 0.1.0)
 
-64 metrics across returns, volatility and downside risk, drawdowns,
+82 metrics across returns, volatility and downside risk, drawdowns (including
+episode durations and the drawdown tail: Drawdown-at-Risk, CDaR, EDaR),
 risk-adjusted ratios (Sharpe, Sortino, Calmar, Martin, Omega, Kappa 3, upside
-potential, Burke, Sterling, Pain), tail risk (historical, Gaussian and
-Cornish-Fisher VaR, Expected Shortfall), distribution shape, consistency, serial
-dependence, benchmark-relative analysis, and **statistical confidence**
-(Probabilistic Sharpe Ratio, Sharpe standard error and confidence interval,
-Minimum Track Record Length, standard error of the mean). See the [metric catalog](docs/metric_catalog.md);
+potential, Burke, Sterling, Pain, recovery factor), tail risk (historical,
+Gaussian and Cornish-Fisher VaR, historical and modified Expected Shortfall,
+entropic VaR), distribution shape, consistency (complete calendar years and
+rolling one-year windows over every start date), serial dependence,
+benchmark-relative analysis, and **statistical confidence** (Probabilistic
+Sharpe Ratio, Sharpe standard error and confidence interval, Minimum Track
+Record Length, standard error of the mean). See the [metric catalog](docs/metric_catalog.md);
 each metric has a page answering what it measures, its formula, assumptions,
 when it misleads, minimum data, references and the OpenFactsheet convention.
 
@@ -95,9 +102,9 @@ when it misleads, minimum data, references and the OpenFactsheet convention.
 
 ## Roadmap
 
-1. Phase 2 (continuing) — CDaR/EDaR, entropic VaR, modified Expected Shortfall,
-   calendar-year statistics, rolling statistics, M² and further benchmark
-   measures.
+1. Phase 2 (remaining) — further benchmark measures (M², appraisal ratio,
+   batting average, residual volatility), variance-ratio diagnostics, bootstrap
+   uncertainty.
 2. Phase 4 — charts (wealth, underwater, heatmap, distribution, rolling statistics).
 3. Phase 6 — optional PDF and screenshot ingestion with extraction confidence.
 4. Phase 7 — factor models with explicitly supplied factor data.

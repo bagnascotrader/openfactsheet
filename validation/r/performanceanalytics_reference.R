@@ -42,7 +42,33 @@ phase2 <- function(R) {
   g2 <- num(kurtosis(R, method = "excess"))
   jb <- n / 6 * (g1^2 + g2^2 / 4)
   tt <- t.test(r)
+  # Episode table (PerformanceAnalytics findDrawdowns): negative episodes only.
+  neg <- episodes$return < 0
+  last_open <- tail(as.numeric(Drawdowns(R)), 1) < 0
+  # Complete calendar years: years with 12 monthly observations.
+  yr <- format(index(R), "%Y")
+  year_ret <- tapply(r, yr, function(x) prod(1 + x) - 1)
+  year_n <- tapply(r, yr, length)
+  complete <- year_ret[year_n == 12]
+  # Rolling one-year (12-month) compounded returns.
+  rolled <- as.numeric(zoo::rollapply(R, 12, function(x) prod(1 + x) - 1, align = "right"))
+  rolled <- rolled[!is.na(rolled)]  # drop the padding before the first full window
   list(
+    episode_depths = depths,
+    episode_lengths = episodes$length[neg],
+    episode_peak_to_trough = episodes$peaktotrough[neg],
+    episode_recovery = episodes$recovery[neg],
+    last_episode_open = last_open,
+    calendar_year_returns = as.list(complete),
+    rolling_year_min = min(rolled),
+    rolling_year_max = max(rolled),
+    rolling_year_positive_share = mean(rolled > 0),
+    rolling_year_windows = length(rolled),
+    es_modified_95 = num(ES(R, p = 0.95, method = "modified")),
+    cdd_pa = num(CDD(R, p = 0.95)),
+    all_run_returns = episodes$return,  # drawdown episodes and the zero runs between them
+    mean_geometric = num(mean.geometric(R)),
+    iqr = IQR(r),
     kappa_3 = num(Kappa(R, MAR = 0, l = 3)),
     upside_potential_full = num(UpsidePotentialRatio(r, MAR = 0, method = "full")),
     upside_potential_subset = num(UpsidePotentialRatio(r, MAR = 0, method = "subset")),

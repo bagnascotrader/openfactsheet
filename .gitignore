@@ -67,6 +67,10 @@ htmlcov/
 .RData
 .Rproj.user/
 
+# Full-resolution logo artwork (1.2 MB) kept locally; the web-optimized copy used
+# by the README is committed as docs/assets/openfactsheet_logo.png.
+/OpenFactsheet_logo.png
+
 # Generated reports from local experiments
 /factsheet*.html
 /factsheet*.json

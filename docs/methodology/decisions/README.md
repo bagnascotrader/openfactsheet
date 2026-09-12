@@ -30,6 +30,11 @@ All decisions below are **Accepted** for methodology **0.1.0**.
 | [0018](0018-parametric-var.md) | Parametric VaR | Gaussian and Cornish-Fisher VaR with population moments; supplementary, model-dependent. |
 | [0019](0019-sharpe-ratio-inference.md) | Sharpe-ratio inference | PSR vs 0, SE with two-sided 95% CI, MinTRL at 95%; kurtosis kept; i.i.d. asymptotics; no Deflated Sharpe. |
 | [0020](0020-mean-inference-and-normality.md) | Mean inference and normality | Student-t 95% CI and t-test for the mean; Jarque-Bera with population moments (supplementary). |
+| [0021](0021-drawdown-tail-and-entropic-measures.md) | Drawdown tail and entropic measures | DaR / CDaR on the compounded drawdown path with the VaR / ES estimators; EDaR / EVaR by 1-D convex minimization; 95%. |
+| [0022](0022-modified-expected-shortfall.md) | Modified Expected Shortfall | Cornish-Fisher ES (Boudt, Peterson & Croux 2008), population moments; supplementary; flagged when less severe than modified VaR. |
+| [0023](0023-calendar-year-statistics.md) | Calendar-year statistics | Complete calendar years only (12 months / 4 quarters / 7-day edge tolerance for daily and weekly); partial years listed, never used. |
+| [0024](0024-rolling-one-year-windows.md) | Rolling one-year windows | Window round(P) observations, step 1, every start date; descriptive only. |
+| [0025](0025-episode-durations-and-path-summaries.md) | Episode durations and path summaries | Open episodes in average duration (lower bound) but not in recovery time; recovery factor = compounded return / \|MDD\|; geometric mean; IQR. |
 
 ## Adding or changing a decision
 

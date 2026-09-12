@@ -24,6 +24,27 @@ Package 0.1.0 · Methodology 0.1.0
 - Tests: unit, property-based, golden reports, CLAUDE.md acceptance tests 1–3,
   cross-library validation against PerformanceAnalytics, empyrical, QuantStats.
 
+### Added — Phase 2, second increment (18 metrics; 82 in total)
+- Drawdown tail: Drawdown-at-Risk, Conditional Drawdown-at-Risk, Entropic
+  Drawdown-at-Risk (95%); entropic VaR of returns; modified (Cornish-Fisher)
+  Expected Shortfall.
+- Episode summaries: median drawdown, average drawdown duration, longest
+  peak-to-trough decline, average recovery time; recovery factor.
+- Complete-calendar-year statistics (best, worst, share positive; partial years
+  excluded and disclosed) and rolling one-year windows over every start date
+  (best, worst, share positive).
+- Geometric mean return per period; interquartile range.
+- Validated against PerformanceAnalytics (episode table, calendar years,
+  rolling windows, modified ES, geometric mean), R `IQR`, skfolio 1.0.6
+  (DaR/CDaR/EDaR/EVaR; added to the `validation` extra) and QuantStats.
+
+### Changed (pre-release, second increment)
+- A metric result of plus or minus infinity (a denominator below floating-point
+  resolution) is reported as `not_applicable` with an explanation; NaN remains
+  `error`. Found by property-based testing.
+- Shape statistics are undefined for numerically constant returns (variance
+  below floating-point resolution), instead of returning rounding noise.
+
 ### Added — Phase 2, first increment (16 metrics; 64 in total)
 - Risk-adjusted: Kappa 3, upside potential ratio, Burke, Sterling, Pain ratio.
 - Returns / dispersion: payoff ratio, semi-deviation, downside potential (LPM 1),

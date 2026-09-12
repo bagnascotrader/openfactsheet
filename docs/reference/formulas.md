@@ -24,6 +24,12 @@ Every canonical metric of methodology 0.1.0, exactly as implemented. Symbols are
 \bar r = \frac{1}{n} \sum_{t=1}^{n} r_t
 ```
 
+### Geometric mean return per period — [`geometric_mean_return`](../interpretation/geometric_mean_return.md)
+
+```math
+\bar r_g = \begin{cases} W_n^{1/n} - 1 & W_n > 0 \\ -1 & W_n \le 0 \end{cases}
+```
+
 ### Annualized mean return (arithmetic) — [`annualized_arithmetic_mean`](../interpretation/annualized_arithmetic_mean.md)
 
 ```math
@@ -82,6 +88,12 @@ s = \sqrt{\frac{1}{n-1} \sum_{t=1}^{n} \left(r_t - \bar r\right)^2}
 
 ```math
 \mathrm{MAD} = \frac{1}{n} \sum_{t=1}^{n} \left| r_t - \bar r \right|
+```
+
+### Interquartile range — [`interquartile_range`](../interpretation/interquartile_range.md)
+
+```math
+\mathrm{IQR} = Q_{0.75}(r) - Q_{0.25}(r)
 ```
 
 ### Downside deviation (annualized) — [`downside_deviation`](../interpretation/downside_deviation.md)
@@ -150,6 +162,50 @@ K = \#\{\text{maximal runs } t_1..t_2 \subseteq 1..n \text{ with } D_t < 0 \ \fo
 
 ```math
 \mathrm{PI} = \frac{1}{n} \sum_{t=1}^{n} \left| D_t \right|
+```
+
+### Median drawdown (per episode) — [`median_drawdown`](../interpretation/median_drawdown.md)
+
+```math
+\widetilde{\mathrm{DD}} = \operatorname{med}\left(\delta_1, \dots, \delta_K\right), \quad 0 \text{ if } K = 0
+```
+
+### Average drawdown duration — [`average_drawdown_duration`](../interpretation/average_drawdown_duration.md)
+
+```math
+\bar\ell = \frac{1}{K} \sum_{k=1}^{K} \ell_k, \quad \ell_k = \begin{cases} \rho_k - \pi_k & \text{recovered} \\ n - \pi_k & \text{ongoing} \end{cases}, \quad 0 \text{ if } K = 0
+```
+
+### Longest decline (peak to trough) — [`max_peak_to_trough_duration`](../interpretation/max_peak_to_trough_duration.md)
+
+```math
+\max_{1 \le k \le K} \left( \tau_k - \pi_k \right), \quad \tau_k = \arg\min_{t \in E_k} D_t \ (\text{first occurrence}), \quad 0 \text{ if } K = 0
+```
+
+### Average recovery time (trough to recovery) — [`average_recovery_duration`](../interpretation/average_recovery_duration.md)
+
+```math
+\bar R = \frac{1}{|K_r|} \sum_{k \in K_r} (\rho_k - \tau_k), \quad K_r = \{k : \text{episode } k \text{ recovered}\}
+```
+
+Undefined (`not_applicable`) when: No drawdown episode has recovered (none occurred, or all are open).
+
+### Drawdown-at-Risk (95%) — [`drawdown_at_risk_95`](../interpretation/drawdown_at_risk_95.md)
+
+```math
+\mathrm{DaR}_{95} = Q_{0.05}\left(D_1, \dots, D_n\right)
+```
+
+### Conditional Drawdown-at-Risk (95%) — [`cdar_95`](../interpretation/cdar_95.md)
+
+```math
+\mathrm{CDaR}_{95} = \frac{1}{|T|} \sum_{t \in T} D_t, \quad T = \{t \in 1..n : D_t \le Q_{0.05}(D)\}
+```
+
+### Entropic Drawdown-at-Risk (95%) — [`edar_95`](../interpretation/edar_95.md)
+
+```math
+\mathrm{EDaR}_{95} = -\mathrm{EVaR}_{0.05}(-D), \quad \mathrm{EVaR}_{a}(X) = \inf_{z > 0} \, z \ln\!\left( \frac{1}{a\,n} \sum_{t=1}^{n} e^{X_t / z} \right)
 ```
 
 ## Risk-adjusted performance
@@ -232,6 +288,14 @@ Undefined (`not_applicable`) when: No drawdown occurred (K = 0).
 
 Undefined (`not_applicable`) when: No drawdown occurred (Pain Index is zero).
 
+### Recovery factor — [`recovery_factor`](../interpretation/recovery_factor.md)
+
+```math
+\mathrm{RF} = \frac{W_n - 1}{\left| \mathrm{MDD} \right|}
+```
+
+Undefined (`not_applicable`) when: No drawdown occurred (maximum drawdown is zero).
+
 ## Tail behavior
 
 ### Value at Risk (historical, 95%) — [`var_historical_95`](../interpretation/var_historical_95.md)
@@ -267,6 +331,20 @@ Undefined (`not_applicable`) when: The 5th percentile return is exactly zero.
 ```
 
 Undefined (`not_applicable`) when: Return variance is zero or underflows in floating point (e.g. identical returns).
+
+### Modified Expected Shortfall (Cornish-Fisher, 95%) — [`modified_es_95`](../interpretation/modified_es_95.md)
+
+```math
+\mathrm{mES}_{95} = \bar r - \frac{\sqrt{m_2}}{a}\,\varphi(h)\left[1 + \frac{h^3 S}{6} + \frac{(h^6 - 9h^4 + 9h^2 + 3) S^2}{72} + \frac{(h^4 - 2h^2 - 1) K}{24}\right], \quad a = 0.05, \ h = \text{CF quantile of modified\_var\_95}
+```
+
+Undefined (`not_applicable`) when: Return variance is zero or underflows in floating point (e.g. identical returns).
+
+### Entropic Value at Risk (95%) — [`evar_95`](../interpretation/evar_95.md)
+
+```math
+\mathrm{EVaR}_{95} = -\mathrm{EVaR}_{0.05}(-r), \quad \mathrm{EVaR}_{a}(X) = \inf_{z > 0} \, z \ln\!\left( \frac{1}{a\,n} \sum_{t=1}^{n} e^{X_t / z} \right)
+```
 
 ## Distribution
 
@@ -319,6 +397,54 @@ Undefined (`not_applicable`) when: Return variance is zero or underflows in floa
 ```math
 \max \{ j - i + 1 : 1 \le i \le j \le n,\ r_u < 0 \ \forall u \in i..j \} \ (0 \text{ if no } r_t < 0)
 ```
+
+### Best calendar year — [`best_calendar_year`](../interpretation/best_calendar_year.md)
+
+```math
+\max_{y \in Y} R_y, \quad R_y = \prod_{t \in y} (1 + r_t) - 1 \ \text{ for each complete calendar year } y \in Y
+```
+
+Undefined (`not_applicable`) when: No complete calendar year is covered by the history. The returns are undated or the frequency is irregular.
+
+### Worst calendar year — [`worst_calendar_year`](../interpretation/worst_calendar_year.md)
+
+```math
+\min_{y \in Y} R_y, \quad R_y = \prod_{t \in y} (1 + r_t) - 1 \ \text{ for each complete calendar year } y \in Y
+```
+
+Undefined (`not_applicable`) when: No complete calendar year is covered by the history. The returns are undated or the frequency is irregular.
+
+### Positive calendar years — [`positive_calendar_years_pct`](../interpretation/positive_calendar_years_pct.md)
+
+```math
+\frac{\#\{y \in Y : R_y > 0\}}{|Y|}, \quad R_y = \prod_{t \in y} (1 + r_t) - 1 \ \text{ for each complete calendar year } y \in Y
+```
+
+Undefined (`not_applicable`) when: No complete calendar year is covered by the history. The returns are undated or the frequency is irregular.
+
+### Best rolling one-year return — [`best_rolling_year`](../interpretation/best_rolling_year.md)
+
+```math
+\max_{w \le t \le n} R^{(w)}_t, \quad R^{(w)}_t = \prod_{i=t-w+1}^{t} (1 + r_i) - 1, \quad t = w, \dots, n, \quad w = \operatorname{round}(P)
+```
+
+Undefined (`not_applicable`) when: Fewer observations than one year (n < w).
+
+### Worst rolling one-year return — [`worst_rolling_year`](../interpretation/worst_rolling_year.md)
+
+```math
+\min_{w \le t \le n} R^{(w)}_t, \quad R^{(w)}_t = \prod_{i=t-w+1}^{t} (1 + r_i) - 1, \quad t = w, \dots, n, \quad w = \operatorname{round}(P)
+```
+
+Undefined (`not_applicable`) when: Fewer observations than one year (n < w).
+
+### Positive rolling one-year windows — [`positive_rolling_year_pct`](../interpretation/positive_rolling_year_pct.md)
+
+```math
+\frac{\#\{t : R^{(w)}_t > 0\}}{n - w + 1}, \quad R^{(w)}_t = \prod_{i=t-w+1}^{t} (1 + r_i) - 1, \quad t = w, \dots, n, \quad w = \operatorname{round}(P)
+```
+
+Undefined (`not_applicable`) when: Fewer observations than one year (n < w).
 
 ## Serial dependence & smoothing
 

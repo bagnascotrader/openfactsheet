@@ -14,6 +14,7 @@ pins the relationship.
 | PerformanceAnalytics (R) | 2.0.4 on R 4.3.1 | GPL-2 \| GPL-3 | External numerical oracle only. Function bodies were read to understand conventions; **no code was copied** into OpenFactsheet. |
 | empyrical-reloaded | 0.5.12 | Apache-2.0 | Python cross-check (optional `validation` extra). |
 | QuantStats | 0.0.81 | Apache-2.0 | Python cross-check (optional `validation` extra). |
+| skfolio | 1.0.6 | BSD-3-Clause | Python cross-check for DaR / CDaR / EDaR / EVaR (optional `validation` extra). |
 | R `stats` (base R) | R 4.3.1 | GPL-2 \| GPL-3 | External oracle only: `acf`, `Box.test`, `cor`, `lm`, `t.test`, `pchisq` in the R harness. |
 | statsmodels | installed version | BSD-3-Clause | Runtime dependency: OLS, ACF, Ljung-Box. |
 | SciPy | installed version | BSD-3-Clause | Runtime dependency: skewness, kurtosis, normal / Student-t / chi-squared distributions; `jarque_bera` and `ttest_1samp` used as test references. |
@@ -38,7 +39,7 @@ dates) by calendar month in R, the same convention OpenFactsheet uses.
 
 **Python checks.** `tests/cross_library/test_performanceanalytics.py` compares
 against the committed R values. `tests/cross_library/test_python_references.py`
-calls empyrical and QuantStats directly and is skipped automatically when they
+calls empyrical, QuantStats and skfolio directly and is skipped automatically when they
 are not installed (`pip install -e ".[validation]"`); its SciPy checks
 (Jarque-Bera, one-sample t-test) always run.
 
@@ -115,6 +116,35 @@ inequality. "—" means not compared.
 | sharpe_ratio_standard_error | — (same variance formula; PA's interval is 90% two-sided) | — | — | Checked against a hand computation in unit tests. |
 | mean_return_standard_error | Agrees with R `t.test` (CI bounds, t-statistic; p-value to 1e-7) | — | — | Also agrees with SciPy `stats.ttest_1samp` p-value. |
 
+Phase 2b metrics. Columns as above; skfolio results are in the Notes column.
+
+| Metric id | PerformanceAnalytics / R | empyrical | QuantStats | Notes |
+|---|---|---|---|---|
+| drawdown_at_risk_95 | — | — | — | skfolio `drawdown_at_risk` differs (pinned): lower order statistic `quantile(-D, 0.95, "inverted_cdf")`; OpenFactsheet = linear `Q_0.05(D)` (asserted). |
+| cdar_95 | Differs (pinned): `CDD` = 5% quantile over all `findDrawdowns` runs (episodes and zero runs) | — | — | Agrees with skfolio `cdar` on the canonical path when 0.05·n is an integer (n = 60 and 120). |
+| edar_95 | — | — | — | Agrees with skfolio `edar` on the canonical path (rel 1e-7, solver tolerance). |
+| evar_95 | — | — | — | Agrees with skfolio `evar` (rel 1e-7). |
+| modified_es_95 | Agrees (`ES(p=0.95, method="modified")`) | — | — | Population moments, full expansion. |
+| median_drawdown | Agrees with the median of `findDrawdowns` negative-episode depths | — | — | |
+| average_drawdown_duration | Agrees with the mean `findDrawdowns` length after subtracting 1 from an open last episode | — | — | Open-episode +1 convention (difference 3). |
+| max_peak_to_trough_duration | Agrees with max `findDrawdowns` `peaktotrough` | — | — | |
+| average_recovery_duration | Agrees with the mean `findDrawdowns` `recovery` over recovered episodes (open last episode dropped) | — | — | `not_applicable` asserted when the only episode is open (negative_fund). |
+| recovery_factor | — | — | Differs (pinned): `stats.recovery_factor` = arithmetic sum of returns / \|MDD\| | OpenFactsheet = compounded cumulative return / \|MDD\| (asserted). |
+| geometric_mean_return | Agrees (`mean.geometric`) | — | — | |
+| interquartile_range | Agrees with R `IQR` (type 7) | — | — | |
+| best_calendar_year | Agrees with R compounded returns of years with 12 monthly observations | — | — | Monthly fixtures; partial years excluded by OpenFactsheet. |
+| worst_calendar_year | Agrees (same computation) | — | — | |
+| positive_calendar_years_pct | Year set and every complete-year return agree (to 1e-9) | — | — | Share itself derived from the same years. |
+| best_rolling_year | Agrees with the max of `zoo::rollapply(R, 12, prod(1 + x) - 1)` | — | — | Monthly fixtures. |
+| worst_rolling_year | Agrees with the min of the same rolling series | — | — | |
+| positive_rolling_year_pct | Agrees with the share of positive windows; window count agrees | — | — | |
+
+The R harness records per-episode `findDrawdowns` columns, whether the last
+episode is open, complete-year returns, rolling 12-month returns, modified ES,
+`mean.geometric` and `IQR`; `test_phase2b_agreement` rebuilds each statistic
+from them. skfolio is compared on OpenFactsheet's canonical drawdown path
+because its own compounded path starts the running peak at W_1 (difference 15).
+
 R's base `t.test` is used as an additional independent reference for the
 mean-return interval; it is not part of PerformanceAnalytics.
 
@@ -173,3 +203,26 @@ streaks, zero_return_pct) are checked against hand computations in
     uses `qnorm(p)` with p = 0.95, a 90% two-sided interval on the per-period
     Sharpe ratio; OpenFactsheet reports a two-sided 95% interval on the annualized
     Sharpe ratio (not numerically compared).
+15. **Drawdown path (skfolio).** `get_drawdowns(compounded=True)` starts its
+    running peak at W_1, so a first-period loss is not a drawdown; the default is
+    `compounded=False` (uncompounded cumulative sums). OpenFactsheet counts W_0 = 1
+    as a peak and compounds (asserted). See
+    [0021](../methodology/decisions/0021-drawdown-tail-and-entropic-measures.md).
+16. **Drawdown-at-Risk (skfolio).** `drawdown_at_risk` uses the lower order
+    statistic (inverted-CDF quantile); OpenFactsheet uses the linear quantile of
+    decision 0010 (asserted).
+17. **CDaR (skfolio).** `cdar` uses a fractional Rockafellar-Uryasev weighting of
+    the tail; it equals OpenFactsheet's mean of `D_t <= Q_0.05(D)` only when
+    0.05·n is an integer.
+18. **Conditional Drawdown (PA).** `CDD` returns the 5% quantile over all
+    `findDrawdowns` runs (the drawdown episodes and the zero-return runs between
+    them), inverted to a positive number: neither a conditional expectation nor
+    computed on the drawdown path, so it is not a CDaR reference (verified in the
+    R harness and pinned by a test).
+19. **Recovery factor (QuantStats).** `stats.recovery_factor` divides the
+    arithmetic sum of returns by |MDD|; OpenFactsheet uses the compounded
+    cumulative return (asserted). See
+    [0025](../methodology/decisions/0025-episode-durations-and-path-summaries.md).
+20. **Open drawdown episodes (PA).** As in item 3, `findDrawdowns` `length` and
+    `recovery` count an open last episode one period longer; the tests subtract 1
+    (length) or drop the episode (recovery) before comparing.

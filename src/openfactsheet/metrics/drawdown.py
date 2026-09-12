@@ -8,18 +8,24 @@ from __future__ import annotations
 
 import numpy as np
 
+from openfactsheet.exceptions import UndefinedMetric
 from openfactsheet.metrics.context import MetricContext
 from openfactsheet.metrics.references import (
+    AHMADI_JAVID_2012,
     BACON,
+    CAJAS_2021,
+    CHEKHLOV_2005,
     EMP,
     MAGDON_ISMAIL_2004,
     MARTIN_MCCANN_1989,
     PA,
     QS,
+    SKFOLIO,
     lib,
 )
 from openfactsheet.metrics.registry import metric
 from openfactsheet.models.metric import Computed, MetricDocs
+from openfactsheet.utils.math import entropic_value_at_risk
 
 _PATH_CAVEAT = (
     "Short histories: drawdown statistics grow with the length of the track record and "
@@ -370,3 +376,360 @@ def ulcer_index(ctx: MetricContext) -> float:
 )
 def pain_index(ctx: MetricContext) -> float:
     return float(np.mean(np.abs(ctx.cache.drawdown)))
+
+
+_EPISODE_REFS = (
+    lib(
+        PA,
+        "findDrawdowns / table.Drawdowns",
+        note="Agrees on the episode table; PerformanceAnalytics counts an episode still open "
+        "at the end of the data one period longer.",
+    ),
+)
+
+
+@metric(
+    id="median_drawdown",
+    name="Median drawdown (per episode)",
+    category="drawdown",
+    unit="decimal_return",
+    direction="higher_is_better",
+    nature="observed",
+    min_data_policy="path_risk",
+    uses_wealth_path=True,
+    assumptions=("drawdown",),
+    docs=MetricDocs(
+        measures="Median depth of the distinct drawdown episodes.",
+        formula="median_k depth_k over K episodes (0 if K = 0)",
+        formula_latex=(
+            r"\widetilde{\mathrm{DD}} = \operatorname{med}\left(\delta_1, \dots, \delta_K\right),"
+            r" \quad 0 \text{ if } K = 0"
+        ),
+        inputs="Periodic simple returns.",
+        retail="The depth of a typical decline from a previous high; unlike the average it is not "
+        "pulled down by one extreme episode.",
+        institutional="Robust counterpart of the episode-based average drawdown; many shallow "
+        "episodes make it close to zero.",
+        assumptions=("Every decline below a prior peak, however small, is an episode.",),
+        misleading_when=(_PATH_CAVEAT, "Few episodes (the median of 1-3 values is fragile)."),
+        minimum_data="One observation; low confidence below 3 years.",
+        reference_implementations=_EPISODE_REFS,
+        references=(BACON,),
+        convention="Median of episode depths, signed (decision 0025).",
+    ),
+)
+def median_drawdown(ctx: MetricContext) -> Computed:
+    episodes = ctx.cache.episodes
+    if not episodes:
+        return Computed(0.0, details={"episodes": 0})
+    return Computed(
+        float(np.median([e.depth for e in episodes])), details={"episodes": len(episodes)}
+    )
+
+
+@metric(
+    id="average_drawdown_duration",
+    name="Average drawdown duration",
+    category="drawdown",
+    unit="periods",
+    direction="lower_is_better",
+    nature="observed",
+    min_data_policy="path_risk",
+    uses_wealth_path=True,
+    assumptions=("drawdown",),
+    docs=MetricDocs(
+        measures="Mean time from a peak to recovery (or to the end of the data for an open "
+        "episode), across all drawdown episodes.",
+        formula="(1/K) * sum_k duration_k, duration as in longest_drawdown_duration (0 if K = 0)",
+        formula_latex=(
+            r"\bar\ell = \frac{1}{K} \sum_{k=1}^{K} \ell_k, \quad \ell_k = \begin{cases}"
+            r" \rho_k - \pi_k & \text{recovered} \\ n - \pi_k & \text{ongoing} \end{cases},"
+            r" \quad 0 \text{ if } K = 0"
+        ),
+        inputs="Periodic simple returns.",
+        retail="How long, on average, the investment took to get back to a previous high.",
+        institutional="Episode-weighted average duration in observation periods; an open "
+        "episode contributes a lower bound (flagged).",
+        assumptions=("Recovery means regaining the prior peak of compounded wealth.",),
+        misleading_when=(_PATH_CAVEAT, "The longest episodes are still open (lower bound)."),
+        minimum_data="One observation; low confidence below 3 years.",
+        reference_implementations=_EPISODE_REFS,
+        references=(BACON,),
+        convention="Peak to recovery inclusive; open episodes measured to the last observation "
+        "(decision 0025).",
+    ),
+)
+def average_drawdown_duration(ctx: MetricContext) -> Computed:
+    episodes = ctx.cache.episodes
+    if not episodes:
+        return Computed(0.0, details={"episodes": 0})
+    avg = float(np.mean([e.duration_periods for e in episodes]))
+    ppy = ctx.returns.periods_per_year
+    open_count = sum(1 for e in episodes if not e.recovered)
+    notes: tuple[str, ...] = ()
+    if open_count:
+        notes = (
+            "An open drawdown is included up to the last observation; the average is a "
+            "lower bound.",
+        )
+    return Computed(
+        avg,
+        details={
+            "years": avg / ppy if ppy else None,
+            "episodes": len(episodes),
+            "ongoing": open_count,
+        },
+        notes=notes,
+    )
+
+
+@metric(
+    id="max_peak_to_trough_duration",
+    name="Longest decline (peak to trough)",
+    category="drawdown",
+    unit="periods",
+    direction="lower_is_better",
+    nature="observed",
+    min_data_policy="path_risk",
+    uses_wealth_path=True,
+    assumptions=("drawdown",),
+    docs=MetricDocs(
+        measures="Longest time from a peak to the lowest point of the same drawdown episode.",
+        formula="max_k (trough_k - peak_k) in periods (0 if K = 0)",
+        formula_latex=(
+            r"\max_{1 \le k \le K} \left( \tau_k - \pi_k \right), \quad "
+            r"\tau_k = \arg\min_{t \in E_k} D_t \ (\text{first occurrence}), \quad "
+            r"0 \text{ if } K = 0"
+        ),
+        inputs="Periodic simple returns.",
+        retail="The longest stretch during which losses kept deepening before the turnaround.",
+        institutional="Maximum peak-to-trough length in observation periods; complements the "
+        "total duration, which also includes the recovery.",
+        assumptions=("The trough is the first period with the episode's minimum drawdown.",),
+        misleading_when=(_PATH_CAVEAT, "The deepest point of an open episode may still lie ahead."),
+        minimum_data="One observation; low confidence below 3 years.",
+        reference_implementations=(lib(PA, "findDrawdowns (peaktotrough)"),),
+        references=(BACON,),
+        convention="Periods from the peak to the trough (decision 0025).",
+    ),
+)
+def max_peak_to_trough_duration(ctx: MetricContext) -> Computed:
+    episodes = ctx.cache.episodes
+    if not episodes:
+        return Computed(0.0, details={"episodes": 0})
+    worst = max(episodes, key=lambda e: e.peak_to_trough_periods)
+    ppy = ctx.returns.periods_per_year
+    return Computed(
+        float(worst.peak_to_trough_periods),
+        details={
+            "years": worst.peak_to_trough_periods / ppy if ppy else None,
+            "peak_date": worst.peak_date,
+            "trough_date": worst.trough_date,
+        },
+    )
+
+
+@metric(
+    id="average_recovery_duration",
+    name="Average recovery time (trough to recovery)",
+    category="drawdown",
+    unit="periods",
+    direction="lower_is_better",
+    nature="observed",
+    min_data_policy="path_risk",
+    uses_wealth_path=True,
+    assumptions=("drawdown",),
+    docs=MetricDocs(
+        measures="Mean time from the trough of a drawdown back to the previous peak, over "
+        "recovered episodes.",
+        formula="mean_k (recovery_k - trough_k) over recovered episodes",
+        formula_latex=(
+            r"\bar R = \frac{1}{|K_r|} \sum_{k \in K_r} (\rho_k - \tau_k), \quad "
+            r"K_r = \{k : \text{episode } k \text{ recovered}\}"
+        ),
+        undefined_when=("No drawdown episode has recovered (none occurred, or all are open).",),
+        inputs="Periodic simple returns.",
+        retail="Once the bottom was reached, how long it typically took to climb back to the "
+        "previous high.",
+        institutional="Average recovery length of completed episodes only; open episodes are "
+        "excluded because their recovery time is unknown (disclosed in details).",
+        assumptions=("Recovery means regaining the prior peak of compounded wealth.",),
+        misleading_when=(
+            _PATH_CAVEAT,
+            "The deepest episode is still open and therefore excluded.",
+        ),
+        minimum_data="One recovered episode; low confidence below 3 years.",
+        reference_implementations=(lib(PA, "findDrawdowns (recovery)"),),
+        references=(BACON,),
+        convention="Recovered episodes only (decision 0025).",
+    ),
+)
+def average_recovery_duration(ctx: MetricContext) -> Computed:
+    recovered = [e for e in ctx.cache.episodes if e.recovered]
+    if not recovered:
+        raise UndefinedMetric("No drawdown episode has recovered; recovery time is unknown.")
+    avg = float(np.mean([e.recovery_periods for e in recovered if e.recovery_periods is not None]))
+    ppy = ctx.returns.periods_per_year
+    open_count = len(ctx.cache.episodes) - len(recovered)
+    notes: tuple[str, ...] = ()
+    if open_count:
+        notes = (f"{open_count} open episode(s) excluded: their recovery time is unknown.",)
+    return Computed(
+        avg,
+        details={
+            "years": avg / ppy if ppy else None,
+            "recovered_episodes": len(recovered),
+            "excluded_open_episodes": open_count,
+        },
+        notes=notes,
+    )
+
+
+def _drawdown_alpha(ctx: MetricContext) -> float:
+    return 1.0 - float(ctx.methodology.get("drawdown_risk.confidence"))
+
+
+_DD_TAIL_CAVEATS = (
+    _PATH_CAVEAT,
+    "Drawdown observations are strongly serially dependent: the 5% tail of the drawdown path "
+    "often comes from a single episode.",
+)
+
+
+@metric(
+    id="drawdown_at_risk_95",
+    name="Drawdown-at-Risk (95%)",
+    category="drawdown",
+    unit="decimal_return",
+    direction="higher_is_better",
+    nature="estimated",
+    min_data_policy="tail",
+    uses_wealth_path=True,
+    assumptions=("drawdown", "tail"),
+    docs=MetricDocs(
+        measures="Drawdown level that was exceeded in the worst 5% of periods.",
+        formula="Q_0.05(D_1..D_n), linear interpolation (signed)",
+        formula_latex=r"\mathrm{DaR}_{95} = Q_{0.05}\left(D_1, \dots, D_n\right)",
+        inputs="Periodic simple returns.",
+        retail="In about 1 period out of 20 the investment was at least this far below its "
+        "previous high.",
+        institutional="Drawdown-at-Risk (Chekhlov, Uryasev & Zabarankin 2005) on the compounded "
+        "drawdown path, with the same linear quantile as historical VaR.",
+        assumptions=("Drawdowns of all periods 1..n form the sample (inception excluded).",),
+        misleading_when=_DD_TAIL_CAVEATS,
+        minimum_data="At least 2 observations; low confidence below n = 100.",
+        reference_implementations=(
+            lib(
+                SKFOLIO,
+                "measures.drawdown_at_risk (compounded drawdowns)",
+                agrees=False,
+                note="skfolio uses the lower order statistic (inverted-CDF quantile) and, by "
+                "default, uncompounded drawdowns.",
+            ),
+        ),
+        references=(CHEKHLOV_2005,),
+        convention="Compounded drawdowns, linear quantile, signed (decision 0021).",
+    ),
+)
+def drawdown_at_risk_95(ctx: MetricContext) -> float:
+    return float(np.quantile(ctx.cache.drawdown, _drawdown_alpha(ctx), method="linear"))
+
+
+@metric(
+    id="cdar_95",
+    name="Conditional Drawdown-at-Risk (95%)",
+    category="drawdown",
+    unit="decimal_return",
+    direction="higher_is_better",
+    nature="estimated",
+    min_data_policy="tail",
+    uses_wealth_path=True,
+    assumptions=("drawdown", "tail"),
+    docs=MetricDocs(
+        measures="Average drawdown in the worst 5% of periods.",
+        formula="mean(D_t | D_t <= Q_0.05(D))",
+        formula_latex=(
+            r"\mathrm{CDaR}_{95} = \frac{1}{|T|} \sum_{t \in T} D_t, \quad "
+            r"T = \{t \in 1..n : D_t \le Q_{0.05}(D)\}"
+        ),
+        inputs="Periodic simple returns.",
+        retail="How deep the drawdowns were, on average, during the worst 5% of periods.",
+        institutional="CDaR (Chekhlov, Uryasev & Zabarankin 2005): Expected Shortfall of the "
+        "drawdown path, a coherent path-dependent risk measure between DaR and the maximum "
+        "drawdown. Estimated exactly like historical ES (decision 0010).",
+        assumptions=("Drawdowns of all periods 1..n form the sample (inception excluded).",),
+        misleading_when=_DD_TAIL_CAVEATS,
+        minimum_data="At least 2 observations; low confidence below n = 100.",
+        reference_implementations=(
+            lib(
+                SKFOLIO,
+                "measures.cdar (compounded drawdowns)",
+                note="Agrees when (1 - 0.95) x n is an integer; otherwise skfolio's fractional "
+                "Rockafellar-Uryasev weighting differs slightly.",
+            ),
+            lib(
+                PA,
+                "CDD",
+                agrees=False,
+                note="PerformanceAnalytics' 'Conditional Drawdown' is the 5% quantile over all "
+                "findDrawdowns runs (episodes and zero runs), not a conditional expectation of "
+                "the drawdown path.",
+            ),
+        ),
+        references=(CHEKHLOV_2005,),
+        convention="Compounded drawdowns; mean of observations at or below the linear 5% "
+        "quantile; signed (decision 0021).",
+    ),
+)
+def cdar_95(ctx: MetricContext) -> Computed:
+    d = ctx.cache.drawdown
+    q = float(np.quantile(d, _drawdown_alpha(ctx), method="linear"))
+    tail = d[d <= q]
+    return Computed(float(np.mean(tail)), details={"tail_observations": int(tail.size)})
+
+
+@metric(
+    id="edar_95",
+    name="Entropic Drawdown-at-Risk (95%)",
+    category="drawdown",
+    unit="decimal_return",
+    direction="higher_is_better",
+    nature="estimated",
+    min_data_policy="tail",
+    uses_wealth_path=True,
+    assumptions=("drawdown", "entropic"),
+    docs=MetricDocs(
+        measures="Entropic (exponential-moment) upper bound on the drawdown tail at 95%.",
+        formula="-EVaR_0.05(-D), EVaR_a(X) = inf_{z>0} z * ln( mean(exp(X/z)) / a )",
+        formula_latex=(
+            r"\mathrm{EDaR}_{95} = -\mathrm{EVaR}_{0.05}(-D), \quad "
+            r"\mathrm{EVaR}_{a}(X) = \inf_{z > 0} \, z \ln\!\left( \frac{1}{a\,n} "
+            r"\sum_{t=1}^{n} e^{X_t / z} \right)"
+        ),
+        inputs="Periodic simple returns.",
+        retail="A conservative measure of how deep drawdowns get, sitting between the "
+        "Conditional Drawdown-at-Risk and the maximum drawdown.",
+        institutional="EDaR (Cajas 2021): Entropic VaR (Ahmadi-Javid 2012) of the drawdown "
+        "magnitudes; the tightest Chernoff-type bound on DaR, coherent and more tail-sensitive "
+        "than CDaR. Computed by one-dimensional convex minimization.",
+        assumptions=("Drawdowns of all periods 1..n form the sample (inception excluded).",),
+        misleading_when=(
+            *_DD_TAIL_CAVEATS,
+            "With 20 or fewer observations (n <= 1/0.05) the empirical EDaR equals the maximum "
+            "drawdown exactly.",
+        ),
+        minimum_data="At least 2 observations; low confidence below n = 100.",
+        reference_implementations=(
+            lib(
+                SKFOLIO,
+                "measures.edar (compounded drawdowns)",
+                note="Agrees to solver tolerance (about 1e-8).",
+            ),
+        ),
+        references=(CAJAS_2021, AHMADI_JAVID_2012),
+        convention="Compounded drawdowns, 95%, signed (decision 0021).",
+    ),
+)
+def edar_95(ctx: MetricContext) -> float:
+    alpha = 1.0 - float(ctx.methodology.get("entropic.confidence"))
+    return -entropic_value_at_risk(-ctx.cache.drawdown, alpha)

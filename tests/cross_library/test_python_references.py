@@ -68,6 +68,47 @@ def test_empyrical_benchmark() -> None:
 
 
 @pytest.mark.parametrize("fixture", SINGLE_FIXTURES)
+def test_skfolio_drawdown_and_entropic_measures(fixture: str) -> None:
+    sm = pytest.importorskip("skfolio.measures")
+    s = fixture_series(fixture)
+    rep = ofs.analyze(s)
+    r = s.to_numpy()
+    wealth = np.concatenate([[1.0], np.cumprod(1 + r)])
+    d = (wealth / np.maximum.accumulate(wealth) - 1)[1:]  # canonical path D_1..D_n
+    # Documented path difference (decision 0007): skfolio's running peak starts at W_1, so
+    # a first-period loss is not a drawdown there; OpenFactsheet counts W_0 = 1 as a peak.
+    w1 = wealth[1:]
+    np.testing.assert_allclose(
+        sm.get_drawdowns(r, compounded=True), w1 / np.maximum.accumulate(w1) - 1
+    )
+    # The risk-measure estimators are compared on the canonical path.
+
+    # EDaR / EVaR: same definition, solver tolerance.
+    assert val(rep, "edar_95") == pytest.approx(-sm.edar(d, 0.95), rel=1e-7)
+    assert val(rep, "evar_95") == pytest.approx(-sm.evar(r, 0.95), rel=1e-7)
+    # DaR: skfolio uses the lower order statistic; OpenFactsheet the linear quantile.
+    assert sm.drawdown_at_risk(d, 0.95) == pytest.approx(
+        float(np.quantile(-d, 0.95, method="inverted_cdf")), **TOL
+    )
+    assert val(rep, "drawdown_at_risk_95") == pytest.approx(
+        float(np.quantile(d, 0.05, method="linear")), **TOL
+    )
+    # CDaR agrees exactly when (1 - 0.95) * n is an integer (n = 120 in monthly_fund_10y).
+    if round(0.05 * len(r), 9).is_integer():
+        assert val(rep, "cdar_95") == pytest.approx(-sm.cdar(d, 0.95), **TOL)
+
+
+def test_quantstats_recovery_factor_uses_arithmetic_sum() -> None:
+    qs = pytest.importorskip("quantstats")
+    s = fixture_series("monthly_fund_10y")
+    rep = ofs.analyze(s)
+    mdd = abs(val(rep, "max_drawdown"))
+    assert qs.stats.recovery_factor(s) == pytest.approx(float(s.sum()) / mdd, **TOL)
+    assert val(rep, "recovery_factor") == pytest.approx(val(rep, "cumulative_return") / mdd, **TOL)
+    assert val(rep, "recovery_factor") != pytest.approx(qs.stats.recovery_factor(s))
+
+
+@pytest.mark.parametrize("fixture", SINGLE_FIXTURES)
 def test_scipy_normality_and_mean_inference(fixture: str) -> None:
     s = fixture_series(fixture)
     rep = ofs.analyze(s)

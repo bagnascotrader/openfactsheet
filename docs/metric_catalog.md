@@ -13,6 +13,7 @@ Reference column: ✓ agrees with the OpenFactsheet convention, ≠ documented c
 | [`cumulative_return`](interpretation/cumulative_return.md) | Cumulative return | observed | decimal_return | Higher is better | no | no | — | `observed_point` | implemented (cumulative_return@v1) | PerformanceAnalytics ✓, empyrical-reloaded ✓, QuantStats ✓ |
 | [`cagr`](interpretation/cagr.md) | Annualized return (CAGR) | derived | decimal_return | Higher is better | no | yes | annualization factor | `location` | implemented (cagr@v1) | PerformanceAnalytics ✓, empyrical-reloaded ✓, QuantStats ✓ |
 | [`arithmetic_mean`](interpretation/arithmetic_mean.md) | Mean return per period | estimated | decimal_return | Higher is better | no | no | — | `location` | implemented (arithmetic_mean@v1) | NumPy ✓, PerformanceAnalytics ✓ |
+| [`geometric_mean_return`](interpretation/geometric_mean_return.md) | Geometric mean return per period | derived | decimal_return | Higher is better | no | no | — | `location` | implemented (geometric_mean_return@v1) | PerformanceAnalytics ✓ |
 | [`annualized_arithmetic_mean`](interpretation/annualized_arithmetic_mean.md) | Annualized mean return (arithmetic) | estimated | decimal_return | Higher is better | no | yes | annualization factor | `location` | implemented (annualized_arithmetic_mean@v1) | PerformanceAnalytics ✓ |
 | [`median_return`](interpretation/median_return.md) | Median return per period | estimated | decimal_return | Higher is better | no | no | — | `location` | implemented (median_return@v1) | NumPy ✓ |
 | [`best_period`](interpretation/best_period.md) | Best period | observed | decimal_return | Higher is better | no | no | — | `observed_point` | implemented (best_period@v1) | QuantStats ✓, NumPy ✓ |
@@ -27,6 +28,7 @@ Reference column: ✓ agrees with the OpenFactsheet convention, ≠ documented c
 | [`volatility`](interpretation/volatility.md) | Volatility per period | estimated | decimal_return | Lower is better | no | no | sample std (n-1) | `dispersion` | implemented (volatility@v1) | NumPy ✓, PerformanceAnalytics ✓ |
 | [`annualized_volatility`](interpretation/annualized_volatility.md) | Annualized volatility | estimated | decimal_return | Lower is better | no | yes | sample std (n-1), annualization factor | `dispersion` | implemented (annualized_volatility@v1) | PerformanceAnalytics ✓, empyrical-reloaded ✓, QuantStats ✓ |
 | [`mean_absolute_deviation`](interpretation/mean_absolute_deviation.md) | Mean absolute deviation | estimated | decimal_return | Lower is better | no | no | — | `dispersion` | implemented (mean_absolute_deviation@v1) | PerformanceAnalytics ✓ |
+| [`interquartile_range`](interpretation/interquartile_range.md) | Interquartile range | estimated | decimal_return | Lower is better | no | no | — | `dispersion` | implemented (interquartile_range@v1) | NumPy ✓, PerformanceAnalytics ✓ |
 | [`downside_deviation`](interpretation/downside_deviation.md) | Downside deviation (annualized) | estimated | decimal_return | Lower is better | no | yes | MAR = 0, annualization factor | `dispersion` | implemented (downside_deviation@v1) | PerformanceAnalytics ✓, empyrical-reloaded ✓, QuantStats ✓ |
 | [`semi_deviation`](interpretation/semi_deviation.md) | Semi-deviation (annualized) | estimated | decimal_return | Lower is better | no | yes | annualization factor | `dispersion` | implemented (semi_deviation@v1) | PerformanceAnalytics ✓ |
 | [`downside_potential`](interpretation/downside_potential.md) | Downside potential (LPM 1) | estimated | decimal_return | Lower is better | no | no | MAR = 0 | `dispersion` | implemented (downside_potential@v1) | PerformanceAnalytics ✓ |
@@ -43,6 +45,13 @@ Reference column: ✓ agrees with the OpenFactsheet convention, ≠ documented c
 | [`time_underwater_pct`](interpretation/time_underwater_pct.md) | Time under water | observed | fraction | Lower is better | no | no | wealth starts at 1 | `path_risk` | implemented (time_underwater_pct@v1) | — |
 | [`ulcer_index`](interpretation/ulcer_index.md) | Ulcer Index | observed | decimal_return | Lower is better | no | no | wealth starts at 1 | `path_risk` | implemented (ulcer_index@v1) | PerformanceAnalytics ≠ |
 | [`pain_index`](interpretation/pain_index.md) | Pain Index | observed | decimal_return | Lower is better | no | no | wealth starts at 1 | `path_risk` | implemented (pain_index@v1) | PerformanceAnalytics ≠ |
+| [`median_drawdown`](interpretation/median_drawdown.md) | Median drawdown (per episode) | observed | decimal_return | Higher is better | no | no | wealth starts at 1 | `path_risk` | implemented (median_drawdown@v1) | PerformanceAnalytics ✓ |
+| [`average_drawdown_duration`](interpretation/average_drawdown_duration.md) | Average drawdown duration | observed | periods | Lower is better | no | no | wealth starts at 1 | `path_risk` | implemented (average_drawdown_duration@v1) | PerformanceAnalytics ✓ |
+| [`max_peak_to_trough_duration`](interpretation/max_peak_to_trough_duration.md) | Longest decline (peak to trough) | observed | periods | Lower is better | no | no | wealth starts at 1 | `path_risk` | implemented (max_peak_to_trough_duration@v1) | PerformanceAnalytics ✓ |
+| [`average_recovery_duration`](interpretation/average_recovery_duration.md) | Average recovery time (trough to recovery) | observed | periods | Lower is better | no | no | wealth starts at 1 | `path_risk` | implemented (average_recovery_duration@v1) | PerformanceAnalytics ✓ |
+| [`drawdown_at_risk_95`](interpretation/drawdown_at_risk_95.md) | Drawdown-at-Risk (95%) | estimated | decimal_return | Higher is better | no | no | wealth starts at 1, 95% confidence | `tail` | implemented (drawdown_at_risk_95@v1) | skfolio ≠ |
+| [`cdar_95`](interpretation/cdar_95.md) | Conditional Drawdown-at-Risk (95%) | estimated | decimal_return | Higher is better | no | no | wealth starts at 1, 95% confidence | `tail` | implemented (cdar_95@v1) | skfolio ✓, PerformanceAnalytics ≠ |
+| [`edar_95`](interpretation/edar_95.md) | Entropic Drawdown-at-Risk (95%) | estimated | decimal_return | Higher is better | no | no | wealth starts at 1, 95% entropic | `tail` | implemented (edar_95@v1) | skfolio ✓ |
 
 ## Risk-adjusted performance
 
@@ -58,6 +67,7 @@ Reference column: ✓ agrees with the OpenFactsheet convention, ≠ documented c
 | [`burke_ratio`](interpretation/burke_ratio.md) | Burke ratio | derived | ratio | Higher is better | no | yes | annualization factor, wealth starts at 1, risk-free = 0 | `ratio_standard` | implemented (burke_ratio@v1) | PerformanceAnalytics ≠ |
 | [`sterling_ratio`](interpretation/sterling_ratio.md) | Sterling ratio | derived | ratio | Higher is better | no | yes | annualization factor, wealth starts at 1, +10% adjustment, risk-free = 0 | `ratio_standard` | implemented (sterling_ratio@v1) | PerformanceAnalytics ✓ |
 | [`pain_ratio`](interpretation/pain_ratio.md) | Pain ratio | derived | ratio | Higher is better | no | yes | annualization factor, wealth starts at 1, risk-free = 0 | `ratio_standard` | implemented (pain_ratio@v1) | PerformanceAnalytics ≠ |
+| [`recovery_factor`](interpretation/recovery_factor.md) | Recovery factor | derived | ratio | Higher is better | no | no | wealth starts at 1 | `ratio_standard` | implemented (recovery_factor@v1) | QuantStats ≠ |
 
 ## Tail behavior
 
@@ -68,6 +78,8 @@ Reference column: ✓ agrees with the OpenFactsheet convention, ≠ documented c
 | [`tail_ratio`](interpretation/tail_ratio.md) | Tail ratio (95th / 5th percentile) | estimated | ratio | Higher is better | no | no | — | `tail` | implemented (tail_ratio@v1) | empyrical-reloaded ✓, QuantStats ✓ |
 | [`gaussian_var_95`](interpretation/gaussian_var_95.md) | Value at Risk (Gaussian, 95%) | model_dependent | decimal_return | Higher is better | no | no | parametric (population moments) | `dispersion` | implemented (gaussian_var_95@v1) | PerformanceAnalytics ✓, QuantStats ≠ |
 | [`modified_var_95`](interpretation/modified_var_95.md) | Modified VaR (Cornish-Fisher, 95%) | model_dependent | decimal_return | Higher is better | no | no | parametric (population moments) | `kurtosis` | implemented (modified_var_95@v1) | PerformanceAnalytics ✓ |
+| [`modified_es_95`](interpretation/modified_es_95.md) | Modified Expected Shortfall (Cornish-Fisher, 95%) | model_dependent | decimal_return | Higher is better | no | no | parametric (population moments) | `kurtosis` | implemented (modified_es_95@v1) | PerformanceAnalytics ✓ |
+| [`evar_95`](interpretation/evar_95.md) | Entropic Value at Risk (95%) | estimated | decimal_return | Higher is better | no | no | 95% entropic | `tail` | implemented (evar_95@v1) | skfolio ✓ |
 
 ## Distribution
 
@@ -85,6 +97,12 @@ Reference column: ✓ agrees with the OpenFactsheet convention, ≠ documented c
 | [`negative_period_pct`](interpretation/negative_period_pct.md) | Negative periods | observed | fraction | Lower is better | no | no | — | `location` | implemented (negative_period_pct@v1) | — |
 | [`longest_winning_streak`](interpretation/longest_winning_streak.md) | Longest run of positive periods | observed | periods | Neutral (descriptive) | no | no | — | `path_risk` | implemented (longest_winning_streak@v1) | QuantStats ✓ |
 | [`longest_losing_streak`](interpretation/longest_losing_streak.md) | Longest run of negative periods | observed | periods | Lower is better | no | no | — | `path_risk` | implemented (longest_losing_streak@v1) | QuantStats ✓ |
+| [`best_calendar_year`](interpretation/best_calendar_year.md) | Best calendar year | observed | decimal_return | Higher is better | no | no | — | `path_risk` | implemented (best_calendar_year@v1) | PerformanceAnalytics ✓ |
+| [`worst_calendar_year`](interpretation/worst_calendar_year.md) | Worst calendar year | observed | decimal_return | Higher is better | no | no | — | `path_risk` | implemented (worst_calendar_year@v1) | PerformanceAnalytics ✓ |
+| [`positive_calendar_years_pct`](interpretation/positive_calendar_years_pct.md) | Positive calendar years | observed | fraction | Higher is better | no | no | — | `path_risk` | implemented (positive_calendar_years_pct@v1) | PerformanceAnalytics ✓ |
+| [`best_rolling_year`](interpretation/best_rolling_year.md) | Best rolling one-year return | observed | decimal_return | Higher is better | no | yes | annualization factor | `path_risk` | implemented (best_rolling_year@v1) | PerformanceAnalytics ✓ |
+| [`worst_rolling_year`](interpretation/worst_rolling_year.md) | Worst rolling one-year return | observed | decimal_return | Higher is better | no | yes | annualization factor | `path_risk` | implemented (worst_rolling_year@v1) | PerformanceAnalytics ✓ |
+| [`positive_rolling_year_pct`](interpretation/positive_rolling_year_pct.md) | Positive rolling one-year windows | observed | fraction | Higher is better | no | yes | annualization factor | `path_risk` | implemented (positive_rolling_year_pct@v1) | PerformanceAnalytics ✓ |
 
 ## Serial dependence & smoothing
 

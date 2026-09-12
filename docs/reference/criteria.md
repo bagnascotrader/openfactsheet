@@ -423,11 +423,18 @@ confidence is low.
 |---|---|
 | Raises `UndefinedMetric(reason)` (e.g. zero volatility, no losing periods) | `not_applicable`, `value = null`, `reason` = the metric's reason, `confidence = not_assessable` |
 | Raises any other exception | `error`, value withheld, reason names the exception and asks for a bug report |
-| Returns a non-finite number | `error`, value withheld |
+| Returns `+inf` or `-inf` | `not_applicable`, value withheld, reason: the result overflows because a denominator is effectively zero (below floating-point resolution) |
+| Returns `NaN` | `error`, value withheld (treated as a defect) |
 | Returns a finite number | passed to the confidence engine (10) |
 
 Calculations run with NumPy floating-point warnings suppressed; the finiteness
-check above is the guard. Results without a value still carry their
+check above is the guard. Moment-based shape statistics (skewness, kurtosis and
+everything built on them: Cornish-Fisher VaR/ES, Jarque-Bera, Sharpe inference)
+are undefined when returns are numerically constant: identical values, or a
+population variance `m2 <= 16 (eps · max|r|)^2` (below floating-point resolution
+relative to the size of the returns;
+[metrics/context.py](../../src/openfactsheet/metrics/context.py)
+`_standardized_moment`). Results without a value still carry their
 assumptions. Each metric's undefined conditions are listed on its page in
 [`interpretation/`](../interpretation/).
 

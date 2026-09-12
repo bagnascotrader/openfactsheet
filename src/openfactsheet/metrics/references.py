@@ -133,6 +133,19 @@ STUDENT_1908 = AcademicReference(
     "Student [Gosset, W. S.] (1908). The Probable Error of a Mean. Biometrika, 6(1), 1-25."
 )
 
+CHEKHLOV_2005 = AcademicReference(
+    "Chekhlov, A., Uryasev, S., & Zabarankin, M. (2005). Drawdown Measure in Portfolio "
+    "Optimization. International Journal of Theoretical and Applied Finance, 8(1), 13-58 "
+    "(Drawdown-at-Risk and Conditional Drawdown-at-Risk)."
+)
+AHMADI_JAVID_2012 = AcademicReference(
+    "Ahmadi-Javid, A. (2012). Entropic Value-at-Risk: A New Coherent Risk Measure. Journal of "
+    "Optimization Theory and Applications, 155(3), 1105-1123."
+)
+CAJAS_2021 = AcademicReference(
+    "Cajas, D. (2021). Entropic Portfolio Optimization: A Disciplined Convex Programming "
+    "Framework. SSRN working paper 3792520 (Entropic Drawdown-at-Risk)."
+)
 # --- Library references ----------------------------------------------------
 PA = "PerformanceAnalytics 2.0.4 (R)"
 EMP = "empyrical-reloaded 0.5.12"
@@ -141,6 +154,7 @@ NUMPY = "NumPy"
 SCIPY = "SciPy"
 STATSMODELS = "statsmodels"
 PANDAS = "pandas"
+SKFOLIO = "skfolio 1.0.6"
 
 
 def lib(library: str, function: str, agrees: bool = True, note: str = "") -> LibraryReference:

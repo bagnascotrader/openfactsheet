@@ -10,6 +10,7 @@ from __future__ import annotations
 import math
 from typing import Any
 
+import numpy as np
 import pytest
 
 import openfactsheet as ofs
@@ -135,6 +136,61 @@ def test_phase2_agreement(fixture: str, pa_reference: dict[str, Any]) -> None:
     assert se.details["ci_upper"] == pytest.approx(ref["t_test_ci_upper"], **TOL)
     assert se.details["t_statistic"] == pytest.approx(ref["t_test_statistic"], **TOL)
     assert se.details["p_value"] == pytest.approx(ref["t_test_pvalue"], rel=1e-7)
+
+
+@pytest.mark.parametrize("fixture", SINGLE_FIXTURES)
+def test_phase2b_agreement(fixture: str, pa_reference: dict[str, Any]) -> None:
+    ref = pa_reference[fixture]
+    rep = ofs.analyze(fixture_series(fixture))
+
+    assert val(rep, "modified_es_95") == pytest.approx(ref["es_modified_95"], **TOL)
+    assert val(rep, "geometric_mean_return") == pytest.approx(ref["mean_geometric"], **TOL)
+    assert val(rep, "interquartile_range") == pytest.approx(ref["iqr"], **TOL)
+
+    # Episode statistics rebuilt from PerformanceAnalytics' findDrawdowns table. PA counts
+    # an episode still open at the end one period longer (length and recovery).
+    def as_list(x: Any) -> list[Any]:  # jsonlite unboxes one-element vectors
+        return list(x) if isinstance(x, list) else [x]
+
+    depths = as_list(ref["episode_depths"])
+    lengths = as_list(ref["episode_lengths"])
+    recovery = as_list(ref["episode_recovery"])
+    if ref["last_episode_open"]:
+        lengths[-1] -= 1
+        recovery = recovery[:-1]
+    assert val(rep, "median_drawdown") == pytest.approx(float(np.median(depths)), **TOL)
+    assert val(rep, "average_drawdown_duration") == pytest.approx(float(np.mean(lengths)), **TOL)
+    assert val(rep, "max_peak_to_trough_duration") == max(as_list(ref["episode_peak_to_trough"]))
+    # PA's "Conditional Drawdown" (CDD) is the 5% quantile over all findDrawdowns runs (the
+    # drawdown episodes and the zero-return runs between them), inverted to a positive
+    # number - not a conditional expectation of the drawdown path like cdar_95.
+    runs = as_list(ref["all_run_returns"])
+    assert ref["cdd_pa"] == pytest.approx(-float(np.quantile(runs, 0.05)), **TOL)
+    assert val(rep, "cdar_95") != pytest.approx(-ref["cdd_pa"])
+    if recovery:
+        assert val(rep, "average_recovery_duration") == pytest.approx(
+            float(np.mean(recovery)), **TOL
+        )
+    else:  # only an open episode: recovery time is unknown
+        assert rep.metrics["average_recovery_duration"].status == "not_applicable"
+
+    # Calendar years (complete years only) and rolling 12-month windows.
+    years = {int(y): v for y, v in ref["calendar_year_returns"].items()}
+    details = rep.metrics["positive_calendar_years_pct"].details
+    ours = {int(y): v for y, v in details["calendar_year_returns"].items()}
+    assert set(ours) == set(years)
+    for y, v in years.items():
+        assert ours[y] == pytest.approx(v, **TOL)
+    assert val(rep, "best_calendar_year") == pytest.approx(max(years.values()), **TOL)
+    assert val(rep, "worst_calendar_year") == pytest.approx(min(years.values()), **TOL)
+    assert val(rep, "best_rolling_year") == pytest.approx(ref["rolling_year_max"], **TOL)
+    assert val(rep, "worst_rolling_year") == pytest.approx(ref["rolling_year_min"], **TOL)
+    assert val(rep, "positive_rolling_year_pct") == pytest.approx(
+        ref["rolling_year_positive_share"], **TOL
+    )
+    assert (
+        rep.metrics["positive_rolling_year_pct"].details["windows"] == ref["rolling_year_windows"]
+    )
 
 
 def test_drawdown_duration_convention(pa_reference: dict[str, Any]) -> None:

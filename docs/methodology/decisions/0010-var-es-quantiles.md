@@ -73,3 +73,5 @@ shopping.
   observations (n < 100) and `moderate` below 10 (n < 200)
   ([0015](0015-minimum-data-policy.md)).
 - Values are per observation period, not annualized or horizon-scaled.
+- The same estimators are applied to the drawdown path for Drawdown-at-Risk and
+  CDaR ([0021](0021-drawdown-tail-and-entropic-measures.md)).
