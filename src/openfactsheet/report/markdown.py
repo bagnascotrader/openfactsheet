@@ -15,6 +15,7 @@ from openfactsheet.report.tables import (
     confidence_counts,
     data_quality_metrics,
     drawdown_episode_table,
+    extraction_summary,
     factor_fit_summary,
     factor_loading_rows,
     factor_metrics,
@@ -40,6 +41,23 @@ def _metric_table(rows: list[MetricResult], notes: Footnotes) -> list[str]:
         refs = " ".join(f"[{notes.ref(t)}]" for t in result_notes(r))
         out.append(f"| {_cell(r.name)} | {format_value(r)} | {status_label(r)} | {refs} |")
     return out
+
+
+def _extraction_block(report: FactsheetReport) -> list[str]:
+    extraction = extraction_summary(report)
+    if extraction is None:
+        return []
+    text, table = extraction
+    return [
+        "**Source document**",
+        "",
+        *_kv_block(text),
+        "",
+        "Reconstructed table (as read):",
+        "",
+        *_kv_block(table),
+        "",
+    ]
 
 
 def _episode_table(report: FactsheetReport) -> list[str]:
@@ -88,6 +106,7 @@ def render_markdown(report: FactsheetReport) -> str:
         "",
         *_kv_block(report.input_summary.to_text()),
         "",
+        *_extraction_block(report),
         f"**Annualization:** {p.annualization}  ",
         "**Risk-free rate:** 0% in methodology 0.1.0 (see section 14).",
         "",

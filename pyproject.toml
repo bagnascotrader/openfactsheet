@@ -44,10 +44,12 @@ dependencies = [
 
 [project.optional-dependencies]
 excel = ["openpyxl>=3.1"]
-# PDF ingestion reads embedded text (decision 0030). Image (OCR) ingestion is not yet
-# available; the extra exists so the install pattern in CLAUDE.md is stable.
-images = []
+# PDF ingestion reads embedded text (decision 0030); OCR of images and scanned pages uses a
+# local engine with its bundled models, never a network call (decision 0031).
 pdf = ["pypdf>=4.0"]
+ocr = ["rapidocr>=3.9,<4", "onnxruntime>=1.17", "pypdfium2>=4", "Pillow>=10", "pypdf>=4.0"]
+tesseract = ["pytesseract>=0.3.10", "pypdfium2>=4", "Pillow>=10", "pypdf>=4.0"]
+images = ["openfactsheet[ocr]"]
 validation = [
     "empyrical-reloaded>=0.5",
     "quantstats>=0.0.62",
@@ -64,8 +66,9 @@ dev = [
     "pre-commit>=3.7",
     "openpyxl>=3.1",
     "pypdf>=4.0",
+    "Pillow>=10",
 ]
-all = ["openfactsheet[excel,images,pdf]"]
+all = ["openfactsheet[excel,pdf,ocr]"]
 
 [project.urls]
 Homepage = "https://github.com/bagnascotrader/openfactsheet"
@@ -91,6 +94,7 @@ pythonpath = ["."]
 addopts = "-ra --strict-markers"
 markers = [
     "cross_library: numerical comparison against reference implementations",
+    "ocr: runs a real OCR engine (needs the ocr extra)",
     "golden: full-report regression fixtures",
 ]
 filterwarnings = [
@@ -132,5 +136,5 @@ warn_unreachable = true
 files = ["src/openfactsheet"]
 
 [[tool.mypy.overrides]]
-module = ["scipy.*", "statsmodels.*", "openpyxl.*"]
+module = ["scipy.*", "statsmodels.*", "openpyxl.*", "rapidocr.*", "pytesseract.*", "pypdfium2.*"]
 ignore_missing_imports = true

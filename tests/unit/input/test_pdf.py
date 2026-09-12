@@ -60,6 +60,9 @@ def test_reconstructs_chronology_from_column_positions(tmp_path: Path) -> None:
     assert len(ex["source_sha256"]) == 64
     assert len(ex["checks"]) == 3
     assert "extracted from embedded PDF text" in rep.input_summary.to_text()
+    for text in (rep.summary(), rep.to_markdown(), rep.to_html()):
+        assert "Reconstructed table" in text
+        assert "-2.50%" in text  # the table exactly as read is shown in every renderer
     assert json.loads(rep.to_json())["provenance"]["extraction"]["monthly_values"] == 24
 
 

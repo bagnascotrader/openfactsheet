@@ -17,6 +17,7 @@ from openfactsheet.report.tables import (
     confidence_counts,
     data_quality_metrics,
     drawdown_episode_table,
+    extraction_summary,
     factor_fit_summary,
     factor_loading_rows,
     factor_metrics,
@@ -134,6 +135,13 @@ def render_terminal(report: FactsheetReport) -> str:
 
     out.append(_heading(1, "Input & methodology"))
     out.append(_indent(report.input_summary.to_text()))
+    extraction = extraction_summary(report)
+    if extraction is not None:
+        text, table = extraction
+        out.append("\n  Source document:")
+        out.append(_indent(text))
+        out.append("  Reconstructed table (as read):")
+        out.extend("    " + line for line in table.splitlines())
     out.append(_wrap(f"Annualization: {p.annualization}"))
     out.append(_wrap("Risk-free rate: 0% in methodology 0.1.0 (see section 14)."))
 

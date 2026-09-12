@@ -212,6 +212,21 @@ CANONICAL_ASSUMPTIONS: dict[str, Any] = {
         "vif_warning": 10.0,
         "ljung_box_min_observations": 10,
     },
+    "ocr": {
+        # Decision 0031. OCR never runs a network request: engines use locally
+        # installed models only, and their names, versions and model hashes are recorded.
+        "default_engine": "rapidocr",
+        "dpi": 300,
+        "min_cell_confidence": 0.90,
+        "line_grouping": "words overlapping vertically by at least half the smaller height",
+        "header_min_months": 9,
+        "header_inference": (
+            "up to three month headers the engine misread are placed by the column spacing "
+            "of the others (recorded)"
+        ),
+        "numeric_repairs": {"O": "0", "o": "0", "l": "1", "I": "1", "|": "1"},
+        "require_reconciled_totals": True,
+    },
     "missing_data": {
         "description": (
             "missing returns are never replaced by zero or forward-filled; leading and "

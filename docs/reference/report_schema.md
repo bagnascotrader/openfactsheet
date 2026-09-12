@@ -338,7 +338,7 @@ Map of metric id → [models/report.py](../../src/openfactsheet/models/report.py
 | `benchmark_name` | string \| null | Benchmark name. |
 | `benchmark_sha256` | string \| null | Fingerprint of the analyzed benchmark returns. |
 | `factor_names` | array of string \| null | Factor columns supplied (the RF column excluded). |
-| `extraction` | object \| null | For PDF input: `engine` (e.g. `pypdf 6.18.1`), `source_sha256` (of the file), `page`, `confidence` (`high` / `moderate`), `monthly_values`, `checks`, `warnings`, `reconstructed_table` (decision 0030); `null` otherwise. |
+| `extraction` | object \| null | For document input (PDF, image): `engine` (e.g. `pypdf 6.18.1` or `rapidocr 3.9.2`), `source_sha256` (of the file), `page`, `confidence` (`high` / `moderate`), `monthly_values`, `checks`, `warnings`, `reconstructed_table` (decision 0030). OCR adds `ocr` (`name`, `version`, `models` with `file` and `sha256`), `image_sha256`, `repairs`, `min_cell_confidence` and, for scanned PDFs, `renderer` and `dpi` (decision 0031). `null` otherwise. |
 | `factors_sha256` | string \| null | SHA-256 of the compact JSON map column name → fingerprint of that column (same construction as `input_sha256`), RF included. |
 | `canonical` | boolean | Same as the top-level `canonical`. |
 

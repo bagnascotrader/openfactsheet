@@ -25,6 +25,7 @@ from openfactsheet.report.tables import (
     confidence_counts,
     data_quality_metrics,
     drawdown_episode_table,
+    extraction_summary,
     factor_fit_summary,
     factor_loading_rows,
     factor_metrics,
@@ -224,6 +225,19 @@ def _figure(chart: Chart) -> list[str]:
     return parts
 
 
+def _extraction_block(report: FactsheetReport) -> list[str]:
+    extraction = extraction_summary(report)
+    if extraction is None:
+        return []
+    text, table = extraction
+    return [
+        "<h3>Source document</h3>",
+        _pre(text),
+        "<p class='tiles-note'>Reconstructed table, exactly as read:</p>",
+        _pre(table),
+    ]
+
+
 def _episode_table(report: FactsheetReport) -> list[str]:
     table = drawdown_episode_table(report)
     if table is None:
@@ -321,6 +335,7 @@ def render_html(report: FactsheetReport) -> str:
         *_headline(report),
         "<h2>1. Input &amp; methodology</h2>",
         _pre(report.input_summary.to_text()),
+        *_extraction_block(report),
         f"<p><strong>Annualization:</strong> {escape(p.annualization)}<br>"
         "<strong>Risk-free rate:</strong> 0% in methodology 0.1.0.</p>",
         "<h2>2. Data-quality diagnostics</h2>",

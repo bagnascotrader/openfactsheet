@@ -107,6 +107,23 @@ def confidence_counts(report: FactsheetReport) -> dict[str, int]:
     return counts
 
 
+def extraction_summary(report: FactsheetReport) -> tuple[str, str] | None:
+    """Key/value text and the reconstructed table for document inputs (PDF, OCR), else None."""
+    ex = report.provenance.extraction
+    if not ex:
+        return None
+    lines = [
+        f"Extracted by:              {ex.get('engine', 'unknown')} (page {ex.get('page', '?')})",
+        f"Extraction confidence:     {ex.get('confidence', 'unknown')}",
+        f"Monthly values read:       {ex.get('monthly_values', '?')}",
+    ]
+    if ex.get("min_cell_confidence") is not None:
+        lines.append(f"Lowest OCR cell score:     {float(ex['min_cell_confidence']):.2f}")
+    lines += [f"  - check: {c}" for c in ex.get("checks", [])]
+    lines += [f"  - {w}" for w in ex.get("warnings", [])]
+    return "\n".join(lines), str(ex.get("reconstructed_table", ""))
+
+
 EPISODE_TABLE_HEADER = (
     "#",
     "Peak",

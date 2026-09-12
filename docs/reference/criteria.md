@@ -55,8 +55,8 @@ Checked in this order:
 
 File suffixes (case-insensitive): `.csv`, `.txt`, `.tsv` → CSV reader;
 `.xlsx`, `.xlsm`, `.xls` → Excel reader; `.png .jpg .jpeg .gif .bmp .tif .tiff
-.webp` → `OCRExtractionError` (image ingestion needs OCR, roadmap phase 6); `.pdf` →
-embedded-text PDF reader (2.8); any other suffix → `InputError`; a non-existent path →
+.webp` → OCR reader (2.9); `.pdf` → embedded-text PDF reader (2.8), with OCR
+for pages that have no text (2.9); any other suffix → `InputError`; a non-existent path →
 `InputError("File not found")`. When a file yields exactly one series whose
 name is the default `"Returns"` and no `name` was passed, the series is named
 after the file stem. The file name is stored in metadata.
@@ -210,6 +210,31 @@ Requires the `pdf` extra (pypdf); otherwise `OCRExtractionError` naming it.
    confidence; the warnings in `InputDiagnostics.warnings`; and
    `provenance.extraction` (engine, source SHA-256, page, confidence, checks,
    warnings, reconstructed table).
+
+### 2.9 OCR of images and scanned pages — [input/image.py](../../src/openfactsheet/input/image.py), [documents/ocr](../../src/openfactsheet/documents/ocr/) (decision 0031)
+
+Requires the `ocr` extra (RapidOCR, default) or `tesseract` extra; otherwise
+`OCRExtractionError` naming it. Engines use only local models (RapidOCR's bundled
+files, passed as explicit paths) and never access the network.
+
+1. Images are converted to RGB; scanned PDF pages (no text layer) are rendered
+   with pypdfium2 at `ocr.dpi` (300).
+2. Words (pixel boxes, confidence 0–1) are grouped into lines: a word joins a
+   line when it overlaps the line's vertical band by at least half the smaller
+   height.
+3. Table reconstruction as in 2.8, with these differences:
+   - **Header**: at least `ocr.header_min_months` (9) month names read in order
+     and evenly spaced (steps within 15% of the median); missing months are placed
+     by that spacing (warning).
+   - **Repairs**: a numeric token or year label that does not parse is retried
+     with `ocr.numeric_repairs` (O/o→0, l/I/|→1) and dash variants → `-`; a
+     repair is kept only if the result parses (warning, recorded per cell).
+   - **Problems** (refused): any cell with confidence `< ocr.min_cell_confidence`
+     (0.90); no total column; any year with values but no total cell; any failed
+     reconciliation.
+4. Recorded: `provenance.extraction` gains `ocr` (engine name, version, model
+   files and SHA-256), `image_sha256`, `repairs`, `min_cell_confidence` and, for
+   PDFs, `renderer` and `dpi`.
 
 ---
 

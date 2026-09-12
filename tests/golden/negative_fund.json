@@ -826,6 +826,22 @@
         "confidence": 0.95,
         "moments": "population"
       },
+      "ocr": {
+        "default_engine": "rapidocr",
+        "dpi": 300,
+        "header_inference": "up to three month headers the engine misread are placed by the column spacing of the others (recorded)",
+        "header_min_months": 9,
+        "line_grouping": "words overlapping vertically by at least half the smaller height",
+        "min_cell_confidence": 0.9,
+        "numeric_repairs": {
+          "I": "1",
+          "O": "0",
+          "l": "1",
+          "o": "0",
+          "|": "1"
+        },
+        "require_reconciled_totals": true
+      },
       "omega": {
         "description": "threshold = 0% per period, simple (empirical) estimator",
         "threshold": 0.0

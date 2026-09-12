@@ -1,20 +1,23 @@
-"""Monthly-return tables from PDF factsheets with embedded text (decision 0030).
+"""Monthly-return tables from PDF factsheets (decisions 0030 and 0031).
 
 Optional extra ``openfactsheet[pdf]`` (pypdf, BSD). Each page's embedded text is
 extracted with its layout (character positions kept) and handed to the shared
 table reconstruction of :mod:`openfactsheet.documents.tables`, which assigns
 values to month columns by position and reconciles every year with its YTD
-cell. Scanned (image-only) PDFs contain no text; OCR is not part of the core
-library, so they are refused with an explanation. Extraction that fails
-validation is refused too, showing the reconstructed table: OpenFactsheet never
-calculates silently from a table it could not read reliably.
+cell. Pages without embedded text (scans) are rendered and recognized by OCR
+when the ``openfactsheet[ocr]`` extra is installed, under OCR's stricter
+acceptance rules. Extraction that fails validation is refused, showing the
+reconstructed table: OpenFactsheet never calculates silently from a table it
+could not read reliably.
 """
 
 from __future__ import annotations
 
 import hashlib
 from pathlib import Path
+from typing import Any
 
+from openfactsheet.documents.layout import PageLayout
 from openfactsheet.documents.tables import (
     MONTH_LABELS,
     ExtractedTable,
@@ -28,36 +31,79 @@ from openfactsheet.models.input import RawReturns
 __all__ = ["MONTH_LABELS", "ExtractedTable", "extract_monthly_tables", "read_pdf"]
 
 
-def extract_monthly_tables(path: Path) -> list[ExtractedTable]:
-    """Find and reconstruct every monthly-return table in the PDF's embedded text."""
-    layouts = text_layouts(open_pdf(path))
-    tables = [t for layout in layouts for t in find_monthly_tables(layout)]
-    if not any(layout.lines for layout in layouts):
-        raise OCRExtractionError(
-            f"{path.name} contains no embedded text (it is probably a scanned image). OCR is not "
-            "part of the core library; transcribe the monthly-return table to CSV or paste it as "
-            "text: ofs.load(table_text)."
-        )
+def _ocr_layouts(
+    path: Path, pages: list[int], ocr_engine: str | None
+) -> tuple[list[PageLayout], dict[str, Any]]:
+    from openfactsheet.documents.ocr import get_engine, ocr_layout
+    from openfactsheet.documents.raster import pdfium_version, render_pages
+    from openfactsheet.policy.defaults import canonical_methodology
+
+    engine = get_engine(ocr_engine)
+    dpi = int(canonical_methodology().get("ocr.dpi"))
+    layouts = [ocr_layout(img, engine, page=n) for n, img in render_pages(path, pages, dpi)]
+    info: dict[str, Any] = {
+        "engine": engine.info.label,
+        "ocr": engine.info.to_dict(),
+        "renderer": pdfium_version(),
+        "dpi": dpi,
+    }
+    return layouts, info
+
+
+def extract_monthly_tables(
+    path: Path, ocr_engine: str | None = None
+) -> tuple[list[ExtractedTable], dict[int, PageLayout], dict[str, Any]]:
+    """Every monthly-return table of the PDF, with the page layouts and OCR details."""
+    layouts = {layout.page: layout for layout in text_layouts(open_pdf(path))}
+    scanned = [n for n, layout in layouts.items() if not layout.lines]
+    ocr_info: dict[str, Any] = {}
+    ocr_error: OCRExtractionError | None = None
+    if scanned:
+        try:
+            ocr_layouts, ocr_info = _ocr_layouts(path, scanned, ocr_engine)
+            layouts.update({layout.page: layout for layout in ocr_layouts})
+        except OCRExtractionError as exc:
+            ocr_error = exc
+    tables = [t for n in sorted(layouts) for t in find_monthly_tables(layouts[n])]
     if not tables:
+        if len(scanned) == len(layouts):
+            raise OCRExtractionError(
+                f"{path.name} contains no embedded text (it is probably a scanned image) "
+                + (
+                    f"and could not be recognized: {ocr_error}"
+                    if ocr_error is not None
+                    else "and OCR of its pages found no monthly-return table."
+                )
+            )
         raise OCRExtractionError(
             f"No monthly-return table (a header row naming all twelve months, followed by "
-            f"year rows) was found in the text of {path.name}."
+            f"year rows) was found in {path.name}."
+            + (f" Scanned page(s) {scanned} were not recognized: {ocr_error}" if ocr_error else "")
         )
-    return tables
+    return tables, layouts, ocr_info
 
 
-def read_pdf(path: Path, name: str | None = None) -> list[RawReturns]:
-    """Parse every monthly-return table of a text PDF; refuse unreliable extractions."""
-    tables = extract_monthly_tables(path)
+def read_pdf(
+    path: Path, name: str | None = None, ocr_engine: str | None = None
+) -> list[RawReturns]:
+    """Parse every monthly-return table of a PDF; refuse unreliable extractions."""
+    tables, layouts, ocr_info = extract_monthly_tables(path, ocr_engine)
+    sha = hashlib.sha256(path.read_bytes()).hexdigest()
+
+    def describe(table: ExtractedTable) -> tuple[str, dict[str, Any]]:
+        if table.source == "ocr":
+            return "OCR of a scanned PDF page", {
+                **ocr_info,
+                "source_sha256": sha,
+                "image_sha256": layouts[table.page].image_sha256,
+            }
+        return "embedded PDF text", {"engine": pypdf_engine(), "source_sha256": sha}
+
     return tables_to_raw(
         tables,
         file_name=path.name,
         stem=path.stem,
         name=name,
         source_type="pdf",
-        how="embedded PDF text",
-        extraction={
-            "engine": pypdf_engine(),
-            "source_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
-        },
+        describe=describe,
     )

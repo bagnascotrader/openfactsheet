@@ -17,7 +17,7 @@ from __future__ import annotations
 import math
 import re
 import statistics
-from collections.abc import Sequence
+from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass, field
 from itertools import pairwise
 from typing import Any, Literal
@@ -53,27 +53,62 @@ class Header:
     month_centers: tuple[float, ...]  # 12 centers, January first
     total_center: float | None
     total_label: str | None
+    inferred: tuple[str, ...] = ()  # OCR: month headers placed by column spacing
 
 
-def find_header(line: Line, line_index: int) -> Header | None:
+def _infer_centers(found: list[tuple[Word, int]], min_months: int) -> dict[int, float] | None:
+    """Complete misread month headers from the spacing of the others (OCR only).
+
+    Needs at least ``min_months`` months read in order and evenly spaced (every
+    per-month step within 15% of the median step); the missing ones are placed
+    by linear inter- or extrapolation.
+    """
+    known = {m: w.center for w, m in found}
+    months = sorted(known)
+    if len(known) != len(found) or len(known) < min_months:
+        return None
+    if any(known[b] <= known[a] for a, b in pairwise(months)):
+        return None
+    steps = [(known[b] - known[a]) / (b - a) for a, b in pairwise(months)]
+    step = statistics.median(steps)
+    if step <= 0 or any(abs(s - step) > 0.15 * step for s in steps):
+        return None
+    anchor = months[0]
+    return {m: known.get(m, known[anchor] + (m - anchor) * step) for m in range(1, 13)}
+
+
+def find_header(
+    line: Line, line_index: int, *, infer_missing: bool = False, min_months: int = 12
+) -> Header | None:
     words = line.words
     found = [(w, m) for w in words if (m := month_of(w.text)) is not None]
-    if [m for _, m in found] != list(range(1, 13)):
+    inferred: tuple[str, ...] = ()
+    if [m for _, m in found] == list(range(1, 13)):
+        centers = tuple(w.center for w, _ in found)
+        if any(b <= a for a, b in pairwise(centers)):
+            return None
+    elif infer_missing:
+        placed = _infer_centers(found, min_months)
+        if placed is None:
+            return None
+        centers = tuple(placed[m] for m in range(1, 13))
+        read = {m for _, m in found}
+        inferred = tuple(MONTH_LABELS[m - 1] for m in range(1, 13) if m not in read)
+    else:
         return None
-    centers = tuple(w.center for w, _ in found)
-    if any(b <= a for a, b in pairwise(centers)):
-        return None
-    dec_end = found[-1][0].x1
+    last_month = max(found, key=lambda wm: wm[0].x1)[0]
+    right_edge = max(last_month.x1, centers[-1])
     total = [
         w
         for w in words
-        if w.x0 > dec_end and re.sub(r"[^a-z]", "", w.text.lower()) in _TOTAL_LABELS
+        if w.x0 > right_edge and re.sub(r"[^a-z]", "", w.text.lower()) in _TOTAL_LABELS
     ]
     return Header(
         line_index=line_index,
         month_centers=centers,
         total_center=total[0].center if total else None,
         total_label=total[0].text if total else None,
+        inferred=inferred,
     )
 
 
@@ -141,7 +176,9 @@ def _decimals(text: str) -> int:
     return len(digits.split(sep, 1)[1]) if sep else 0
 
 
-def parse_rows(lines: Sequence[Line], header: Header) -> tuple[list[tuple[int, list[Word]]], int]:
+def parse_rows(
+    lines: Sequence[Line], header: Header, repairs: Mapping[str, str] | None = None
+) -> tuple[list[tuple[int, list[Word]]], int]:
     """Year rows under ``header``: returns ``[(year, value words)]`` and the last line used."""
     rows: list[tuple[int, list[Word]]] = []
     last = header.line_index
@@ -154,11 +191,37 @@ def parse_rows(lines: Sequence[Line], header: Header) -> tuple[list[tuple[int, l
                 break
             continue
         blank_run = 0
-        if not _YEAR.match(words[0].text):
+        label = words[0].text
+        if repairs is not None and not _YEAR.match(label):
+            label = "".join(repairs.get(ch, ch) for ch in label)
+        if not _YEAR.match(label):
             break
-        rows.append((int(words[0].text), list(words[1:])))
+        rows.append((int(label), list(words[1:])))
         last = i
     return rows, last
+
+
+_DASHES = str.maketrans({"–": "-", "—": "-", "‒": "-", "−": "-"})
+
+
+def repair_numeric(text: str, repairs: Mapping[str, str]) -> str:
+    """Apply the documented OCR character repairs to a would-be number (decision 0031).
+
+    Only characters in ``repairs`` (e.g. ``O`` -> ``0``) and dash variants are
+    changed, and only when the result parses as a return; otherwise the text is
+    returned unchanged so that validation rejects it.
+    """
+    try:
+        parse_cell(text)
+        return text
+    except InputError:
+        pass
+    fixed = "".join(repairs.get(ch, ch) for ch in text.translate(_DASHES))
+    try:
+        parse_cell(fixed)
+    except InputError:
+        return text
+    return fixed
 
 
 def assign(
@@ -166,6 +229,7 @@ def assign(
     header: Header,
     rows: list[tuple[int, list[Word]]],
     unit: str = "characters",
+    repairs: Mapping[str, str] | None = None,
 ) -> None:
     centers = list(header.month_centers)
     spacing = statistics.median(b - a for a, b in pairwise(centers))
@@ -179,6 +243,11 @@ def assign(
             continue
         row: dict[int, str] = {}
         for word in words:
+            if repairs is not None:
+                fixed = repair_numeric(word.text, repairs)
+                if fixed != word.text:
+                    table.repairs.append(f"{year}: read {word.text!r} as {fixed!r}")
+                    word = Word(fixed, word.x0, word.x1, word.y0, word.y1, word.confidence)
             center, month = min(columns, key=lambda c: abs(c[0] - word.center))
             if abs(center - word.center) > tolerance:
                 table.problems.append(
@@ -229,7 +298,8 @@ def reconcile_totals(table: ExtractedTable) -> None:
         if match is not None:
             table.checks.append(
                 f"{year}: compounded months {match:.4g} match {table.total_label or 'YTD'} "
-                f"{total_text}."
+                f"{total_text} (within {tol:.2g}, the largest rounding error; smaller "
+                "misreads cannot be detected)."
             )
         elif abs(summed - total) <= tol:
             table.checks.append(
@@ -279,17 +349,66 @@ def _percent_hint(lines: Sequence[Line], header: Header, table: ExtractedTable) 
     return None
 
 
+def apply_ocr_rules(table: ExtractedTable, header: Header, conv: Mapping[str, Any]) -> None:
+    """Stricter acceptance rules for recognized (not embedded) text (decision 0031)."""
+    floor = float(conv["min_cell_confidence"])
+    weak = sorted(
+        (year, month, c) for (year, month), c in table.cell_confidence.items() if c < floor
+    )
+    if weak:
+        listed = ", ".join(
+            f"{MONTH_LABELS[m - 1] if m else table.total_label or 'YTD'} {y} ({c:.2f})"
+            for y, m, c in weak
+        )
+        table.problems.append(
+            f"{len(weak)} cell(s) were recognized with confidence below {floor:.2f}: {listed}."
+        )
+    if table.repairs:
+        table.warnings.append(
+            "OCR characters repaired in numeric cells: " + "; ".join(table.repairs) + "."
+        )
+    if header.inferred:
+        table.warnings.append(
+            f"Month header(s) {', '.join(header.inferred)} were not recognized and were placed "
+            "by the column spacing of the others."
+        )
+    if bool(conv["require_reconciled_totals"]):
+        if header.total_center is None:
+            table.problems.append(
+                "Recognized tables need a YTD / total column: without it a dropped minus sign "
+                "or digit cannot be detected."
+            )
+        else:
+            missing = [
+                str(y) for y, row in sorted(table.cells.items()) if row and y not in table.totals
+            ]
+            if missing:
+                table.problems.append(
+                    f"Year(s) {', '.join(missing)} have no total cell, so their recognized values "
+                    "cannot be cross-checked."
+                )
+
+
 def find_monthly_tables(layout: PageLayout) -> list[ExtractedTable]:
     """Every monthly-return table on one page, reconstructed and validated."""
+    from openfactsheet.policy.defaults import canonical_methodology
+
+    ocr = layout.source == "ocr"
+    conv: Mapping[str, Any] = canonical_methodology().get("ocr") if ocr else {}
     lines = layout.lines
     tables: list[ExtractedTable] = []
     i = 0
     while i < len(lines):
-        header = find_header(lines[i], i)
+        header = find_header(
+            lines[i],
+            i,
+            infer_missing=ocr,
+            min_months=int(conv["header_min_months"]) if ocr else 12,
+        )
         if header is None:
             i += 1
             continue
-        rows, last = parse_rows(lines, header)
+        rows, last = parse_rows(lines, header, conv["numeric_repairs"] if ocr else None)
         if rows:
             table = ExtractedTable(
                 page=layout.page,
@@ -299,11 +418,19 @@ def find_monthly_tables(layout: PageLayout) -> list[ExtractedTable]:
                 percent_hint=None,
                 source=layout.source,
             )
-            assign(table, header, rows, layout.unit)
+            assign(
+                table,
+                header,
+                rows,
+                layout.unit,
+                repairs=conv["numeric_repairs"] if ocr else None,
+            )
             table.percent_hint = _percent_hint(lines, header, table)
             check_gaps(table)
             reconcile_totals(table)
-            if header.total_center is None:
+            if ocr:
+                apply_ocr_rules(table, header, conv)
+            elif header.total_center is None:
                 table.warnings.append(
                     "The table has no YTD / total column, so the extraction could not be "
                     "cross-checked against annual totals."
@@ -332,18 +459,20 @@ def tables_to_raw(
     stem: str,
     name: str | None,
     source_type: str,
-    how: str,
-    extraction: dict[str, Any],
+    describe: Callable[[ExtractedTable], tuple[str, dict[str, Any]]],
 ) -> list[RawReturns]:
     """Turn accepted tables into :class:`RawReturns`; refuse any unreliable one.
 
-    ``how`` describes the extraction for the transformation note (e.g. "embedded PDF
-    text"); ``extraction`` is merged into each series' ``metadata["extraction"]``.
+    ``describe(table)`` returns how the table was obtained, for the transformation
+    note (e.g. "embedded PDF text"), and the provenance merged into the series'
+    ``metadata["extraction"]``.
     """
-    out: list[RawReturns] = []
-    for k, table in enumerate(tables, start=1):
+    for table in tables:
         if table.confidence == "low":
             raise refuse(table, file_name)
+    out: list[RawReturns] = []
+    for k, table in enumerate(tables, start=1):
+        how, extraction = describe(table)
         raw = from_monthly_table(table.to_frame(), None, source_type)
         label = name if (name and len(tables) == 1) else ("Returns" if len(tables) == 1 else None)
         if label is None:
