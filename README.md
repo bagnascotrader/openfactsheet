@@ -283,7 +283,7 @@ received.
 | **Specification** | [Exact formulas](docs/reference/formulas.md) · [Notation](docs/reference/notation.md) · [Decision criteria](docs/reference/criteria.md) · [Policies & thresholds](docs/reference/policies.md) · [JSON schema](docs/reference/report_schema.md) |
 | **Rationale** | [Methodology decisions](docs/methodology/decisions/README.md) |
 | **Validation** | [Reference implementations & validation](docs/validation/reference_implementations.md) |
-| **Reference manual** | [**openfactsheet-manual.pdf**](docs/manual/openfactsheet-manual.pdf): a CRAN-style PDF of all of the above, generated from the code and kept in sync by CI ([how it is built](docs/manual/README.md)) |
+| **Reference manual** | **[Download the PDF](https://github.com/bagnascotrader/openfactsheet/releases/download/manual-latest/openfactsheet-manual.pdf)** · [view it on GitHub](docs/manual/openfactsheet-manual.pdf): a CRAN-style PDF of all of the above, generated from the code and kept in sync by CI ([how it is built](docs/manual/README.md)) |
 
 ## Roadmap
 

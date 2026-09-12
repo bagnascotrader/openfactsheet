@@ -5,7 +5,13 @@ The OpenFactsheet reference manual is a CRAN-style PDF generated from the code
 written by hand: the functions and classes come from docstrings, the metrics from the
 registry, and the rest from the documents in `docs/`.
 
-**Read it: [openfactsheet-manual.pdf](openfactsheet-manual.pdf)**
+**[Download the PDF](https://github.com/bagnascotrader/openfactsheet/releases/download/manual-latest/openfactsheet-manual.pdf)**
+(one file, 2.4 MB) or [view it on GitHub](openfactsheet-manual.pdf). GitHub's viewer draws
+pages as you scroll; the download link gives the complete file.
+
+The download is the `manual-latest` pre-release, which `.github/workflows/manual.yml`
+updates whenever the PDF on `main` changes. Each published package release also gets the
+manual of its version attached.
 
 ## Keeping it up to date
 
