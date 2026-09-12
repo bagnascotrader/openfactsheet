@@ -510,7 +510,7 @@ Undefined (`not_applicable`) when: Benchmark returns are constant over the align
 R^2 = 1 - \frac{\sum_{t=1}^{m} \hat\varepsilon_t^2}{\sum_{t=1}^{m} (r_t - \bar r)^2}, \quad \hat\varepsilon_t = r_t - \hat\alpha - \hat\beta b_t
 ```
 
-Undefined (`not_applicable`) when: Benchmark returns are constant over the aligned periods.
+Undefined (`not_applicable`) when: Benchmark returns are constant over the aligned periods. Fund returns are constant over the aligned periods (no variance to explain).
 
 ### Correlation with benchmark — [`correlation`](../interpretation/correlation.md)
 
@@ -563,6 +563,68 @@ Undefined (`not_applicable`) when: The benchmark has no up periods in the overla
 ```
 
 Undefined (`not_applicable`) when: The benchmark has no down periods in the overlap. The benchmark's compounded down-period return is exactly zero.
+
+### Capture ratio (upside / downside capture) — [`capture_ratio`](../interpretation/capture_ratio.md)
+
+```math
+\mathrm{CR} = \frac{\mathrm{UC}}{\mathrm{DC}}, \quad \mathrm{DC} > 0
+```
+
+Undefined (`not_applicable`) when: Upside or downside capture is undefined (no up or no down benchmark periods, or a zero compounded benchmark return on one side). Downside capture is zero or negative (the fund gained on average when the benchmark fell); the ratio's sign would then be meaningless. Upside and downside capture are still reported.
+
+### Batting average (share of periods beating the benchmark) — [`batting_average`](../interpretation/batting_average.md)
+
+```math
+\mathrm{BA} = \frac{1}{m} \sum_{t=1}^{m} \mathbf{1}[\,r_t > b_t\,]; \quad \mathrm{BA}^{\uparrow} = \frac{\#\{t : r_t > b_t,\ b_t > 0\}}{\#\{t : b_t > 0\}}, \ \mathrm{BA}^{\downarrow} = \frac{\#\{t : r_t > b_t,\ b_t < 0\}}{\#\{t : b_t < 0\}}
+```
+
+### Residual (specific) volatility (annualized) — [`residual_volatility`](../interpretation/residual_volatility.md)
+
+```math
+\hat\sigma_\varepsilon \sqrt{P}, \quad \hat\sigma_\varepsilon = \sqrt{\frac{1}{m-2} \sum_{t=1}^{m} \hat\varepsilon_t^2}, \quad \hat\varepsilon_t = r_t - \hat\alpha - \hat\beta b_t
+```
+
+Undefined (`not_applicable`) when: Benchmark returns are constant over the aligned periods.
+
+### Appraisal ratio — [`appraisal_ratio`](../interpretation/appraisal_ratio.md)
+
+```math
+\mathrm{AppR} = \frac{P \, \hat\alpha}{\hat\sigma_\varepsilon \sqrt{P}} = \frac{\hat\alpha}{\hat\sigma_\varepsilon} \sqrt{P}
+```
+
+Undefined (`not_applicable`) when: Benchmark returns are constant over the aligned periods. Residual volatility is zero to floating-point precision (below sqrt(machine epsilon) x fund volatility, i.e. 1 - R-squared below machine epsilon): the benchmark explains the fund exactly.
+
+### M-squared (Modigliani risk-adjusted return) — [`m_squared`](../interpretation/m_squared.md)
+
+```math
+M^2 = P \, \frac{\bar r^{(m)} - r_f}{s_r^{(m)}} \, s_b + P\, r_f, \quad r_f = 0; \quad M^2 - P \bar b \ \text{(details)}
+```
+
+Undefined (`not_applicable`) when: Fund returns are constant over the aligned periods (zero volatility). Benchmark returns are constant over the aligned periods (zero volatility).
+
+### Bull-market beta — [`bull_beta`](../interpretation/bull_beta.md)
+
+```math
+\hat\beta^{+} = \text{OLS slope of } r_t = \alpha^{+} + \beta^{+} b_t + \varepsilon_t \text{ over } \{t : b_t > 0\}
+```
+
+Undefined (`not_applicable`) when: Fewer than 3 benchmark up periods in the overlap. Benchmark returns are constant over the up periods.
+
+### Bear-market beta — [`bear_beta`](../interpretation/bear_beta.md)
+
+```math
+\hat\beta^{-} = \text{OLS slope of } r_t = \alpha^{-} + \beta^{-} b_t + \varepsilon_t \text{ over } \{t : b_t < 0\}
+```
+
+Undefined (`not_applicable`) when: Fewer than 3 benchmark down periods in the overlap. Benchmark returns are constant over the down periods.
+
+### Timing ratio (bull beta / bear beta) — [`timing_ratio`](../interpretation/timing_ratio.md)
+
+```math
+\mathrm{TR}_{\text{timing}} = \frac{\hat\beta^{+}}{\hat\beta^{-}}, \quad \hat\beta^{-} > 0
+```
+
+Undefined (`not_applicable`) when: Bull-market or bear-market beta is undefined (fewer than 3 up or down periods, or a constant benchmark within a regime). Bear-market beta is zero or negative; the ratio's sign would be meaningless. Both betas are still reported.
 
 ## Statistical confidence
 

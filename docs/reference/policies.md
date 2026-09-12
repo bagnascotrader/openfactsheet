@@ -21,8 +21,8 @@ Below the mathematical minimum a metric is `insufficient_data`; the statistical 
 | `autocorrelation` | 5 obs | observations | 36 | 60 | `autocorrelation_lag1`, `autocorrelation_lag2`, `autocorrelation_lag3` |
 | `ljung_box` | 10 obs | observations | 36 | 60 | `ljung_box_pvalue` |
 | `asymptotic_inference` | 4 obs | observations | 36 | 60 | `probabilistic_sharpe_ratio`, `sharpe_ratio_standard_error`, `minimum_track_record_length` |
-| `benchmark_regression` | 3 obs | years of history | 3 | 5 | `beta`, `alpha`, `r_squared`, `correlation`, `treynor_ratio` |
-| `benchmark_simple` | 2 obs | years of history | 3 | 5 | `tracking_error`, `active_return`, `information_ratio`, `upside_capture`, `downside_capture` |
+| `benchmark_regression` | 3 obs | years of history | 3 | 5 | `beta`, `alpha`, `r_squared`, `correlation`, `treynor_ratio`, `residual_volatility`, `appraisal_ratio`, `bull_beta`, `bear_beta`, `timing_ratio` |
+| `benchmark_simple` | 2 obs | years of history | 3 | 5 | `tracking_error`, `active_return`, `information_ratio`, `upside_capture`, `downside_capture`, `capture_ratio`, `batting_average`, `m_squared` |
 
 Policy descriptions:
 
@@ -124,6 +124,14 @@ Flags that decide which applicability checks and confidence modifiers apply to e
 | [`treynor_ratio`](../interpretation/treynor_ratio.md) | benchmark |  |  | yes | yes |  | `benchmark_regression` | `benchmark`, `regression`, `risk_free`, `annualization` |
 | [`upside_capture`](../interpretation/upside_capture.md) | benchmark |  |  | yes | yes |  | `benchmark_simple` | `benchmark`, `annualization` |
 | [`downside_capture`](../interpretation/downside_capture.md) | benchmark |  |  | yes | yes |  | `benchmark_simple` | `benchmark`, `annualization` |
+| [`capture_ratio`](../interpretation/capture_ratio.md) | benchmark |  |  | yes | yes |  | `benchmark_simple` | `benchmark`, `annualization` |
+| [`batting_average`](../interpretation/batting_average.md) | benchmark |  |  |  | yes |  | `benchmark_simple` | `benchmark` |
+| [`residual_volatility`](../interpretation/residual_volatility.md) | benchmark | yes |  | yes | yes |  | `benchmark_regression` | `benchmark`, `regression`, `annualization` |
+| [`appraisal_ratio`](../interpretation/appraisal_ratio.md) | benchmark | yes |  | yes | yes |  | `benchmark_regression` | `benchmark`, `regression`, `risk_free`, `annualization` |
+| [`m_squared`](../interpretation/m_squared.md) | benchmark | yes |  | yes | yes |  | `benchmark_simple` | `benchmark`, `risk_free`, `sample_std`, `annualization` |
+| [`bull_beta`](../interpretation/bull_beta.md) | benchmark |  |  |  | yes |  | `benchmark_regression` | `benchmark`, `regression` |
+| [`bear_beta`](../interpretation/bear_beta.md) | benchmark |  |  |  | yes |  | `benchmark_regression` | `benchmark`, `regression` |
+| [`timing_ratio`](../interpretation/timing_ratio.md) | benchmark |  |  |  | yes |  | `benchmark_regression` | `benchmark`, `regression` |
 | [`probabilistic_sharpe_ratio`](../interpretation/probabilistic_sharpe_ratio.md) | statistical | yes |  |  |  |  | `asymptotic_inference` | `iid_asymptotics`, `risk_free` |
 | [`sharpe_ratio_standard_error`](../interpretation/sharpe_ratio_standard_error.md) | statistical | yes |  | yes |  |  | `asymptotic_inference` | `iid_asymptotics`, `annualization`, `risk_free` |
 | [`minimum_track_record_length`](../interpretation/minimum_track_record_length.md) | statistical | yes |  |  |  |  | `asymptotic_inference` | `iid_asymptotics`, `risk_free` |
@@ -200,10 +208,17 @@ This is the `methodology` object embedded in every JSON report.
     "benchmark": {
       "alignment": "intersection of periods; never filled",
       "alpha_annualization": "arithmetic: per-period intercept x periods_per_year",
+      "appraisal_ratio": "annualized OLS alpha / annualized residual volatility",
+      "batting_average": "share of aligned periods with fund return strictly above benchmark",
       "capture": "geometric, annualized over up (benchmark > 0) or down (benchmark < 0) periods",
+      "capture_ratio": "upside capture / downside capture; undefined unless downside capture > 0",
       "description": "periods aligned on their intersection (monthly/quarterly/yearly by calendar period, daily/weekly by exact date); missing benchmark returns are never filled",
       "information_ratio": "annualized arithmetic mean active return / tracking error",
-      "regression": "OLS of fund on benchmark returns (risk-free = 0)"
+      "m_squared": "aligned Sharpe ratio x benchmark volatility, arithmetic annualization",
+      "regime_betas": "OLS with intercept on benchmark > 0 (bull) or < 0 (bear) periods",
+      "regression": "OLS of fund on benchmark returns (risk-free = 0)",
+      "residual_volatility": "OLS regression standard error (m - 2 dof) x sqrt(periods_per_year)",
+      "timing_ratio": "bull beta / bear beta; undefined unless bear beta > 0"
     },
     "calendar_years": {
       "daily_weekly_edge_tolerance_days": 7,

@@ -239,3 +239,37 @@ def test_benchmark_agreement(pa_reference: dict[str, Any]) -> None:
     assert ref["treynor_ratio_pa"] == pytest.approx(geometric / ref["beta"], **TOL)
     assert val(rep, "treynor_ratio") == pytest.approx(f.mean() * 12 / ref["beta"], **TOL)
     assert val(rep, "treynor_ratio") != pytest.approx(ref["treynor_ratio_pa"])
+
+
+def test_benchmark_additions_agreement(pa_reference: dict[str, Any]) -> None:
+    """Decision 0027: regime betas, batting averages, residual risk, appraisal ratio, M2."""
+    ref = pa_reference["benchmark_case"]
+    rep = ofs.analyze(
+        fixture_series("benchmark_case_fund"), benchmark=fixture_series("benchmark_case_benchmark")
+    )
+    m = ref["aligned_observations"]
+
+    # Direct agreement.
+    assert val(rep, "bull_beta") == pytest.approx(ref["bull_beta"], **TOL)
+    assert val(rep, "bear_beta") == pytest.approx(ref["bear_beta"], **TOL)
+    assert val(rep, "timing_ratio") == pytest.approx(ref["timing_ratio"], **TOL)
+    batting = rep.metrics["batting_average"].details
+    assert batting["up_market_batting_average"] == pytest.approx(ref["up_percent_pa"], **TOL)
+    assert batting["down_market_batting_average"] == pytest.approx(ref["down_percent_pa"], **TOL)
+    assert val(rep, "m_squared") == pytest.approx(ref["modigliani_pa_per_period"] * 12, **TOL)
+    assert val(rep, "residual_volatility") == pytest.approx(
+        ref["residual_se_lm"] * math.sqrt(12), **TOL
+    )
+
+    # Documented differences: PA's SpecificRisk divides by m (not m - 2) and its appraisal
+    # ratio uses Jensen's alpha from geometric annualized returns.
+    assert val(rep, "residual_volatility") * math.sqrt((m - 2) / m) == pytest.approx(
+        ref["specific_risk_pa"], **TOL
+    )
+    assert ref["appraisal_ratio_pa"] == pytest.approx(
+        ref["jensen_alpha_pa"] / ref["specific_risk_pa"], **TOL
+    )
+    assert val(rep, "appraisal_ratio") == pytest.approx(
+        val(rep, "alpha") / val(rep, "residual_volatility"), **TOL
+    )
+    assert val(rep, "appraisal_ratio") != pytest.approx(ref["appraisal_ratio_pa"])

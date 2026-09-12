@@ -146,6 +146,22 @@ CAJAS_2021 = AcademicReference(
     "Cajas, D. (2021). Entropic Portfolio Optimization: A Disciplined Convex Programming "
     "Framework. SSRN working paper 3792520 (Entropic Drawdown-at-Risk)."
 )
+TREYNOR_BLACK_1973 = AcademicReference(
+    "Treynor, J. L., & Black, F. (1973). How to Use Security Analysis to Improve Portfolio "
+    "Selection. Journal of Business, 46(1), 66-86 (appraisal ratio)."
+)
+MODIGLIANI_1997 = AcademicReference(
+    "Modigliani, F., & Modigliani, L. (1997). Risk-Adjusted Performance. Journal of Portfolio "
+    "Management, 23(2), 45-54 (M-squared)."
+)
+FABOZZI_FRANCIS_1977 = AcademicReference(
+    "Fabozzi, F. J., & Francis, J. C. (1977). Stability Tests for Alphas and Betas over Bull "
+    "and Bear Market Conditions. Journal of Finance, 32(4), 1093-1099."
+)
+MORNINGSTAR_BATTING = AcademicReference(
+    "Morningstar, Inc. Batting average: share of periods in which a fund outperformed its "
+    "benchmark (Morningstar Direct data definitions)."
+)
 # --- Library references ----------------------------------------------------
 PA = "PerformanceAnalytics 2.0.4 (R)"
 EMP = "empyrical-reloaded 0.5.12"

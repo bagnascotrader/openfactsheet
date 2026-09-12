@@ -35,6 +35,7 @@ All decisions below are **Accepted** for methodology **0.1.0**.
 | [0023](0023-calendar-year-statistics.md) | Calendar-year statistics | Complete calendar years only (12 months / 4 quarters / 7-day edge tolerance for daily and weekly); partial years listed, never used. |
 | [0024](0024-rolling-one-year-windows.md) | Rolling one-year windows | Window round(P) observations, step 1, every start date; descriptive only. |
 | [0025](0025-episode-durations-and-path-summaries.md) | Episode durations and path summaries | Open episodes in average duration (lower bound) but not in recovery time; recovery factor = compounded return / \|MDD\|; geometric mean; IQR. |
+| [0027](0027-benchmark-relative-additions.md) | Benchmark-relative additions | Residual volatility (m − 2), appraisal ratio (arithmetic alpha), M² (rf = 0), strict batting average, capture and timing ratios need positive denominators; regime betas on benchmark > 0 / < 0; exact fit for a constant fund. |
 
 ## Adding or changing a decision
 

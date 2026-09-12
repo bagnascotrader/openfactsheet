@@ -67,6 +67,7 @@ Regression with intercept.
 2. At least 3 aligned observations (mathematical minimum of policy `benchmark_regression`); otherwise `insufficient_data`.
 3. The value is undefined, and reported as `not_applicable` with the reason, when:
    - Benchmark returns are constant over the aligned periods.
+   - Fund returns are constant over the aligned periods (no variance to explain).
 
 An unexpected calculation failure or a non-finite result is reported as `error` with the value withheld; it never appears as NaN or infinity.
 

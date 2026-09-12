@@ -24,6 +24,24 @@ Package 0.1.0 · Methodology 0.1.0
 - Tests: unit, property-based, golden reports, CLAUDE.md acceptance tests 1–3,
   cross-library validation against PerformanceAnalytics, empyrical, QuantStats.
 
+### Added — Phase 2, third increment (8 metrics; 90 in total)
+- Benchmark-relative: capture ratio (upside / downside capture), batting average
+  (with up- and down-market components), residual (specific) volatility,
+  appraisal ratio, M-squared, bull- and bear-market beta, timing ratio.
+- Validated against PerformanceAnalytics (`CAPM.beta.bull` / `.bear`,
+  `TimingRatio`, `Modigliani`, `UpDownRatios(method = "Percent")`, R `lm`) and
+  empyrical (`up_down_capture`); documented differences from `SpecificRisk` and
+  `AppraisalRatio` pinned by tests. Decision note 0027.
+
+### Fixed (pre-release, third increment)
+- A constant fund against a varying benchmark produced rounding-noise betas
+  (e.g. 1e-17) and therefore absurd Treynor ratios (about -8.6e15). The
+  single-index regression is now solved exactly for a constant fund (beta 0,
+  zero residuals), so ratios dividing by beta or residual risk are
+  `not_applicable` with a reason.
+- R-squared for a constant fund was reported with status `error` (NaN); it is now
+  `not_applicable` (no variance to explain).
+
 ### Added — Phase 2, second increment (18 metrics; 82 in total)
 - Drawdown tail: Drawdown-at-Risk, Conditional Drawdown-at-Risk, Entropic
   Drawdown-at-Risk (95%); entropic VaR of returns; modified (Cornish-Fisher)

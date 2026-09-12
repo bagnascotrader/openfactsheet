@@ -10,14 +10,14 @@ One function call. One versioned methodology. Every metric, including the unflat
 [![Python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-0B3C7D?logo=python&logoColor=white)](pyproject.toml)
 [![License](https://img.shields.io/badge/license-Apache--2.0-0B3C7D)](LICENSE)
 [![Methodology](https://img.shields.io/badge/methodology-0.1.0-0E7C86)](docs/methodology.md)
-[![Metrics](https://img.shields.io/badge/canonical%20metrics-82-10A37F)](docs/metric_catalog.md)
+[![Metrics](https://img.shields.io/badge/canonical%20metrics-90-10A37F)](docs/metric_catalog.md)
 [![Typed](https://img.shields.io/badge/mypy-strict-10A37F)](pyproject.toml)
 [![Status](https://img.shields.io/badge/status-alpha-C98A00)](CHANGELOG.md)
 
 **[Quick start](#quick-start)** &nbsp;·&nbsp;
 **[Why OpenFactsheet](#why-openfactsheet)** &nbsp;·&nbsp;
 **[Example](#a-sharpe-ratio-of-238-and-why-you-should-not-trust-it)** &nbsp;·&nbsp;
-**[Metrics](#82-metrics-one-methodology)** &nbsp;·&nbsp;
+**[Metrics](#90-metrics-one-methodology)** &nbsp;·&nbsp;
 **[Methodology](docs/methodology.md)** &nbsp;·&nbsp;
 **[Docs](#documentation)** &nbsp;·&nbsp;
 **[Roadmap](#roadmap)**
@@ -38,7 +38,7 @@ import openfactsheet as ofs
 report = ofs.analyze(returns)
 ```
 
-That one call gives you 82 metrics, data-quality diagnostics, a 14-section
+That one call gives you 90 metrics, data-quality diagnostics, a 14-section
 report, and JSON output that is stable and never contains a `NaN`.
 
 > [!NOTE]
@@ -56,7 +56,7 @@ applies them the same way to every return stream.
 
 | | Typical factsheet | OpenFactsheet |
 | :-- | :-- | :-- |
-| **Metrics shown** | Selected by the issuer | All 82 canonical metrics, in every report |
+| **Metrics shown** | Selected by the issuer | All 90 canonical metrics, in every report |
 | **Periods** | Selected by the issuer | Full history, complete calendar years, every rolling one-year window |
 | **Assumptions** | Unstated or in the fine print | Versioned, and embedded in every report and every metric |
 | **Drawdowns & tail risk** | Often left out | Always computed: 15 drawdown and 7 tail-risk measures |
@@ -210,7 +210,7 @@ MetricResult(
 **Output formats:** Python objects · `dict` · JSON · terminal · Markdown · HTML ·
 pandas (`report.metrics.to_frame()`, `report.returns_frame()`).
 
-## 82 metrics, one methodology
+## 90 metrics, one methodology
 
 | Category | Count | Includes |
 | :-- | :-: | :-- |
@@ -222,7 +222,7 @@ pandas (`report.metrics.to_frame()`, `report.returns_frame()`).
 | **Distribution** | 3 | Skewness, excess kurtosis, Jarque-Bera |
 | **Consistency** | 10 | Hit rate, winning/losing streaks, calendar-year and rolling one-year statistics |
 | **Serial dependence** | 5 | Autocorrelation (lags 1 to 3), Ljung-Box, zero-return share |
-| **Benchmark-relative** | 10 | Beta, CAPM alpha, R², correlation, tracking error, active return, Information & Treynor ratios, up/down capture |
+| **Benchmark-relative** | 18 | Beta, CAPM alpha, R², correlation, tracking error, active return, Information, Treynor & appraisal ratios, M², up/down capture and capture ratio, batting average, residual volatility, bull/bear beta, timing ratio |
 | **Statistical confidence** | 4 | Probabilistic Sharpe Ratio, Sharpe standard error, Minimum Track Record Length, standard error of the mean |
 
 Every metric has its own documentation page covering what it measures, its exact
@@ -260,7 +260,7 @@ received.
   [reference implementations](docs/validation/reference_implementations.md).
 - **Independent implementations.** Formulas are implemented from their academic
   definitions, not copied from other libraries' source code.
-- **25 methodology decision records.** Every contested convention (sample vs.
+- **26 methodology decision records.** Every contested convention (sample vs.
   population deviation, VaR quantile interpolation, the Sortino denominator,
   drawdown episode definitions, partial calendar years, and so on) has a written
   [decision](docs/methodology/decisions/README.md) with its rationale.
@@ -284,7 +284,7 @@ received.
 | :-- | :-- | :-- |
 | 0 | Foundation: typed models, normalization, frequency inference, metric registry | ✅ Done |
 | 1 | Core metrics, cross-validated | ✅ Done |
-| 2 | Full metric catalog: M², appraisal ratio, batting average, residual volatility, variance-ratio diagnostics, bootstrap uncertainty | 🚧 82 metrics so far |
+| 2 | Full metric catalog: variance-ratio diagnostics, bootstrap uncertainty and further additions | 🚧 90 metrics so far |
 | 3 | Applicability and confidence engine | ✅ Done |
 | 4 | Reporting: terminal, Markdown, HTML, JSON ✅ · charts (wealth, underwater, heatmap, distribution, rolling) | 🚧 In progress |
 | 5 | Comparison engine (`ofs.compare`) | ✅ Done |

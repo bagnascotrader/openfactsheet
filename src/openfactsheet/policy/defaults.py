@@ -155,6 +155,14 @@ CANONICAL_ASSUMPTIONS: dict[str, Any] = {
         "alpha_annualization": "arithmetic: per-period intercept x periods_per_year",
         "information_ratio": "annualized arithmetic mean active return / tracking error",
         "capture": "geometric, annualized over up (benchmark > 0) or down (benchmark < 0) periods",
+        # Decision 0027.
+        "capture_ratio": "upside capture / downside capture; undefined unless downside capture > 0",
+        "batting_average": "share of aligned periods with fund return strictly above benchmark",
+        "residual_volatility": "OLS regression standard error (m - 2 dof) x sqrt(periods_per_year)",
+        "appraisal_ratio": "annualized OLS alpha / annualized residual volatility",
+        "m_squared": "aligned Sharpe ratio x benchmark volatility, arithmetic annualization",
+        "regime_betas": "OLS with intercept on benchmark > 0 (bull) or < 0 (bear) periods",
+        "timing_ratio": "bull beta / bear beta; undefined unless bear beta > 0",
         "description": (
             "periods aligned on their intersection (monthly/quarterly/yearly by calendar "
             "period, daily/weekly by exact date); missing benchmark returns are never filled"

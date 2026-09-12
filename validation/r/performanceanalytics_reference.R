@@ -168,7 +168,18 @@ results$benchmark_case <- list(
   active_premium_pa = num(ActivePremium(Ra, Rb, scale = 12)),
   treynor_ratio_pa = num(TreynorRatio(Ra, Rb, Rf = 0, scale = 12)),
   up_capture_pa = num(UpDownRatios(Ra, Rb, method = "Capture", side = "Up")),
-  down_capture_pa = num(UpDownRatios(Ra, Rb, method = "Capture", side = "Down"))
+  down_capture_pa = num(UpDownRatios(Ra, Rb, method = "Capture", side = "Down")),
+  # Decision 0027 (benchmark-relative additions).
+  up_percent_pa = num(UpDownRatios(Ra, Rb, method = "Percent", side = "Up")),
+  down_percent_pa = num(UpDownRatios(Ra, Rb, method = "Percent", side = "Down")),
+  specific_risk_pa = num(SpecificRisk(Ra, Rb, Rf = 0)),
+  appraisal_ratio_pa = num(AppraisalRatio(Ra, Rb, Rf = 0, method = "appraisal")),
+  jensen_alpha_pa = num(CAPM.jensenAlpha(Ra, Rb, Rf = 0)),
+  modigliani_pa_per_period = num(Modigliani(Ra, Rb, Rf = 0)),
+  bull_beta = num(CAPM.beta.bull(Ra, Rb, Rf = 0)),
+  bear_beta = num(CAPM.beta.bear(Ra, Rb, Rf = 0)),
+  timing_ratio = num(TimingRatio(Ra, Rb, Rf = 0)),
+  residual_se_lm = summary(lm(as.numeric(Ra) ~ as.numeric(Rb)))$sigma
 )
 
 path <- file.path(out_dir, "performanceanalytics.json")

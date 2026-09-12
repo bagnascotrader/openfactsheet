@@ -139,6 +139,20 @@ Phase 2b metrics. Columns as above; skfolio results are in the Notes column.
 | worst_rolling_year | Agrees with the min of the same rolling series | — | — | |
 | positive_rolling_year_pct | Agrees with the share of positive windows; window count agrees | — | — | |
 
+Benchmark-relative additions (decision 0027), on the `benchmark_case` fixture
+(96 aligned months).
+
+| Metric id | PerformanceAnalytics / R | empyrical | QuantStats | Notes |
+|---|---|---|---|---|
+| capture_ratio | — (ratio of PA's summed captures would differ as in item 8) | Agrees (`up_down_capture`) | — | |
+| batting_average | Up/down components agree (`UpDownRatios(method="Percent", side="Up"/"Down")`) | — | — | The overall share has no PA counterpart; checked by hand in unit tests. |
+| residual_volatility | Agrees with R `summary(lm(...))$sigma` x sqrt(12); differs (pinned) from `SpecificRisk` | — | — | PA divides the residual sum of squares by m, not m − 2 (verified). |
+| appraisal_ratio | Differs (pinned) from `AppraisalRatio(method="appraisal")` | — | — | PA = `CAPM.jensenAlpha` (geometric) / `SpecificRisk` (verified); OpenFactsheet = alpha / residual_volatility (asserted). |
+| m_squared | Agrees with `Modigliani` x 12 | — | — | PA reports per period. |
+| bull_beta | Agrees (`CAPM.beta.bull`) | — | — | |
+| bear_beta | Agrees (`CAPM.beta.bear`) | — | — | |
+| timing_ratio | Agrees (`TimingRatio`) | — | — | |
+
 The R harness records per-episode `findDrawdowns` columns, whether the last
 episode is open, complete-year returns, rolling 12-month returns, modified ES,
 `mean.geometric` and `IQR`; `test_phase2b_agreement` rebuilds each statistic
@@ -226,3 +240,11 @@ streaks, zero_return_pct) are checked against hand computations in
 20. **Open drawdown episodes (PA).** As in item 3, `findDrawdowns` `length` and
     `recovery` count an open last episode one period longer; the tests subtract 1
     (length) or drop the episode (recovery) before comparing.
+21. **Specific risk and appraisal ratio (PA).** `SpecificRisk` is the population
+    (m-denominator) standard deviation of the regression residuals, annualized;
+    OpenFactsheet uses the regression standard error (m − 2), consistent with the
+    OLS standard errors. `AppraisalRatio(method = "appraisal")` divides Jensen's
+    alpha computed from geometric annualized returns by `SpecificRisk`;
+    OpenFactsheet divides the arithmetic annualized OLS alpha by its residual
+    volatility (both relationships asserted). See
+    [0027](../methodology/decisions/0027-benchmark-relative-additions.md).
