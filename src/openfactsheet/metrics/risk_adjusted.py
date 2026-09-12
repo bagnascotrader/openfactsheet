@@ -561,3 +561,79 @@ def recovery_factor(ctx: MetricContext) -> float:
     if mdd == 0.0:
         raise UndefinedMetric("No drawdown occurred; the recovery factor is undefined.")
     return ctx.cache.cumulative_return / abs(mdd)
+
+
+@metric(
+    id="sharpe_ratio_autocorrelation_adjusted",
+    name="Sharpe ratio (serial-correlation adjusted, Lo 2002)",
+    category="risk_adjusted",
+    unit="ratio",
+    direction="higher_is_better",
+    nature="estimated",
+    min_data_policy="long_horizon_dependence",
+    annualized=True,
+    assumptions=("risk_free", "sample_std", "annualization"),
+    docs=MetricDocs(
+        measures="The annualized Sharpe ratio with the square-root-of-time factor replaced by "
+        "Lo's (2002) factor, which accounts for serial correlation up to one year.",
+        formula="(mean(r_t) / std(r_t, ddof=1)) * q / sqrt(q + 2 sum_{k=1}^{q-1} (q - k) rho_k), "
+        "q = round(P)",
+        formula_latex=(
+            r"\mathrm{SR}_{\mathrm{Lo}} = \frac{\bar r - r_f}{s} \, \eta(q), \quad "
+            r"\eta(q) = \frac{q}{\sqrt{q + 2 \sum_{k=1}^{q-1} (q-k) \hat\rho_k}}"
+            r" = \sqrt{\frac{q}{\mathrm{VR}(q)}}, \quad q = \operatorname{round}(P), \quad r_f = 0"
+        ),
+        undefined_when=(
+            "The frequency is not regular or there is one observation per year (q = 1).",
+            "Fewer than two years of observations (n < 2q).",
+            "Sample standard deviation is exactly zero (constant returns).",
+            "q + 2 sum (q - k) rho_k <= 0 (estimated autocorrelations imply a non-positive "
+            "one-year variance).",
+        ),
+        inputs="Periodic simple returns with a regular frequency.",
+        retail="The Sharpe ratio after allowing for gains or losses that persist from one "
+        "period to the next. When returns are smoothed (common for hedge funds and private "
+        "assets) this is usually lower than the conventional Sharpe ratio.",
+        institutional="Lo (2002) annualization of the per-period Sharpe ratio: eta(q) replaces "
+        "sqrt(q); with no autocorrelation the two coincide. Positive autocorrelation (for "
+        "example from smoothing) lowers it. The adjustment rests on q - 1 estimated "
+        "autocorrelations and is itself noisy for short histories; details report eta, "
+        "sqrt(q) and the variance ratio.",
+        assumptions=(
+            "Risk-free rate 0% (methodology 0.1.0).",
+            "Stationary returns; sample autocorrelations up to lag q - 1.",
+        ),
+        misleading_when=(
+            "The history is short relative to one year (the autocorrelations are noisy).",
+            "Serial correlation changes over time.",
+            "Returns are skewed or fat-tailed (as for the conventional Sharpe ratio).",
+        ),
+        minimum_data="At least two years of observations; low confidence below 5 years, "
+        "moderate below 10 years.",
+        reference_implementations=(),
+        references=(LO_2002, GLM_2004, SHARPE_1994),
+        convention="Horizon one year (q = round(P)); per-period Sharpe ratio as in decision "
+        "0008; autocorrelations of the dependence metrics (decision 0029).",
+    ),
+)
+def sharpe_ratio_autocorrelation_adjusted(ctx: MetricContext) -> Computed:
+    std = ctx.cache.std
+    if std == 0.0:
+        raise UndefinedMetric("Volatility is zero; the Sharpe ratio is undefined.")
+    dep = ctx.one_year_dependence
+    if dep.variance_ratio <= 0.0:
+        raise UndefinedMetric(
+            "The estimated autocorrelations imply a non-positive one-year variance "
+            f"(variance ratio {dep.variance_ratio:.2f}); Lo's adjustment is undefined."
+        )
+    eta = math.sqrt(dep.q / dep.variance_ratio)
+    return Computed(
+        ctx.cache.mean / std * eta,
+        details={
+            "eta": eta,
+            "sqrt_q": math.sqrt(dep.q),
+            "horizon_periods": dep.q,
+            "variance_ratio": dep.variance_ratio,
+            "sharpe_per_period": ctx.cache.mean / std,
+        },
+    )

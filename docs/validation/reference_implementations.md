@@ -169,6 +169,14 @@ into `tests/fixtures/reference/factor_models.json`.
 | factor_r_squared | Agrees with `summary(lm)$r.squared` (adjusted: `$adj.r.squared`) | |
 | factor_residual_volatility | Agrees with `summary(lm)$sigma × sqrt(12)` | |
 
+Serial-correlation additions (decision 0029):
+
+| Metric id | Reference | Notes |
+|---|---|---|
+| profit_factor | Agrees with QuantStats `stats.profit_factor` on all single-series fixtures | |
+| variance_ratio_1y | Autocorrelations agree with statsmodels `acf(adjusted=False)` to 1e-12; the standard error equals Lo & MacKinlay's (1988) asymptotic variance | No maintained Python/R implementation of the autocorrelation form was available (R `vrtest` implements the overlapping estimator, asymptotically equivalent). |
+| sharpe_ratio_autocorrelation_adjusted | Lo (2002) eq. (33) AR(1) closed form reproduced to 1e-12 from the autocorrelation sum | No library implementation identified. |
+
 The R harness records per-episode `findDrawdowns` columns, whether the last
 episode is open, complete-year returns, rolling 12-month returns, modified ES,
 `mean.geometric` and `IQR`; `test_phase2b_agreement` rebuilds each statistic

@@ -70,6 +70,14 @@ Undefined (`not_applicable`) when: No period has a negative return (zero denomin
 
 Undefined (`not_applicable`) when: No positive period or no negative period exists.
 
+### Profit factor (gross gains / gross losses) — [`profit_factor`](../interpretation/profit_factor.md)
+
+```math
+\mathrm{PF} = \frac{\sum_{t \in G} r_t}{\left| \sum_{t \in L} r_t \right|} = 1 + \mathrm{GPR}, \quad G = \{t : r_t > 0\}, \ L = \{t : r_t < 0\}
+```
+
+Undefined (`not_applicable`) when: No negative period exists (the denominator is zero).
+
 ## Risk summary
 
 ### Volatility per period — [`volatility`](../interpretation/volatility.md)
@@ -296,6 +304,14 @@ Undefined (`not_applicable`) when: No drawdown occurred (Pain Index is zero).
 
 Undefined (`not_applicable`) when: No drawdown occurred (maximum drawdown is zero).
 
+### Sharpe ratio (serial-correlation adjusted, Lo 2002) — [`sharpe_ratio_autocorrelation_adjusted`](../interpretation/sharpe_ratio_autocorrelation_adjusted.md)
+
+```math
+\mathrm{SR}_{\mathrm{Lo}} = \frac{\bar r - r_f}{s} \, \eta(q), \quad \eta(q) = \frac{q}{\sqrt{q + 2 \sum_{k=1}^{q-1} (q-k) \hat\rho_k}} = \sqrt{\frac{q}{\mathrm{VR}(q)}}, \quad q = \operatorname{round}(P), \quad r_f = 0
+```
+
+Undefined (`not_applicable`) when: The frequency is not regular or there is one observation per year (q = 1). Fewer than two years of observations (n < 2q). Sample standard deviation is exactly zero (constant returns). q + 2 sum (q - k) rho_k <= 0 (estimated autocorrelations imply a non-positive one-year variance).
+
 ## Tail behavior
 
 ### Value at Risk (historical, 95%) — [`var_historical_95`](../interpretation/var_historical_95.md)
@@ -485,6 +501,14 @@ Undefined (`not_applicable`) when: All returns are identical (zero variance).
 ```math
 Z = \frac{1}{n} \#\{t : r_t = 0\}
 ```
+
+### Variance ratio (one-year horizon) — [`variance_ratio_1y`](../interpretation/variance_ratio_1y.md)
+
+```math
+\mathrm{VR}(q) = 1 + 2 \sum_{k=1}^{q-1} \Big(1 - \frac{k}{q}\Big) \hat\rho_k, \quad q = \operatorname{round}(P), \quad z = \frac{\mathrm{VR}(q) - 1}{\sqrt{2 (2q-1)(q-1) / (3 q n)}}
+```
+
+Undefined (`not_applicable`) when: The frequency is not regular (P undefined) or there is one observation per year (q = 1). Fewer than two years of observations (n < 2q). All returns are identical (zero variance).
 
 ## Benchmark-relative analysis
 

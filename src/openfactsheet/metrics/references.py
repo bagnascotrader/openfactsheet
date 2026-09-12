@@ -190,6 +190,14 @@ FUNG_HSIEH_2004 = AcademicReference(
     "Fung, W., & Hsieh, D. A. (2004). Hedge Fund Benchmarks: A Risk-Based Approach. Financial "
     "Analysts Journal, 60(5), 65-80."
 )
+PARDO_2008 = AcademicReference(
+    "Pardo, R. (2008). The Evaluation and Optimization of Trading Strategies (2nd ed.). Wiley "
+    "(profit factor: gross profit / gross loss)."
+)
+LO_MACKINLAY_1988 = AcademicReference(
+    "Lo, A. W., & MacKinlay, A. C. (1988). Stock Market Prices Do Not Follow Random Walks: "
+    "Evidence from a Simple Specification Test. Review of Financial Studies, 1(1), 41-66."
+)
 # --- Library references ----------------------------------------------------
 R_SANDWICH = "R lm + sandwich::NeweyWest + lmtest::coeftest"
 PA = "PerformanceAnalytics 2.0.4 (R)"

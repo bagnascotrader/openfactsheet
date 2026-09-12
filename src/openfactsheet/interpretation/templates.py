@@ -137,6 +137,34 @@ def _track_record_sufficiency(
     )
 
 
+def _serial_correlation_adjustment(
+    result: MetricResult, metrics: MetricCollection, __: MetricContext
+) -> str | None:
+    if result.id != "sharpe_ratio_autocorrelation_adjusted" or result.value is None:
+        return None
+    sharpe = metrics.get("sharpe_ratio")
+    vr = result.details.get("variance_ratio")
+    if sharpe is None or sharpe.value is None or vr is None:
+        return None
+    if vr > 1.0:
+        direction = (
+            "gains and losses tended to persist, so square-root-of-time annualization "
+            "overstates the magnitude of the conventional ratio"
+        )
+    elif vr < 1.0:
+        direction = (
+            "gains and losses tended to reverse, so square-root-of-time annualization "
+            "understates the magnitude of the conventional ratio"
+        )
+    else:
+        direction = "the two annualizations coincide"
+    return (
+        f"Allowing for serial correlation up to one year (Lo 2002) changes the annualized Sharpe "
+        f"ratio from {sharpe.value:.2f} to {result.value:.2f} (variance ratio {vr:.2f}): "
+        f"{direction}. The adjustment itself rests on estimated autocorrelations."
+    )
+
+
 RULES: tuple[ContextRule, ...] = (
     _smoothing,
     _hidden_tail,
@@ -146,4 +174,5 @@ RULES: tuple[ContextRule, ...] = (
     _annualized_short,
     _sharpe_significance,
     _track_record_sufficiency,
+    _serial_correlation_adjustment,
 )

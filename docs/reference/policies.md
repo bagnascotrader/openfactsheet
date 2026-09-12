@@ -14,7 +14,7 @@ Below the mathematical minimum a metric is `insufficient_data`; the statistical 
 | `path_risk` | 1 obs | years of history | 3 | 5 | `max_drawdown`, `average_drawdown`, `longest_drawdown_duration`, `drawdown_count`, `time_underwater_pct`, `ulcer_index`, `pain_index`, `median_drawdown`, `average_drawdown_duration`, `max_peak_to_trough_duration`, `average_recovery_duration`, `longest_winning_streak`, `longest_losing_streak`, `best_calendar_year`, `worst_calendar_year`, `positive_calendar_years_pct`, `best_rolling_year`, `worst_rolling_year`, `positive_rolling_year_pct` |
 | `location` | 1 obs | years of history | 3 | 5 | `cagr`, `arithmetic_mean`, `geometric_mean_return`, `annualized_arithmetic_mean`, `median_return`, `positive_period_pct`, `negative_period_pct` |
 | `dispersion` | 2 obs | years of history | 3 | 5 | `volatility`, `annualized_volatility`, `mean_absolute_deviation`, `interquartile_range`, `downside_deviation`, `semi_deviation`, `downside_potential`, `gaussian_var_95`, `mean_return_standard_error` |
-| `ratio_standard` | 2 obs | years of history | 3 | 5 | `gain_to_pain_ratio`, `payoff_ratio`, `sharpe_ratio`, `sortino_ratio`, `calmar_ratio`, `martin_ratio`, `omega_ratio`, `kappa_3_ratio`, `upside_potential_ratio`, `burke_ratio`, `sterling_ratio`, `pain_ratio`, `recovery_factor` |
+| `ratio_standard` | 2 obs | years of history | 3 | 5 | `gain_to_pain_ratio`, `payoff_ratio`, `profit_factor`, `sharpe_ratio`, `sortino_ratio`, `calmar_ratio`, `martin_ratio`, `omega_ratio`, `kappa_3_ratio`, `upside_potential_ratio`, `burke_ratio`, `sterling_ratio`, `pain_ratio`, `recovery_factor` |
 | `skewness` | 3 obs | observations | 60 | 120 | `skewness`, `jarque_bera_pvalue` |
 | `kurtosis` | 4 obs | observations | 120 | 240 | `modified_var_95`, `modified_es_95`, `excess_kurtosis` |
 | `tail` | 2 obs | expected tail observations | 5 | 10 | `drawdown_at_risk_95`, `cdar_95`, `edar_95`, `var_historical_95`, `expected_shortfall_historical_95`, `tail_ratio`, `evar_95` |
@@ -23,6 +23,7 @@ Below the mathematical minimum a metric is `insufficient_data`; the statistical 
 | `asymptotic_inference` | 4 obs | observations | 36 | 60 | `probabilistic_sharpe_ratio`, `sharpe_ratio_standard_error`, `minimum_track_record_length` |
 | `benchmark_regression` | 3 obs | years of history | 3 | 5 | `beta`, `alpha`, `r_squared`, `correlation`, `treynor_ratio`, `residual_volatility`, `appraisal_ratio`, `bull_beta`, `bear_beta`, `timing_ratio` |
 | `benchmark_simple` | 2 obs | years of history | 3 | 5 | `tracking_error`, `active_return`, `information_ratio`, `upside_capture`, `downside_capture`, `capture_ratio`, `batting_average`, `m_squared` |
+| `long_horizon_dependence` | 4 obs | years of history | 5 | 10 | `sharpe_ratio_autocorrelation_adjusted`, `variance_ratio_1y` |
 | `factor_regression` | 3 obs | years of history | 3 | 5 | `factor_alpha`, `factor_alpha_t_statistic`, `factor_r_squared`, `factor_residual_volatility` |
 
 Policy descriptions:
@@ -40,6 +41,7 @@ Policy descriptions:
 - `asymptotic_inference`: Asymptotic Sharpe-ratio inference needs at least 4 observations for the moments it uses; the normal approximation is poor below 36 observations (low) and 60 (moderate).
 - `benchmark_regression`: Requires at least 3 aligned observations; low confidence below 3 years of overlap, moderate below 5 years.
 - `benchmark_simple`: Requires at least 2 aligned observations; low confidence below 3 years of overlap, moderate below 5 years.
+- `long_horizon_dependence`: One-year-horizon serial-correlation statistics need at least two years of data (undefined below); their standard error is about sqrt(4 / (3 y)) for y years, so confidence is low below 5 years and moderate below 10 years.
 - `factor_regression`: Requires at least 3 aligned observations and at least k + 2 for k factors (k + 1 coefficients and one residual degree of freedom); low confidence below 3 years of overlap, moderate below 5 years.
 
 ## Metric flags
@@ -58,6 +60,7 @@ Flags that decide which applicability checks and confidence modifiers apply to e
 | [`worst_period`](../interpretation/worst_period.md) | returns |  |  |  |  |  |  | `observed_point` | — |
 | [`gain_to_pain_ratio`](../interpretation/gain_to_pain_ratio.md) | returns |  |  |  |  |  |  | `ratio_standard` | — |
 | [`payoff_ratio`](../interpretation/payoff_ratio.md) | returns |  |  |  |  |  |  | `ratio_standard` | — |
+| [`profit_factor`](../interpretation/profit_factor.md) | returns |  |  |  |  |  |  | `ratio_standard` | — |
 | [`volatility`](../interpretation/volatility.md) | volatility | yes |  |  |  |  |  | `dispersion` | `sample_std` |
 | [`annualized_volatility`](../interpretation/annualized_volatility.md) | volatility | yes |  | yes |  |  |  | `dispersion` | `sample_std`, `annualization` |
 | [`mean_absolute_deviation`](../interpretation/mean_absolute_deviation.md) | volatility | yes |  |  |  |  |  | `dispersion` | — |
@@ -91,6 +94,7 @@ Flags that decide which applicability checks and confidence modifiers apply to e
 | [`sterling_ratio`](../interpretation/sterling_ratio.md) | risk_adjusted |  | yes | yes |  |  |  | `ratio_standard` | `annualization`, `drawdown`, `sterling_excess`, `risk_free` |
 | [`pain_ratio`](../interpretation/pain_ratio.md) | risk_adjusted |  | yes | yes |  |  |  | `ratio_standard` | `annualization`, `drawdown`, `risk_free` |
 | [`recovery_factor`](../interpretation/recovery_factor.md) | risk_adjusted |  | yes |  |  |  |  | `ratio_standard` | `drawdown` |
+| [`sharpe_ratio_autocorrelation_adjusted`](../interpretation/sharpe_ratio_autocorrelation_adjusted.md) | risk_adjusted |  |  | yes |  |  |  | `long_horizon_dependence` | `risk_free`, `sample_std`, `annualization` |
 | [`var_historical_95`](../interpretation/var_historical_95.md) | tail |  |  |  |  |  |  | `tail` | `tail` |
 | [`expected_shortfall_historical_95`](../interpretation/expected_shortfall_historical_95.md) | tail |  |  |  |  |  |  | `tail` | `tail` |
 | [`tail_ratio`](../interpretation/tail_ratio.md) | tail |  |  |  |  |  |  | `tail` | — |
@@ -116,6 +120,7 @@ Flags that decide which applicability checks and confidence modifiers apply to e
 | [`autocorrelation_lag3`](../interpretation/autocorrelation_lag3.md) | dependence |  |  |  |  |  |  | `autocorrelation` | — |
 | [`ljung_box_pvalue`](../interpretation/ljung_box_pvalue.md) | dependence |  |  |  |  |  | yes | `ljung_box` | — |
 | [`zero_return_pct`](../interpretation/zero_return_pct.md) | dependence |  |  |  |  |  |  | `observed_point` | — |
+| [`variance_ratio_1y`](../interpretation/variance_ratio_1y.md) | dependence |  |  |  |  |  | yes | `long_horizon_dependence` | — |
 | [`beta`](../interpretation/beta.md) | benchmark |  |  |  | yes |  |  | `benchmark_regression` | `benchmark`, `regression` |
 | [`alpha`](../interpretation/alpha.md) | benchmark |  |  | yes | yes |  |  | `benchmark_regression` | `benchmark`, `regression`, `annualization` |
 | [`r_squared`](../interpretation/r_squared.md) | benchmark |  |  |  | yes |  |  | `benchmark_regression` | `benchmark`, `regression` |
@@ -350,6 +355,12 @@ This is the `methodology` object embedded in every JSON report.
     "rolling": {
       "step_periods": 1,
       "window_years": 1
+    },
+    "serial_correlation": {
+      "horizon_years": 1,
+      "min_years": 2,
+      "sharpe_adjustment": "Lo (2002): SR_per_period * q / sqrt(q + 2 * sum_{k=1}^{q-1} (q-k) rho_k)",
+      "variance_ratio": "1 + 2 * sum_{k=1}^{q-1} (1 - k/q) * rho_k"
     },
     "sharpe_inference": {
       "ci_level": 0.95,

@@ -20,6 +20,7 @@ Reference column: ✓ agrees with the OpenFactsheet convention, ≠ documented c
 | [`worst_period`](interpretation/worst_period.md) | Worst period | observed | decimal_return | Higher is better | no | no | — | `observed_point` | implemented (worst_period@v1) | QuantStats ✓, NumPy ✓ |
 | [`gain_to_pain_ratio`](interpretation/gain_to_pain_ratio.md) | Gain-to-pain ratio | derived | ratio | Higher is better | no | no | — | `ratio_standard` | implemented (gain_to_pain_ratio@v1) | QuantStats ✓ |
 | [`payoff_ratio`](interpretation/payoff_ratio.md) | Payoff ratio (average win / average loss) | derived | ratio | Higher is better | no | no | — | `ratio_standard` | implemented (payoff_ratio@v1) | QuantStats ✓ |
+| [`profit_factor`](interpretation/profit_factor.md) | Profit factor (gross gains / gross losses) | derived | ratio | Higher is better | no | no | — | `ratio_standard` | implemented (profit_factor@v1) | QuantStats ✓ |
 
 ## Risk summary
 
@@ -68,6 +69,7 @@ Reference column: ✓ agrees with the OpenFactsheet convention, ≠ documented c
 | [`sterling_ratio`](interpretation/sterling_ratio.md) | Sterling ratio | derived | ratio | Higher is better | no | yes | annualization factor, wealth starts at 1, +10% adjustment, risk-free = 0 | `ratio_standard` | implemented (sterling_ratio@v1) | PerformanceAnalytics ✓ |
 | [`pain_ratio`](interpretation/pain_ratio.md) | Pain ratio | derived | ratio | Higher is better | no | yes | annualization factor, wealth starts at 1, risk-free = 0 | `ratio_standard` | implemented (pain_ratio@v1) | PerformanceAnalytics ≠ |
 | [`recovery_factor`](interpretation/recovery_factor.md) | Recovery factor | derived | ratio | Higher is better | no | no | wealth starts at 1 | `ratio_standard` | implemented (recovery_factor@v1) | QuantStats ≠ |
+| [`sharpe_ratio_autocorrelation_adjusted`](interpretation/sharpe_ratio_autocorrelation_adjusted.md) | Sharpe ratio (serial-correlation adjusted, Lo 2002) | estimated | ratio | Higher is better | no | yes | risk-free = 0, sample std (n-1), annualization factor | `long_horizon_dependence` | implemented (sharpe_ratio_autocorrelation_adjusted@v1) | — |
 
 ## Tail behavior
 
@@ -113,6 +115,7 @@ Reference column: ✓ agrees with the OpenFactsheet convention, ≠ documented c
 | [`autocorrelation_lag3`](interpretation/autocorrelation_lag3.md) | Autocorrelation (lag 3) | estimated | correlation | Context dependent | no | no | — | `autocorrelation` | implemented (autocorrelation_lag3@v1) | statsmodels ✓ |
 | [`ljung_box_pvalue`](interpretation/ljung_box_pvalue.md) | Ljung-Box p-value (3 lags) | model_dependent | probability | Context dependent | no | no | — | `ljung_box` | implemented (ljung_box_pvalue@v1) | statsmodels ✓ |
 | [`zero_return_pct`](interpretation/zero_return_pct.md) | Zero-return periods | observed | fraction | Context dependent | no | no | — | `observed_point` | implemented (zero_return_pct@v1) | — |
+| [`variance_ratio_1y`](interpretation/variance_ratio_1y.md) | Variance ratio (one-year horizon) | estimated | ratio | Context dependent | no | no | — | `long_horizon_dependence` | implemented (variance_ratio_1y@v1) | statsmodels ✓ |
 
 ## Benchmark-relative analysis
 

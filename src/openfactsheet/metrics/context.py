@@ -23,6 +23,16 @@ from openfactsheet.models.diagnostics import DataQualityReport
 from openfactsheet.models.input import ReturnSeries
 
 
+@dataclass(frozen=True, eq=False)
+class OneYearDependence:
+    """Serial correlation up to the one-year horizon ``q = round(P)`` (decision 0029)."""
+
+    q: int
+    rho: npt.NDArray[np.float64]  # rho_1 .. rho_{q-1}
+    variance_ratio: float
+    standard_error: float  # asymptotic i.i.d. standard error of the variance ratio
+
+
 @dataclass(frozen=True)
 class CalendarYears:
     complete: dict[int, float]  # year -> compounded return of a complete calendar year
@@ -262,6 +272,44 @@ class MetricContext:
             )
         windows = np.lib.stride_tricks.sliding_window_view(self.r, window)
         return np.prod(1.0 + windows, axis=1) - 1.0, window
+
+    @cached_property
+    def one_year_dependence(self) -> OneYearDependence:
+        """Autocorrelations up to the one-year horizon and the variance ratio (decision 0029)."""
+        from openfactsheet.diagnostics.autocorrelation import (
+            autocorrelations,
+            variance_ratio,
+            variance_ratio_standard_error,
+        )
+
+        ppy = self.returns.periods_per_year
+        if ppy is None:
+            raise UndefinedMetric(
+                "The one-year horizon requires a regular observation frequency; the frequency "
+                f"of this series is {self.returns.frequency.value}."
+            )
+        conv = self.methodology.get("serial_correlation")
+        q = round(ppy * float(conv["horizon_years"]))
+        if q < 2:
+            raise UndefinedMetric(
+                "With one observation per year the one-year horizon is a single period; there is "
+                "no within-year serial correlation to measure."
+            )
+        needed = int(conv["min_years"]) * q
+        if self.n < needed:
+            raise UndefinedMetric(
+                f"At least {needed} observations ({conv['min_years']} years) are needed to "
+                f"estimate the {q - 1} autocorrelations of a one-year horizon; {self.n} available."
+            )
+        rho = autocorrelations(self.r, q - 1)
+        if rho is None:
+            raise UndefinedMetric("Autocorrelations are undefined (constant returns).")
+        return OneYearDependence(
+            q=q,
+            rho=rho,
+            variance_ratio=variance_ratio(rho, q),
+            standard_error=variance_ratio_standard_error(self.n, q),
+        )
 
     @cached_property
     def cagr(self) -> float:
