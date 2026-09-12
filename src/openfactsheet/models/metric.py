@@ -50,6 +50,7 @@ Category = Literal[
     "dependence",
     "consistency",
     "benchmark",
+    "factors",
     "statistical",
 ]
 
@@ -64,6 +65,7 @@ CATEGORY_TITLES: Mapping[str, str] = MappingProxyType(
         "consistency": "Consistency",
         "dependence": "Serial dependence & smoothing",
         "benchmark": "Benchmark-relative analysis",
+        "factors": "Factor analysis",
         "statistical": "Statistical confidence",
     }
 )
@@ -150,6 +152,7 @@ class MetricDefinition:
     docs: MetricDocs
     func: MetricFunction
     requires_benchmark: bool = False
+    requires_factors: bool = False
     annualized: bool = False
     uses_wealth_path: bool = False
     volatility_based: bool = False
@@ -173,6 +176,7 @@ class MetricDefinition:
             "formula_id": self.formula_id,
             "min_data_policy": self.min_data_policy,
             "requires_benchmark": self.requires_benchmark,
+            "requires_factors": self.requires_factors,
             "annualized": self.annualized,
             "uses_wealth_path": self.uses_wealth_path,
             "volatility_based": self.volatility_based,

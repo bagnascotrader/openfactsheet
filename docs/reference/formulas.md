@@ -626,6 +626,40 @@ Undefined (`not_applicable`) when: Fewer than 3 benchmark down periods in the ov
 
 Undefined (`not_applicable`) when: Bull-market or bear-market beta is undefined (fewer than 3 up or down periods, or a constant benchmark within a regime). Bear-market beta is zero or negative; the ratio's sign would be meaningless. Both betas are still reported.
 
+## Factor analysis
+
+### Factor-model alpha (annualized) — [`factor_alpha`](../interpretation/factor_alpha.md)
+
+```math
+\alpha_{\text{ann}} = P \, \hat\alpha, \quad y_t = \alpha + \sum_{j=1}^{k} \beta_j f_{j,t} + \varepsilon_t, \quad y_t = r_t - r^{\mathrm{RF}}_t, \quad t = 1..m
+```
+
+Undefined (`not_applicable`) when: A factor is constant over the aligned periods. The factor returns are perfectly collinear over the aligned periods.
+
+### Factor-model alpha t-statistic (Newey-West) — [`factor_alpha_t_statistic`](../interpretation/factor_alpha_t_statistic.md)
+
+```math
+t_\alpha = \frac{\hat\alpha}{\widehat{\mathrm{SE}}_{\mathrm{HAC}}(\hat\alpha)}, \quad \widehat{V}_{\mathrm{HAC}} = \frac{m}{m-k-1} (X^\top X)^{-1} \hat S (X^\top X)^{-1}, \quad \hat S = \sum_{\ell=-q}^{q} \Big(1 - \frac{|\ell|}{q+1}\Big) \hat\Gamma_\ell, \quad q = \big\lfloor 4 (m/100)^{2/9} \big\rfloor
+```
+
+Undefined (`not_applicable`) when: A factor is constant or the factors are perfectly collinear. The factors reproduce the fund exactly (residuals zero or below floating-point resolution), so the standard error is zero.
+
+### Factor-model R-squared — [`factor_r_squared`](../interpretation/factor_r_squared.md)
+
+```math
+R^2 = 1 - \frac{\sum_{t=1}^{m} \hat\varepsilon_t^2}{\sum_{t=1}^{m} (y_t - \bar y)^2}, \quad \bar R^2 = 1 - (1 - R^2) \frac{m - 1}{m - k - 1}
+```
+
+Undefined (`not_applicable`) when: A factor is constant or the factors are perfectly collinear. The dependent variable is constant (no variance to explain).
+
+### Factor-model residual volatility (annualized) — [`factor_residual_volatility`](../interpretation/factor_residual_volatility.md)
+
+```math
+\sigma_\varepsilon = \sqrt{\frac{\sum_{t=1}^{m} \hat\varepsilon_t^2}{m-k-1}} \, \sqrt{P}
+```
+
+Undefined (`not_applicable`) when: A factor is constant or the factors are perfectly collinear.
+
 ## Statistical confidence
 
 ### Probabilistic Sharpe Ratio (vs 0) — [`probabilistic_sharpe_ratio`](../interpretation/probabilistic_sharpe_ratio.md)

@@ -37,6 +37,7 @@ All decisions below are **Accepted** for methodology **0.1.0**.
 | [0025](0025-episode-durations-and-path-summaries.md) | Episode durations and path summaries | Open episodes in average duration (lower bound) but not in recovery time; recovery factor = compounded return / \|MDD\|; geometric mean; IQR. |
 | [0026](0026-canonical-charts.md) | Canonical charts | Eight fixed charts over the full history, linear scales, zero baselines for bars, symmetric heatmap scale, partial years flagged, benchmark on the aligned overlap only; the 10 deepest drawdown episodes tabulated. |
 | [0027](0027-benchmark-relative-additions.md) | Benchmark-relative additions | Residual volatility (m − 2), appraisal ratio (arithmetic alpha), M² (rf = 0), strict batting average, capture and timing ratios need positive denominators; regime betas on benchmark > 0 / < 0; exact fit for a constant fund. |
+| [0028](0028-factor-models.md) | Factor models | Caller-supplied factors only; an `RF` column is subtracted from fund returns; one return scale for all factor columns; OLS with Newey-West errors (lag floor(4 (m/100)^(2/9)), no prewhitening, Student t); never filled; smoothing lowers confidence. |
 
 ## Adding or changing a decision
 

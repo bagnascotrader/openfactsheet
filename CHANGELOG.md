@@ -24,6 +24,33 @@ Package 0.1.0 · Methodology 0.1.0
 - Tests: unit, property-based, golden reports, CLAUDE.md acceptance tests 1–3,
   cross-library validation against PerformanceAnalytics, empyrical, QuantStats.
 
+### Added — Phase 7: factor models (4 metrics; 94 in total)
+- `ofs.analyze(returns, factors=...)` and `ofs.compare(..., factors=...)` accept
+  caller-supplied factor returns (DataFrame, CSV/Excel path or table text; one
+  column per factor). A column named `RF` is the risk-free rate and is subtracted
+  from fund returns. Factor data are never downloaded.
+- One return scale is detected jointly for all factor columns (so a small RF
+  column in percent is never read as decimals); periods missing for the fund or
+  any factor are dropped, never filled; frequency mismatches raise the new
+  `FactorAlignmentError`.
+- OLS with Newey-West (HAC) standard errors, fixed lag `floor(4 (m/100)^(2/9))`,
+  no prewhitening, small-sample factor and Student t inference (decision 0028).
+  Known factor sets are labelled (CAPM, Fama-French 3/5, Carhart).
+- New `factors` category: factor-model alpha (annualized), its t-statistic,
+  R-squared and residual volatility. Report section 11 now shows the model,
+  alignment and every loading with standard error, t, p and 95% interval; JSON
+  gains `factor_analysis`, provenance gains `factor_names` and `factors_sha256`.
+- Confidence: policy `factor_regression`; factor overlap below 90% caps at
+  moderate; smoothed returns lower confidence (they bias loadings toward zero and
+  alpha upward). Collinear factors and serially correlated residuals are flagged.
+- Validated against R `lm` + `sandwich::NeweyWest` + `lmtest::coeftest` to 1e-8
+  (`validation/r/factor_reference.R`); new golden report `factor_case`.
+
+### Fixed (pre-release, factor-model increment)
+- The outlier diagnostic emitted a floating-point overflow warning when the median
+  absolute deviation was subnormal (found by property-based testing); the
+  overflowing robust z-score is now counted as an outlier without a warning.
+
 ### Added — Phase 4: canonical charts
 - The HTML report now contains eight canonical charts rendered as static,
   self-contained SVG (no external resources): growth of 1, calendar-year returns,

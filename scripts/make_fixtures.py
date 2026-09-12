@@ -95,7 +95,57 @@ def main() -> None:
     pd.DataFrame(rows, columns=["Year", *months, "YTD"]).to_csv(
         EXAMPLES / "monthly_table.csv", index=False
     )
+    make_factor_fixtures()
     print(f"Fixtures written to {FIXTURES} and {EXAMPLES / 'monthly_table.csv'}")
+
+
+def make_factor_fixtures() -> None:
+    """Factor case (decision 0028): Fama-French-style factors in percent with RF.
+
+    Its own seed, so adding it leaves every earlier fixture unchanged. The factor
+    file starts two years before the fund, has one missing HML value (that month
+    must be dropped, never filled), and the fund's residuals are AR(1) so the
+    Newey-West correction matters.
+    """
+    rng = np.random.default_rng(SEED + 28)
+    n_f = 132
+    f_dates = month_ends("2014-01-31", n_f)
+    mkt = 0.006 + 0.045 * _t(rng, n_f)
+    smb = 0.001 + 0.025 * rng.standard_normal(n_f)
+    hml = 0.0005 + 0.028 * rng.standard_normal(n_f) - 0.15 * mkt
+    rf = np.clip(0.0015 + 0.0004 * np.cumsum(rng.standard_normal(n_f)) / 4, 0.0, None)
+    factors = pd.DataFrame(
+        {
+            "date": f_dates.strftime("%Y-%m-%d"),
+            "Mkt-RF": np.round(100 * mkt, 2),
+            "SMB": np.round(100 * smb, 2),
+            "HML": np.round(100 * hml, 2),
+            "RF": np.round(100 * rf, 3),
+        }
+    )
+    factors["HML"] = factors["HML"].astype(object)
+    factors.loc[70, "HML"] = ""  # one missing factor value (2019-11)
+    factors.to_csv(FIXTURES / "factor_case_factors.csv", index=False)
+
+    # Fund: 2016-01 .. 2024-12 (108 months), rounded factors as the "truth".
+    start = 24
+    n = 108
+    e = np.zeros(n)
+    shocks = 0.012 * rng.standard_normal(n)
+    for t in range(n):
+        e[t] = shocks[t] + (0.35 * e[t - 1] if t else 0.0)
+    fmkt = factors["Mkt-RF"].to_numpy(float)[start : start + n] / 100
+    fsmb = factors["SMB"].to_numpy(float)[start : start + n] / 100
+    fhml = (
+        pd.to_numeric(factors["HML"], errors="coerce").fillna(0.0).to_numpy()[start : start + n]
+        / 100
+    )
+    frf = factors["RF"].to_numpy(float)[start : start + n] / 100
+    fund = frf + 0.002 + 0.9 * fmkt + 0.35 * fsmb - 0.25 * fhml + e
+    _write(
+        pd.DataFrame({"date": f_dates[start : start + n].strftime("%Y-%m-%d"), "return": fund}),
+        "factor_case_fund.csv",
+    )
 
 
 if __name__ == "__main__":

@@ -192,6 +192,16 @@ MIN_DATA_POLICIES: dict[str, MinDataPolicy] = {
             "Requires at least 2 aligned observations; low confidence below 3 years of overlap, "
             "moderate below 5 years.",
         ),
+        MinDataPolicy(
+            "factor_regression",
+            3,
+            "years",
+            3.0,
+            5.0,
+            "Requires at least 3 aligned observations and at least k + 2 for k factors (k + 1 "
+            "coefficients and one residual degree of freedom); low confidence below 3 years of "
+            "overlap, moderate below 5 years.",
+        ),
     )
 }
 

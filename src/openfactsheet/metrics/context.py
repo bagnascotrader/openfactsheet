@@ -11,6 +11,7 @@ import numpy.typing as npt
 
 from openfactsheet.compare.alignment import AlignedBenchmark
 from openfactsheet.exceptions import UndefinedMetric
+from openfactsheet.factors.regressions import AlignedFactors
 from openfactsheet.metrics.path import (
     DrawdownEpisode,
     drawdown_episodes,
@@ -163,6 +164,7 @@ class MetricContext:
     diagnostics: DataQualityReport
     methodology: Methodology
     benchmark: AlignedBenchmark | None = None
+    factors: AlignedFactors | None = None
     cache: MetricCache = field(init=False)
 
     def __post_init__(self) -> None:
@@ -189,6 +191,12 @@ class MetricContext:
         if self.benchmark is None:  # pragma: no cover - guarded by the applicability engine
             raise UndefinedMetric("No benchmark supplied.")
         return self.benchmark
+
+    @property
+    def fac(self) -> AlignedFactors:
+        if self.factors is None:  # pragma: no cover - guarded by the applicability engine
+            raise UndefinedMetric("No factor returns supplied.")
+        return self.factors
 
     @cached_property
     def calendar_years(self) -> CalendarYears:

@@ -186,6 +186,22 @@ CANONICAL_ASSUMPTIONS: dict[str, Any] = {
             "period, daily/weekly by exact date); missing benchmark returns are never filled"
         ),
     },
+    "factor_model": {
+        # Decision 0028. Factor returns are always supplied by the caller.
+        "estimator": "OLS with intercept of fund (excess) returns on the supplied factors",
+        "risk_free": (
+            "a factor column named RF is subtracted from fund returns; without one the "
+            "dependent variable is the fund return (risk-free rate 0%)"
+        ),
+        "covariance": "Newey-West HAC, Bartlett kernel, small-sample factor m / (m - k - 1)",
+        "hac_lag_rule": "floor(4 * (m / 100) ** (2 / 9))",
+        "inference": "Student t with m - k - 1 degrees of freedom",
+        "ci_level": 0.95,
+        "alpha_annualization": "arithmetic: per-period intercept x periods_per_year",
+        "alignment": "periods where the fund and every factor have a return; never filled",
+        "vif_warning": 10.0,
+        "ljung_box_min_observations": 10,
+    },
     "missing_data": {
         "description": (
             "missing returns are never replaced by zero or forward-filled; leading and "
@@ -229,6 +245,8 @@ CANONICAL_ASSUMPTIONS: dict[str, Any] = {
         # Benchmark-relative metrics are capped at "moderate" when the aligned
         # overlap covers less than this share of the fund's observations.
         "benchmark_min_coverage": 0.9,
+        # Factor-model metrics: the same cap when the factor overlap is shorter.
+        "factor_min_coverage": 0.9,
         # Annualized metrics are "low" confidence when fewer years than this exist.
         "annualization_min_years": 1.0,
     },

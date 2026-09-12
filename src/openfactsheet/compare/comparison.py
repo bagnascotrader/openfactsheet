@@ -156,10 +156,19 @@ def build_comparison(
     funds: Any,
     *,
     benchmark: Any = None,
+    factors: Any = None,
     return_scale: DeclaredScale | None = None,
     frequency: str | ObservationFrequency | None = None,
 ) -> Comparison:
     from openfactsheet.api import analyze
+    from openfactsheet.factors.data import load_factor_set
+
+    # Factor data are parsed once so every investment is regressed on identical factors.
+    factor_set = (
+        load_factor_set(factors, return_scale=return_scale, frequency=frequency)
+        if factors is not None
+        else None
+    )
 
     pairs = _collect(funds)
     if len(pairs) < 2:
@@ -171,7 +180,12 @@ def build_comparison(
     reports: dict[str, FactsheetReport] = {}
     for label, source in pairs:
         reports[str(label)] = analyze(
-            source, benchmark, name=str(label), return_scale=return_scale, frequency=frequency
+            source,
+            benchmark,
+            factors=factor_set,
+            name=str(label),
+            return_scale=return_scale,
+            frequency=frequency,
         )
 
     notes: list[str] = []
@@ -208,7 +222,9 @@ def build_comparison(
                     source_type=s.source_type,
                     transformations=("restricted to the common period of all compared histories",),
                 )
-                common_reports[label] = analyze(sub, benchmark, name=label, return_scale="decimal")
+                common_reports[label] = analyze(
+                    sub, benchmark, factors=factor_set, name=label, return_scale="decimal"
+                )
             first = next(iter(common_reports.values())).input_summary
             common_period = (first.start or "", first.end or "")
         else:

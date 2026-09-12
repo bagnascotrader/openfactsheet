@@ -9,11 +9,15 @@ from openfactsheet.policy.applicability import NO_BENCHMARK_REASON
 from openfactsheet.report.tables import (
     EPISODE_TABLE_HEADER,
     FACTOR_SECTION_TEXT,
+    LOADING_TABLE_HEADER,
     STATISTICAL_SECTION_TEXT,
     Footnotes,
     confidence_counts,
     data_quality_metrics,
     drawdown_episode_table,
+    factor_fit_summary,
+    factor_loading_rows,
+    factor_metrics,
     format_value,
     ordered_categories,
     result_notes,
@@ -49,6 +53,22 @@ def _episode_table(report: FactsheetReport) -> list[str]:
         out += ["| " + " | ".join(_cell(c) for c in row) + " |" for row in table.rows]
         out.append("")
     out.append(table.note)
+    return out
+
+
+def _factor_section(report: FactsheetReport, notes: Footnotes) -> list[str]:
+    rows = factor_metrics(report)
+    fa = report.factor_analysis
+    if fa is None:
+        return [FACTOR_SECTION_TEXT, "", "Metrics: " + ", ".join(r.name for r in rows) + "."]
+    out = [*_kv_block(fa.to_text()), ""]
+    loadings = factor_loading_rows(report)
+    if loadings:
+        out.append("| " + " | ".join(LOADING_TABLE_HEADER) + " |")
+        out.append("|---|---:|---:|---:|---:|---|")
+        out += ["| " + " | ".join(_cell(c) for c in row) + " |" for row in loadings]
+        out += ["", factor_fit_summary(report), ""]
+    out += _metric_table(rows, notes)
     return out
 
 
@@ -99,7 +119,7 @@ def render_markdown(report: FactsheetReport) -> str:
         "",
         f"## {number}. Factor analysis",
         "",
-        FACTOR_SECTION_TEXT,
+        *_factor_section(report, notes),
         "",
         f"## {number + 1}. Statistical confidence",
         "",

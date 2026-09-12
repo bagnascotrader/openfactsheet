@@ -11,6 +11,9 @@ import json
 
 from openfactsheet.compare.alignment import align_benchmark
 from openfactsheet.diagnostics.data_quality import run_diagnostics
+from openfactsheet.exceptions import UndefinedMetric
+from openfactsheet.factors.models import FactorAnalysis, FactorModelFit, FactorSet
+from openfactsheet.factors.regressions import AlignedFactors, align_factors
 from openfactsheet.interpretation.engine import build_interpretations
 from openfactsheet.metrics.context import MetricContext
 from openfactsheet.metrics.engine import compute_all
@@ -31,17 +34,55 @@ def series_sha256(series: ReturnSeries) -> str:
     return hashlib.sha256(payload.encode("utf-8")).hexdigest()
 
 
+def factor_set_sha256(factor_set: FactorSet) -> str:
+    """Fingerprint of the factor data: each column's fingerprint, keyed by column name."""
+    columns = dict(factor_set.factors)
+    if factor_set.risk_free is not None:
+        columns["RF"] = factor_set.risk_free
+    payload = json.dumps(
+        {name: series_sha256(s) for name, s in columns.items()}, separators=(",", ":")
+    )
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+
+
+def _factor_analysis(aligned: AlignedFactors, factor_set: FactorSet) -> FactorAnalysis:
+    fit: FactorModelFit | None = None
+    reason: str | None = None
+    try:
+        fit = aligned.fit
+    except UndefinedMetric as exc:
+        reason = exc.reason
+    except Exception as exc:  # captured, never raised out of the report
+        reason = f"Estimation failed ({type(exc).__name__}: {exc}). Please report this as a bug."
+    return FactorAnalysis(
+        model=aligned.model,
+        factor_names=aligned.names,
+        dependent=aligned.dependent,
+        return_scale=factor_set.return_scale,
+        return_scale_evidence=factor_set.return_scale_evidence,
+        alignment=aligned.alignment,
+        fit=fit,
+        reason=reason,
+    )
+
+
 def build_report(
     series: ReturnSeries,
     input_diag: InputDiagnostics,
     benchmark: ReturnSeries | None = None,
     benchmark_diag: InputDiagnostics | None = None,
+    factor_set: FactorSet | None = None,
 ) -> FactsheetReport:
     methodology = canonical_methodology()
     diagnostics = run_diagnostics(series, input_diag)
     aligned = align_benchmark(series, benchmark) if benchmark is not None else None
+    factors = align_factors(series, factor_set, methodology) if factor_set is not None else None
     ctx = MetricContext(
-        returns=series, diagnostics=diagnostics, methodology=methodology, benchmark=aligned
+        returns=series,
+        diagnostics=diagnostics,
+        methodology=methodology,
+        benchmark=aligned,
+        factors=factors,
     )
     metrics = compute_all(ctx)
     interpretations = build_interpretations(metrics, ctx)
@@ -61,6 +102,8 @@ def build_report(
         transformations=input_diag.transformations,
         benchmark_name=benchmark.name if benchmark is not None else None,
         benchmark_sha256=series_sha256(benchmark) if benchmark is not None else None,
+        factor_names=factor_set.names if factor_set is not None else None,
+        factors_sha256=factor_set_sha256(factor_set) if factor_set is not None else None,
     )
     return FactsheetReport(
         name=series.name,
@@ -75,4 +118,9 @@ def build_report(
         provenance=provenance,
         drawdown_episodes=episodes,
         benchmark_returns=benchmark,
+        factor_analysis=(
+            _factor_analysis(factors, factor_set)
+            if factors is not None and factor_set is not None
+            else None
+        ),
     )

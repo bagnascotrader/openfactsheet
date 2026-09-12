@@ -36,6 +36,7 @@ _BUILTIN_MODULES = (
     "openfactsheet.metrics.consistency",
     "openfactsheet.metrics.dependence",
     "openfactsheet.metrics.benchmark",
+    "openfactsheet.metrics.factors",
     "openfactsheet.metrics.statistical",
 )
 _loaded = False
@@ -55,6 +56,7 @@ ASSUMPTION_KEYS = frozenset(
         "parametric",
         "sterling_excess",
         "entropic",
+        "factor_model",
     }
 )
 
@@ -70,6 +72,7 @@ def metric(
     min_data_policy: str,
     docs: MetricDocs,
     requires_benchmark: bool = False,
+    requires_factors: bool = False,
     annualized: bool = False,
     uses_wealth_path: bool = False,
     volatility_based: bool = False,
@@ -97,6 +100,7 @@ def metric(
             docs=docs,
             func=func,
             requires_benchmark=requires_benchmark,
+            requires_factors=requires_factors,
             annualized=annualized,
             uses_wealth_path=uses_wealth_path,
             volatility_based=volatility_based,

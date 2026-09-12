@@ -85,6 +85,24 @@ cmp.table(common_period=True)  # same metrics on the common period, if histories
 
 Comparisons are never ranked.
 
+## Factor models
+
+Supply factor returns explicitly (OpenFactsheet never downloads them): a dated
+DataFrame, CSV/Excel file or table text with one column per factor. A column
+named `RF` is treated as the risk-free rate and subtracted from fund returns.
+
+```python
+factors = pd.read_csv("my_factors.csv", index_col="date", parse_dates=True)
+# columns: Mkt-RF, SMB, HML, RF  (percent or decimal: one scale is detected for all)
+report = ofs.analyze(fund_returns, factors=factors)
+report.factor_analysis.fit.loadings  # every loading with Newey-West SE, t, p, 95% CI
+report.metrics["factor_alpha"]  # annualized alpha; details hold the interval
+```
+
+Only the months where the fund and every factor have a value are used (never
+filled). Standard errors are Newey-West with a fixed lag rule
+([decision 0028](methodology/decisions/0028-factor-models.md)).
+
 ## Export
 
 ```python

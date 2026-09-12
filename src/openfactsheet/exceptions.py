@@ -32,6 +32,10 @@ class BenchmarkAlignmentError(OpenFactsheetError, ValueError):
     """Fund and benchmark returns cannot be aligned without inventing data."""
 
 
+class FactorAlignmentError(OpenFactsheetError, ValueError):
+    """Fund and factor returns cannot be aligned without inventing data."""
+
+
 class MetricCalculationError(OpenFactsheetError):
     """Unexpected failure inside a metric calculation (captured as status ``error``)."""
 
@@ -55,6 +59,7 @@ class OCRExtractionError(InputError):
 __all__ = [
     "AmbiguousReturnScaleError",
     "BenchmarkAlignmentError",
+    "FactorAlignmentError",
     "FrequencyInferenceError",
     "InputError",
     "MetricCalculationError",
