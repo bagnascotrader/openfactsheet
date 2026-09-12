@@ -603,6 +603,7 @@ rules below are applied in order. No rule grades an investment ("good",
 | `_annualized_short` | `cagr`, `annualized_arithmetic_mean` with a value | `years` known and `years < 1` | annualizing extrapolates a partial year; GIPS prohibits annualized returns for periods under one year |
 | `_sharpe_significance` | `probabilistic_sharpe_ratio` with a value | value `≥ 0.95` / value `< 0.95` | the Sharpe ratio is statistically above zero at 95% under i.i.d. assumptions (no guarantee of future performance) / not distinguishable from zero, the track record cannot separate skill from luck |
 | `_track_record_sufficiency` | `minimum_track_record_length` with a value | `details.sufficient` true / false | the history is at least as long as the minimum track record length / states how many periods are missing (`details.additional_periods_needed`) |
+| `_serial_correlation_adjustment` | `sharpe_ratio_autocorrelation_adjusted` with a value, when `sharpe_ratio` has a value | always; wording by `details.variance_ratio` `> 1` / `< 1` / `= 1` | states both annualized Sharpe ratios and the variance ratio: persistence (VR > 1) means square-root-of-time annualization overstates the conventional ratio's magnitude, reversals (VR < 1) that it understates it; the adjustment rests on estimated autocorrelations |
 
 ---
 

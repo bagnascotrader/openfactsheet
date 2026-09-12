@@ -590,6 +590,12 @@
       "plain": "How confident one can be, statistically, that the investment's risk-adjusted return is genuinely positive rather than luck. Values near 1 mean strong evidence; 0.5 means no evidence either way.",
       "professional": "Bailey & Lopez de Prado (2012) PSR with benchmark SR* = 0 on the per-period (non-annualized) Sharpe ratio, using moment skewness and non-excess kurtosis. Unlike PerformanceAnalytics' default, kurtosis is not ignored: fat tails reduce confidence."
     },
+    "profit_factor": {
+      "context": [],
+      "metric_id": "profit_factor",
+      "plain": "How many units of gains the history produced for every unit of losses; above 1 means total gains exceeded total losses.",
+      "professional": "Gross gains over gross losses on per-period returns (a trading-system statistic). It equals one plus the gain-to-pain ratio, so it adds no information beyond it; reported because it is widely quoted. Not compounded and frequency dependent."
+    },
     "r_squared": {
       "context": [
         "No benchmark was supplied. Benchmark-relative metrics require explicitly supplied benchmark returns; OpenFactsheet never assumes a default benchmark."
@@ -626,6 +632,14 @@
       "metric_id": "sharpe_ratio",
       "plain": "The Sharpe ratio compares excess return with total return variability. Higher values indicate more return per unit of measured volatility, but the statistic can be misleading when returns are smoothed, strongly skewed, serially correlated, or have significant tail risk.",
       "professional": "Ex-post Sharpe (1994) with arithmetic mean and square-root-of-time annualization. Serial dependence biases the annualized value (Lo, 2002); smoothed returns inflate it (Getmansky, Lo & Makarov, 2004). Standard error is roughly sqrt((1 + SR^2/2) / years) under i.i.d. normality."
+    },
+    "sharpe_ratio_autocorrelation_adjusted": {
+      "context": [
+        "Allowing for serial correlation up to one year (Lo 2002) changes the annualized Sharpe ratio from 2.38 to 1.57 (variance ratio 2.30): gains and losses tended to persist, so square-root-of-time annualization overstates the magnitude of the conventional ratio. The adjustment itself rests on estimated autocorrelations."
+      ],
+      "metric_id": "sharpe_ratio_autocorrelation_adjusted",
+      "plain": "The Sharpe ratio after allowing for gains or losses that persist from one period to the next. When returns are smoothed (common for hedge funds and private assets) this is usually lower than the conventional Sharpe ratio.",
+      "professional": "Lo (2002) annualization of the per-period Sharpe ratio: eta(q) replaces sqrt(q); with no autocorrelation the two coincide. Positive autocorrelation (for example from smoothing) lowers it. The adjustment rests on q - 1 estimated autocorrelations and is itself noisy for short histories; details report eta, sqrt(q) and the variance ratio."
     },
     "sharpe_ratio_standard_error": {
       "context": [],
@@ -714,6 +728,12 @@
       "metric_id": "var_historical_95",
       "plain": "In about 1 period out of 20, the return was this bad or worse.",
       "professional": "Historical-simulation VaR at 95% for one observation period; says nothing about losses beyond the threshold (see Expected Shortfall)."
+    },
+    "variance_ratio_1y": {
+      "context": [],
+      "metric_id": "variance_ratio_1y",
+      "plain": "Whether risk over a whole year is larger or smaller than monthly (or daily) volatility suggests. Above 1: gains and losses tend to persist, so yearly swings are bigger than the annualized volatility shows; below 1: they tend to reverse.",
+      "professional": "Lo-MacKinlay variance ratio at the annualization horizon, written in terms of the sample autocorrelations, so it equals (q + 2 sum (q - k) rho_k) / q, the quantity that corrects square-root-of-time annualization (Lo 2002). Details report the horizon, the asymptotic i.i.d. standard error, z-statistic and p-value. A diagnostic of the annualization assumption, not a performance measure."
     },
     "volatility": {
       "context": [
@@ -905,6 +925,12 @@
       "rolling": {
         "step_periods": 1,
         "window_years": 1
+      },
+      "serial_correlation": {
+        "horizon_years": 1,
+        "min_years": 2,
+        "sharpe_adjustment": "Lo (2002): SR_per_period * q / sqrt(q + 2 * sum_{k=1}^{q-1} (q-k) rho_k)",
+        "variance_ratio": "1 + 2 * sum_{k=1}^{q-1} (1 - k/q) * rho_k"
       },
       "sharpe_inference": {
         "ci_level": 0.95,
@@ -1144,6 +1170,25 @@
       "status": "applicable",
       "unit": "ratio",
       "value": 0.48532370084786103,
+      "warnings": []
+    },
+    {
+      "assumptions": [],
+      "category": "returns",
+      "confidence": "high",
+      "details": {},
+      "direction": "higher_is_better",
+      "formula_id": "profit_factor@v1",
+      "id": "profit_factor",
+      "methodology_version": "0.1.0",
+      "name": "Profit factor (gross gains / gross losses)",
+      "nature": "derived",
+      "observations": 96,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "ratio",
+      "value": 5.3385607093264715,
       "warnings": []
     },
     {
@@ -1927,6 +1972,37 @@
     },
     {
       "assumptions": [
+        "Risk-free rate assumed to be 0% (methodology 0.1.0); the ratio therefore uses total rather than excess returns and is higher than an excess-return version when cash yields are positive.",
+        "Sample standard deviation (n - 1 denominator).",
+        "Annualized with 12 periods per year (monthly frequency, inferred from dates)."
+      ],
+      "category": "risk_adjusted",
+      "confidence": "moderate",
+      "details": {
+        "eta": 2.284727719737409,
+        "horizon_periods": 12,
+        "sharpe_per_period": 0.68628482903932,
+        "sqrt_q": 3.4641016151377544,
+        "variance_ratio": 2.2988590508365103
+      },
+      "direction": "higher_is_better",
+      "formula_id": "sharpe_ratio_autocorrelation_adjusted@v1",
+      "id": "sharpe_ratio_autocorrelation_adjusted",
+      "methodology_version": "0.1.0",
+      "name": "Sharpe ratio (serial-correlation adjusted, Lo 2002)",
+      "nature": "estimated",
+      "observations": 96,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "ratio",
+      "value": 1.567973972541383,
+      "warnings": [
+        "8.0 years of history (< 10 years)."
+      ]
+    },
+    {
+      "assumptions": [
         "95% confidence; historical (empirical) quantile with linear interpolation; no distributional assumption; reported as a signed return (negative = loss)."
       ],
       "category": "tail",
@@ -2504,6 +2580,32 @@
       "unit": "fraction",
       "value": 0.0,
       "warnings": []
+    },
+    {
+      "assumptions": [],
+      "category": "dependence",
+      "confidence": "moderate",
+      "details": {
+        "horizon_periods": 12,
+        "p_value": 0.0006875831760469416,
+        "standard_error": 0.3826382587209975,
+        "z_statistic": 3.394482964610132
+      },
+      "direction": "context_dependent",
+      "formula_id": "variance_ratio_1y@v1",
+      "id": "variance_ratio_1y",
+      "methodology_version": "0.1.0",
+      "name": "Variance ratio (one-year horizon)",
+      "nature": "estimated",
+      "observations": 96,
+      "reason": null,
+      "reference_values": null,
+      "status": "supplementary",
+      "unit": "ratio",
+      "value": 2.2988590508365103,
+      "warnings": [
+        "8.0 years of history (< 10 years)."
+      ]
     },
     {
       "assumptions": [

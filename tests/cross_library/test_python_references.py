@@ -153,6 +153,7 @@ def test_quantstats(fixture: str) -> None:
     assert val(rep, "best_period") == pytest.approx(float(np.max(s)), **TOL)
     assert val(rep, "worst_period") == pytest.approx(float(np.min(s)), **TOL)
     assert val(rep, "gain_to_pain_ratio") == pytest.approx(qs.stats.gain_to_pain_ratio(s), **TOL)
+    assert val(rep, "profit_factor") == pytest.approx(qs.stats.profit_factor(s), **TOL)
     # CAGR agrees when the frequency is passed; the default (252) treats months as days.
     assert val(rep, "cagr") == pytest.approx(qs.stats.cagr(s, periods=12), **TOL)
     assert qs.stats.cagr(s) != pytest.approx(val(rep, "cagr"))

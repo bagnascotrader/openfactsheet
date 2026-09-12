@@ -127,6 +127,16 @@ CANONICAL_ASSUMPTIONS: dict[str, Any] = {
         "episode_table": "deepest drawdown episodes first (ties: earliest peak); all in JSON",
         "episode_table_rows": 10,
     },
+    "serial_correlation": {
+        # Decision 0029. Horizon q = round(P * horizon_years) observations; the
+        # autocorrelations are those of the dependence metrics (full-sample denominator).
+        "horizon_years": 1,
+        "min_years": 2,
+        "variance_ratio": "1 + 2 * sum_{k=1}^{q-1} (1 - k/q) * rho_k",
+        "sharpe_adjustment": (
+            "Lo (2002): SR_per_period * q / sqrt(q + 2 * sum_{k=1}^{q-1} (q-k) rho_k)"
+        ),
+    },
     "sharpe_inference": {
         # Decision 0019. Non-normal i.i.d. asymptotics (Mertens 2002; Bailey &
         # Lopez de Prado 2012) on the per-period Sharpe ratio.

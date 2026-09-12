@@ -11,7 +11,14 @@ import math
 from openfactsheet.diagnostics.autocorrelation import ljung_box, sample_autocorrelation
 from openfactsheet.exceptions import UndefinedMetric
 from openfactsheet.metrics.context import MetricContext
-from openfactsheet.metrics.references import GLM_2004, LJUNG_BOX_1978, STATSMODELS, lib
+from openfactsheet.metrics.references import (
+    GLM_2004,
+    LJUNG_BOX_1978,
+    LO_2002,
+    LO_MACKINLAY_1988,
+    STATSMODELS,
+    lib,
+)
 from openfactsheet.metrics.registry import metric
 from openfactsheet.models.metric import Computed, MetricDocs
 
@@ -171,3 +178,71 @@ def ljung_box_pvalue(ctx: MetricContext) -> Computed:
 )
 def zero_return_pct(ctx: MetricContext) -> float:
     return ctx.diagnostics.zero_return_pct
+
+
+@metric(
+    id="variance_ratio_1y",
+    name="Variance ratio (one-year horizon)",
+    category="dependence",
+    unit="ratio",
+    direction="context_dependent",
+    nature="estimated",
+    min_data_policy="long_horizon_dependence",
+    supplementary=True,
+    docs=MetricDocs(
+        measures="Variance of one-year sums of returns relative to what independent periods "
+        "would imply; 1 when returns are serially uncorrelated.",
+        formula="VR(q) = 1 + 2 sum_{k=1}^{q-1} (1 - k/q) rho_k, q = round(P)",
+        formula_latex=(
+            r"\mathrm{VR}(q) = 1 + 2 \sum_{k=1}^{q-1} \Big(1 - \frac{k}{q}\Big) \hat\rho_k, "
+            r"\quad q = \operatorname{round}(P), \quad "
+            r"z = \frac{\mathrm{VR}(q) - 1}{\sqrt{2 (2q-1)(q-1) / (3 q n)}}"
+        ),
+        undefined_when=(
+            "The frequency is not regular (P undefined) or there is one observation per year "
+            "(q = 1).",
+            "Fewer than two years of observations (n < 2q).",
+            "All returns are identical (zero variance).",
+        ),
+        inputs="Periodic simple returns with a regular frequency.",
+        retail="Whether risk over a whole year is larger or smaller than monthly (or daily) "
+        "volatility suggests. Above 1: gains and losses tend to persist, so yearly swings are "
+        "bigger than the annualized volatility shows; below 1: they tend to reverse.",
+        institutional="Lo-MacKinlay variance ratio at the annualization horizon, written in "
+        "terms of the sample autocorrelations, so it equals (q + 2 sum (q - k) rho_k) / q, the "
+        "quantity that corrects square-root-of-time annualization (Lo 2002). Details report "
+        "the horizon, the asymptotic i.i.d. standard error, z-statistic and p-value. A "
+        "diagnostic of the annualization assumption, not a performance measure.",
+        assumptions=(
+            "Stationary returns; sample autocorrelations with the full-sample denominator.",
+            "Homoskedastic i.i.d. null for the standard error.",
+        ),
+        misleading_when=(
+            "The history is short relative to one year: the standard error is about "
+            "sqrt(4 / (3 years)).",
+            "Volatility regimes change (heteroskedasticity inflates apparent significance).",
+        ),
+        minimum_data="At least two years of observations; low confidence below 5 years, "
+        "moderate below 10 years.",
+        reference_implementations=(
+            lib(STATSMODELS, "tsa.stattools.acf(adjusted=False)", note="Autocorrelations."),
+        ),
+        references=(LO_MACKINLAY_1988, LO_2002, GLM_2004),
+        convention="Autocorrelation form of the overlapping variance ratio on simple returns, "
+        "horizon one year, i.i.d. standard error; supplementary (decision 0029).",
+    ),
+)
+def variance_ratio_1y(ctx: MetricContext) -> Computed:
+    from scipy.stats import norm
+
+    dep = ctx.one_year_dependence
+    z = (dep.variance_ratio - 1.0) / dep.standard_error
+    return Computed(
+        dep.variance_ratio,
+        details={
+            "horizon_periods": dep.q,
+            "standard_error": dep.standard_error,
+            "z_statistic": z,
+            "p_value": float(2.0 * norm.sf(abs(z))),
+        },
+    )

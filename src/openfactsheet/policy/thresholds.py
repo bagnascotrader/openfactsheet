@@ -193,6 +193,16 @@ MIN_DATA_POLICIES: dict[str, MinDataPolicy] = {
             "moderate below 5 years.",
         ),
         MinDataPolicy(
+            "long_horizon_dependence",
+            4,
+            "years",
+            5.0,
+            10.0,
+            "One-year-horizon serial-correlation statistics need at least two years of data "
+            "(undefined below); their standard error is about sqrt(4 / (3 y)) for y years, so "
+            "confidence is low below 5 years and moderate below 10 years.",
+        ),
+        MinDataPolicy(
             "factor_regression",
             3,
             "years",

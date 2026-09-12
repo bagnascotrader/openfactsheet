@@ -24,6 +24,18 @@ Package 0.1.0 · Methodology 0.1.0
 - Tests: unit, property-based, golden reports, CLAUDE.md acceptance tests 1–3,
   cross-library validation against PerformanceAnalytics, empyrical, QuantStats.
 
+### Added — Phase 2, fourth increment (3 metrics; 97 in total)
+- `variance_ratio_1y` (supplementary): variance ratio at the one-year horizon
+  from the sample autocorrelations, with i.i.d. standard error, z and p-value —
+  a direct test of square-root-of-time annualization.
+- `sharpe_ratio_autocorrelation_adjusted`: Lo (2002) annualization of the
+  Sharpe ratio, `SR_per_period × sqrt(q / VR(q))`; for the smoothed hedge-fund
+  fixture it is 1.57 against a conventional 2.38. The conventional Sharpe ratio
+  is unchanged; an interpretation note states both.
+- `profit_factor`: gross gains / gross losses (validated against QuantStats).
+- Both serial-correlation statistics need two years of data; confidence policy
+  `long_horizon_dependence` (low below 5 years, moderate below 10). Decision 0029.
+
 ### Added — Phase 7: factor models (4 metrics; 94 in total)
 - `ofs.analyze(returns, factors=...)` and `ofs.compare(..., factors=...)` accept
   caller-supplied factor returns (DataFrame, CSV/Excel path or table text; one

@@ -38,7 +38,7 @@ import openfactsheet as ofs
 report = ofs.analyze(returns)
 ```
 
-That one call gives you 94 metrics, data-quality diagnostics, a 14-section
+That one call gives you 97 metrics, data-quality diagnostics, a 14-section
 report, and JSON output that is stable and never contains a `NaN`.
 
 > [!NOTE]
@@ -56,7 +56,7 @@ applies them the same way to every return stream.
 
 | | Typical factsheet | OpenFactsheet |
 | :-- | :-- | :-- |
-| **Metrics shown** | Selected by the issuer | All 94 canonical metrics, in every report |
+| **Metrics shown** | Selected by the issuer | All 97 canonical metrics, in every report |
 | **Periods** | Selected by the issuer | Full history, complete calendar years, every rolling one-year window |
 | **Assumptions** | Unstated or in the fine print | Versioned, and embedded in every report and every metric |
 | **Drawdowns & tail risk** | Often left out | Always computed: 15 drawdown and 7 tail-risk measures |
@@ -214,18 +214,18 @@ MetricResult(
 **Output formats:** Python objects · `dict` · JSON · terminal · Markdown · HTML ·
 pandas (`report.metrics.to_frame()`, `report.returns_frame()`).
 
-## 94 metrics, one methodology
+## 97 metrics, one methodology
 
 | Category | Count | Includes |
 | :-- | :-: | :-- |
-| **Returns** | 10 | Cumulative, CAGR, arithmetic & geometric mean, median, best/worst period, gain-to-pain, payoff ratio |
+| **Returns** | 11 | Cumulative, CAGR, arithmetic & geometric mean, median, best/worst period, gain-to-pain, payoff ratio, profit factor |
 | **Volatility & downside** | 7 | Volatility, downside deviation, semi-deviation, MAD, IQR, downside potential (LPM 1) |
 | **Drawdowns** | 15 | Max/average/median/current drawdown, durations, recovery time, time under water, Ulcer & Pain indices, DaR, CDaR, EDaR |
-| **Risk-adjusted** | 11 | Sharpe, Sortino, Calmar, Martin (UPI), Omega, Kappa 3, upside potential, Burke, Sterling, Pain ratio, recovery factor |
+| **Risk-adjusted** | 12 | Sharpe (and Lo's serial-correlation-adjusted Sharpe), Sortino, Calmar, Martin (UPI), Omega, Kappa 3, upside potential, Burke, Sterling, Pain ratio, recovery factor |
 | **Tail risk** | 7 | Historical, Gaussian and Cornish-Fisher VaR; historical and modified Expected Shortfall; entropic VaR; tail ratio |
 | **Distribution** | 3 | Skewness, excess kurtosis, Jarque-Bera |
 | **Consistency** | 10 | Hit rate, winning/losing streaks, calendar-year and rolling one-year statistics |
-| **Serial dependence** | 5 | Autocorrelation (lags 1 to 3), Ljung-Box, zero-return share |
+| **Serial dependence** | 6 | Autocorrelation (lags 1 to 3), Ljung-Box, one-year variance ratio, zero-return share |
 | **Benchmark-relative** | 18 | Beta, CAPM alpha, R², correlation, tracking error, active return, Information, Treynor & appraisal ratios, M², up/down capture and capture ratio, batting average, residual volatility, bull/bear beta, timing ratio |
 | **Factor models** | 4 | Multi-factor alpha with Newey-West t-statistic, R², residual volatility; every loading with standard error, t, p and 95% interval (CAPM, Fama-French, Carhart or custom factors you supply) |
 | **Statistical confidence** | 4 | Probabilistic Sharpe Ratio, Sharpe standard error, Minimum Track Record Length, standard error of the mean |
@@ -265,7 +265,7 @@ received.
   [reference implementations](docs/validation/reference_implementations.md).
 - **Independent implementations.** Formulas are implemented from their academic
   definitions, not copied from other libraries' source code.
-- **28 methodology decision records.** Every contested convention (sample vs.
+- **29 methodology decision records.** Every contested convention (sample vs.
   population deviation, VaR quantile interpolation, the Sortino denominator,
   drawdown episode definitions, partial calendar years, and so on) has a written
   [decision](docs/methodology/decisions/README.md) with its rationale.
@@ -289,7 +289,7 @@ received.
 | :-- | :-- | :-- |
 | 0 | Foundation: typed models, normalization, frequency inference, metric registry | ✅ Done |
 | 1 | Core metrics, cross-validated | ✅ Done |
-| 2 | Full metric catalog: variance-ratio diagnostics, bootstrap uncertainty and further additions | 🚧 94 metrics so far |
+| 2 | Full metric catalog: variance-ratio diagnostics, bootstrap uncertainty and further additions | 🚧 97 metrics so far |
 | 3 | Applicability and confidence engine | ✅ Done |
 | 4 | Reporting: terminal, Markdown, HTML, JSON; canonical charts and drawdown-episode table | ✅ Done |
 | 5 | Comparison engine (`ofs.compare`) | ✅ Done |

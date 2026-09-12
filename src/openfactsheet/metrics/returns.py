@@ -12,6 +12,7 @@ from openfactsheet.metrics.references import (
     GIPS,
     NUMPY,
     PA,
+    PARDO_2008,
     QS,
     SCHWAGER_2012,
     lib,
@@ -391,3 +392,49 @@ def payoff_ratio(ctx: MetricContext) -> Computed:
         float(np.mean(gains)) / abs(float(np.mean(losses))),
         details={"average_gain": float(np.mean(gains)), "average_loss": float(np.mean(losses))},
     )
+
+
+@metric(
+    id="profit_factor",
+    name="Profit factor (gross gains / gross losses)",
+    category="returns",
+    unit="ratio",
+    direction="higher_is_better",
+    nature="derived",
+    min_data_policy="ratio_standard",
+    docs=MetricDocs(
+        measures="Sum of all positive period returns relative to the absolute sum of all "
+        "negative period returns.",
+        formula="sum(r_t | r_t > 0) / |sum(r_t | r_t < 0)|",
+        formula_latex=(
+            r"\mathrm{PF} = \frac{\sum_{t \in G} r_t}{\left| \sum_{t \in L} r_t \right|}"
+            r" = 1 + \mathrm{GPR}, \quad G = \{t : r_t > 0\}, \ L = \{t : r_t < 0\}"
+        ),
+        undefined_when=("No negative period exists (the denominator is zero).",),
+        inputs="Periodic simple returns.",
+        retail="How many units of gains the history produced for every unit of losses; above "
+        "1 means total gains exceeded total losses.",
+        institutional="Gross gains over gross losses on per-period returns (a trading-system "
+        "statistic). It equals one plus the gain-to-pain ratio, so it adds no information "
+        "beyond it; reported because it is widely quoted. Not compounded and frequency "
+        "dependent.",
+        assumptions=("Per-period returns are summed (not compounded).",),
+        misleading_when=(
+            "Very few losing periods exist: the denominator is tiny and the ratio unstable.",
+            "Compared across data frequencies (monthly vs daily values differ).",
+        ),
+        minimum_data="At least 2 observations and at least one losing period; low confidence "
+        "below 3 years.",
+        reference_implementations=(
+            lib(QS, "stats.profit_factor", note="Agrees on the test fixtures."),
+        ),
+        references=(PARDO_2008, SCHWAGER_2012),
+        convention="Computed on the supplied observation frequency; zero returns count in "
+        "neither sum (decision 0029).",
+    ),
+)
+def profit_factor(ctx: MetricContext) -> float:
+    losses = ctx.r[ctx.r < 0.0]
+    if losses.size == 0:
+        raise UndefinedMetric("No losing periods: the profit-factor denominator is zero.")
+    return float(np.sum(ctx.r[ctx.r > 0.0]) / abs(np.sum(losses)))
