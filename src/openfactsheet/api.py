@@ -71,6 +71,27 @@ def _normalize_one(
     return normalize_returns(raws[0], return_scale=return_scale, frequency=frequency)
 
 
+def normalize_benchmark(
+    benchmark: Any,
+    *,
+    return_scale: DeclaredScale | None = None,
+    frequency: str | ObservationFrequency | None = None,
+) -> tuple[ReturnSeries, InputDiagnostics]:
+    """Normalize benchmark input as :func:`analyze` does (named ``Benchmark`` by default)."""
+    bench_name = (
+        str(benchmark.name)
+        if isinstance(benchmark, pd.Series) and benchmark.name is not None
+        else None
+    )
+    return _normalize_one(
+        benchmark,
+        name=bench_name or (None if isinstance(benchmark, ReturnSeries) else "Benchmark"),
+        return_scale=return_scale,
+        frequency=frequency,
+        role="benchmark",
+    )
+
+
 def load(
     source: Any,
     *,
@@ -132,17 +153,8 @@ def analyze(
     )
     bench_series = bench_diag = None
     if benchmark is not None:
-        bench_name = (
-            str(benchmark.name)
-            if isinstance(benchmark, pd.Series) and benchmark.name is not None
-            else None
-        )
-        bench_series, bench_diag = _normalize_one(
-            benchmark,
-            name=bench_name or (None if isinstance(benchmark, ReturnSeries) else "Benchmark"),
-            return_scale=return_scale,
-            frequency=frequency,
-            role="benchmark",
+        bench_series, bench_diag = normalize_benchmark(
+            benchmark, return_scale=return_scale, frequency=frequency
         )
     factor_set = (
         load_factor_set(factors, return_scale=return_scale, frequency=frequency)

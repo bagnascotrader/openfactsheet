@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import json
 from collections.abc import Mapping, Sequence
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import Any
 
 import pandas as pd
@@ -160,8 +160,10 @@ def build_comparison(
     return_scale: DeclaredScale | None = None,
     frequency: str | ObservationFrequency | None = None,
 ) -> Comparison:
-    from openfactsheet.api import analyze
+    from openfactsheet.api import analyze, normalize_benchmark
     from openfactsheet.factors.data import load_factor_set
+    from openfactsheet.normalization.returns import normalize_returns
+    from openfactsheet.report.builder import build_report
 
     # Factor data are parsed once so every investment is regressed on identical factors.
     factor_set = (
@@ -211,6 +213,14 @@ def build_comparison(
             common = common.intersection(_keys(s))
         if len(common) >= 2:
             common_reports = {}
+            # The benchmark is normalized once, exactly as for the full-history reports:
+            # re-reading it with the decimal declaration used for the (already decimal)
+            # fund subsets would misread a percent benchmark by a factor of 100.
+            bench = bench_diag = None
+            if benchmark is not None:
+                bench, bench_diag = normalize_benchmark(
+                    benchmark, return_scale=return_scale, frequency=frequency
+                )
             for label, rep in reports.items():
                 s = rep.returns
                 keys = _keys(s)
@@ -222,8 +232,23 @@ def build_comparison(
                     source_type=s.source_type,
                     transformations=("restricted to the common period of all compared histories",),
                 )
-                common_reports[label] = analyze(
-                    sub, benchmark, factors=factor_set, name=label, return_scale="decimal"
+                sub_series, sub_diag = normalize_returns(sub, return_scale="decimal")
+                # The subset is already decimal; keep the original scale evidence.
+                original = rep.input_summary
+                evidence = (
+                    f"{original.return_scale_evidence} (common-period subset of the normalized "
+                    "series)"
+                )
+                sub_diag = replace(
+                    sub_diag,
+                    return_scale=original.return_scale,
+                    return_scale_evidence=evidence,
+                )
+                sub_series = replace(
+                    sub_series, return_scale=original.return_scale, input_diagnostics=sub_diag
+                )
+                common_reports[label] = build_report(
+                    sub_series, sub_diag, bench, bench_diag, factor_set
                 )
             first = next(iter(common_reports.values())).input_summary
             common_period = (first.start or "", first.end or "")
