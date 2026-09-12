@@ -688,6 +688,20 @@
         "quarterly": "all 4 calendar quarters observed",
         "yearly": "the year's observation"
       },
+      "charts": {
+        "bar_baseline": "bars always grow from zero; the value axis always includes zero",
+        "benchmark": "compared only over the aligned overlap, both rebased to 1.0 at its start",
+        "episode_table": "deepest drawdown episodes first (ties: earliest peak); all in JSON",
+        "episode_table_rows": 10,
+        "heatmap_scale": "diverging, symmetric around zero at the largest absolute month",
+        "histogram_bins": "Freedman-Diaconis width clipped to 10 to 40 bins over the range; edges then aligned at zero, which can add one bin",
+        "histogram_max_bins": 40,
+        "histogram_min_bins": 10,
+        "history": "every chart spans the full analyzed history; no start date is chosen",
+        "partial_years": "shown outlined and labelled partial; never styled as full years",
+        "rolling_windows": "the one-year windows of the rolling metrics (rolling.*)",
+        "wealth_scale": "linear, starting at 1.0 one period before the first return"
+      },
       "confidence": {
         "annualization_min_years": 1.0,
         "benchmark_min_coverage": 0.9

@@ -7,11 +7,13 @@ from openfactsheet.models.metric import MetricResult
 from openfactsheet.models.report import FactsheetReport
 from openfactsheet.policy.applicability import NO_BENCHMARK_REASON
 from openfactsheet.report.tables import (
+    EPISODE_TABLE_HEADER,
     FACTOR_SECTION_TEXT,
     STATISTICAL_SECTION_TEXT,
     Footnotes,
     confidence_counts,
     data_quality_metrics,
+    drawdown_episode_table,
     format_value,
     ordered_categories,
     result_notes,
@@ -36,6 +38,20 @@ def _metric_table(rows: list[MetricResult], notes: Footnotes) -> list[str]:
     return out
 
 
+def _episode_table(report: FactsheetReport) -> list[str]:
+    table = drawdown_episode_table(report)
+    if table is None:
+        return []
+    out = ["", "**Drawdown episodes**", ""]
+    if table.rows:
+        out.append("| " + " | ".join(EPISODE_TABLE_HEADER) + " |")
+        out.append("|---:|---|---|---|---:|---:|---:|---:|")
+        out += ["| " + " | ".join(_cell(c) for c in row) + " |" for row in table.rows]
+        out.append("")
+    out.append(table.note)
+    return out
+
+
 def render_markdown(report: FactsheetReport) -> str:
     notes = Footnotes([])
     p = report.provenance
@@ -43,6 +59,10 @@ def render_markdown(report: FactsheetReport) -> str:
         f"# OpenFactsheet — {_cell(report.name)}",
         "",
         f"*Canonical report · {report.assumptions.name} · openfactsheet {p.package_version}*",
+        "",
+        "Canonical charts (growth of 1, drawdowns, calendar years, monthly returns, "
+        "distribution, rolling one-year statistics) are in the HTML report "
+        "(`report.to_html()`) and available as SVG from `report.charts()`.",
         "",
         "## 1. Input & methodology",
         "",
@@ -71,6 +91,8 @@ def render_markdown(report: FactsheetReport) -> str:
                 continue
             out += [*_kv_block(report.benchmark_summary.to_text()), ""]
         out += _metric_table(rows, notes)
+        if cat == "drawdown":
+            out += _episode_table(report)
 
     counts = confidence_counts(report)
     out += [

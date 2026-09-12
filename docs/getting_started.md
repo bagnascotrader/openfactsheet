@@ -90,8 +90,17 @@ Comparisons are never ranked.
 ```python
 report.to_json("factsheet.json")  # deterministic, NaN-free, methodology embedded
 report.to_markdown("factsheet.md")
-report.to_html("factsheet.html")
+report.to_html("factsheet.html")  # self-contained, with the canonical charts
+report.charts()  # {"wealth": "<svg ...>", "underwater": ..., ...}
 ```
+
+The HTML report contains eight canonical charts (growth of 1, calendar-year
+returns, monthly heatmap, rolling one-year volatility, underwater chart, return
+distribution, rolling one-year return and, with a benchmark, growth over the
+aligned overlap), each with a caption and a data table. Every chart spans the
+full history and follows the fixed presentation rules of
+[decision 0026](methodology/decisions/0026-canonical-charts.md); a chart that
+cannot be drawn for the data is replaced by the reason.
 
 ## Explore the methodology
 
