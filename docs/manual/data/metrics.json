@@ -231,6 +231,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "How much 1 unit invested at the start would have gained or lost by the end, with all returns reinvested.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [],
    "unit": "decimal_return",
@@ -312,6 +313,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "The average yearly growth rate, taking compounding and losses into account.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [],
    "unit": "decimal_return",
@@ -377,6 +379,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "The typical return in one period (e.g. one month), ignoring compounding.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [],
    "unit": "decimal_return",
@@ -437,6 +440,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "The average compounded return per period (e.g. per month).",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [],
    "unit": "decimal_return",
@@ -501,6 +505,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "The average return per year if yearly results were simply added up; usually higher than the compounded annual return.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [],
    "unit": "decimal_return",
@@ -557,6 +562,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "Half of the periods did better than this and half did worse.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [],
    "unit": "decimal_return",
@@ -619,6 +625,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "The best single period (e.g. month) the investment had.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [],
    "unit": "decimal_return",
@@ -634,10 +641,10 @@
    "category": "returns",
    "category_title": "Return summary",
    "convention": "Per observation period; signed (negative = loss).",
-   "criteria": "### When a value is produced (checked in this order)\n\n1. At least 1 observations (mathematical minimum of policy `observed_point`); otherwise `insufficient_data`.\n2. Once the conditions above hold, the value is always defined.\n\nAn unexpected calculation failure or a non-finite result is reported as `error` with the value withheld; it never appears as NaN or infinity.\n\n### Confidence and status\n\n- Base confidence is always **high** (an observed fact about the supplied data).\n- Then, in this order, data-quality modifiers (a cap lowers confidence to at most the stated level; warnings are attached to the result):\n  - None apply to this metric.\n- Status: `low_confidence` if the final confidence is **low**, otherwise `applicable`. Low confidence never hides the value.\n\n### Assumptions recorded on every result\n\n- None beyond simple decimal returns as supplied.\n\n### Output\n\n- Unit: Decimal return (0.01 = 1%); displayed as a percentage with 2 decimals. Values are stored unrounded (float64).\n- Direction: Higher is better.\n- Nature: Observed: a fact about the supplied path (no estimation).\n- Formula id `worst_period@v1`; the version increments if the definition changes.\n",
+   "criteria": "### When a value is produced (checked in this order)\n\n1. At least 1 observations (mathematical minimum of policy `observed_point`); otherwise `insufficient_data`.\n2. Once the conditions above hold, the value is always defined.\n\nAn unexpected calculation failure or a non-finite result is reported as `error` with the value withheld; it never appears as NaN or infinity.\n\n### Confidence and status\n\n- Base confidence is always **high** (an observed fact about the supplied data).\n- Then, in this order, data-quality modifiers (a cap lowers confidence to at most the stated level; warnings are attached to the result):\n  - None apply to this metric.\n- Status: `low_confidence` if the final confidence is **low**, otherwise `applicable`. Low confidence never hides the value.\n\n### Assumptions recorded on every result\n\n- None beyond simple decimal returns as supplied.\n\n### Output\n\n- Unit: Decimal return (0.01 = 1%); displayed as a percentage with 2 decimals. Values are stored unrounded (float64).\n- Direction: Smaller loss is better: losses are negative numbers, so −10% is better than −25% (the higher, less negative value is better).\n- Nature: Observed: a fact about the supplied path (no estimation).\n- Formula id `worst_period@v1`; the version increments if the definition changes.\n",
    "decisions": [],
    "direction": "higher_is_better",
-   "direction_text": "Higher is better",
+   "direction_text": "Smaller loss is better: losses are negative numbers, so −10% is better than −25% (the higher, less negative value is better)",
    "formula": "min(r_t)",
    "formula_id": "worst_period@v1",
    "formula_latex": "\\min_{1 \\le t \\le n} r_t = r_{(1)}",
@@ -681,6 +688,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "The worst single period (e.g. month) the investment had.",
+   "signed_loss": true,
    "supplementary": false,
    "undefined_when": [],
    "unit": "decimal_return",
@@ -740,6 +748,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "How much net return was earned for each unit of losses suffered along the way.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [
     "No period has a negative return (zero denominator)."
@@ -803,6 +812,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "How big the typical gain is compared with the typical loss. Read it together with the share of positive periods: a low payoff with a high hit rate can still be profitable, and vice versa.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [
     "No positive period or no negative period exists."
@@ -870,6 +880,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "How many units of gains the history produced for every unit of losses; above 1 means total gains exceeded total losses.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [
     "No negative period exists (the denominator is zero)."
@@ -943,6 +954,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "How much returns typically swing from one period to the next; higher means a bumpier ride.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [],
    "unit": "decimal_return",
@@ -1026,6 +1038,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "The typical size of yearly swings implied by the period-to-period variability.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [],
    "unit": "decimal_return",
@@ -1087,6 +1100,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "The typical size of a period's deviation from the average, without squaring (so single extreme periods weigh less than in volatility).",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [],
    "unit": "decimal_return",
@@ -1154,6 +1168,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "How far apart typical good and typical bad periods are, ignoring the extremes.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [],
    "unit": "decimal_return",
@@ -1239,6 +1254,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "How large the losing periods typically are; gains do not count as risk here.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [],
    "unit": "decimal_return",
@@ -1305,6 +1321,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "How large the below-average periods typically are.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [],
    "unit": "decimal_return",
@@ -1373,6 +1390,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "The average loss per period, counting gains as zero.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [],
    "unit": "decimal_return",
@@ -1392,12 +1410,12 @@
    "category": "drawdown",
    "category_title": "Drawdowns",
    "convention": "Signed (negative = loss); the inception value counts as a peak so a first-period loss is a drawdown (decision 0007).",
-   "criteria": "### When a value is produced (checked in this order)\n\n1. Every return must be >= -100% (a valid wealth path); otherwise `not_applicable`.\n2. At least 1 observations (mathematical minimum of policy `path_risk`); otherwise `insufficient_data`.\n3. Once the conditions above hold, the value is always defined.\n\nAn unexpected calculation failure or a non-finite result is reported as `error` with the value withheld; it never appears as NaN or infinity.\n\n### Confidence and status\n\n- Base confidence from years of history `y = n / P` (aligned observations for benchmark metrics):\n  **high** if `y >= 5`; **moderate** if `3 <= y < 5`; **low** if `y < 3` or if `y` cannot be established (no regular frequency).\n- Then, in this order, data-quality modifiers (a cap lowers confidence to at most the stated level; warnings are attached to the result):\n  - Missing values or missing expected periods in the history cap at **moderate**.\n  - A -100% return (total loss) adds a warning.\n- Status: `low_confidence` if the final confidence is **low**, otherwise `applicable`. Low confidence never hides the value.\n\n### Assumptions recorded on every result\n\n- Wealth index W_0 = 1 before the first return counts as the first peak; drawdowns are measured from running peaks of compounded wealth.\n\n### Output\n\n- Unit: Decimal return (0.01 = 1%); displayed as a percentage with 2 decimals. Values are stored unrounded (float64).\n- Direction: Higher is better.\n- Nature: Observed: a fact about the supplied path (no estimation).\n- Formula id `max_drawdown@v1`; the version increments if the definition changes.\n",
+   "criteria": "### When a value is produced (checked in this order)\n\n1. Every return must be >= -100% (a valid wealth path); otherwise `not_applicable`.\n2. At least 1 observations (mathematical minimum of policy `path_risk`); otherwise `insufficient_data`.\n3. Once the conditions above hold, the value is always defined.\n\nAn unexpected calculation failure or a non-finite result is reported as `error` with the value withheld; it never appears as NaN or infinity.\n\n### Confidence and status\n\n- Base confidence from years of history `y = n / P` (aligned observations for benchmark metrics):\n  **high** if `y >= 5`; **moderate** if `3 <= y < 5`; **low** if `y < 3` or if `y` cannot be established (no regular frequency).\n- Then, in this order, data-quality modifiers (a cap lowers confidence to at most the stated level; warnings are attached to the result):\n  - Missing values or missing expected periods in the history cap at **moderate**.\n  - A -100% return (total loss) adds a warning.\n- Status: `low_confidence` if the final confidence is **low**, otherwise `applicable`. Low confidence never hides the value.\n\n### Assumptions recorded on every result\n\n- Wealth index W_0 = 1 before the first return counts as the first peak; drawdowns are measured from running peaks of compounded wealth.\n\n### Output\n\n- Unit: Decimal return (0.01 = 1%); displayed as a percentage with 2 decimals. Values are stored unrounded (float64).\n- Direction: Smaller loss is better: losses are negative numbers, so −10% is better than −25% (the higher, less negative value is better).\n- Nature: Observed: a fact about the supplied path (no estimation).\n- Formula id `max_drawdown@v1`; the version increments if the definition changes.\n",
    "decisions": [
     "0007"
    ],
    "direction": "higher_is_better",
-   "direction_text": "Higher is better",
+   "direction_text": "Smaller loss is better: losses are negative numbers, so −10% is better than −25% (the higher, less negative value is better)",
    "formula": "min_t( W_t / max_{s<=t} W_s - 1 ), W_0 = 1, W_t = prod_{i<=t}(1 + r_i)",
    "formula_id": "max_drawdown@v1",
    "formula_latex": "\\mathrm{MDD} = \\min_{0 \\le t \\le n} D_t, \\quad D_t = \\frac{W_t}{M_t} - 1, \\quad M_t = \\max_{0 \\le u \\le t} W_u, \\quad W_0 = 1",
@@ -1455,6 +1473,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "The worst loss an investor would have suffered buying at a high point and selling at the following low point.",
+   "signed_loss": true,
    "supplementary": false,
    "undefined_when": [],
    "unit": "decimal_return",
@@ -1474,12 +1493,12 @@
    "category": "drawdown",
    "category_title": "Drawdowns",
    "convention": "Mean of episode depths, signed (negative = loss); 0 when no drawdown occurred.",
-   "criteria": "### When a value is produced (checked in this order)\n\n1. Every return must be >= -100% (a valid wealth path); otherwise `not_applicable`.\n2. At least 1 observations (mathematical minimum of policy `path_risk`); otherwise `insufficient_data`.\n3. Once the conditions above hold, the value is always defined.\n\nAn unexpected calculation failure or a non-finite result is reported as `error` with the value withheld; it never appears as NaN or infinity.\n\n### Confidence and status\n\n- Base confidence from years of history `y = n / P` (aligned observations for benchmark metrics):\n  **high** if `y >= 5`; **moderate** if `3 <= y < 5`; **low** if `y < 3` or if `y` cannot be established (no regular frequency).\n- Then, in this order, data-quality modifiers (a cap lowers confidence to at most the stated level; warnings are attached to the result):\n  - Missing values or missing expected periods in the history cap at **moderate**.\n  - A -100% return (total loss) adds a warning.\n- Status: `low_confidence` if the final confidence is **low**, otherwise `applicable`. Low confidence never hides the value.\n\n### Assumptions recorded on every result\n\n- Wealth index W_0 = 1 before the first return counts as the first peak; drawdowns are measured from running peaks of compounded wealth.\n\n### Output\n\n- Unit: Decimal return (0.01 = 1%); displayed as a percentage with 2 decimals. Values are stored unrounded (float64).\n- Direction: Higher is better.\n- Nature: Observed: a fact about the supplied path (no estimation).\n- Formula id `average_drawdown@v1`; the version increments if the definition changes.\n",
+   "criteria": "### When a value is produced (checked in this order)\n\n1. Every return must be >= -100% (a valid wealth path); otherwise `not_applicable`.\n2. At least 1 observations (mathematical minimum of policy `path_risk`); otherwise `insufficient_data`.\n3. Once the conditions above hold, the value is always defined.\n\nAn unexpected calculation failure or a non-finite result is reported as `error` with the value withheld; it never appears as NaN or infinity.\n\n### Confidence and status\n\n- Base confidence from years of history `y = n / P` (aligned observations for benchmark metrics):\n  **high** if `y >= 5`; **moderate** if `3 <= y < 5`; **low** if `y < 3` or if `y` cannot be established (no regular frequency).\n- Then, in this order, data-quality modifiers (a cap lowers confidence to at most the stated level; warnings are attached to the result):\n  - Missing values or missing expected periods in the history cap at **moderate**.\n  - A -100% return (total loss) adds a warning.\n- Status: `low_confidence` if the final confidence is **low**, otherwise `applicable`. Low confidence never hides the value.\n\n### Assumptions recorded on every result\n\n- Wealth index W_0 = 1 before the first return counts as the first peak; drawdowns are measured from running peaks of compounded wealth.\n\n### Output\n\n- Unit: Decimal return (0.01 = 1%); displayed as a percentage with 2 decimals. Values are stored unrounded (float64).\n- Direction: Smaller loss is better: losses are negative numbers, so −10% is better than −25% (the higher, less negative value is better).\n- Nature: Observed: a fact about the supplied path (no estimation).\n- Formula id `average_drawdown@v1`; the version increments if the definition changes.\n",
    "decisions": [
     "0007"
    ],
    "direction": "higher_is_better",
-   "direction_text": "Higher is better",
+   "direction_text": "Smaller loss is better: losses are negative numbers, so −10% is better than −25% (the higher, less negative value is better)",
    "formula": "(1/K) * sum_k depth_k over K peak-to-recovery episodes",
    "formula_id": "average_drawdown@v1",
    "formula_latex": "\\overline{\\mathrm{DD}} = \\begin{cases} \\frac{1}{K} \\sum_{k=1}^{K} \\delta_k & K > 0 \\\\ 0 & K = 0 \\end{cases}, \\quad \\delta_k = \\min_{t \\in E_k} D_t",
@@ -1520,6 +1539,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "How deep the typical decline from a high point has been.",
+   "signed_loss": true,
    "supplementary": false,
    "undefined_when": [],
    "unit": "decimal_return",
@@ -1539,10 +1559,10 @@
    "category": "drawdown",
    "category_title": "Drawdowns",
    "convention": "Signed (negative = loss).",
-   "criteria": "### When a value is produced (checked in this order)\n\n1. Every return must be >= -100% (a valid wealth path); otherwise `not_applicable`.\n2. At least 1 observations (mathematical minimum of policy `observed_point`); otherwise `insufficient_data`.\n3. Once the conditions above hold, the value is always defined.\n\nAn unexpected calculation failure or a non-finite result is reported as `error` with the value withheld; it never appears as NaN or infinity.\n\n### Confidence and status\n\n- Base confidence is always **high** (an observed fact about the supplied data).\n- Then, in this order, data-quality modifiers (a cap lowers confidence to at most the stated level; warnings are attached to the result):\n  - Missing values or missing expected periods in the history cap at **moderate**.\n  - A -100% return (total loss) adds a warning.\n- Status: `low_confidence` if the final confidence is **low**, otherwise `applicable`. Low confidence never hides the value.\n\n### Assumptions recorded on every result\n\n- Wealth index W_0 = 1 before the first return counts as the first peak; drawdowns are measured from running peaks of compounded wealth.\n\n### Output\n\n- Unit: Decimal return (0.01 = 1%); displayed as a percentage with 2 decimals. Values are stored unrounded (float64).\n- Direction: Higher is better.\n- Nature: Observed: a fact about the supplied path (no estimation).\n- Formula id `current_drawdown@v1`; the version increments if the definition changes.\n",
+   "criteria": "### When a value is produced (checked in this order)\n\n1. Every return must be >= -100% (a valid wealth path); otherwise `not_applicable`.\n2. At least 1 observations (mathematical minimum of policy `observed_point`); otherwise `insufficient_data`.\n3. Once the conditions above hold, the value is always defined.\n\nAn unexpected calculation failure or a non-finite result is reported as `error` with the value withheld; it never appears as NaN or infinity.\n\n### Confidence and status\n\n- Base confidence is always **high** (an observed fact about the supplied data).\n- Then, in this order, data-quality modifiers (a cap lowers confidence to at most the stated level; warnings are attached to the result):\n  - Missing values or missing expected periods in the history cap at **moderate**.\n  - A -100% return (total loss) adds a warning.\n- Status: `low_confidence` if the final confidence is **low**, otherwise `applicable`. Low confidence never hides the value.\n\n### Assumptions recorded on every result\n\n- Wealth index W_0 = 1 before the first return counts as the first peak; drawdowns are measured from running peaks of compounded wealth.\n\n### Output\n\n- Unit: Decimal return (0.01 = 1%); displayed as a percentage with 2 decimals. Values are stored unrounded (float64).\n- Direction: Smaller loss is better: losses are negative numbers, so −10% is better than −25% (the higher, less negative value is better).\n- Nature: Observed: a fact about the supplied path (no estimation).\n- Formula id `current_drawdown@v1`; the version increments if the definition changes.\n",
    "decisions": [],
    "direction": "higher_is_better",
-   "direction_text": "Higher is better",
+   "direction_text": "Smaller loss is better: losses are negative numbers, so −10% is better than −25% (the higher, less negative value is better)",
    "formula": "W_n / max_{s<=n} W_s - 1",
    "formula_id": "current_drawdown@v1",
    "formula_latex": "D_n = \\frac{W_n}{M_n} - 1",
@@ -1582,6 +1602,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "How far below its previous high the investment stands at the end of the data.",
+   "signed_loss": true,
    "supplementary": false,
    "undefined_when": [],
    "unit": "decimal_return",
@@ -1645,6 +1666,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "The longest stretch an investor would have waited to get back to a previous high.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [],
    "unit": "periods",
@@ -1707,6 +1729,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "How often the investment fell below a previous high.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [],
    "unit": "count",
@@ -1762,6 +1785,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "The share of the time the investment was below a previous high.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [],
    "unit": "fraction",
@@ -1831,6 +1855,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "A single number for how deep and how long-lasting the declines were; 0 means the investment never fell below a previous high.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [],
    "unit": "decimal_return",
@@ -1895,6 +1920,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "How far below its previous high the investment was, on average, over the whole history.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [],
    "unit": "decimal_return",
@@ -1914,12 +1940,12 @@
    "category": "drawdown",
    "category_title": "Drawdowns",
    "convention": "Median of episode depths, signed (decision 0025).",
-   "criteria": "### When a value is produced (checked in this order)\n\n1. Every return must be >= -100% (a valid wealth path); otherwise `not_applicable`.\n2. At least 1 observations (mathematical minimum of policy `path_risk`); otherwise `insufficient_data`.\n3. Once the conditions above hold, the value is always defined.\n\nAn unexpected calculation failure or a non-finite result is reported as `error` with the value withheld; it never appears as NaN or infinity.\n\n### Confidence and status\n\n- Base confidence from years of history `y = n / P` (aligned observations for benchmark metrics):\n  **high** if `y >= 5`; **moderate** if `3 <= y < 5`; **low** if `y < 3` or if `y` cannot be established (no regular frequency).\n- Then, in this order, data-quality modifiers (a cap lowers confidence to at most the stated level; warnings are attached to the result):\n  - Missing values or missing expected periods in the history cap at **moderate**.\n  - A -100% return (total loss) adds a warning.\n- Status: `low_confidence` if the final confidence is **low**, otherwise `applicable`. Low confidence never hides the value.\n\n### Assumptions recorded on every result\n\n- Wealth index W_0 = 1 before the first return counts as the first peak; drawdowns are measured from running peaks of compounded wealth.\n\n### Output\n\n- Unit: Decimal return (0.01 = 1%); displayed as a percentage with 2 decimals. Values are stored unrounded (float64).\n- Direction: Higher is better.\n- Nature: Observed: a fact about the supplied path (no estimation).\n- Formula id `median_drawdown@v1`; the version increments if the definition changes.\n",
+   "criteria": "### When a value is produced (checked in this order)\n\n1. Every return must be >= -100% (a valid wealth path); otherwise `not_applicable`.\n2. At least 1 observations (mathematical minimum of policy `path_risk`); otherwise `insufficient_data`.\n3. Once the conditions above hold, the value is always defined.\n\nAn unexpected calculation failure or a non-finite result is reported as `error` with the value withheld; it never appears as NaN or infinity.\n\n### Confidence and status\n\n- Base confidence from years of history `y = n / P` (aligned observations for benchmark metrics):\n  **high** if `y >= 5`; **moderate** if `3 <= y < 5`; **low** if `y < 3` or if `y` cannot be established (no regular frequency).\n- Then, in this order, data-quality modifiers (a cap lowers confidence to at most the stated level; warnings are attached to the result):\n  - Missing values or missing expected periods in the history cap at **moderate**.\n  - A -100% return (total loss) adds a warning.\n- Status: `low_confidence` if the final confidence is **low**, otherwise `applicable`. Low confidence never hides the value.\n\n### Assumptions recorded on every result\n\n- Wealth index W_0 = 1 before the first return counts as the first peak; drawdowns are measured from running peaks of compounded wealth.\n\n### Output\n\n- Unit: Decimal return (0.01 = 1%); displayed as a percentage with 2 decimals. Values are stored unrounded (float64).\n- Direction: Smaller loss is better: losses are negative numbers, so −10% is better than −25% (the higher, less negative value is better).\n- Nature: Observed: a fact about the supplied path (no estimation).\n- Formula id `median_drawdown@v1`; the version increments if the definition changes.\n",
    "decisions": [
     "0025"
    ],
    "direction": "higher_is_better",
-   "direction_text": "Higher is better",
+   "direction_text": "Smaller loss is better: losses are negative numbers, so −10% is better than −25% (the higher, less negative value is better)",
    "formula": "median_k depth_k over K episodes (0 if K = 0)",
    "formula_id": "median_drawdown@v1",
    "formula_latex": "\\widetilde{\\mathrm{DD}} = \\operatorname{med}\\left(\\delta_1, \\dots, \\delta_K\\right), \\quad 0 \\text{ if } K = 0",
@@ -1960,6 +1986,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "The depth of a typical decline from a previous high; unlike the average it is not pulled down by one extreme episode.",
+   "signed_loss": true,
    "supplementary": false,
    "undefined_when": [],
    "unit": "decimal_return",
@@ -2025,6 +2052,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "How long, on average, the investment took to get back to a previous high.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [],
    "unit": "periods",
@@ -2090,6 +2118,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "The longest stretch during which losses kept deepening before the turnaround.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [],
    "unit": "periods",
@@ -2155,6 +2184,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "Once the bottom was reached, how long it typically took to climb back to the previous high.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [
     "No drawdown episode has recovered (none occurred, or all are open)."
@@ -2177,12 +2207,12 @@
    "category": "drawdown",
    "category_title": "Drawdowns",
    "convention": "Compounded drawdowns, linear quantile, signed (decision 0021).",
-   "criteria": "### When a value is produced (checked in this order)\n\n1. Every return must be >= -100% (a valid wealth path); otherwise `not_applicable`.\n2. At least 2 observations (mathematical minimum of policy `tail`); otherwise `insufficient_data`.\n3. Once the conditions above hold, the value is always defined.\n\nAn unexpected calculation failure or a non-finite result is reported as `error` with the value withheld; it never appears as NaN or infinity.\n\n### Confidence and status\n\n- Base confidence from the expected number of tail observations `n x 0.05`: **high** if `>= 10`; **moderate** if `5 <= . < 10`; **low** if `< 5`.\n- Then, in this order, data-quality modifiers (a cap lowers confidence to at most the stated level; warnings are attached to the result):\n  - Missing values or missing expected periods in the history cap at **moderate**.\n  - A -100% return (total loss) adds a warning.\n- Status: `low_confidence` if the final confidence is **low**, otherwise `applicable`. Low confidence never hides the value.\n\n### Assumptions recorded on every result\n\n- Wealth index W_0 = 1 before the first return counts as the first peak; drawdowns are measured from running peaks of compounded wealth.\n- 95% confidence; historical (empirical) quantile with linear interpolation (Hyndman-Fan type 7); no distributional assumption; signed return (negative = loss).\n\n### Output\n\n- Unit: Decimal return (0.01 = 1%); displayed as a percentage with 2 decimals. Values are stored unrounded (float64).\n- Direction: Higher is better.\n- Nature: Estimated: a sample statistic subject to sampling error.\n- Formula id `drawdown_at_risk_95@v1`; the version increments if the definition changes.\n",
+   "criteria": "### When a value is produced (checked in this order)\n\n1. Every return must be >= -100% (a valid wealth path); otherwise `not_applicable`.\n2. At least 2 observations (mathematical minimum of policy `tail`); otherwise `insufficient_data`.\n3. Once the conditions above hold, the value is always defined.\n\nAn unexpected calculation failure or a non-finite result is reported as `error` with the value withheld; it never appears as NaN or infinity.\n\n### Confidence and status\n\n- Base confidence from the expected number of tail observations `n x 0.05`: **high** if `>= 10`; **moderate** if `5 <= . < 10`; **low** if `< 5`.\n- Then, in this order, data-quality modifiers (a cap lowers confidence to at most the stated level; warnings are attached to the result):\n  - Missing values or missing expected periods in the history cap at **moderate**.\n  - A -100% return (total loss) adds a warning.\n- Status: `low_confidence` if the final confidence is **low**, otherwise `applicable`. Low confidence never hides the value.\n\n### Assumptions recorded on every result\n\n- Wealth index W_0 = 1 before the first return counts as the first peak; drawdowns are measured from running peaks of compounded wealth.\n- 95% confidence; historical (empirical) quantile with linear interpolation (Hyndman-Fan type 7); no distributional assumption; signed return (negative = loss).\n\n### Output\n\n- Unit: Decimal return (0.01 = 1%); displayed as a percentage with 2 decimals. Values are stored unrounded (float64).\n- Direction: Smaller loss is better: losses are negative numbers, so −10% is better than −25% (the higher, less negative value is better).\n- Nature: Estimated: a sample statistic subject to sampling error.\n- Formula id `drawdown_at_risk_95@v1`; the version increments if the definition changes.\n",
    "decisions": [
     "0021"
    ],
    "direction": "higher_is_better",
-   "direction_text": "Higher is better",
+   "direction_text": "Smaller loss is better: losses are negative numbers, so −10% is better than −25% (the higher, less negative value is better)",
    "formula": "Q_0.05(D_1..D_n), linear interpolation (signed)",
    "formula_id": "drawdown_at_risk_95@v1",
    "formula_latex": "\\mathrm{DaR}_{95} = Q_{0.05}\\left(D_1, \\dots, D_n\\right)",
@@ -2224,6 +2254,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "In about 1 period out of 20 the investment was at least this far below its previous high.",
+   "signed_loss": true,
    "supplementary": false,
    "undefined_when": [],
    "unit": "decimal_return",
@@ -2244,13 +2275,13 @@
    "category": "drawdown",
    "category_title": "Drawdowns",
    "convention": "Compounded drawdowns; mean of observations at or below the linear 5% quantile; signed (decision 0021).",
-   "criteria": "### When a value is produced (checked in this order)\n\n1. Every return must be >= -100% (a valid wealth path); otherwise `not_applicable`.\n2. At least 2 observations (mathematical minimum of policy `tail`); otherwise `insufficient_data`.\n3. Once the conditions above hold, the value is always defined.\n\nAn unexpected calculation failure or a non-finite result is reported as `error` with the value withheld; it never appears as NaN or infinity.\n\n### Confidence and status\n\n- Base confidence from the expected number of tail observations `n x 0.05`: **high** if `>= 10`; **moderate** if `5 <= . < 10`; **low** if `< 5`.\n- Then, in this order, data-quality modifiers (a cap lowers confidence to at most the stated level; warnings are attached to the result):\n  - Missing values or missing expected periods in the history cap at **moderate**.\n  - A -100% return (total loss) adds a warning.\n- Status: `low_confidence` if the final confidence is **low**, otherwise `applicable`. Low confidence never hides the value.\n\n### Assumptions recorded on every result\n\n- Wealth index W_0 = 1 before the first return counts as the first peak; drawdowns are measured from running peaks of compounded wealth.\n- 95% confidence; historical (empirical) quantile with linear interpolation (Hyndman-Fan type 7); no distributional assumption; signed return (negative = loss).\n\n### Output\n\n- Unit: Decimal return (0.01 = 1%); displayed as a percentage with 2 decimals. Values are stored unrounded (float64).\n- Direction: Higher is better.\n- Nature: Estimated: a sample statistic subject to sampling error.\n- Formula id `cdar_95@v1`; the version increments if the definition changes.\n",
+   "criteria": "### When a value is produced (checked in this order)\n\n1. Every return must be >= -100% (a valid wealth path); otherwise `not_applicable`.\n2. At least 2 observations (mathematical minimum of policy `tail`); otherwise `insufficient_data`.\n3. Once the conditions above hold, the value is always defined.\n\nAn unexpected calculation failure or a non-finite result is reported as `error` with the value withheld; it never appears as NaN or infinity.\n\n### Confidence and status\n\n- Base confidence from the expected number of tail observations `n x 0.05`: **high** if `>= 10`; **moderate** if `5 <= . < 10`; **low** if `< 5`.\n- Then, in this order, data-quality modifiers (a cap lowers confidence to at most the stated level; warnings are attached to the result):\n  - Missing values or missing expected periods in the history cap at **moderate**.\n  - A -100% return (total loss) adds a warning.\n- Status: `low_confidence` if the final confidence is **low**, otherwise `applicable`. Low confidence never hides the value.\n\n### Assumptions recorded on every result\n\n- Wealth index W_0 = 1 before the first return counts as the first peak; drawdowns are measured from running peaks of compounded wealth.\n- 95% confidence; historical (empirical) quantile with linear interpolation (Hyndman-Fan type 7); no distributional assumption; signed return (negative = loss).\n\n### Output\n\n- Unit: Decimal return (0.01 = 1%); displayed as a percentage with 2 decimals. Values are stored unrounded (float64).\n- Direction: Smaller loss is better: losses are negative numbers, so −10% is better than −25% (the higher, less negative value is better).\n- Nature: Estimated: a sample statistic subject to sampling error.\n- Formula id `cdar_95@v1`; the version increments if the definition changes.\n",
    "decisions": [
     "0010",
     "0021"
    ],
    "direction": "higher_is_better",
-   "direction_text": "Higher is better",
+   "direction_text": "Smaller loss is better: losses are negative numbers, so −10% is better than −25% (the higher, less negative value is better)",
    "formula": "mean(D_t | D_t <= Q_0.05(D))",
    "formula_id": "cdar_95@v1",
    "formula_latex": "\\mathrm{CDaR}_{95} = \\frac{1}{|T|} \\sum_{t \\in T} D_t, \\quad T = \\{t \\in 1..n : D_t \\le Q_{0.05}(D)\\}",
@@ -2298,6 +2329,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "How deep the drawdowns were, on average, during the worst 5% of periods.",
+   "signed_loss": true,
    "supplementary": false,
    "undefined_when": [],
    "unit": "decimal_return",
@@ -2318,12 +2350,12 @@
    "category": "drawdown",
    "category_title": "Drawdowns",
    "convention": "Compounded drawdowns, 95%, signed (decision 0021).",
-   "criteria": "### When a value is produced (checked in this order)\n\n1. Every return must be >= -100% (a valid wealth path); otherwise `not_applicable`.\n2. At least 2 observations (mathematical minimum of policy `tail`); otherwise `insufficient_data`.\n3. Once the conditions above hold, the value is always defined.\n\nAn unexpected calculation failure or a non-finite result is reported as `error` with the value withheld; it never appears as NaN or infinity.\n\n### Confidence and status\n\n- Base confidence from the expected number of tail observations `n x 0.05`: **high** if `>= 10`; **moderate** if `5 <= . < 10`; **low** if `< 5`.\n- Then, in this order, data-quality modifiers (a cap lowers confidence to at most the stated level; warnings are attached to the result):\n  - Missing values or missing expected periods in the history cap at **moderate**.\n  - A -100% return (total loss) adds a warning.\n- Status: `low_confidence` if the final confidence is **low**, otherwise `applicable`. Low confidence never hides the value.\n\n### Assumptions recorded on every result\n\n- Wealth index W_0 = 1 before the first return counts as the first peak; drawdowns are measured from running peaks of compounded wealth.\n- 95% confidence; entropic VaR of the empirical distribution (exponential-moment bound), one-dimensional convex minimization; signed return.\n\n### Output\n\n- Unit: Decimal return (0.01 = 1%); displayed as a percentage with 2 decimals. Values are stored unrounded (float64).\n- Direction: Higher is better.\n- Nature: Estimated: a sample statistic subject to sampling error.\n- Formula id `edar_95@v1`; the version increments if the definition changes.\n",
+   "criteria": "### When a value is produced (checked in this order)\n\n1. Every return must be >= -100% (a valid wealth path); otherwise `not_applicable`.\n2. At least 2 observations (mathematical minimum of policy `tail`); otherwise `insufficient_data`.\n3. Once the conditions above hold, the value is always defined.\n\nAn unexpected calculation failure or a non-finite result is reported as `error` with the value withheld; it never appears as NaN or infinity.\n\n### Confidence and status\n\n- Base confidence from the expected number of tail observations `n x 0.05`: **high** if `>= 10`; **moderate** if `5 <= . < 10`; **low** if `< 5`.\n- Then, in this order, data-quality modifiers (a cap lowers confidence to at most the stated level; warnings are attached to the result):\n  - Missing values or missing expected periods in the history cap at **moderate**.\n  - A -100% return (total loss) adds a warning.\n- Status: `low_confidence` if the final confidence is **low**, otherwise `applicable`. Low confidence never hides the value.\n\n### Assumptions recorded on every result\n\n- Wealth index W_0 = 1 before the first return counts as the first peak; drawdowns are measured from running peaks of compounded wealth.\n- 95% confidence; entropic VaR of the empirical distribution (exponential-moment bound), one-dimensional convex minimization; signed return.\n\n### Output\n\n- Unit: Decimal return (0.01 = 1%); displayed as a percentage with 2 decimals. Values are stored unrounded (float64).\n- Direction: Smaller loss is better: losses are negative numbers, so −10% is better than −25% (the higher, less negative value is better).\n- Nature: Estimated: a sample statistic subject to sampling error.\n- Formula id `edar_95@v1`; the version increments if the definition changes.\n",
    "decisions": [
     "0021"
    ],
    "direction": "higher_is_better",
-   "direction_text": "Higher is better",
+   "direction_text": "Smaller loss is better: losses are negative numbers, so −10% is better than −25% (the higher, less negative value is better)",
    "formula": "-EVaR_0.05(-D), EVaR_a(X) = inf_{z>0} z * ln( mean(exp(X/z)) / a )",
    "formula_id": "edar_95@v1",
    "formula_latex": "\\mathrm{EDaR}_{95} = -\\mathrm{EVaR}_{0.05}(-D), \\quad \\mathrm{EVaR}_{a}(X) = \\inf_{z > 0} \\, z \\ln\\!\\left( \\frac{1}{a\\,n} \\sum_{t=1}^{n} e^{X_t / z} \\right)",
@@ -2370,6 +2402,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "A conservative measure of how deep drawdowns get, sitting between the Conditional Drawdown-at-Risk and the maximum drawdown.",
+   "signed_loss": true,
    "supplementary": false,
    "undefined_when": [],
    "unit": "decimal_return",
@@ -2468,6 +2501,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "The Sharpe ratio compares excess return with total return variability. Higher values indicate more return per unit of measured volatility, but the statistic can be misleading when returns are smoothed, strongly skewed, serially correlated, or have significant tail risk.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [
     "Sample standard deviation is exactly zero (constant returns)."
@@ -2556,6 +2590,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "Like the Sharpe ratio, but only losing periods count as risk.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [
     "No return is below the 0% target (downside deviation is zero)."
@@ -2644,6 +2679,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "How much yearly return was earned relative to the worst peak-to-trough loss.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [
     "No drawdown occurred (maximum drawdown is zero)."
@@ -2719,6 +2755,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "Return relative to how deep and prolonged the declines were.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [
     "No drawdown occurred (Ulcer Index is zero)."
@@ -2800,6 +2837,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "Total gains divided by total losses; above 1 means gains outweighed losses.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [
     "No return is below the 0% threshold (zero denominator)."
@@ -2871,6 +2909,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "Return per unit of downside risk, where large losses count much more than small ones.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [
     "No return is below the 0% target (zero lower partial moment)."
@@ -2942,6 +2981,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "How much upside the investment delivered for each unit of downside it exposed investors to.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [
     "No return is below the 0% target (downside deviation is zero)."
@@ -3018,6 +3058,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "Return relative to the drawdowns suffered, where deep drawdowns weigh more than shallow ones.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [
     "No drawdown occurred (K = 0)."
@@ -3096,6 +3137,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "Like the Calmar ratio, but the fixed 10% added to the worst loss keeps the ratio from exploding for investments with tiny drawdowns.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [],
    "unit": "ratio",
@@ -3164,6 +3206,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "Return relative to how far below its previous highs the investment typically was.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [
     "No drawdown occurred (Pain Index is zero)."
@@ -3231,6 +3274,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "How many times over the investment earned back its worst decline.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [
     "No drawdown occurred (maximum drawdown is zero)."
@@ -3306,6 +3350,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "The Sharpe ratio after allowing for gains or losses that persist from one period to the next. When returns are smoothed (common for hedge funds and private assets) this is usually lower than the conventional Sharpe ratio.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [
     "The frequency is not regular or there is one observation per year (q = 1).",
@@ -3330,12 +3375,12 @@
    "category": "tail",
    "category_title": "Tail behavior",
    "convention": "95% confidence, per observation period, signed return (negative = loss), linear interpolation (decision 0010).",
-   "criteria": "### When a value is produced (checked in this order)\n\n1. At least 2 observations (mathematical minimum of policy `tail`); otherwise `insufficient_data`.\n2. Once the conditions above hold, the value is always defined.\n\nAn unexpected calculation failure or a non-finite result is reported as `error` with the value withheld; it never appears as NaN or infinity.\n\n### Confidence and status\n\n- Base confidence from the expected number of tail observations `n x 0.05`: **high** if `>= 10`; **moderate** if `5 <= . < 10`; **low** if `< 5`.\n- Then, in this order, data-quality modifiers (a cap lowers confidence to at most the stated level; warnings are attached to the result):\n  - None apply to this metric.\n- Status: `low_confidence` if the final confidence is **low**, otherwise `applicable`. Low confidence never hides the value.\n\n### Assumptions recorded on every result\n\n- 95% confidence; historical (empirical) quantile with linear interpolation (Hyndman-Fan type 7); no distributional assumption; signed return (negative = loss).\n\n### Output\n\n- Unit: Decimal return (0.01 = 1%); displayed as a percentage with 2 decimals. Values are stored unrounded (float64).\n- Direction: Higher is better.\n- Nature: Estimated: a sample statistic subject to sampling error.\n- Formula id `var_historical_95@v1`; the version increments if the definition changes.\n",
+   "criteria": "### When a value is produced (checked in this order)\n\n1. At least 2 observations (mathematical minimum of policy `tail`); otherwise `insufficient_data`.\n2. Once the conditions above hold, the value is always defined.\n\nAn unexpected calculation failure or a non-finite result is reported as `error` with the value withheld; it never appears as NaN or infinity.\n\n### Confidence and status\n\n- Base confidence from the expected number of tail observations `n x 0.05`: **high** if `>= 10`; **moderate** if `5 <= . < 10`; **low** if `< 5`.\n- Then, in this order, data-quality modifiers (a cap lowers confidence to at most the stated level; warnings are attached to the result):\n  - None apply to this metric.\n- Status: `low_confidence` if the final confidence is **low**, otherwise `applicable`. Low confidence never hides the value.\n\n### Assumptions recorded on every result\n\n- 95% confidence; historical (empirical) quantile with linear interpolation (Hyndman-Fan type 7); no distributional assumption; signed return (negative = loss).\n\n### Output\n\n- Unit: Decimal return (0.01 = 1%); displayed as a percentage with 2 decimals. Values are stored unrounded (float64).\n- Direction: Smaller loss is better: losses are negative numbers, so −10% is better than −25% (the higher, less negative value is better).\n- Nature: Estimated: a sample statistic subject to sampling error.\n- Formula id `var_historical_95@v1`; the version increments if the definition changes.\n",
    "decisions": [
     "0010"
    ],
    "direction": "higher_is_better",
-   "direction_text": "Higher is better",
+   "direction_text": "Smaller loss is better: losses are negative numbers, so −10% is better than −25% (the higher, less negative value is better)",
    "formula": "Q_0.05(r), empirical quantile with linear interpolation (Hyndman-Fan type 7)",
    "formula_id": "var_historical_95@v1",
    "formula_latex": "\\mathrm{VaR}_{95} = Q_{0.05}(r), \\quad Q_p(r) = r_{(j)} + (h - j)\\left(r_{(j+1)} - r_{(j)}\\right), \\ h = (n-1)p + 1, \\ j = \\lfloor h \\rfloor",
@@ -3393,6 +3438,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "In about 1 period out of 20, the return was this bad or worse.",
+   "signed_loss": true,
    "supplementary": false,
    "undefined_when": [],
    "unit": "decimal_return",
@@ -3412,12 +3458,12 @@
    "category": "tail",
    "category_title": "Tail behavior",
    "convention": "Mean of returns at or below the linear-interpolated 5% quantile; signed.",
-   "criteria": "### When a value is produced (checked in this order)\n\n1. At least 2 observations (mathematical minimum of policy `tail`); otherwise `insufficient_data`.\n2. Once the conditions above hold, the value is always defined.\n\nAn unexpected calculation failure or a non-finite result is reported as `error` with the value withheld; it never appears as NaN or infinity.\n\n### Confidence and status\n\n- Base confidence from the expected number of tail observations `n x 0.05`: **high** if `>= 10`; **moderate** if `5 <= . < 10`; **low** if `< 5`.\n- Then, in this order, data-quality modifiers (a cap lowers confidence to at most the stated level; warnings are attached to the result):\n  - None apply to this metric.\n- Status: `low_confidence` if the final confidence is **low**, otherwise `applicable`. Low confidence never hides the value.\n\n### Assumptions recorded on every result\n\n- 95% confidence; historical (empirical) quantile with linear interpolation (Hyndman-Fan type 7); no distributional assumption; signed return (negative = loss).\n\n### Output\n\n- Unit: Decimal return (0.01 = 1%); displayed as a percentage with 2 decimals. Values are stored unrounded (float64).\n- Direction: Higher is better.\n- Nature: Estimated: a sample statistic subject to sampling error.\n- Formula id `expected_shortfall_historical_95@v1`; the version increments if the definition changes.\n",
+   "criteria": "### When a value is produced (checked in this order)\n\n1. At least 2 observations (mathematical minimum of policy `tail`); otherwise `insufficient_data`.\n2. Once the conditions above hold, the value is always defined.\n\nAn unexpected calculation failure or a non-finite result is reported as `error` with the value withheld; it never appears as NaN or infinity.\n\n### Confidence and status\n\n- Base confidence from the expected number of tail observations `n x 0.05`: **high** if `>= 10`; **moderate** if `5 <= . < 10`; **low** if `< 5`.\n- Then, in this order, data-quality modifiers (a cap lowers confidence to at most the stated level; warnings are attached to the result):\n  - None apply to this metric.\n- Status: `low_confidence` if the final confidence is **low**, otherwise `applicable`. Low confidence never hides the value.\n\n### Assumptions recorded on every result\n\n- 95% confidence; historical (empirical) quantile with linear interpolation (Hyndman-Fan type 7); no distributional assumption; signed return (negative = loss).\n\n### Output\n\n- Unit: Decimal return (0.01 = 1%); displayed as a percentage with 2 decimals. Values are stored unrounded (float64).\n- Direction: Smaller loss is better: losses are negative numbers, so −10% is better than −25% (the higher, less negative value is better).\n- Nature: Estimated: a sample statistic subject to sampling error.\n- Formula id `expected_shortfall_historical_95@v1`; the version increments if the definition changes.\n",
    "decisions": [
     "0010"
    ],
    "direction": "higher_is_better",
-   "direction_text": "Higher is better",
+   "direction_text": "Smaller loss is better: losses are negative numbers, so −10% is better than −25% (the higher, less negative value is better)",
    "formula": "mean(r_t | r_t <= Q_0.05(r))",
    "formula_id": "expected_shortfall_historical_95@v1",
    "formula_latex": "\\mathrm{ES}_{95} = \\frac{1}{|T|} \\sum_{t \\in T} r_t, \\quad T = \\{t : r_t \\le Q_{0.05}(r)\\}",
@@ -3479,6 +3525,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "When things went badly (the worst 5% of periods), this was the average return.",
+   "signed_loss": true,
    "supplementary": false,
    "undefined_when": [],
    "unit": "decimal_return",
@@ -3546,6 +3593,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "Above 1: the best periods were larger than the worst periods were bad.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [
     "The 5th percentile return is exactly zero."
@@ -3567,12 +3615,12 @@
    "category": "tail",
    "category_title": "Tail behavior",
    "convention": "Population standard deviation sqrt(m2), signed return, per period (decision 0018).",
-   "criteria": "### When a value is produced (checked in this order)\n\n1. At least 2 observations (mathematical minimum of policy `dispersion`); otherwise `insufficient_data`.\n2. Once the conditions above hold, the value is always defined.\n\nAn unexpected calculation failure or a non-finite result is reported as `error` with the value withheld; it never appears as NaN or infinity.\n\n### Confidence and status\n\n- Base confidence from years of history `y = n / P` (aligned observations for benchmark metrics):\n  **high** if `y >= 5`; **moderate** if `3 <= y < 5`; **low** if `y < 3` or if `y` cannot be established (no regular frequency).\n- Then, in this order, data-quality modifiers (a cap lowers confidence to at most the stated level; warnings are attached to the result):\n  - Smoothing risk **high** (lag-1 autocorrelation >= 0.3 and z = rho_1 sqrt(n) >= 1.96) sets confidence to **low**.\n  - Smoothing risk **moderate** (rho_1 >= 0.15 and z >= 1.645) caps at **moderate**.\n  - At least 10% exactly-zero returns caps at **moderate**.\n  - With n >= 24 and skewness <= -1 or excess kurtosis >= 3: warning only (no confidence change).\n- Status: always `supplementary` when a value exists (diagnostic statistic).\n\n### Assumptions recorded on every result\n\n- Model-dependent: return distribution approximated from population moments (normal, or Cornish-Fisher expansion with skewness and excess kurtosis); not a historical estimate.\n\n### Output\n\n- Unit: Decimal return (0.01 = 1%); displayed as a percentage with 2 decimals. Values are stored unrounded (float64).\n- Direction: Higher is better.\n- Nature: Model-dependent: valid only under the stated model.\n- Formula id `gaussian_var_95@v1`; the version increments if the definition changes.\n",
+   "criteria": "### When a value is produced (checked in this order)\n\n1. At least 2 observations (mathematical minimum of policy `dispersion`); otherwise `insufficient_data`.\n2. Once the conditions above hold, the value is always defined.\n\nAn unexpected calculation failure or a non-finite result is reported as `error` with the value withheld; it never appears as NaN or infinity.\n\n### Confidence and status\n\n- Base confidence from years of history `y = n / P` (aligned observations for benchmark metrics):\n  **high** if `y >= 5`; **moderate** if `3 <= y < 5`; **low** if `y < 3` or if `y` cannot be established (no regular frequency).\n- Then, in this order, data-quality modifiers (a cap lowers confidence to at most the stated level; warnings are attached to the result):\n  - Smoothing risk **high** (lag-1 autocorrelation >= 0.3 and z = rho_1 sqrt(n) >= 1.96) sets confidence to **low**.\n  - Smoothing risk **moderate** (rho_1 >= 0.15 and z >= 1.645) caps at **moderate**.\n  - At least 10% exactly-zero returns caps at **moderate**.\n  - With n >= 24 and skewness <= -1 or excess kurtosis >= 3: warning only (no confidence change).\n- Status: always `supplementary` when a value exists (diagnostic statistic).\n\n### Assumptions recorded on every result\n\n- Model-dependent: return distribution approximated from population moments (normal, or Cornish-Fisher expansion with skewness and excess kurtosis); not a historical estimate.\n\n### Output\n\n- Unit: Decimal return (0.01 = 1%); displayed as a percentage with 2 decimals. Values are stored unrounded (float64).\n- Direction: Smaller loss is better: losses are negative numbers, so −10% is better than −25% (the higher, less negative value is better).\n- Nature: Model-dependent: valid only under the stated model.\n- Formula id `gaussian_var_95@v1`; the version increments if the definition changes.\n",
    "decisions": [
     "0018"
    ],
    "direction": "higher_is_better",
-   "direction_text": "Higher is better",
+   "direction_text": "Smaller loss is better: losses are negative numbers, so −10% is better than −25% (the higher, less negative value is better)",
    "formula": "mean + z_0.05 * sqrt(m2), m2 = (1/n) sum (r_t - mean)^2, z_0.05 = -1.645",
    "formula_id": "gaussian_var_95@v1",
    "formula_latex": "\\mathrm{VaR}^{N}_{95} = \\bar r + z_{0.05} \\sqrt{m_2}, \\quad z_{0.05} = \\Phi^{-1}(0.05) \\approx -1.645",
@@ -3623,6 +3671,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "The 1-in-20 loss threshold if returns followed a bell curve. Compare it with the historical VaR: a large gap means the bell curve does not fit.",
+   "signed_loss": true,
    "supplementary": true,
    "undefined_when": [],
    "unit": "decimal_return",
@@ -3642,13 +3691,13 @@
    "category": "tail",
    "category_title": "Tail behavior",
    "convention": "Population moments, signed return, per period (decision 0018).",
-   "criteria": "### When a value is produced (checked in this order)\n\n1. At least 4 observations (mathematical minimum of policy `kurtosis`); otherwise `insufficient_data`.\n2. The value is undefined, and reported as `not_applicable` with the reason, when:\n   - Return variance is zero or underflows in floating point (e.g. identical returns).\n\nAn unexpected calculation failure or a non-finite result is reported as `error` with the value withheld; it never appears as NaN or infinity.\n\n### Confidence and status\n\n- Base confidence from the number of observations `n`: **high** if `n >= 240`; **moderate** if `120 <= n < 240`; **low** if `n < 120`.\n- Then, in this order, data-quality modifiers (a cap lowers confidence to at most the stated level; warnings are attached to the result):\n  - Smoothing risk **high** (lag-1 autocorrelation >= 0.3 and z = rho_1 sqrt(n) >= 1.96) sets confidence to **low**.\n  - Smoothing risk **moderate** (rho_1 >= 0.15 and z >= 1.645) caps at **moderate**.\n  - At least 10% exactly-zero returns caps at **moderate**.\n  - With n >= 24 and skewness <= -1 or excess kurtosis >= 3: warning only (no confidence change).\n- Status: always `supplementary` when a value exists (diagnostic statistic).\n\n### Assumptions recorded on every result\n\n- Model-dependent: return distribution approximated from population moments (normal, or Cornish-Fisher expansion with skewness and excess kurtosis); not a historical estimate.\n\n### Output\n\n- Unit: Decimal return (0.01 = 1%); displayed as a percentage with 2 decimals. Values are stored unrounded (float64).\n- Direction: Higher is better.\n- Nature: Model-dependent: valid only under the stated model.\n- Formula id `modified_var_95@v1`; the version increments if the definition changes.\n",
+   "criteria": "### When a value is produced (checked in this order)\n\n1. At least 4 observations (mathematical minimum of policy `kurtosis`); otherwise `insufficient_data`.\n2. The value is undefined, and reported as `not_applicable` with the reason, when:\n   - Return variance is zero or underflows in floating point (e.g. identical returns).\n\nAn unexpected calculation failure or a non-finite result is reported as `error` with the value withheld; it never appears as NaN or infinity.\n\n### Confidence and status\n\n- Base confidence from the number of observations `n`: **high** if `n >= 240`; **moderate** if `120 <= n < 240`; **low** if `n < 120`.\n- Then, in this order, data-quality modifiers (a cap lowers confidence to at most the stated level; warnings are attached to the result):\n  - Smoothing risk **high** (lag-1 autocorrelation >= 0.3 and z = rho_1 sqrt(n) >= 1.96) sets confidence to **low**.\n  - Smoothing risk **moderate** (rho_1 >= 0.15 and z >= 1.645) caps at **moderate**.\n  - At least 10% exactly-zero returns caps at **moderate**.\n  - With n >= 24 and skewness <= -1 or excess kurtosis >= 3: warning only (no confidence change).\n- Status: always `supplementary` when a value exists (diagnostic statistic).\n\n### Assumptions recorded on every result\n\n- Model-dependent: return distribution approximated from population moments (normal, or Cornish-Fisher expansion with skewness and excess kurtosis); not a historical estimate.\n\n### Output\n\n- Unit: Decimal return (0.01 = 1%); displayed as a percentage with 2 decimals. Values are stored unrounded (float64).\n- Direction: Smaller loss is better: losses are negative numbers, so −10% is better than −25% (the higher, less negative value is better).\n- Nature: Model-dependent: valid only under the stated model.\n- Formula id `modified_var_95@v1`; the version increments if the definition changes.\n",
    "decisions": [
     "0018",
     "0022"
    ],
    "direction": "higher_is_better",
-   "direction_text": "Higher is better",
+   "direction_text": "Smaller loss is better: losses are negative numbers, so −10% is better than −25% (the higher, less negative value is better)",
    "formula": "mean + h * sqrt(m2), h = z + (z^2-1) S/6 + (z^3-3z) K/24 - (2z^3-5z) S^2/36",
    "formula_id": "modified_var_95@v1",
    "formula_latex": "\\mathrm{mVaR}_{95} = \\bar r + h \\sqrt{m_2}, \\quad h = z + \\frac{(z^2 - 1) S}{6} + \\frac{(z^3 - 3z) K}{24} - \\frac{(2z^3 - 5z) S^2}{36}, \\quad z = \\Phi^{-1}(0.05), \\ S = \\frac{m_3}{m_2^{3/2}}, \\ K = \\frac{m_4}{m_2^2} - 3",
@@ -3697,6 +3746,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "A 1-in-20 loss threshold that accounts for lopsided and fat-tailed returns.",
+   "signed_loss": true,
    "supplementary": true,
    "undefined_when": [
     "Return variance is zero or underflows in floating point (e.g. identical returns)."
@@ -3718,12 +3768,12 @@
    "category": "tail",
    "category_title": "Tail behavior",
    "convention": "Population moments, full expansion, signed return, per period (decision 0022).",
-   "criteria": "### When a value is produced (checked in this order)\n\n1. At least 4 observations (mathematical minimum of policy `kurtosis`); otherwise `insufficient_data`.\n2. The value is undefined, and reported as `not_applicable` with the reason, when:\n   - Return variance is zero or underflows in floating point (e.g. identical returns).\n\nAn unexpected calculation failure or a non-finite result is reported as `error` with the value withheld; it never appears as NaN or infinity.\n\n### Confidence and status\n\n- Base confidence from the number of observations `n`: **high** if `n >= 240`; **moderate** if `120 <= n < 240`; **low** if `n < 120`.\n- Then, in this order, data-quality modifiers (a cap lowers confidence to at most the stated level; warnings are attached to the result):\n  - Smoothing risk **high** (lag-1 autocorrelation >= 0.3 and z = rho_1 sqrt(n) >= 1.96) sets confidence to **low**.\n  - Smoothing risk **moderate** (rho_1 >= 0.15 and z >= 1.645) caps at **moderate**.\n  - At least 10% exactly-zero returns caps at **moderate**.\n  - With n >= 24 and skewness <= -1 or excess kurtosis >= 3: warning only (no confidence change).\n- Status: always `supplementary` when a value exists (diagnostic statistic).\n\n### Assumptions recorded on every result\n\n- Model-dependent: return distribution approximated from population moments (normal, or Cornish-Fisher expansion with skewness and excess kurtosis); not a historical estimate.\n\n### Output\n\n- Unit: Decimal return (0.01 = 1%); displayed as a percentage with 2 decimals. Values are stored unrounded (float64).\n- Direction: Higher is better.\n- Nature: Model-dependent: valid only under the stated model.\n- Formula id `modified_es_95@v1`; the version increments if the definition changes.\n",
+   "criteria": "### When a value is produced (checked in this order)\n\n1. At least 4 observations (mathematical minimum of policy `kurtosis`); otherwise `insufficient_data`.\n2. The value is undefined, and reported as `not_applicable` with the reason, when:\n   - Return variance is zero or underflows in floating point (e.g. identical returns).\n\nAn unexpected calculation failure or a non-finite result is reported as `error` with the value withheld; it never appears as NaN or infinity.\n\n### Confidence and status\n\n- Base confidence from the number of observations `n`: **high** if `n >= 240`; **moderate** if `120 <= n < 240`; **low** if `n < 120`.\n- Then, in this order, data-quality modifiers (a cap lowers confidence to at most the stated level; warnings are attached to the result):\n  - Smoothing risk **high** (lag-1 autocorrelation >= 0.3 and z = rho_1 sqrt(n) >= 1.96) sets confidence to **low**.\n  - Smoothing risk **moderate** (rho_1 >= 0.15 and z >= 1.645) caps at **moderate**.\n  - At least 10% exactly-zero returns caps at **moderate**.\n  - With n >= 24 and skewness <= -1 or excess kurtosis >= 3: warning only (no confidence change).\n- Status: always `supplementary` when a value exists (diagnostic statistic).\n\n### Assumptions recorded on every result\n\n- Model-dependent: return distribution approximated from population moments (normal, or Cornish-Fisher expansion with skewness and excess kurtosis); not a historical estimate.\n\n### Output\n\n- Unit: Decimal return (0.01 = 1%); displayed as a percentage with 2 decimals. Values are stored unrounded (float64).\n- Direction: Smaller loss is better: losses are negative numbers, so −10% is better than −25% (the higher, less negative value is better).\n- Nature: Model-dependent: valid only under the stated model.\n- Formula id `modified_es_95@v1`; the version increments if the definition changes.\n",
    "decisions": [
     "0022"
    ],
    "direction": "higher_is_better",
-   "direction_text": "Higher is better",
+   "direction_text": "Smaller loss is better: losses are negative numbers, so −10% is better than −25% (the higher, less negative value is better)",
    "formula": "mean - sqrt(m2)/a * phi(h) * [1 + h^3 S/6 + (h^6 - 9h^4 + 9h^2 + 3) S^2/72 + (h^4 - 2h^2 - 1) K/24], h = Cornish-Fisher quantile, a = 0.05",
    "formula_id": "modified_es_95@v1",
    "formula_latex": "\\mathrm{mES}_{95} = \\bar r - \\frac{\\sqrt{m_2}}{a}\\,\\varphi(h)\\left[1 + \\frac{h^3 S}{6} + \\frac{(h^6 - 9h^4 + 9h^2 + 3) S^2}{72} + \\frac{(h^4 - 2h^2 - 1) K}{24}\\right], \\quad a = 0.05, \\ h = \\text{CF quantile of modified\\_var\\_95}",
@@ -3764,6 +3814,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "The average loss in the worst 5% of periods implied by a skew- and fat-tail-adjusted distribution. Compare with the historical Expected Shortfall.",
+   "signed_loss": true,
    "supplementary": true,
    "undefined_when": [
     "Return variance is zero or underflows in floating point (e.g. identical returns)."
@@ -3785,12 +3836,12 @@
    "category": "tail",
    "category_title": "Tail behavior",
    "convention": "Empirical distribution of per-period returns, 95%, signed (decision 0021).",
-   "criteria": "### When a value is produced (checked in this order)\n\n1. At least 2 observations (mathematical minimum of policy `tail`); otherwise `insufficient_data`.\n2. Once the conditions above hold, the value is always defined.\n\nAn unexpected calculation failure or a non-finite result is reported as `error` with the value withheld; it never appears as NaN or infinity.\n\n### Confidence and status\n\n- Base confidence from the expected number of tail observations `n x 0.05`: **high** if `>= 10`; **moderate** if `5 <= . < 10`; **low** if `< 5`.\n- Then, in this order, data-quality modifiers (a cap lowers confidence to at most the stated level; warnings are attached to the result):\n  - None apply to this metric.\n- Status: `low_confidence` if the final confidence is **low**, otherwise `applicable`. Low confidence never hides the value.\n\n### Assumptions recorded on every result\n\n- 95% confidence; entropic VaR of the empirical distribution (exponential-moment bound), one-dimensional convex minimization; signed return.\n\n### Output\n\n- Unit: Decimal return (0.01 = 1%); displayed as a percentage with 2 decimals. Values are stored unrounded (float64).\n- Direction: Higher is better.\n- Nature: Estimated: a sample statistic subject to sampling error.\n- Formula id `evar_95@v1`; the version increments if the definition changes.\n",
+   "criteria": "### When a value is produced (checked in this order)\n\n1. At least 2 observations (mathematical minimum of policy `tail`); otherwise `insufficient_data`.\n2. Once the conditions above hold, the value is always defined.\n\nAn unexpected calculation failure or a non-finite result is reported as `error` with the value withheld; it never appears as NaN or infinity.\n\n### Confidence and status\n\n- Base confidence from the expected number of tail observations `n x 0.05`: **high** if `>= 10`; **moderate** if `5 <= . < 10`; **low** if `< 5`.\n- Then, in this order, data-quality modifiers (a cap lowers confidence to at most the stated level; warnings are attached to the result):\n  - None apply to this metric.\n- Status: `low_confidence` if the final confidence is **low**, otherwise `applicable`. Low confidence never hides the value.\n\n### Assumptions recorded on every result\n\n- 95% confidence; entropic VaR of the empirical distribution (exponential-moment bound), one-dimensional convex minimization; signed return.\n\n### Output\n\n- Unit: Decimal return (0.01 = 1%); displayed as a percentage with 2 decimals. Values are stored unrounded (float64).\n- Direction: Smaller loss is better: losses are negative numbers, so −10% is better than −25% (the higher, less negative value is better).\n- Nature: Estimated: a sample statistic subject to sampling error.\n- Formula id `evar_95@v1`; the version increments if the definition changes.\n",
    "decisions": [
     "0021"
    ],
    "direction": "higher_is_better",
-   "direction_text": "Higher is better",
+   "direction_text": "Smaller loss is better: losses are negative numbers, so −10% is better than −25% (the higher, less negative value is better)",
    "formula": "-EVaR_0.05(-r), EVaR_a(X) = inf_{z>0} z * ln( mean(exp(X/z)) / a )",
    "formula_id": "evar_95@v1",
    "formula_latex": "\\mathrm{EVaR}_{95} = -\\mathrm{EVaR}_{0.05}(-r), \\quad \\mathrm{EVaR}_{a}(X) = \\inf_{z > 0} \\, z \\ln\\!\\left( \\frac{1}{a\\,n} \\sum_{t=1}^{n} e^{X_t / z} \\right)",
@@ -3833,6 +3884,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "A conservative loss threshold for bad periods, at least as severe as the Expected Shortfall and never worse than the worst period.",
+   "signed_loss": true,
    "supplementary": false,
    "undefined_when": [],
    "unit": "decimal_return",
@@ -3913,6 +3965,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "Negative values mean occasional large losses and many small gains; positive values mean occasional large gains.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [
     "Return variance is zero or underflows in floating point (e.g. identical returns)."
@@ -3994,6 +4047,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "Positive values mean extreme periods (good or bad) happen more often than a bell curve would suggest.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [
     "Return variance is zero or underflows in floating point (e.g. identical returns)."
@@ -4057,6 +4111,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "A small value (below 0.05) indicates the returns are not bell-shaped, so volatility-based statistics tell only part of the story.",
+   "signed_loss": false,
    "supplementary": true,
    "undefined_when": [
     "Return variance is zero or underflows in floating point (e.g. identical returns)."
@@ -4117,6 +4172,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "How often the investment made money in a period.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [],
    "unit": "fraction",
@@ -4168,6 +4224,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "How often the investment lost money in a period.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [],
    "unit": "fraction",
@@ -4224,6 +4281,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "The longest stretch of back-to-back gaining periods.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [],
    "unit": "periods",
@@ -4280,6 +4338,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "The longest stretch of back-to-back losing periods.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [],
    "unit": "periods",
@@ -4345,6 +4404,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "The best full January-to-December year.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [
     "No complete calendar year is covered by the history.",
@@ -4365,12 +4425,12 @@
    "category": "consistency",
    "category_title": "Consistency",
    "convention": "Complete years only (decision 0023).",
-   "criteria": "### When a value is produced (checked in this order)\n\n1. Every return must be >= -100% (a valid wealth path); otherwise `not_applicable`.\n2. At least 1 observations (mathematical minimum of policy `path_risk`); otherwise `insufficient_data`.\n3. The value is undefined, and reported as `not_applicable` with the reason, when:\n   - No complete calendar year is covered by the history.\n   - The returns are undated or the frequency is irregular.\n\nAn unexpected calculation failure or a non-finite result is reported as `error` with the value withheld; it never appears as NaN or infinity.\n\n### Confidence and status\n\n- Base confidence from years of history `y = n / P` (aligned observations for benchmark metrics):\n  **high** if `y >= 5`; **moderate** if `3 <= y < 5`; **low** if `y < 3` or if `y` cannot be established (no regular frequency).\n- Then, in this order, data-quality modifiers (a cap lowers confidence to at most the stated level; warnings are attached to the result):\n  - Missing values or missing expected periods in the history cap at **moderate**.\n  - A -100% return (total loss) adds a warning.\n- Status: `low_confidence` if the final confidence is **low**, otherwise `applicable`. Low confidence never hides the value.\n\n### Assumptions recorded on every result\n\n- None beyond simple decimal returns as supplied.\n\n### Output\n\n- Unit: Decimal return (0.01 = 1%); displayed as a percentage with 2 decimals. Values are stored unrounded (float64).\n- Direction: Higher is better.\n- Nature: Observed: a fact about the supplied path (no estimation).\n- Formula id `worst_calendar_year@v1`; the version increments if the definition changes.\n",
+   "criteria": "### When a value is produced (checked in this order)\n\n1. Every return must be >= -100% (a valid wealth path); otherwise `not_applicable`.\n2. At least 1 observations (mathematical minimum of policy `path_risk`); otherwise `insufficient_data`.\n3. The value is undefined, and reported as `not_applicable` with the reason, when:\n   - No complete calendar year is covered by the history.\n   - The returns are undated or the frequency is irregular.\n\nAn unexpected calculation failure or a non-finite result is reported as `error` with the value withheld; it never appears as NaN or infinity.\n\n### Confidence and status\n\n- Base confidence from years of history `y = n / P` (aligned observations for benchmark metrics):\n  **high** if `y >= 5`; **moderate** if `3 <= y < 5`; **low** if `y < 3` or if `y` cannot be established (no regular frequency).\n- Then, in this order, data-quality modifiers (a cap lowers confidence to at most the stated level; warnings are attached to the result):\n  - Missing values or missing expected periods in the history cap at **moderate**.\n  - A -100% return (total loss) adds a warning.\n- Status: `low_confidence` if the final confidence is **low**, otherwise `applicable`. Low confidence never hides the value.\n\n### Assumptions recorded on every result\n\n- None beyond simple decimal returns as supplied.\n\n### Output\n\n- Unit: Decimal return (0.01 = 1%); displayed as a percentage with 2 decimals. Values are stored unrounded (float64).\n- Direction: Smaller loss is better: losses are negative numbers, so −10% is better than −25% (the higher, less negative value is better).\n- Nature: Observed: a fact about the supplied path (no estimation).\n- Formula id `worst_calendar_year@v1`; the version increments if the definition changes.\n",
    "decisions": [
     "0023"
    ],
    "direction": "higher_is_better",
-   "direction_text": "Higher is better",
+   "direction_text": "Smaller loss is better: losses are negative numbers, so −10% is better than −25% (the higher, less negative value is better)",
    "formula": "min over complete years y of prod_{t in y} (1 + r_t) - 1",
    "formula_id": "worst_calendar_year@v1",
    "formula_latex": "\\min_{y \\in Y} R_y, \\quad R_y = \\prod_{t \\in y} (1 + r_t) - 1 \\ \\text{ for each complete calendar year } y \\in Y",
@@ -4413,6 +4473,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "The worst full January-to-December year.",
+   "signed_loss": true,
    "supplementary": false,
    "undefined_when": [
     "No complete calendar year is covered by the history.",
@@ -4481,6 +4542,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "How many full years ended with a gain.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [
     "No complete calendar year is covered by the history.",
@@ -4550,6 +4612,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "The best twelve months (or one year of periods) an investor could have experienced, whatever the start date.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [
     "Fewer observations than one year (n < w)."
@@ -4571,13 +4634,13 @@
    "category": "consistency",
    "category_title": "Consistency",
    "convention": "Window round(P) observations, step 1 (decision 0024).",
-   "criteria": "### When a value is produced (checked in this order)\n\n1. The observation frequency must be regular so that P is defined; otherwise `not_applicable`.\n2. Every return must be >= -100% (a valid wealth path); otherwise `not_applicable`.\n3. At least 1 observations (mathematical minimum of policy `path_risk`); otherwise `insufficient_data`.\n4. The value is undefined, and reported as `not_applicable` with the reason, when:\n   - Fewer observations than one year (n < w).\n\nAn unexpected calculation failure or a non-finite result is reported as `error` with the value withheld; it never appears as NaN or infinity.\n\n### Confidence and status\n\n- Base confidence from years of history `y = n / P` (aligned observations for benchmark metrics):\n  **high** if `y >= 5`; **moderate** if `3 <= y < 5`; **low** if `y < 3` or if `y` cannot be established (no regular frequency).\n- Then, in this order, data-quality modifiers (a cap lowers confidence to at most the stated level; warnings are attached to the result):\n  - Missing values or missing expected periods in the history cap at **moderate**.\n  - A -100% return (total loss) adds a warning.\n  - Fewer than 1 year(s) of data sets confidence to **low** (annualizing extrapolates a partial year).\n  - A caller-declared (not date-inferred) frequency adds a warning.\n- Status: `low_confidence` if the final confidence is **low**, otherwise `applicable`. Low confidence never hides the value.\n\n### Assumptions recorded on every result\n\n- Annualized with the canonical periods-per-year factor P of the detected frequency (daily business 252, daily calendar 365, weekly 52, monthly 12, quarterly 4, yearly 1); irregular or unknown frequency is never annualized.\n\n### Output\n\n- Unit: Decimal return (0.01 = 1%); displayed as a percentage with 2 decimals. Values are stored unrounded (float64).\n- Direction: Higher is better.\n- Nature: Observed: a fact about the supplied path (no estimation).\n- Formula id `worst_rolling_year@v1`; the version increments if the definition changes.\n",
+   "criteria": "### When a value is produced (checked in this order)\n\n1. The observation frequency must be regular so that P is defined; otherwise `not_applicable`.\n2. Every return must be >= -100% (a valid wealth path); otherwise `not_applicable`.\n3. At least 1 observations (mathematical minimum of policy `path_risk`); otherwise `insufficient_data`.\n4. The value is undefined, and reported as `not_applicable` with the reason, when:\n   - Fewer observations than one year (n < w).\n\nAn unexpected calculation failure or a non-finite result is reported as `error` with the value withheld; it never appears as NaN or infinity.\n\n### Confidence and status\n\n- Base confidence from years of history `y = n / P` (aligned observations for benchmark metrics):\n  **high** if `y >= 5`; **moderate** if `3 <= y < 5`; **low** if `y < 3` or if `y` cannot be established (no regular frequency).\n- Then, in this order, data-quality modifiers (a cap lowers confidence to at most the stated level; warnings are attached to the result):\n  - Missing values or missing expected periods in the history cap at **moderate**.\n  - A -100% return (total loss) adds a warning.\n  - Fewer than 1 year(s) of data sets confidence to **low** (annualizing extrapolates a partial year).\n  - A caller-declared (not date-inferred) frequency adds a warning.\n- Status: `low_confidence` if the final confidence is **low**, otherwise `applicable`. Low confidence never hides the value.\n\n### Assumptions recorded on every result\n\n- Annualized with the canonical periods-per-year factor P of the detected frequency (daily business 252, daily calendar 365, weekly 52, monthly 12, quarterly 4, yearly 1); irregular or unknown frequency is never annualized.\n\n### Output\n\n- Unit: Decimal return (0.01 = 1%); displayed as a percentage with 2 decimals. Values are stored unrounded (float64).\n- Direction: Smaller loss is better: losses are negative numbers, so −10% is better than −25% (the higher, less negative value is better).\n- Nature: Observed: a fact about the supplied path (no estimation).\n- Formula id `worst_rolling_year@v1`; the version increments if the definition changes.\n",
    "decisions": [
     "0024",
     "0026"
    ],
    "direction": "higher_is_better",
-   "direction_text": "Higher is better",
+   "direction_text": "Smaller loss is better: losses are negative numbers, so −10% is better than −25% (the higher, less negative value is better)",
    "formula": "min_t prod_{i=t-w+1..t} (1 + r_i) - 1, w = round(P)",
    "formula_id": "worst_rolling_year@v1",
    "formula_latex": "\\min_{w \\le t \\le n} R^{(w)}_t, \\quad R^{(w)}_t = \\prod_{i=t-w+1}^{t} (1 + r_i) - 1, \\quad t = w, \\dots, n, \\quad w = \\operatorname{round}(P)",
@@ -4618,6 +4681,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "The worst twelve months (or one year of periods) an investor could have experienced, whatever the start date.",
+   "signed_loss": true,
    "supplementary": false,
    "undefined_when": [
     "Fewer observations than one year (n < w)."
@@ -4686,6 +4750,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "If you had invested at any point and held for one year, how often you would have ended with a gain.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [
     "Fewer observations than one year (n < w)."
@@ -4749,6 +4814,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "Whether good or bad periods tend to be followed by similar periods. Values near zero are typical for liquid, market-priced investments.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [
     "n <= 2 observations.",
@@ -4811,6 +4877,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "Whether good or bad periods tend to be followed by similar periods. Values near zero are typical for liquid, market-priced investments.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [
     "n <= 3 observations.",
@@ -4873,6 +4940,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "Whether good or bad periods tend to be followed by similar periods. Values near zero are typical for liquid, market-priced investments.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [
     "n <= 4 observations.",
@@ -4937,6 +5005,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "A small value (below 0.05) suggests returns are not independent from one period to the next.",
+   "signed_loss": false,
    "supplementary": true,
    "undefined_when": [
     "All returns are identical (zero variance)."
@@ -4989,6 +5058,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "Many exactly-zero periods can mean prices were not updated (stale pricing).",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [],
    "unit": "fraction",
@@ -5059,6 +5129,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "Whether risk over a whole year is larger or smaller than monthly (or daily) volatility suggests. Above 1: gains and losses tend to persist, so yearly swings are bigger than the annualized volatility shows; below 1: they tend to reverse.",
+   "signed_loss": false,
    "supplementary": true,
    "undefined_when": [
     "The frequency is not regular (P undefined) or there is one observation per year (q = 1).",
@@ -5149,6 +5220,7 @@
    "requires_benchmark": true,
    "requires_factors": false,
    "retail": "A beta of 1 means the fund tended to move one-for-one with the benchmark; 0.5 means about half as much.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [
     "Benchmark returns are constant over the aligned periods."
@@ -5234,6 +5306,7 @@
    "requires_benchmark": true,
    "requires_factors": false,
    "retail": "The part of the fund's yearly return that the benchmark does not explain; it depends heavily on which benchmark is used.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [
     "Benchmark returns are constant over the aligned periods."
@@ -5303,6 +5376,7 @@
    "requires_benchmark": true,
    "requires_factors": false,
    "retail": "How closely the fund's ups and downs followed the benchmark (1 = perfectly).",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [
     "Benchmark returns are constant over the aligned periods.",
@@ -5372,6 +5446,7 @@
    "requires_benchmark": true,
    "requires_factors": false,
    "retail": "+1 means the fund moved exactly with the benchmark, 0 no linear relation, -1 exactly opposite.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [
     "Fund or benchmark returns are constant over the aligned periods."
@@ -5454,6 +5529,7 @@
    "requires_benchmark": true,
    "requires_factors": false,
    "retail": "How much the fund's results differed from the benchmark from period to period.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [],
    "unit": "decimal_return",
@@ -5521,6 +5597,7 @@
    "requires_benchmark": true,
    "requires_factors": false,
    "retail": "How much the fund returned above (or below) the benchmark per year, on average.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [],
    "unit": "decimal_return",
@@ -5602,6 +5679,7 @@
    "requires_benchmark": true,
    "requires_factors": false,
    "retail": "How consistently the fund beat (or lagged) its benchmark relative to how much it deviated from it.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [
     "Tracking error is exactly zero (fund equals benchmark plus a constant)."
@@ -5682,6 +5760,7 @@
    "requires_benchmark": true,
    "requires_factors": false,
    "retail": "Return earned per unit of market (benchmark) risk taken.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [
     "Benchmark returns are constant (beta undefined).",
@@ -5764,6 +5843,7 @@
    "requires_benchmark": true,
    "requires_factors": false,
    "retail": "Above 1 (100%): the fund gained more than the benchmark when the benchmark rose.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [
     "The benchmark has no up periods in the overlap.",
@@ -5845,6 +5925,7 @@
    "requires_benchmark": true,
    "requires_factors": false,
    "retail": "Below 1 (100%): the fund lost less than the benchmark when the benchmark fell. Negative: the fund gained on average when the benchmark fell.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [
     "The benchmark has no down periods in the overlap.",
@@ -5927,6 +6008,7 @@
    "requires_benchmark": true,
    "requires_factors": false,
    "retail": "Above 1: the fund participated more in rising markets than in falling ones. A fund with 80% upside and 60% downside capture has a capture ratio of about 1.33.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [
     "Upside or downside capture is undefined (no up or no down benchmark periods, or a zero compounded benchmark return on one side).",
@@ -6000,6 +6082,7 @@
    "requires_benchmark": true,
    "requires_factors": false,
    "retail": "How often the fund beat its benchmark: 0.6 means in 6 periods out of 10. It says nothing about by how much it won or lost.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [],
    "unit": "fraction",
@@ -6081,6 +6164,7 @@
    "requires_benchmark": true,
    "requires_factors": false,
    "retail": "How much the fund moved for reasons unrelated to its benchmark. Near zero means the fund behaves like the benchmark (scaled by beta).",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [
     "Benchmark returns are constant over the aligned periods."
@@ -6165,6 +6249,7 @@
    "requires_benchmark": true,
    "requires_factors": false,
    "retail": "How much benchmark-independent return the fund earned for each unit of benchmark-independent risk it took.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [
     "Benchmark returns are constant over the aligned periods.",
@@ -6246,6 +6331,7 @@
    "requires_benchmark": true,
    "requires_factors": false,
    "retail": "Puts the fund and the benchmark on the same risk footing: the return the fund would have delivered at the benchmark's volatility. Compare it with the benchmark's own return (details).",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [
     "Fund returns are constant over the aligned periods (zero volatility).",
@@ -6323,6 +6409,7 @@
    "requires_benchmark": true,
    "requires_factors": false,
    "retail": "How strongly the fund followed the benchmark when the benchmark went up.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [
     "Fewer than 3 benchmark up periods in the overlap.",
@@ -6400,6 +6487,7 @@
    "requires_benchmark": true,
    "requires_factors": false,
    "retail": "How strongly the fund followed the benchmark when the benchmark went down; lower means better protection in falling markets.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [
     "Fewer than 3 benchmark down periods in the overlap.",
@@ -6478,6 +6566,7 @@
    "requires_benchmark": true,
    "requires_factors": false,
    "retail": "Above 1: the fund was more sensitive to rising than to falling markets.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [
     "Bull-market or bear-market beta is undefined (fewer than 3 up or down periods, or a constant benchmark within a regime).",
@@ -6585,6 +6674,7 @@
    "requires_benchmark": false,
    "requires_factors": true,
    "retail": "The part of the fund's yearly return that the supplied factors (for example the market, size and value) do not explain. It depends entirely on which factors are used.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [
     "A factor is constant over the aligned periods.",
@@ -6682,6 +6772,7 @@
    "requires_benchmark": false,
    "requires_factors": true,
    "retail": "A rough gauge of whether the unexplained return could be luck: values beyond about +2 or -2 are unlikely to arise by chance alone if the model is right.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [
     "A factor is constant or the factors are perfectly collinear.",
@@ -6770,6 +6861,7 @@
    "requires_benchmark": false,
    "requires_factors": true,
    "retail": "How much of the fund's ups and downs the factors account for (1 = all of it).",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [
     "A factor is constant or the factors are perfectly collinear.",
@@ -6851,6 +6943,7 @@
    "requires_benchmark": false,
    "requires_factors": true,
    "retail": "How much the fund moves for reasons the factors do not capture; the size of the manager's independent bets, whether they pay off or not.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [
     "A factor is constant or the factors are perfectly collinear."
@@ -6926,6 +7019,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "How confident one can be, statistically, that the investment's risk-adjusted return is genuinely positive rather than luck. Values near 1 mean strong evidence; 0.5 means no evidence either way.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [
     "Sample standard deviation is exactly zero.",
@@ -7009,6 +7103,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "How precisely the Sharpe ratio is known. A Sharpe ratio of 1.0 with a standard error of 0.5 could plausibly be anywhere from about 0 to 2.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [
     "Sample standard deviation is exactly zero.",
@@ -7081,6 +7176,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "How long a track record this investment would need before its risk-adjusted return could be told apart from luck. If it exceeds the actual history, the record is too short to be conclusive.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [
     "The observed Sharpe ratio is not above the reference 0 (no track-record length can make it significant).",
@@ -7146,6 +7242,7 @@
    "requires_benchmark": false,
    "requires_factors": false,
    "retail": "How precisely the average return is known. If the confidence interval includes zero, the history cannot distinguish the average return from zero.",
+   "signed_loss": false,
    "supplementary": false,
    "undefined_when": [
     "Sample standard deviation is exactly zero (no sampling variability)."

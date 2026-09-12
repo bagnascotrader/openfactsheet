@@ -48,105 +48,107 @@ Policy descriptions:
 
 Flags that decide which applicability checks and confidence modifiers apply to each metric (see [criteria](criteria.md#10-confidence-and-status-algorithm)).
 
-| Metric | Category | Volatility-based | Wealth path | Annualized | Benchmark | Factors | Supplementary | Minimum-data policy | Assumption keys |
-|---|---|---|---|---|---|---|---|---|---|
-| [`cumulative_return`](../interpretation/cumulative_return.md) | returns |  | yes |  |  |  |  | `observed_point` | — |
-| [`cagr`](../interpretation/cagr.md) | returns |  | yes | yes |  |  |  | `location` | `annualization` |
-| [`arithmetic_mean`](../interpretation/arithmetic_mean.md) | returns |  |  |  |  |  |  | `location` | — |
-| [`geometric_mean_return`](../interpretation/geometric_mean_return.md) | returns |  | yes |  |  |  |  | `location` | — |
-| [`annualized_arithmetic_mean`](../interpretation/annualized_arithmetic_mean.md) | returns |  |  | yes |  |  |  | `location` | `annualization` |
-| [`median_return`](../interpretation/median_return.md) | returns |  |  |  |  |  |  | `location` | — |
-| [`best_period`](../interpretation/best_period.md) | returns |  |  |  |  |  |  | `observed_point` | — |
-| [`worst_period`](../interpretation/worst_period.md) | returns |  |  |  |  |  |  | `observed_point` | — |
-| [`gain_to_pain_ratio`](../interpretation/gain_to_pain_ratio.md) | returns |  |  |  |  |  |  | `ratio_standard` | — |
-| [`payoff_ratio`](../interpretation/payoff_ratio.md) | returns |  |  |  |  |  |  | `ratio_standard` | — |
-| [`profit_factor`](../interpretation/profit_factor.md) | returns |  |  |  |  |  |  | `ratio_standard` | — |
-| [`volatility`](../interpretation/volatility.md) | volatility | yes |  |  |  |  |  | `dispersion` | `sample_std` |
-| [`annualized_volatility`](../interpretation/annualized_volatility.md) | volatility | yes |  | yes |  |  |  | `dispersion` | `sample_std`, `annualization` |
-| [`mean_absolute_deviation`](../interpretation/mean_absolute_deviation.md) | volatility | yes |  |  |  |  |  | `dispersion` | — |
-| [`interquartile_range`](../interpretation/interquartile_range.md) | volatility | yes |  |  |  |  |  | `dispersion` | — |
-| [`downside_deviation`](../interpretation/downside_deviation.md) | volatility | yes |  | yes |  |  |  | `dispersion` | `mar`, `annualization` |
-| [`semi_deviation`](../interpretation/semi_deviation.md) | volatility | yes |  | yes |  |  |  | `dispersion` | `annualization` |
-| [`downside_potential`](../interpretation/downside_potential.md) | volatility |  |  |  |  |  |  | `dispersion` | `mar` |
-| [`max_drawdown`](../interpretation/max_drawdown.md) | drawdown |  | yes |  |  |  |  | `path_risk` | `drawdown` |
-| [`average_drawdown`](../interpretation/average_drawdown.md) | drawdown |  | yes |  |  |  |  | `path_risk` | `drawdown` |
-| [`current_drawdown`](../interpretation/current_drawdown.md) | drawdown |  | yes |  |  |  |  | `observed_point` | `drawdown` |
-| [`longest_drawdown_duration`](../interpretation/longest_drawdown_duration.md) | drawdown |  | yes |  |  |  |  | `path_risk` | `drawdown` |
-| [`drawdown_count`](../interpretation/drawdown_count.md) | drawdown |  | yes |  |  |  |  | `path_risk` | `drawdown` |
-| [`time_underwater_pct`](../interpretation/time_underwater_pct.md) | drawdown |  | yes |  |  |  |  | `path_risk` | `drawdown` |
-| [`ulcer_index`](../interpretation/ulcer_index.md) | drawdown |  | yes |  |  |  |  | `path_risk` | `drawdown` |
-| [`pain_index`](../interpretation/pain_index.md) | drawdown |  | yes |  |  |  |  | `path_risk` | `drawdown` |
-| [`median_drawdown`](../interpretation/median_drawdown.md) | drawdown |  | yes |  |  |  |  | `path_risk` | `drawdown` |
-| [`average_drawdown_duration`](../interpretation/average_drawdown_duration.md) | drawdown |  | yes |  |  |  |  | `path_risk` | `drawdown` |
-| [`max_peak_to_trough_duration`](../interpretation/max_peak_to_trough_duration.md) | drawdown |  | yes |  |  |  |  | `path_risk` | `drawdown` |
-| [`average_recovery_duration`](../interpretation/average_recovery_duration.md) | drawdown |  | yes |  |  |  |  | `path_risk` | `drawdown` |
-| [`drawdown_at_risk_95`](../interpretation/drawdown_at_risk_95.md) | drawdown |  | yes |  |  |  |  | `tail` | `drawdown`, `tail` |
-| [`cdar_95`](../interpretation/cdar_95.md) | drawdown |  | yes |  |  |  |  | `tail` | `drawdown`, `tail` |
-| [`edar_95`](../interpretation/edar_95.md) | drawdown |  | yes |  |  |  |  | `tail` | `drawdown`, `entropic` |
-| [`sharpe_ratio`](../interpretation/sharpe_ratio.md) | risk_adjusted | yes |  | yes |  |  |  | `ratio_standard` | `risk_free`, `sample_std`, `annualization` |
-| [`sortino_ratio`](../interpretation/sortino_ratio.md) | risk_adjusted | yes |  | yes |  |  |  | `ratio_standard` | `risk_free`, `mar`, `annualization` |
-| [`calmar_ratio`](../interpretation/calmar_ratio.md) | risk_adjusted |  | yes | yes |  |  |  | `ratio_standard` | `annualization`, `drawdown`, `risk_free` |
-| [`martin_ratio`](../interpretation/martin_ratio.md) | risk_adjusted |  | yes | yes |  |  |  | `ratio_standard` | `annualization`, `drawdown`, `risk_free` |
-| [`omega_ratio`](../interpretation/omega_ratio.md) | risk_adjusted |  |  |  |  |  |  | `ratio_standard` | `omega_threshold` |
-| [`kappa_3_ratio`](../interpretation/kappa_3_ratio.md) | risk_adjusted | yes |  |  |  |  |  | `ratio_standard` | `mar` |
-| [`upside_potential_ratio`](../interpretation/upside_potential_ratio.md) | risk_adjusted | yes |  |  |  |  |  | `ratio_standard` | `mar` |
-| [`burke_ratio`](../interpretation/burke_ratio.md) | risk_adjusted |  | yes | yes |  |  |  | `ratio_standard` | `annualization`, `drawdown`, `risk_free` |
-| [`sterling_ratio`](../interpretation/sterling_ratio.md) | risk_adjusted |  | yes | yes |  |  |  | `ratio_standard` | `annualization`, `drawdown`, `sterling_excess`, `risk_free` |
-| [`pain_ratio`](../interpretation/pain_ratio.md) | risk_adjusted |  | yes | yes |  |  |  | `ratio_standard` | `annualization`, `drawdown`, `risk_free` |
-| [`recovery_factor`](../interpretation/recovery_factor.md) | risk_adjusted |  | yes |  |  |  |  | `ratio_standard` | `drawdown` |
-| [`sharpe_ratio_autocorrelation_adjusted`](../interpretation/sharpe_ratio_autocorrelation_adjusted.md) | risk_adjusted |  |  | yes |  |  |  | `long_horizon_dependence` | `risk_free`, `sample_std`, `annualization` |
-| [`var_historical_95`](../interpretation/var_historical_95.md) | tail |  |  |  |  |  |  | `tail` | `tail` |
-| [`expected_shortfall_historical_95`](../interpretation/expected_shortfall_historical_95.md) | tail |  |  |  |  |  |  | `tail` | `tail` |
-| [`tail_ratio`](../interpretation/tail_ratio.md) | tail |  |  |  |  |  |  | `tail` | — |
-| [`gaussian_var_95`](../interpretation/gaussian_var_95.md) | tail | yes |  |  |  |  | yes | `dispersion` | `parametric` |
-| [`modified_var_95`](../interpretation/modified_var_95.md) | tail | yes |  |  |  |  | yes | `kurtosis` | `parametric` |
-| [`modified_es_95`](../interpretation/modified_es_95.md) | tail | yes |  |  |  |  | yes | `kurtosis` | `parametric` |
-| [`evar_95`](../interpretation/evar_95.md) | tail |  |  |  |  |  |  | `tail` | `entropic` |
-| [`skewness`](../interpretation/skewness.md) | distribution |  |  |  |  |  |  | `skewness` | — |
-| [`excess_kurtosis`](../interpretation/excess_kurtosis.md) | distribution |  |  |  |  |  |  | `kurtosis` | — |
-| [`jarque_bera_pvalue`](../interpretation/jarque_bera_pvalue.md) | distribution |  |  |  |  |  | yes | `skewness` | — |
-| [`positive_period_pct`](../interpretation/positive_period_pct.md) | consistency |  |  |  |  |  |  | `location` | — |
-| [`negative_period_pct`](../interpretation/negative_period_pct.md) | consistency |  |  |  |  |  |  | `location` | — |
-| [`longest_winning_streak`](../interpretation/longest_winning_streak.md) | consistency |  |  |  |  |  |  | `path_risk` | — |
-| [`longest_losing_streak`](../interpretation/longest_losing_streak.md) | consistency |  |  |  |  |  |  | `path_risk` | — |
-| [`best_calendar_year`](../interpretation/best_calendar_year.md) | consistency |  | yes |  |  |  |  | `path_risk` | — |
-| [`worst_calendar_year`](../interpretation/worst_calendar_year.md) | consistency |  | yes |  |  |  |  | `path_risk` | — |
-| [`positive_calendar_years_pct`](../interpretation/positive_calendar_years_pct.md) | consistency |  | yes |  |  |  |  | `path_risk` | — |
-| [`best_rolling_year`](../interpretation/best_rolling_year.md) | consistency |  | yes | yes |  |  |  | `path_risk` | `annualization` |
-| [`worst_rolling_year`](../interpretation/worst_rolling_year.md) | consistency |  | yes | yes |  |  |  | `path_risk` | `annualization` |
-| [`positive_rolling_year_pct`](../interpretation/positive_rolling_year_pct.md) | consistency |  | yes | yes |  |  |  | `path_risk` | `annualization` |
-| [`autocorrelation_lag1`](../interpretation/autocorrelation_lag1.md) | dependence |  |  |  |  |  |  | `autocorrelation` | — |
-| [`autocorrelation_lag2`](../interpretation/autocorrelation_lag2.md) | dependence |  |  |  |  |  |  | `autocorrelation` | — |
-| [`autocorrelation_lag3`](../interpretation/autocorrelation_lag3.md) | dependence |  |  |  |  |  |  | `autocorrelation` | — |
-| [`ljung_box_pvalue`](../interpretation/ljung_box_pvalue.md) | dependence |  |  |  |  |  | yes | `ljung_box` | — |
-| [`zero_return_pct`](../interpretation/zero_return_pct.md) | dependence |  |  |  |  |  |  | `observed_point` | — |
-| [`variance_ratio_1y`](../interpretation/variance_ratio_1y.md) | dependence |  |  |  |  |  | yes | `long_horizon_dependence` | — |
-| [`beta`](../interpretation/beta.md) | benchmark |  |  |  | yes |  |  | `benchmark_regression` | `benchmark`, `regression` |
-| [`alpha`](../interpretation/alpha.md) | benchmark |  |  | yes | yes |  |  | `benchmark_regression` | `benchmark`, `regression`, `annualization` |
-| [`r_squared`](../interpretation/r_squared.md) | benchmark |  |  |  | yes |  |  | `benchmark_regression` | `benchmark`, `regression` |
-| [`correlation`](../interpretation/correlation.md) | benchmark |  |  |  | yes |  |  | `benchmark_regression` | `benchmark` |
-| [`tracking_error`](../interpretation/tracking_error.md) | benchmark | yes |  | yes | yes |  |  | `benchmark_simple` | `benchmark`, `sample_std`, `annualization` |
-| [`active_return`](../interpretation/active_return.md) | benchmark |  |  | yes | yes |  |  | `benchmark_simple` | `benchmark`, `annualization` |
-| [`information_ratio`](../interpretation/information_ratio.md) | benchmark | yes |  | yes | yes |  |  | `benchmark_simple` | `benchmark`, `sample_std`, `annualization` |
-| [`treynor_ratio`](../interpretation/treynor_ratio.md) | benchmark |  |  | yes | yes |  |  | `benchmark_regression` | `benchmark`, `regression`, `risk_free`, `annualization` |
-| [`upside_capture`](../interpretation/upside_capture.md) | benchmark |  |  | yes | yes |  |  | `benchmark_simple` | `benchmark`, `annualization` |
-| [`downside_capture`](../interpretation/downside_capture.md) | benchmark |  |  | yes | yes |  |  | `benchmark_simple` | `benchmark`, `annualization` |
-| [`capture_ratio`](../interpretation/capture_ratio.md) | benchmark |  |  | yes | yes |  |  | `benchmark_simple` | `benchmark`, `annualization` |
-| [`batting_average`](../interpretation/batting_average.md) | benchmark |  |  |  | yes |  |  | `benchmark_simple` | `benchmark` |
-| [`residual_volatility`](../interpretation/residual_volatility.md) | benchmark | yes |  | yes | yes |  |  | `benchmark_regression` | `benchmark`, `regression`, `annualization` |
-| [`appraisal_ratio`](../interpretation/appraisal_ratio.md) | benchmark | yes |  | yes | yes |  |  | `benchmark_regression` | `benchmark`, `regression`, `risk_free`, `annualization` |
-| [`m_squared`](../interpretation/m_squared.md) | benchmark | yes |  | yes | yes |  |  | `benchmark_simple` | `benchmark`, `risk_free`, `sample_std`, `annualization` |
-| [`bull_beta`](../interpretation/bull_beta.md) | benchmark |  |  |  | yes |  |  | `benchmark_regression` | `benchmark`, `regression` |
-| [`bear_beta`](../interpretation/bear_beta.md) | benchmark |  |  |  | yes |  |  | `benchmark_regression` | `benchmark`, `regression` |
-| [`timing_ratio`](../interpretation/timing_ratio.md) | benchmark |  |  |  | yes |  |  | `benchmark_regression` | `benchmark`, `regression` |
-| [`factor_alpha`](../interpretation/factor_alpha.md) | factors |  |  | yes |  | yes |  | `factor_regression` | `factor_model`, `annualization` |
-| [`factor_alpha_t_statistic`](../interpretation/factor_alpha_t_statistic.md) | factors |  |  |  |  | yes |  | `factor_regression` | `factor_model` |
-| [`factor_r_squared`](../interpretation/factor_r_squared.md) | factors |  |  |  |  | yes |  | `factor_regression` | `factor_model` |
-| [`factor_residual_volatility`](../interpretation/factor_residual_volatility.md) | factors |  |  | yes |  | yes |  | `factor_regression` | `factor_model`, `annualization` |
-| [`probabilistic_sharpe_ratio`](../interpretation/probabilistic_sharpe_ratio.md) | statistical | yes |  |  |  |  |  | `asymptotic_inference` | `iid_asymptotics`, `risk_free` |
-| [`sharpe_ratio_standard_error`](../interpretation/sharpe_ratio_standard_error.md) | statistical | yes |  | yes |  |  |  | `asymptotic_inference` | `iid_asymptotics`, `annualization`, `risk_free` |
-| [`minimum_track_record_length`](../interpretation/minimum_track_record_length.md) | statistical | yes |  |  |  |  |  | `asymptotic_inference` | `iid_asymptotics`, `risk_free` |
-| [`mean_return_standard_error`](../interpretation/mean_return_standard_error.md) | statistical | yes |  |  |  |  |  | `dispersion` | — |
+| Metric | Category | Volatility-based | Wealth path | Annualized | Benchmark | Factors | Supplementary | Signed loss | Minimum-data policy | Assumption keys |
+|---|---|---|---|---|---|---|---|---|---|---|
+| [`cumulative_return`](../interpretation/cumulative_return.md) | returns |  | yes |  |  |  |  |  | `observed_point` | — |
+| [`cagr`](../interpretation/cagr.md) | returns |  | yes | yes |  |  |  |  | `location` | `annualization` |
+| [`arithmetic_mean`](../interpretation/arithmetic_mean.md) | returns |  |  |  |  |  |  |  | `location` | — |
+| [`geometric_mean_return`](../interpretation/geometric_mean_return.md) | returns |  | yes |  |  |  |  |  | `location` | — |
+| [`annualized_arithmetic_mean`](../interpretation/annualized_arithmetic_mean.md) | returns |  |  | yes |  |  |  |  | `location` | `annualization` |
+| [`median_return`](../interpretation/median_return.md) | returns |  |  |  |  |  |  |  | `location` | — |
+| [`best_period`](../interpretation/best_period.md) | returns |  |  |  |  |  |  |  | `observed_point` | — |
+| [`worst_period`](../interpretation/worst_period.md) | returns |  |  |  |  |  |  | yes | `observed_point` | — |
+| [`gain_to_pain_ratio`](../interpretation/gain_to_pain_ratio.md) | returns |  |  |  |  |  |  |  | `ratio_standard` | — |
+| [`payoff_ratio`](../interpretation/payoff_ratio.md) | returns |  |  |  |  |  |  |  | `ratio_standard` | — |
+| [`profit_factor`](../interpretation/profit_factor.md) | returns |  |  |  |  |  |  |  | `ratio_standard` | — |
+| [`volatility`](../interpretation/volatility.md) | volatility | yes |  |  |  |  |  |  | `dispersion` | `sample_std` |
+| [`annualized_volatility`](../interpretation/annualized_volatility.md) | volatility | yes |  | yes |  |  |  |  | `dispersion` | `sample_std`, `annualization` |
+| [`mean_absolute_deviation`](../interpretation/mean_absolute_deviation.md) | volatility | yes |  |  |  |  |  |  | `dispersion` | — |
+| [`interquartile_range`](../interpretation/interquartile_range.md) | volatility | yes |  |  |  |  |  |  | `dispersion` | — |
+| [`downside_deviation`](../interpretation/downside_deviation.md) | volatility | yes |  | yes |  |  |  |  | `dispersion` | `mar`, `annualization` |
+| [`semi_deviation`](../interpretation/semi_deviation.md) | volatility | yes |  | yes |  |  |  |  | `dispersion` | `annualization` |
+| [`downside_potential`](../interpretation/downside_potential.md) | volatility |  |  |  |  |  |  |  | `dispersion` | `mar` |
+| [`max_drawdown`](../interpretation/max_drawdown.md) | drawdown |  | yes |  |  |  |  | yes | `path_risk` | `drawdown` |
+| [`average_drawdown`](../interpretation/average_drawdown.md) | drawdown |  | yes |  |  |  |  | yes | `path_risk` | `drawdown` |
+| [`current_drawdown`](../interpretation/current_drawdown.md) | drawdown |  | yes |  |  |  |  | yes | `observed_point` | `drawdown` |
+| [`longest_drawdown_duration`](../interpretation/longest_drawdown_duration.md) | drawdown |  | yes |  |  |  |  |  | `path_risk` | `drawdown` |
+| [`drawdown_count`](../interpretation/drawdown_count.md) | drawdown |  | yes |  |  |  |  |  | `path_risk` | `drawdown` |
+| [`time_underwater_pct`](../interpretation/time_underwater_pct.md) | drawdown |  | yes |  |  |  |  |  | `path_risk` | `drawdown` |
+| [`ulcer_index`](../interpretation/ulcer_index.md) | drawdown |  | yes |  |  |  |  |  | `path_risk` | `drawdown` |
+| [`pain_index`](../interpretation/pain_index.md) | drawdown |  | yes |  |  |  |  |  | `path_risk` | `drawdown` |
+| [`median_drawdown`](../interpretation/median_drawdown.md) | drawdown |  | yes |  |  |  |  | yes | `path_risk` | `drawdown` |
+| [`average_drawdown_duration`](../interpretation/average_drawdown_duration.md) | drawdown |  | yes |  |  |  |  |  | `path_risk` | `drawdown` |
+| [`max_peak_to_trough_duration`](../interpretation/max_peak_to_trough_duration.md) | drawdown |  | yes |  |  |  |  |  | `path_risk` | `drawdown` |
+| [`average_recovery_duration`](../interpretation/average_recovery_duration.md) | drawdown |  | yes |  |  |  |  |  | `path_risk` | `drawdown` |
+| [`drawdown_at_risk_95`](../interpretation/drawdown_at_risk_95.md) | drawdown |  | yes |  |  |  |  | yes | `tail` | `drawdown`, `tail` |
+| [`cdar_95`](../interpretation/cdar_95.md) | drawdown |  | yes |  |  |  |  | yes | `tail` | `drawdown`, `tail` |
+| [`edar_95`](../interpretation/edar_95.md) | drawdown |  | yes |  |  |  |  | yes | `tail` | `drawdown`, `entropic` |
+| [`sharpe_ratio`](../interpretation/sharpe_ratio.md) | risk_adjusted | yes |  | yes |  |  |  |  | `ratio_standard` | `risk_free`, `sample_std`, `annualization` |
+| [`sortino_ratio`](../interpretation/sortino_ratio.md) | risk_adjusted | yes |  | yes |  |  |  |  | `ratio_standard` | `risk_free`, `mar`, `annualization` |
+| [`calmar_ratio`](../interpretation/calmar_ratio.md) | risk_adjusted |  | yes | yes |  |  |  |  | `ratio_standard` | `annualization`, `drawdown`, `risk_free` |
+| [`martin_ratio`](../interpretation/martin_ratio.md) | risk_adjusted |  | yes | yes |  |  |  |  | `ratio_standard` | `annualization`, `drawdown`, `risk_free` |
+| [`omega_ratio`](../interpretation/omega_ratio.md) | risk_adjusted |  |  |  |  |  |  |  | `ratio_standard` | `omega_threshold` |
+| [`kappa_3_ratio`](../interpretation/kappa_3_ratio.md) | risk_adjusted | yes |  |  |  |  |  |  | `ratio_standard` | `mar` |
+| [`upside_potential_ratio`](../interpretation/upside_potential_ratio.md) | risk_adjusted | yes |  |  |  |  |  |  | `ratio_standard` | `mar` |
+| [`burke_ratio`](../interpretation/burke_ratio.md) | risk_adjusted |  | yes | yes |  |  |  |  | `ratio_standard` | `annualization`, `drawdown`, `risk_free` |
+| [`sterling_ratio`](../interpretation/sterling_ratio.md) | risk_adjusted |  | yes | yes |  |  |  |  | `ratio_standard` | `annualization`, `drawdown`, `sterling_excess`, `risk_free` |
+| [`pain_ratio`](../interpretation/pain_ratio.md) | risk_adjusted |  | yes | yes |  |  |  |  | `ratio_standard` | `annualization`, `drawdown`, `risk_free` |
+| [`recovery_factor`](../interpretation/recovery_factor.md) | risk_adjusted |  | yes |  |  |  |  |  | `ratio_standard` | `drawdown` |
+| [`sharpe_ratio_autocorrelation_adjusted`](../interpretation/sharpe_ratio_autocorrelation_adjusted.md) | risk_adjusted |  |  | yes |  |  |  |  | `long_horizon_dependence` | `risk_free`, `sample_std`, `annualization` |
+| [`var_historical_95`](../interpretation/var_historical_95.md) | tail |  |  |  |  |  |  | yes | `tail` | `tail` |
+| [`expected_shortfall_historical_95`](../interpretation/expected_shortfall_historical_95.md) | tail |  |  |  |  |  |  | yes | `tail` | `tail` |
+| [`tail_ratio`](../interpretation/tail_ratio.md) | tail |  |  |  |  |  |  |  | `tail` | — |
+| [`gaussian_var_95`](../interpretation/gaussian_var_95.md) | tail | yes |  |  |  |  | yes | yes | `dispersion` | `parametric` |
+| [`modified_var_95`](../interpretation/modified_var_95.md) | tail | yes |  |  |  |  | yes | yes | `kurtosis` | `parametric` |
+| [`modified_es_95`](../interpretation/modified_es_95.md) | tail | yes |  |  |  |  | yes | yes | `kurtosis` | `parametric` |
+| [`evar_95`](../interpretation/evar_95.md) | tail |  |  |  |  |  |  | yes | `tail` | `entropic` |
+| [`skewness`](../interpretation/skewness.md) | distribution |  |  |  |  |  |  |  | `skewness` | — |
+| [`excess_kurtosis`](../interpretation/excess_kurtosis.md) | distribution |  |  |  |  |  |  |  | `kurtosis` | — |
+| [`jarque_bera_pvalue`](../interpretation/jarque_bera_pvalue.md) | distribution |  |  |  |  |  | yes |  | `skewness` | — |
+| [`positive_period_pct`](../interpretation/positive_period_pct.md) | consistency |  |  |  |  |  |  |  | `location` | — |
+| [`negative_period_pct`](../interpretation/negative_period_pct.md) | consistency |  |  |  |  |  |  |  | `location` | — |
+| [`longest_winning_streak`](../interpretation/longest_winning_streak.md) | consistency |  |  |  |  |  |  |  | `path_risk` | — |
+| [`longest_losing_streak`](../interpretation/longest_losing_streak.md) | consistency |  |  |  |  |  |  |  | `path_risk` | — |
+| [`best_calendar_year`](../interpretation/best_calendar_year.md) | consistency |  | yes |  |  |  |  |  | `path_risk` | — |
+| [`worst_calendar_year`](../interpretation/worst_calendar_year.md) | consistency |  | yes |  |  |  |  | yes | `path_risk` | — |
+| [`positive_calendar_years_pct`](../interpretation/positive_calendar_years_pct.md) | consistency |  | yes |  |  |  |  |  | `path_risk` | — |
+| [`best_rolling_year`](../interpretation/best_rolling_year.md) | consistency |  | yes | yes |  |  |  |  | `path_risk` | `annualization` |
+| [`worst_rolling_year`](../interpretation/worst_rolling_year.md) | consistency |  | yes | yes |  |  |  | yes | `path_risk` | `annualization` |
+| [`positive_rolling_year_pct`](../interpretation/positive_rolling_year_pct.md) | consistency |  | yes | yes |  |  |  |  | `path_risk` | `annualization` |
+| [`autocorrelation_lag1`](../interpretation/autocorrelation_lag1.md) | dependence |  |  |  |  |  |  |  | `autocorrelation` | — |
+| [`autocorrelation_lag2`](../interpretation/autocorrelation_lag2.md) | dependence |  |  |  |  |  |  |  | `autocorrelation` | — |
+| [`autocorrelation_lag3`](../interpretation/autocorrelation_lag3.md) | dependence |  |  |  |  |  |  |  | `autocorrelation` | — |
+| [`ljung_box_pvalue`](../interpretation/ljung_box_pvalue.md) | dependence |  |  |  |  |  | yes |  | `ljung_box` | — |
+| [`zero_return_pct`](../interpretation/zero_return_pct.md) | dependence |  |  |  |  |  |  |  | `observed_point` | — |
+| [`variance_ratio_1y`](../interpretation/variance_ratio_1y.md) | dependence |  |  |  |  |  | yes |  | `long_horizon_dependence` | — |
+| [`beta`](../interpretation/beta.md) | benchmark |  |  |  | yes |  |  |  | `benchmark_regression` | `benchmark`, `regression` |
+| [`alpha`](../interpretation/alpha.md) | benchmark |  |  | yes | yes |  |  |  | `benchmark_regression` | `benchmark`, `regression`, `annualization` |
+| [`r_squared`](../interpretation/r_squared.md) | benchmark |  |  |  | yes |  |  |  | `benchmark_regression` | `benchmark`, `regression` |
+| [`correlation`](../interpretation/correlation.md) | benchmark |  |  |  | yes |  |  |  | `benchmark_regression` | `benchmark` |
+| [`tracking_error`](../interpretation/tracking_error.md) | benchmark | yes |  | yes | yes |  |  |  | `benchmark_simple` | `benchmark`, `sample_std`, `annualization` |
+| [`active_return`](../interpretation/active_return.md) | benchmark |  |  | yes | yes |  |  |  | `benchmark_simple` | `benchmark`, `annualization` |
+| [`information_ratio`](../interpretation/information_ratio.md) | benchmark | yes |  | yes | yes |  |  |  | `benchmark_simple` | `benchmark`, `sample_std`, `annualization` |
+| [`treynor_ratio`](../interpretation/treynor_ratio.md) | benchmark |  |  | yes | yes |  |  |  | `benchmark_regression` | `benchmark`, `regression`, `risk_free`, `annualization` |
+| [`upside_capture`](../interpretation/upside_capture.md) | benchmark |  |  | yes | yes |  |  |  | `benchmark_simple` | `benchmark`, `annualization` |
+| [`downside_capture`](../interpretation/downside_capture.md) | benchmark |  |  | yes | yes |  |  |  | `benchmark_simple` | `benchmark`, `annualization` |
+| [`capture_ratio`](../interpretation/capture_ratio.md) | benchmark |  |  | yes | yes |  |  |  | `benchmark_simple` | `benchmark`, `annualization` |
+| [`batting_average`](../interpretation/batting_average.md) | benchmark |  |  |  | yes |  |  |  | `benchmark_simple` | `benchmark` |
+| [`residual_volatility`](../interpretation/residual_volatility.md) | benchmark | yes |  | yes | yes |  |  |  | `benchmark_regression` | `benchmark`, `regression`, `annualization` |
+| [`appraisal_ratio`](../interpretation/appraisal_ratio.md) | benchmark | yes |  | yes | yes |  |  |  | `benchmark_regression` | `benchmark`, `regression`, `risk_free`, `annualization` |
+| [`m_squared`](../interpretation/m_squared.md) | benchmark | yes |  | yes | yes |  |  |  | `benchmark_simple` | `benchmark`, `risk_free`, `sample_std`, `annualization` |
+| [`bull_beta`](../interpretation/bull_beta.md) | benchmark |  |  |  | yes |  |  |  | `benchmark_regression` | `benchmark`, `regression` |
+| [`bear_beta`](../interpretation/bear_beta.md) | benchmark |  |  |  | yes |  |  |  | `benchmark_regression` | `benchmark`, `regression` |
+| [`timing_ratio`](../interpretation/timing_ratio.md) | benchmark |  |  |  | yes |  |  |  | `benchmark_regression` | `benchmark`, `regression` |
+| [`factor_alpha`](../interpretation/factor_alpha.md) | factors |  |  | yes |  | yes |  |  | `factor_regression` | `factor_model`, `annualization` |
+| [`factor_alpha_t_statistic`](../interpretation/factor_alpha_t_statistic.md) | factors |  |  |  |  | yes |  |  | `factor_regression` | `factor_model` |
+| [`factor_r_squared`](../interpretation/factor_r_squared.md) | factors |  |  |  |  | yes |  |  | `factor_regression` | `factor_model` |
+| [`factor_residual_volatility`](../interpretation/factor_residual_volatility.md) | factors |  |  | yes |  | yes |  |  | `factor_regression` | `factor_model`, `annualization` |
+| [`probabilistic_sharpe_ratio`](../interpretation/probabilistic_sharpe_ratio.md) | statistical | yes |  |  |  |  |  |  | `asymptotic_inference` | `iid_asymptotics`, `risk_free` |
+| [`sharpe_ratio_standard_error`](../interpretation/sharpe_ratio_standard_error.md) | statistical | yes |  | yes |  |  |  |  | `asymptotic_inference` | `iid_asymptotics`, `annualization`, `risk_free` |
+| [`minimum_track_record_length`](../interpretation/minimum_track_record_length.md) | statistical | yes |  |  |  |  |  |  | `asymptotic_inference` | `iid_asymptotics`, `risk_free` |
+| [`mean_return_standard_error`](../interpretation/mean_return_standard_error.md) | statistical | yes |  |  |  |  |  |  | `dispersion` | — |
+
+*Signed loss*: the value is a loss stated as a negative return (for example a maximum drawdown of −25%). Its `direction` is `higher_is_better` because −10% is a smaller loss than −25%; the documentation says "smaller loss is better".
 
 ## Annualization factors
 

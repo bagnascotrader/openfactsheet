@@ -137,7 +137,7 @@ it could be computed.
 | `unit` | string | `decimal_return`, `fraction` (0–1), `ratio`, `periods`, `count`, `correlation`, `probability`, `beta`. |
 | `status` | string | `applicable`, `low_confidence`, `supplementary`, `not_applicable`, `insufficient_data`, `error`. |
 | `confidence` | string | `high`, `moderate`, `low`; `not_assessable` when `value` is `null`. Describes estimation reliability, not investment quality. |
-| `direction` | string | `higher_is_better`, `lower_is_better`, `context_dependent`, `neutral`. Applies to the signed value (e.g. a max drawdown closer to 0 is better). |
+| `direction` | string | `higher_is_better`, `lower_is_better`, `context_dependent`, `neutral`. Applies to the signed value. Losses are negative numbers (drawdowns, VaR, expected shortfall, worst period), so for them `higher_is_better` means *smaller loss is better*: −10% beats −25%. These metrics are flagged `signed_loss` in `ofs.metric_catalog()`. |
 | `nature` | string | `observed`, `derived`, `estimated`, `model_dependent`. |
 | `observations` | integer | Observations used: `n`, or the aligned count `m` for benchmark and factor metrics. |
 | `formula_id` | string | `<id>@v<version>`; changes when the formula changes. |
