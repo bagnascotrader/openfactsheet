@@ -120,10 +120,10 @@ def test_missing_file() -> None:
         ofs.load("does_not_exist.csv")
 
 
-def test_images_and_pdfs_explain_roadmap(tmp_path: Path) -> None:
+def test_unreadable_images_and_pdfs_are_explained(tmp_path: Path) -> None:
     img = tmp_path / "table.png"
     img.write_bytes(b"\x89PNG")
-    with pytest.raises(OCRExtractionError, match="planned"):
+    with pytest.raises(OCRExtractionError):
         ofs.load(img)
     pdf = tmp_path / "factsheet.pdf"
     pdf.write_bytes(b"%PDF-1.4")

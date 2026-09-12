@@ -98,15 +98,18 @@ def load(
     name: str | None = None,
     return_scale: DeclaredScale | None = None,
     frequency: str | ObservationFrequency | None = None,
+    ocr_engine: str | None = None,
 ) -> ReturnSeries | ReturnTable:
     """Parse and normalize input without computing metrics.
 
     Returns a :class:`ReturnSeries` for a single series or a :class:`ReturnTable`
     when the source contains several return columns. Inspect
     ``series.input_diagnostics`` to see exactly what OpenFactsheet believes it
-    received.
+    received. ``ocr_engine`` (``'rapidocr'`` or ``'tesseract'``) selects the OCR
+    engine for images and scanned PDF pages; it never changes an accepted value,
+    because recognized tables must reconcile with their printed totals.
     """
-    raws = to_raw(source, name=name)
+    raws = to_raw(source, name=name, ocr_engine=ocr_engine)
     normalized = [
         normalize_returns(r, return_scale=return_scale, frequency=frequency)[0] for r in raws
     ]

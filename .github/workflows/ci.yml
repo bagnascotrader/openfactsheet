@@ -50,6 +50,22 @@ jobs:
       # empyrical/QuantStats checks are skipped here (see the cross-library job).
       - run: pytest --cov --cov-report=term
 
+  ocr:
+    name: OCR engine (RapidOCR)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+          cache: pip
+      # OpenCV (a RapidOCR dependency) needs these system libraries.
+      - run: sudo apt-get update && sudo apt-get install -y libgl1 libglib2.0-0
+      - run: pip install -e ".[dev,ocr]"
+      - run: pytest -m ocr -rs
+        env:
+          OFS_REQUIRE_OCR: "1"  # a missing engine fails instead of skipping
+
   cross-library:
     name: Cross-library validation (empyrical, QuantStats)
     runs-on: ubuntu-latest

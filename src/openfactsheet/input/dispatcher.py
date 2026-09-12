@@ -28,7 +28,7 @@ _TEXT_SUFFIXES = frozenset({".csv", ".txt", ".tsv"})
 _EXCEL_SUFFIXES = frozenset({".xlsx", ".xlsm", ".xls"})
 
 
-def _from_path(path: Path, name: str | None) -> list[RawReturns]:
+def _from_path(path: Path, name: str | None, ocr_engine: str | None = None) -> list[RawReturns]:
     if not path.exists():
         raise InputError(f"File not found: {path}")
     suffix = path.suffix.lower()
@@ -38,10 +38,9 @@ def _from_path(path: Path, name: str | None) -> list[RawReturns]:
     elif suffix in _EXCEL_SUFFIXES:
         raws = read_excel(path, name=name)
     elif suffix in IMAGE_SUFFIXES:
-        read_image(path)
-        raise AssertionError("unreachable")  # pragma: no cover
+        raws = read_image(path, name=name, ocr_engine=ocr_engine)
     elif suffix == ".pdf":
-        raws = read_pdf(path, name=name)
+        raws = read_pdf(path, name=name, ocr_engine=ocr_engine)
     else:
         raise InputError(f"Unsupported file type {suffix!r} for {path.name}.")
     out: list[RawReturns] = []
@@ -57,8 +56,12 @@ def _from_path(path: Path, name: str | None) -> list[RawReturns]:
     return out
 
 
-def to_raw(source: Any, name: str | None = None) -> list[RawReturns]:
-    """Parse ``source`` into one or more :class:`RawReturns` objects."""
+def to_raw(source: Any, name: str | None = None, ocr_engine: str | None = None) -> list[RawReturns]:
+    """Parse ``source`` into one or more :class:`RawReturns` objects.
+
+    ``ocr_engine`` selects the OCR engine for images and scanned PDF pages
+    (default: the methodology's default engine).
+    """
     if isinstance(source, RawReturns):
         return [source]
     if isinstance(source, pd.Series):
@@ -66,11 +69,11 @@ def to_raw(source: Any, name: str | None = None) -> list[RawReturns]:
     if isinstance(source, pd.DataFrame):
         return from_frame(source, name=name)
     if isinstance(source, Path):
-        return _from_path(source, name)
+        return _from_path(source, name, ocr_engine)
     if isinstance(source, str):
         if "\n" in source.strip():
             return read_text_table(source, name=name)
-        return _from_path(Path(source), name)
+        return _from_path(Path(source), name, ocr_engine)
     if isinstance(source, np.ndarray | list | tuple):
         return [from_sequence(source, name=name)]
     if isinstance(source, Sequence):  # pragma: no cover - other sequence types

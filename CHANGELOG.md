@@ -24,6 +24,23 @@ Package 0.1.0 · Methodology 0.1.0
 - Tests: unit, property-based, golden reports, CLAUDE.md acceptance tests 1–3,
   cross-library validation against PerformanceAnalytics, empyrical, QuantStats.
 
+### Added — OCR of screenshots and scanned PDFs
+- `ofs.analyze("table.png")` and scanned (image-only) PDF pages are recognized
+  by a local OCR engine: RapidOCR by default with the models bundled in its
+  wheel (never downloaded; the model hashes are recorded), Tesseract as an
+  alternative (`ofs.load(path, ocr_engine="tesseract")`). Extras `ocr` and
+  `tesseract` (decision 0031).
+- Recognized tables use the same position-based reconstruction as PDF text
+  (new `openfactsheet.documents` layer) with stricter acceptance: cells below
+  0.90 confidence, a missing total column or any unreconciled year refuse the
+  table; documented character repairs and up to three unreadable month headers
+  are allowed but recorded and lower the confidence to moderate.
+- Every renderer now shows document extractions in section 1: engine,
+  confidence, checks (with the reconciliation tolerance) and the table exactly
+  as read.
+- `ocr` pytest marker and CI job; engine-independent rule tests use a fake
+  engine.
+
 ### Fixed (pre-release, comparison)
 - `ofs.compare(..., benchmark=...)`: the common-period re-analysis re-read the
   benchmark with a decimal declaration, so a benchmark supplied in percent was
