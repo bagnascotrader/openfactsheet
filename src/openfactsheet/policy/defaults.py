@@ -109,6 +109,24 @@ CANONICAL_ASSUMPTIONS: dict[str, Any] = {
         "window_years": 1,
         "step_periods": 1,
     },
+    "charts": {
+        # Decision 0026. Presentation conventions that affect what a reader sees.
+        "history": "every chart spans the full analyzed history; no start date is chosen",
+        "wealth_scale": "linear, starting at 1.0 one period before the first return",
+        "bar_baseline": "bars always grow from zero; the value axis always includes zero",
+        "heatmap_scale": "diverging, symmetric around zero at the largest absolute month",
+        "histogram_bins": (
+            "Freedman-Diaconis width clipped to 10 to 40 bins over the range; edges then "
+            "aligned at zero, which can add one bin"
+        ),
+        "histogram_min_bins": 10,
+        "histogram_max_bins": 40,
+        "partial_years": "shown outlined and labelled partial; never styled as full years",
+        "rolling_windows": "the one-year windows of the rolling metrics (rolling.*)",
+        "benchmark": "compared only over the aligned overlap, both rebased to 1.0 at its start",
+        "episode_table": "deepest drawdown episodes first (ties: earliest peak); all in JSON",
+        "episode_table_rows": 10,
+    },
     "sharpe_inference": {
         # Decision 0019. Non-normal i.i.d. asymptotics (Mertens 2002; Bailey &
         # Lopez de Prado 2012) on the per-period Sharpe ratio.

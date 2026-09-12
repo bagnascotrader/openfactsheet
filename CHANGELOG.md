@@ -24,6 +24,21 @@ Package 0.1.0 · Methodology 0.1.0
 - Tests: unit, property-based, golden reports, CLAUDE.md acceptance tests 1–3,
   cross-library validation against PerformanceAnalytics, empyrical, QuantStats.
 
+### Added — Phase 4: canonical charts
+- The HTML report now contains eight canonical charts rendered as static,
+  self-contained SVG (no external resources): growth of 1, calendar-year returns,
+  monthly heatmap, rolling one-year volatility, underwater chart, return
+  distribution, rolling one-year return and growth over the benchmark overlap.
+  Each has a caption and a data table; light and dark themes.
+- Presentation rules fixed by the methodology (decision 0026, `charts.*`
+  conventions): full history, linear scales, zero baselines for bars, symmetric
+  heatmap scale, partial years outlined and labelled, benchmark on the aligned
+  overlap only, every return counted in the histogram.
+- Drawdown-episode table (the 10 deepest episodes, deepest first) in terminal,
+  Markdown and HTML reports.
+- `FactsheetReport.charts()` returns the SVG strings keyed by chart id;
+  `FactsheetReport.benchmark_returns` keeps the supplied benchmark series.
+
 ### Added — Phase 2, third increment (8 metrics; 90 in total)
 - Benchmark-relative: capture ratio (upside / downside capture), batting average
   (with up- and down-market components), residual (specific) volatility,

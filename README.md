@@ -43,7 +43,7 @@ report, and JSON output that is stable and never contains a `NaN`.
 
 > [!NOTE]
 > **Status: alpha (methodology 0.1.0).** The numerical core is implemented and
-> cross-validated against independent R and Python implementations. Charts,
+> cross-validated against independent R and Python implementations.
 > PDF/screenshot ingestion and factor models are on the [roadmap](#roadmap).
 
 ## Why OpenFactsheet
@@ -105,7 +105,7 @@ report = ofs.analyze(returns)
 
 print(report.summary())  # canonical 14-section terminal report
 report.to_json("factsheet.json")  # deterministic, NaN-free JSON
-report.to_html("factsheet.html")  # static HTML
+report.to_html("factsheet.html")  # self-contained HTML with charts
 report.to_markdown("factsheet.md")  # Markdown
 report.metrics["sharpe_ratio"]  # value, status, confidence, warnings, assumptions
 ```
@@ -260,7 +260,7 @@ received.
   [reference implementations](docs/validation/reference_implementations.md).
 - **Independent implementations.** Formulas are implemented from their academic
   definitions, not copied from other libraries' source code.
-- **26 methodology decision records.** Every contested convention (sample vs.
+- **27 methodology decision records.** Every contested convention (sample vs.
   population deviation, VaR quantile interpolation, the Sortino denominator,
   drawdown episode definitions, partial calendar years, and so on) has a written
   [decision](docs/methodology/decisions/README.md) with its rationale.
@@ -286,7 +286,7 @@ received.
 | 1 | Core metrics, cross-validated | ✅ Done |
 | 2 | Full metric catalog: variance-ratio diagnostics, bootstrap uncertainty and further additions | 🚧 90 metrics so far |
 | 3 | Applicability and confidence engine | ✅ Done |
-| 4 | Reporting: terminal, Markdown, HTML, JSON ✅ · charts (wealth, underwater, heatmap, distribution, rolling) | 🚧 In progress |
+| 4 | Reporting: terminal, Markdown, HTML, JSON; canonical charts and drawdown-episode table | ✅ Done |
 | 5 | Comparison engine (`ofs.compare`) | ✅ Done |
 | 6 | Optional PDF and screenshot ingestion with extraction confidence | Planned |
 | 7 | Factor models (CAPM, Fama-French, Carhart) using factor data you supply | Planned |

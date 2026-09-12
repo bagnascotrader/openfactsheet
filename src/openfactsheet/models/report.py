@@ -137,6 +137,7 @@ class FactsheetReport:
     benchmark_input_summary: InputDiagnostics | None
     provenance: Provenance
     drawdown_episodes: tuple[Any, ...] = field(default_factory=tuple)
+    benchmark_returns: ReturnSeries | None = None
 
     # -- convenience ------------------------------------------------------
     @property
@@ -173,6 +174,16 @@ class FactsheetReport:
         if path is not None:
             Path(path).write_text(text, encoding="utf-8")
         return text
+
+    def charts(self) -> dict[str, str]:
+        """Canonical charts as self-contained SVG strings, keyed by chart id.
+
+        Charts that cannot be drawn for these data (e.g. a monthly heatmap for
+        weekly returns) are omitted here; ``to_html`` states why.
+        """
+        from openfactsheet.report.charts import build_charts
+
+        return {c.id: c.svg for c in build_charts(self) if c.svg}
 
     def to_html(self, path: str | Path | None = None) -> str:
         from openfactsheet.report.html import render_html

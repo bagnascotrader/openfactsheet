@@ -74,4 +74,5 @@ def build_report(
         benchmark_input_summary=benchmark_diag,
         provenance=provenance,
         drawdown_episodes=episodes,
+        benchmark_returns=benchmark,
     )

@@ -9,11 +9,13 @@ from openfactsheet.models.metric import MetricResult
 from openfactsheet.models.report import FactsheetReport
 from openfactsheet.policy.applicability import NO_BENCHMARK_REASON
 from openfactsheet.report.tables import (
+    EPISODE_TABLE_HEADER,
     FACTOR_SECTION_TEXT,
     STATISTICAL_SECTION_TEXT,
     Footnotes,
     confidence_counts,
     data_quality_metrics,
+    drawdown_episode_table,
     format_value,
     ordered_categories,
     result_notes,
@@ -65,6 +67,26 @@ def _metric_table(rows: list[MetricResult], notes: Footnotes) -> list[str]:
     return out
 
 
+def _episode_table(report: FactsheetReport) -> list[str]:
+    table = drawdown_episode_table(report)
+    if table is None:
+        return []
+    out = ["", "  Drawdown episodes:"]
+    if table.rows:
+        widths = [
+            max(len(h), *(len(r[i]) for r in table.rows))
+            for i, h in enumerate(EPISODE_TABLE_HEADER)
+        ]
+        header = zip(EPISODE_TABLE_HEADER, widths, strict=True)
+        out.append(("  " + "  ".join(h.ljust(w) for h, w in header)).rstrip())
+        out.extend(
+            ("  " + "  ".join(c.ljust(w) for c, w in zip(row, widths, strict=True))).rstrip()
+            for row in table.rows
+        )
+    out.append(_wrap(table.note))
+    return out
+
+
 def render_terminal(report: FactsheetReport) -> str:
     notes = Footnotes([])
     p = report.provenance
@@ -97,6 +119,8 @@ def render_terminal(report: FactsheetReport) -> str:
             out.append(_indent(report.benchmark_summary.to_text()))
             out.append("")
         out.extend(_metric_table(rows, notes))
+        if cat == "drawdown":
+            out.extend(_episode_table(report))
 
     out.append(_heading(number, "Factor analysis"))
     number += 1
