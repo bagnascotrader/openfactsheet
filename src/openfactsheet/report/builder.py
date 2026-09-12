@@ -104,6 +104,7 @@ def build_report(
         benchmark_sha256=series_sha256(benchmark) if benchmark is not None else None,
         factor_names=factor_set.names if factor_set is not None else None,
         factors_sha256=factor_set_sha256(factor_set) if factor_set is not None else None,
+        extraction=series.metadata.get("extraction"),
     )
     return FactsheetReport(
         name=series.name,

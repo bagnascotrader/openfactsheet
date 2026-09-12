@@ -31,6 +31,7 @@ Accepted inputs:
 | `pandas.DataFrame` | One return column → `analyze`; several columns → `compare`. A date column is detected by name or content. |
 | CSV / Excel path | Same layouts as DataFrames, including wide monthly tables. |
 | Pasted text | A multi-line string, e.g. a monthly table copied from a PDF. |
+| PDF factsheet | `ofs.analyze("factsheet.pdf")` with `pip install "openfactsheet[pdf]"`: the monthly-return table is read from the embedded text, checked against its YTD column, and refused (with the reconstructed table) if anything is inconsistent. Scanned PDFs are not supported. |
 
 Percent vs decimal scale is detected deterministically. If the values are
 genuinely ambiguous, OpenFactsheet raises `AmbiguousReturnScaleError` instead of

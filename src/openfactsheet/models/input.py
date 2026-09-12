@@ -67,6 +67,8 @@ class RawReturns:
     percent_hint: bool | None = None
     transformations: tuple[str, ...] = ()
     metadata: Mapping[str, Any] = field(default_factory=dict)
+    # Parser-level warnings (e.g. PDF extraction notes), carried into InputDiagnostics.
+    warnings: tuple[str, ...] = ()
 
     def __post_init__(self) -> None:
         object.__setattr__(self, "values", _frozen_array(self.values))

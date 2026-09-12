@@ -24,6 +24,18 @@ Package 0.1.0 · Methodology 0.1.0
 - Tests: unit, property-based, golden reports, CLAUDE.md acceptance tests 1–3,
   cross-library validation against PerformanceAnalytics, empyrical, QuantStats.
 
+### Added — Phase 6: PDF factsheets (embedded text)
+- `ofs.load("factsheet.pdf")` / `ofs.analyze(...)` read monthly-return tables from
+  PDFs with embedded text (optional extra `openfactsheet[pdf]`, pypdf). Values are
+  assigned to month columns by their position under the header (a row of a fund
+  launched in April is never shifted to January), each year is reconciled with
+  its YTD cell, and any inconsistency refuses the table with the reconstructed
+  table in the error (decision 0030). Scanned PDFs are refused (no OCR yet).
+- Extraction confidence (high / moderate) and its reasons are shown in the input
+  warnings; `provenance.extraction` records the engine and version, the file's
+  SHA-256, the page, the checks and the reconstructed table.
+- `RawReturns.warnings` carries parser warnings into `InputDiagnostics`.
+
 ### Added — Phase 2, fourth increment (3 metrics; 97 in total)
 - `variance_ratio_1y` (supplementary): variance ratio at the one-year horizon
   from the sample autocorrelations, with i.i.d. standard error, z and p-value —

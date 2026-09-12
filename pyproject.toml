@@ -44,10 +44,10 @@ dependencies = [
 
 [project.optional-dependencies]
 excel = ["openpyxl>=3.1"]
-# Image and PDF ingestion are planned (roadmap phase 6); the extras exist so the
-# install pattern documented in CLAUDE.md is stable from day one.
+# PDF ingestion reads embedded text (decision 0030). Image (OCR) ingestion is not yet
+# available; the extra exists so the install pattern in CLAUDE.md is stable.
 images = []
-pdf = []
+pdf = ["pypdf>=4.0"]
 validation = [
     "empyrical-reloaded>=0.5",
     "quantstats>=0.0.62",
@@ -63,6 +63,7 @@ dev = [
     "detect-secrets>=1.5",
     "pre-commit>=3.7",
     "openpyxl>=3.1",
+    "pypdf>=4.0",
 ]
 all = ["openfactsheet[excel,images,pdf]"]
 

@@ -3444,6 +3444,7 @@
       "2016-07-31",
       "2024-12-31"
     ],
+    "extraction": null,
     "factor_names": null,
     "factors_sha256": null,
     "frequency": "monthly",
