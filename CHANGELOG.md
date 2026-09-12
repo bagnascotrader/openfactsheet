@@ -24,6 +24,13 @@ Package 0.1.0 · Methodology 0.1.0
 - Tests: unit, property-based, golden reports, CLAUDE.md acceptance tests 1–3,
   cross-library validation against PerformanceAnalytics, empyrical, QuantStats.
 
+### Fixed (pre-release, comparison)
+- `ofs.compare(..., benchmark=...)`: the common-period re-analysis re-read the
+  benchmark with a decimal declaration, so a benchmark supplied in percent was
+  taken 100 times too large (e.g. beta 0.0013 instead of 0.13). The benchmark is
+  now normalized once, exactly as for the full-history reports, and the
+  common-period reports keep each fund's original scale evidence.
+
 ### Added — Phase 6: PDF factsheets (embedded text)
 - `ofs.load("factsheet.pdf")` / `ofs.analyze(...)` read monthly-return tables from
   PDFs with embedded text (optional extra `openfactsheet[pdf]`, pypdf). Values are

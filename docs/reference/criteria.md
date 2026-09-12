@@ -618,7 +618,9 @@ the reason it could not be estimated).
   one regular frequency and their (start, end) ranges differ: the intersection
   of their calendar-period (or exact-date) keys is taken; if it has at least 2
   periods, each investment is re-analyzed on it (recorded as the transformation
-  "restricted to the common period of all compared histories"), otherwise a note
+  "restricted to the common period of all compared histories"; the fund subset
+  keeps its original scale evidence and the benchmark is normalized once, as for
+  the full-history reports), otherwise a note
   says the histories have fewer than 2 periods in common.
 
 ---

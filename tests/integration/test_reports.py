@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 import pytest
 
@@ -119,6 +120,25 @@ def test_compare_is_not_a_ranking_and_uses_identical_methodology() -> None:
     assert "Not a ranking" in cmp.summary()
     assert cmp.track_records().loc["Hedge fund", "smoothing_risk"] == "high"
     json.loads(cmp.to_json())
+
+
+def test_compare_common_period_keeps_benchmark_scale() -> None:
+    """A percent benchmark must not be re-read as decimals in the common-period analysis."""
+    rng = np.random.default_rng(0)
+    idx = pd.date_range("2018-01-31", periods=72, freq="ME")
+    bench_pct = pd.Series(rng.normal(0.8, 4.0, 72), index=idx, name="Index")
+    a = pd.Series(0.2 * bench_pct.to_numpy() / 100 + rng.normal(0.002, 0.01, 72), index=idx)
+    b = pd.Series(rng.normal(0.004, 0.02, 60), index=idx[12:])
+    cmp = ofs.compare({"A": a, "B": b}, benchmark=bench_pct)
+    assert cmp.common_period_reports is not None
+    common = cmp.common_period_reports["A"]
+    assert common.benchmark_input_summary is not None
+    assert common.benchmark_input_summary.return_scale == "detected_percent"
+    beta = common.metrics["beta"].value
+    assert beta is not None
+    assert beta == pytest.approx(0.2, abs=0.05)
+    assert common.input_summary.return_scale == cmp.reports["A"].input_summary.return_scale
+    assert "restricted to the common period" in common.input_summary.to_text()
 
 
 def test_compare_dataframe_columns() -> None:
