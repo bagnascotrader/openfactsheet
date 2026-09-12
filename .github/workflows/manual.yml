@@ -1,0 +1,58 @@
+name: Reference manual download
+
+# Publishes the committed reference manual as a release asset, so it can be
+# downloaded as one file (decision 0034). Release assets are served separately
+# from raw repository files.
+#   - every push to main that changes the PDF updates the rolling pre-release
+#     "manual-latest";
+#   - a published release gets the PDF of its own version attached.
+# CI (ci.yml) already guarantees that the committed PDF matches its sources.
+
+on:
+  push:
+    branches: [main]
+    paths: [docs/manual/openfactsheet-manual.pdf, .github/workflows/manual.yml]
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: manual-download
+  cancel-in-progress: false
+
+env:
+  PDF: docs/manual/openfactsheet-manual.pdf
+  GH_TOKEN: ${{ github.token }}
+
+jobs:
+  latest:
+    name: Update the manual-latest download
+    if: github.event_name != 'release'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Create the pre-release once
+        run: |
+          gh release view manual-latest >/dev/null 2>&1 || gh release create manual-latest \
+            --prerelease --latest=false --target "$GITHUB_SHA" \
+            --title "Reference manual (latest)" \
+            --notes "The OpenFactsheet reference manual built from main. Not a package release."
+      - name: Upload the PDF
+        run: |
+          gh release upload manual-latest "$PDF" --clobber
+          gh release edit manual-latest --notes "$(printf '%s\n\n%s' \
+            'The OpenFactsheet reference manual built from main. Not a package release.' \
+            "Built from commit ${GITHUB_SHA} ($(date -u +%Y-%m-%d)).")"
+
+  release:
+    name: Attach the manual to the release
+    if: github.event_name == 'release'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.release.tag_name }}
+      - run: gh release upload "${{ github.event.release.tag_name }}" "$PDF" --clobber

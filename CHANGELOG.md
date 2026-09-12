@@ -54,6 +54,9 @@ Package 0.1.0 · Methodology 0.1.0
   argument to be documented.
 
 ### Changed (pre-release)
+- The reference manual can be downloaded as one file from the `manual-latest`
+  pre-release (updated by `.github/workflows/manual.yml` whenever the PDF on
+  `main` changes); published releases get the manual of their version attached.
 - The reference manual PDF is committed (`docs/manual/openfactsheet-manual.pdf`).
   It records a digest of its sources, and the test suite and CI fail when it is
   stale. Its date is the version's CHANGELOG release date ("unreleased" before
