@@ -123,6 +123,27 @@ def test_google_docstrings_become_manual_sections() -> None:
     assert parsed["examples"] == ">>> f(1)"
 
 
+def test_source_digest_is_stable_and_dates_come_from_the_changelog() -> None:
+    from openfactsheet.manual.build import collect_sources, release_date
+
+    first, second = collect_sources(ROOT), collect_sources(ROOT)
+    assert first.digest == second.digest
+    assert len(first.digest) == 64
+    expected = release_date(ROOT, ofs.__version__) or "unreleased"
+    assert first.date == expected
+    assert first.typst_version.count(".") == 2  # pinned exactly in the docs extra
+
+
+def test_release_date_is_read_from_the_version_heading(tmp_path: Path) -> None:
+    from openfactsheet.manual.build import release_date
+
+    (tmp_path / "CHANGELOG.md").write_text(
+        "# Changelog\n\n## [0.2.0] — unreleased\n\n## [0.1.0] — 2026-10-01\n", encoding="utf-8"
+    )
+    assert release_date(tmp_path, "0.1.0") == "2026-10-01"
+    assert release_date(tmp_path, "0.2.0") is None
+
+
 def _doc(data: dict[str, Any], anchor: str) -> dict[str, Any]:
     return next(d for d in data["documents"]["documents"] if d["anchor"] == anchor)
 
@@ -160,12 +181,19 @@ def test_manual_compiles_with_a_named_destination_for_every_topic(tmp_path: Path
         pytest.importorskip("typst")
     from pypdf import PdfReader
 
-    from openfactsheet.manual.build import build_manual, expected_anchors
+    from openfactsheet.manual.build import (
+        MANUAL_PDF,
+        build_manual,
+        committed_digest,
+        expected_anchors,
+    )
 
     out = tmp_path / "manual.pdf"
     result = build_manual(ROOT, out)  # raises if any expected anchor is missing
     assert expected_anchors(manual_data(ROOT)) <= result.anchors
     assert result.pages > 100
+    # The committed PDF was built from exactly these sources.
+    assert committed_digest(ROOT / MANUAL_PDF) == result.digest == committed_digest(out)
     reader = PdfReader(out)
     page = reader.get_destination_page_number(reader.named_destinations["metric-sharpe_ratio"])
     text = reader.pages[page].extract_text() + reader.pages[page + 1].extract_text()

@@ -77,11 +77,17 @@
   } else if c == [ ] { " " } else { "" }
 }
 
-#let setup(doc, package: none, date: none) = {
+#let setup(doc, package: none, date: none, digest: none) = {
   set document(
     title: "OpenFactsheet reference manual",
     author: package.authors,
-    keywords: ("investment performance", "methodology", "reference manual"),
+    // The digest of the sources lets a check tell whether this PDF is up to date.
+    keywords: (
+      "investment performance",
+      "methodology",
+      "reference manual",
+      "openfactsheet-sources-sha256:" + digest,
+    ),
     date: auto, // the fixed build timestamp, so the PDF is reproducible
   )
   set page(

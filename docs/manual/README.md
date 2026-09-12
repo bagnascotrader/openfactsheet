@@ -5,17 +5,28 @@ The OpenFactsheet reference manual is a CRAN-style PDF generated from the code
 written by hand: the functions and classes come from docstrings, the metrics from the
 registry, and the rest from the documents in `docs/`.
 
-## Build
+**Read it: [openfactsheet-manual.pdf](openfactsheet-manual.pdf)**
+
+## Keeping it up to date
+
+The PDF is committed and must match its sources. After changing a metric, a public
+docstring, a document in `docs/` or the template, rebuild it and commit it with the
+change:
 
 ```bash
 pip install -e ".[dev,docs]"
-python scripts/build_manual.py          # docs/manual/build/openfactsheet-manual.pdf
-python scripts/build_manual.py --check  # compile to a temporary file only
+python scripts/generate_docs.py         # Markdown pages and docs/manual/data/
+python scripts/build_manual.py          # docs/manual/openfactsheet-manual.pdf
+python scripts/build_manual.py --check  # does the committed PDF match its sources?
 ```
 
-The build uses no network and no system fonts. The same sources give the same PDF.
-It fails if a formula does not compile, if an internal link has no target, or if a
-topic lacks its named destination.
+The PDF records a SHA-256 digest of everything it was built from. The test suite and
+CI compare it with the current sources, so a stale manual fails the build. The check
+needs no compiler.
+
+The build uses no network and no system fonts, and the date is the version's release
+date in `CHANGELOG.md` ("unreleased" before release). It fails if a formula does not
+compile, if an internal link has no target, or if a topic lacks its named destination.
 
 ## Layout
 

@@ -86,8 +86,22 @@ None; this is a documentation decision.
 
   `…/openfactsheet-manual.pdf#nameddest=metric-sharpe_ratio` opens a metric's
   topic.
-- **The PDF itself is not committed.** CI builds it on every change and keeps it
-  as a build artifact.
+- **The PDF is committed** as `docs/manual/openfactsheet-manual.pdf`, so the
+  manual of every version is in the repository and readable on GitHub.
+  - It records a SHA-256 digest of everything it was built from in its keywords:
+    the template, the data, the documents, the vendored packages, the date and
+    the Typst version.
+  - The test suite and CI compare that digest with the current sources, so a
+    change to a metric, docstring or document that is not followed by a rebuild
+    fails.
+  - The digest check needs no compiler and gives the same answer on every
+    platform, unlike a byte comparison of compressed PDFs.
+  - The date is the version's release date from `CHANGELOG.md` ("unreleased"
+    before release), never the clock or the git history, so committing the PDF
+    does not make it stale.
+  - The Typst compiler is pinned exactly.
+  - The accessibility structure tree Typst writes is packed into object streams
+    (pikepdf), which keeps the file about 60% smaller.
 
 ## Rationale
 

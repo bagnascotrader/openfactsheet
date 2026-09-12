@@ -54,6 +54,11 @@ Package 0.1.0 · Methodology 0.1.0
   argument to be documented.
 
 ### Changed (pre-release)
+- The reference manual PDF is committed (`docs/manual/openfactsheet-manual.pdf`).
+  It records a digest of its sources, and the test suite and CI fail when it is
+  stale. Its date is the version's CHANGELOG release date ("unreleased" before
+  release). Typst is pinned exactly, and the file is packed with pikepdf
+  (2.4 MB instead of 6.5 MB).
 - Documentation of the 16 metrics that state a loss as a negative number (drawdowns,
   VaR, expected shortfall, worst period/calendar year/rolling year) now says
   "smaller loss is better (−10% beats −25%)" instead of "higher is better", which
