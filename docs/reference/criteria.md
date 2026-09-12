@@ -255,6 +255,33 @@ longest first (vocabulary in [documents/labels.py](../../src/openfactsheet/docum
 The profile never changes a metric; a named benchmark adds a note to the
 benchmark section when no benchmark returns were supplied.
 
+### 2.11 Table roles and share classes — [documents/tables.py](../../src/openfactsheet/documents/tables.py), [documents/share_classes.py](../../src/openfactsheet/documents/share_classes.py) (decision 0033)
+
+- **Row labels**: words left of the January column (centre minus half the column
+  spacing) that are not numbers; a labelled line without a year continues the
+  previous year; each label forms its own series (validated separately).
+- **Roles** (first match): row label with relative words (`relative`,
+  `difference`, `excess`, `active`, ...) → `relative`; with benchmark or index words
+  (`benchmark`, `index`, `MSCI`, `S&P`, ...) and no fund word → `benchmark`; with
+  fund words (`fund`, `class`, `portfolio`, ...) → `fund`; other label →
+  `unknown`; unlabelled series of a labelled table → `fund`; single series →
+  `benchmark` only if the caption (nearest three non-blank lines within six above
+  the header) says benchmark without a fund word, else `fund`.
+- **Use**: `relative` series are ignored (note); an unreliable `benchmark` series is
+  left out (note); any other unreliable series refuses the document.
+  `analyze(document)` uses the single non-benchmark series and notes that
+  benchmark returns were not used; no non-benchmark series → `InputError`;
+  several → `InputError` (choose with `ofs.load`).
+- **Share classes**: a class-table header (class word and `ISIN`, no ISIN on the
+  line) opens rows until one without a valid ISIN; a line matching `class <label>`
+  with a valid ISIN on it or on the next line also defines a class.
+- **Attribution** (all evaluated): caption + footer (three lines after the table)
+  mention exactly one class → rule 1; performance heading (within ten lines
+  above) mentions exactly one → rule 2; exactly one class → rule 3; exactly one
+  ISO currency in the caption matching exactly one class → rule 4. One distinct
+  answer → `attributed` (first rule); several → `ambiguous`; none with several
+  classes → `ambiguous` with all classes; no classes → `no_share_classes`.
+
 ---
 
 ## 3. Validation criteria (input corruption fails early)

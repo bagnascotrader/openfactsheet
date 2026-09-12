@@ -150,8 +150,16 @@ def test_two_tables_become_two_series(tmp_path: Path) -> None:
     loaded = ofs.load(path)
     assert isinstance(loaded, ofs.ReturnTable)
     assert len(loaded.series) == 2
+    # Decision 0033: the benchmark table is recognized by its caption, so analyze() uses the
+    # fund table and says the benchmark returns were not used.
+    rep = ofs.analyze(path)
+    assert rep.input_summary.observations == 24
+    assert any("not used" in w for w in rep.input_summary.warnings)
+    # Two fund tables (e.g. two share classes) are still for the caller to choose.
+    other = monthly_table_page(_rows()[1:], top=250.0, title="Class I (%)")
+    two_funds = write_pdf(tmp_path / "two_funds.pdf", [[*fund, *other]])
     with pytest.raises(InputError, match="contains 2 return series"):
-        ofs.analyze(path)
+        ofs.analyze(two_funds)
 
 
 def test_table_on_a_later_page(tmp_path: Path) -> None:

@@ -40,7 +40,7 @@ Conventions used throughout:
 | `metrics` | array | One entry per canonical metric, in canonical order ([metrics](#metrics)). |
 | `drawdown_episodes` | array | All drawdown episodes ([drawdown_episodes](#drawdown_episodes)). |
 | `benchmark` | object \| null | Benchmark alignment and input summaries; `null` without a benchmark ([benchmark](#benchmark)). |
-| `document` | object \| null | For PDF / image input: the fund profile read from the document (decision 0032): `source`, `name`, `objective`, `benchmarks`, `currency`, `launch_date` (each `{value, confidence, evidence: {page, line, snippet, rule}, note}`), `identifiers` (`kind`, `value`, `valid` — true / false / null without a check digit —, `linked_isin`, `evidence`) and `notes`; `null` otherwise. |
+| `document` | object \| null | For PDF / image input: the fund profile read from the document (decision 0032): `source`, `name`, `objective`, `benchmarks`, `currency`, `launch_date` (each `{value, confidence, evidence: {page, line, snippet, rule}, note}`), `identifiers` (`kind`, `value`, `valid` — true / false / null without a check digit —, `linked_isin`, `evidence`), `share_classes` (`label`, `isins`, `currency`, `page`, `snippet`), `attribution` (`status`: attributed / ambiguous / no_share_classes, `share_class`, `rule`, `evidence`, `candidates`; decision 0033) and `notes`; `null` otherwise. |
 | `factor_analysis` | object \| null | Factor-model regression; `null` without factor returns ([factor_analysis](#factor_analysis)). |
 | `interpretations` | object | Map metric id → interpretation ([interpretations](#interpretations)). |
 | `provenance` | object | Audit information ([provenance](#provenance)). |
@@ -339,7 +339,7 @@ Map of metric id → [models/report.py](../../src/openfactsheet/models/report.py
 | `benchmark_name` | string \| null | Benchmark name. |
 | `benchmark_sha256` | string \| null | Fingerprint of the analyzed benchmark returns. |
 | `factor_names` | array of string \| null | Factor columns supplied (the RF column excluded). |
-| `extraction` | object \| null | For document input (PDF, image): `engine` (e.g. `pypdf 6.18.1` or `rapidocr 3.9.2`), `source_sha256` (of the file), `page`, `confidence` (`high` / `moderate`), `monthly_values`, `checks`, `warnings`, `reconstructed_table` (decision 0030). OCR adds `ocr` (`name`, `version`, `models` with `file` and `sha256`), `image_sha256`, `repairs`, `min_cell_confidence` and, for scanned PDFs, `renderer` and `dpi` (decision 0031). `null` otherwise. |
+| `extraction` | object \| null | For document input (PDF, image): `engine` (e.g. `pypdf 6.18.1` or `rapidocr 3.9.2`), `source_sha256` (of the file), `page`, `confidence` (`high` / `moderate`), `monthly_values`, `checks`, `warnings`, `reconstructed_table` (decision 0030). Tables also record `role` (fund / benchmark / unknown), `role_evidence` and `series_label` (decision 0033). OCR adds `ocr` (`name`, `version`, `models` with `file` and `sha256`), `image_sha256`, `repairs`, `min_cell_confidence` and, for scanned PDFs, `renderer` and `dpi` (decision 0031). `null` otherwise. |
 | `factors_sha256` | string \| null | SHA-256 of the compact JSON map column name → fingerprint of that column (same construction as `input_sha256`), RF included. |
 | `canonical` | boolean | Same as the top-level `canonical`. |
 

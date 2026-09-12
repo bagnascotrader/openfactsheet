@@ -62,6 +62,8 @@ def _normalize_one(
         )
         return_scale = return_scale or "decimal"
     raws = to_raw(source, name=name)
+    if role == "returns":
+        raws = _select_document_fund(raws) or raws
     if len(raws) != 1:
         names = ", ".join(r.name for r in raws)
         raise InputError(
@@ -69,6 +71,42 @@ def _normalize_one(
             "exactly one. Select a column, or use ofs.compare() for several series."
         )
     return normalize_returns(raws[0], return_scale=return_scale, frequency=frequency)
+
+
+def _role(raw: RawReturns) -> str | None:
+    extraction = raw.metadata.get("extraction")
+    return extraction.get("role") if isinstance(extraction, Mapping) else None
+
+
+def _select_document_fund(raws: list[RawReturns]) -> list[RawReturns] | None:
+    """For documents with fund and benchmark tables, the single fund series (decision 0033).
+
+    Benchmark returns found in a document are never used as benchmark returns; the
+    fund series records that they exist. Returns ``None`` when no document roles
+    apply (the caller then applies the usual one-series rule).
+    """
+    roles = [_role(r) for r in raws]
+    if not any(roles):
+        return None
+    funds = [r for r, role in zip(raws, roles, strict=True) if role != "benchmark"]
+    benchmarks = [r.name for r, role in zip(raws, roles, strict=True) if role == "benchmark"]
+    if not funds:
+        raise InputError(
+            "The document's only return table is labelled as benchmark returns ("
+            + ", ".join(benchmarks)
+            + "); it is not analyzed as the fund. Load it with ofs.load() to use it explicitly."
+        )
+    if len(funds) != 1:
+        return funds
+    if not benchmarks:
+        return funds
+    note = (
+        "The document also shows benchmark returns ("
+        + ", ".join(benchmarks)
+        + "); they were not used. Pass them with benchmark=... (e.g. from ofs.load()) to "
+        "compute benchmark-relative metrics."
+    )
+    return [replace(funds[0], warnings=(*funds[0].warnings, note))]
 
 
 def normalize_benchmark(

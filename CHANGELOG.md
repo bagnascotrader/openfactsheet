@@ -24,6 +24,22 @@ Package 0.1.0 · Methodology 0.1.0
 - Tests: unit, property-based, golden reports, CLAUDE.md acceptance tests 1–3,
   cross-library validation against PerformanceAnalytics, empyrical, QuantStats.
 
+### Added — Share classes, table roles and document benchmarks (decision 0033)
+- Tables with a fund row and a benchmark row per year (and optional relative
+  rows) are read as separate series with roles (fund / benchmark / relative /
+  unknown); a benchmark table is also recognized by its caption.
+- `ofs.load(document)` returns the benchmark returns as a separate series;
+  `ofs.analyze(document)` uses the fund series and says the benchmark returns
+  were not used. A benchmark-only document is not analyzed as the fund.
+- Share classes are detected (class tables or class-and-ISIN lines) and the
+  returns table is attributed to one by fixed evidence rules (caption/footnote,
+  performance heading, single class, currency); otherwise the report says it is
+  ambiguous and lists the candidates.
+
+### Changed (pre-release)
+- A PDF with a fund table and a benchmark table no longer raises in `analyze()`;
+  it analyzes the fund table (decision 0033).
+
 ### Added — Fund profile from documents (decision 0032)
 - PDF and image inputs yield a `DocumentProfile` (`report.document`, JSON
   `document`): fund name, objective, benchmark name(s), currency, launch date
