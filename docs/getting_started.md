@@ -32,7 +32,7 @@ Accepted inputs:
 | CSV / Excel path | Same layouts as DataFrames, including wide monthly tables. |
 | Pasted text | A multi-line string, e.g. a monthly table copied from a PDF. |
 | Screenshot or scanned PDF | `ofs.analyze("table.png")` with `pip install "openfactsheet[ocr]"`: recognized locally (no network) and accepted only when every year reconciles with its printed YTD; otherwise refused with the table as read. `ofs.load(path, ocr_engine="tesseract")` uses Tesseract instead. |
-| PDF factsheet | `ofs.analyze("factsheet.pdf")` with `pip install "openfactsheet[pdf]"`: the monthly-return table is read from the embedded text, checked against its YTD column, and refused (with the reconstructed table) if anything is inconsistent. Scanned PDFs are not supported. |
+| PDF factsheet | `ofs.analyze("factsheet.pdf")` with `pip install "openfactsheet[pdf]"`: the monthly-return table is read from the embedded text, checked against its YTD column, and refused (with the reconstructed table) if anything is inconsistent. Pages without embedded text are recognized by OCR when the `ocr` extra is installed. |
 
 Percent vs decimal scale is detected deterministically. If the values are
 genuinely ambiguous, OpenFactsheet raises `AmbiguousReturnScaleError` instead of
