@@ -312,6 +312,12 @@ If you use OpenFactsheet in research, please cite it using
 [`CITATION.cff`](CITATION.cff) and **state the methodology version** shown in
 your results, so that others can reproduce them.
 
+## About
+
+OpenFactsheet was created by **Prof. Andrés A. Bagnasco** of
+**UCU Business School** in September 2026. It is developed in the open, and
+contributions from practitioners, academics and developers are welcome.
+
 ## License
 
 [Apache-2.0](LICENSE).
