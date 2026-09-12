@@ -1,0 +1,998 @@
+{
+ "topics": [
+  {
+   "anchor": "api-analyze",
+   "arguments": [
+    {
+     "name": "returns",
+     "text": "A list/tuple/array of returns, a pandas Series (ideally with a DatetimeIndex), a one-column DataFrame, a CSV/Excel path, pasted table text, or a [`ReturnSeries`](#api-ReturnSeries) from [`load()`](#api-load)."
+    },
+    {
+     "name": "benchmark",
+     "text": "Optional benchmark returns in any of the same forms. Benchmark-relative metrics are computed only when a benchmark is supplied."
+    },
+    {
+     "name": "factors",
+     "text": "Optional factor returns, one column per factor (a DataFrame, a CSV/Excel path or table text, e.g. Fama-French factors). A column named `RF` is the risk-free rate and is subtracted from fund returns. Factor-model metrics are computed only when factors are supplied; OpenFactsheet never downloads factor data."
+    },
+    {
+     "name": "name",
+     "text": "Display name for the report."
+    },
+    {
+     "name": "return_scale",
+     "text": "Declare `\"decimal\"` or `\"percent\"` only when automatic detection reports ambiguity. Applies to fund, benchmark and factors."
+    },
+    {
+     "name": "frequency",
+     "text": "Declare the observation frequency of *undated* values. It is checked against dates when dates exist. Applies to fund, benchmark and factors."
+    }
+   ],
+   "description": "Produce the canonical OpenFactsheet report for one return history.",
+   "details": "",
+   "examples": ">>> report = ofs.analyze(returns)\n>>> print(report.summary())\n>>> report.metrics[\"sharpe_ratio\"].value\n>>> report = ofs.analyze(returns, benchmark=benchmark_returns)\n>>> report.to_html(\"factsheet.html\")",
+   "fields": [],
+   "kind": "function",
+   "name": "analyze",
+   "parameters": [
+    {
+     "annotation": "Any",
+     "default": "",
+     "name": "returns"
+    },
+    {
+     "annotation": "Any",
+     "default": "None",
+     "name": "benchmark"
+    },
+    {
+     "annotation": "Any",
+     "default": "None",
+     "name": "factors"
+    },
+    {
+     "annotation": "str | None",
+     "default": "None",
+     "name": "name"
+    },
+    {
+     "annotation": "DeclaredScale | None",
+     "default": "None",
+     "name": "return_scale"
+    },
+    {
+     "annotation": "str | ObservationFrequency | None",
+     "default": "None",
+     "name": "frequency"
+    }
+   ],
+   "raises": "",
+   "returns": "FactsheetReport",
+   "usage": "ofs.analyze(returns, benchmark=None, *, factors=None, name=None, return_scale=None, frequency=None)",
+   "value": "A [`FactsheetReport`](#api-FactsheetReport) containing every canonical metric with its\nstatus, confidence, warnings and assumptions."
+  },
+  {
+   "anchor": "api-compare",
+   "arguments": [
+    {
+     "name": "funds",
+     "text": "A mapping of name to returns, a DataFrame with one column per investment, a sequence of return series, or a [`ReturnTable`](#api-ReturnTable)."
+    },
+    {
+     "name": "benchmark",
+     "text": "Optional benchmark returns, used for every investment."
+    },
+    {
+     "name": "factors",
+     "text": "Optional factor returns, used for every investment."
+    },
+    {
+     "name": "return_scale",
+     "text": "Declare `\"decimal\"` or `\"percent\"` only when automatic detection reports ambiguity."
+    },
+    {
+     "name": "frequency",
+     "text": "Declare the observation frequency of *undated* values."
+    }
+   ],
+   "description": "Analyze several return histories under one identical methodology.",
+   "details": "Metrics are shown side by side; nothing is ranked. When the histories cover\ndifferent periods, an additional common-period analysis (the intersection of\nall histories) is provided so that track-record differences are visible. The\nsame benchmark and factor returns, if supplied, are used for every investment.",
+   "examples": ">>> comparison = ofs.compare({\"Fund A\": fund_a, \"Fund B\": fund_b, \"ETF\": etf})\n>>> print(comparison.summary())\n>>> comparison.table(common_period=True)",
+   "fields": [],
+   "kind": "function",
+   "name": "compare",
+   "parameters": [
+    {
+     "annotation": "Mapping[str, Any] | pd.DataFrame | Sequence[Any] | ReturnTable",
+     "default": "",
+     "name": "funds"
+    },
+    {
+     "annotation": "Any",
+     "default": "None",
+     "name": "benchmark"
+    },
+    {
+     "annotation": "Any",
+     "default": "None",
+     "name": "factors"
+    },
+    {
+     "annotation": "DeclaredScale | None",
+     "default": "None",
+     "name": "return_scale"
+    },
+    {
+     "annotation": "str | ObservationFrequency | None",
+     "default": "None",
+     "name": "frequency"
+    }
+   ],
+   "raises": "",
+   "returns": "Comparison",
+   "usage": "ofs.compare(funds, benchmark=None, *, factors=None, return_scale=None, frequency=None)",
+   "value": "A [`Comparison`](#api-Comparison) holding the full report of every investment."
+  },
+  {
+   "anchor": "api-load",
+   "arguments": [
+    {
+     "name": "source",
+     "text": "Returns in any form [`analyze()`](#api-analyze) accepts, including CSV, Excel, pasted monthly tables, PDF factsheets and screenshots."
+    },
+    {
+     "name": "name",
+     "text": "Display name for a single series."
+    },
+    {
+     "name": "return_scale",
+     "text": "Declare `\"decimal\"` or `\"percent\"` only when automatic detection reports ambiguity."
+    },
+    {
+     "name": "frequency",
+     "text": "Declare the observation frequency of *undated* values."
+    },
+    {
+     "name": "ocr_engine",
+     "text": "`\"rapidocr\"` (default) or `\"tesseract\"` for images and scanned PDF pages. It never changes an accepted value, because recognized tables must reconcile with their printed totals."
+    }
+   ],
+   "description": "Parse and normalize input without computing metrics.",
+   "details": "Inspect `series.input_diagnostics` to see exactly what OpenFactsheet\nbelieves it received before analyzing it.",
+   "examples": ">>> series = ofs.load(\"monthly_returns.csv\")\n>>> print(series.input_diagnostics.to_text())",
+   "fields": [],
+   "kind": "function",
+   "name": "load",
+   "parameters": [
+    {
+     "annotation": "Any",
+     "default": "",
+     "name": "source"
+    },
+    {
+     "annotation": "str | None",
+     "default": "None",
+     "name": "name"
+    },
+    {
+     "annotation": "DeclaredScale | None",
+     "default": "None",
+     "name": "return_scale"
+    },
+    {
+     "annotation": "str | ObservationFrequency | None",
+     "default": "None",
+     "name": "frequency"
+    },
+    {
+     "annotation": "str | None",
+     "default": "None",
+     "name": "ocr_engine"
+    }
+   ],
+   "raises": "",
+   "returns": "ReturnSeries | ReturnTable",
+   "usage": "ofs.load(source, *, name=None, return_scale=None, frequency=None, ocr_engine=None)",
+   "value": "A [`ReturnSeries`](#api-ReturnSeries) for a single series, or a [`ReturnTable`](#api-ReturnTable)\nwhen the source contains several return columns (for example a fund and\nthe benchmark printed in a factsheet)."
+  },
+  {
+   "anchor": "api-methodology",
+   "arguments": [],
+   "description": "The canonical, versioned methodology used by every report.",
+   "details": "",
+   "examples": ">>> ofs.methodology().get(\"tail.var_confidence\")\n0.95",
+   "fields": [],
+   "kind": "function",
+   "name": "methodology",
+   "parameters": [],
+   "raises": "",
+   "returns": "Methodology",
+   "usage": "ofs.methodology()",
+   "value": "The methodology object; `.version` is its version and `.to_json()`\nthe complete set of canonical conventions embedded in every report."
+  },
+  {
+   "anchor": "api-metric_catalog",
+   "arguments": [],
+   "description": "Every canonical metric with its definition, conventions and data requirements.",
+   "details": "",
+   "examples": ">>> catalog = ofs.metric_catalog()\n>>> catalog.loc[\"sharpe_ratio\", \"formula\"]",
+   "fields": [],
+   "kind": "function",
+   "name": "metric_catalog",
+   "parameters": [],
+   "raises": "",
+   "returns": "pd.DataFrame",
+   "usage": "ofs.metric_catalog()",
+   "value": "A DataFrame indexed by metric id, one row per canonical metric."
+  },
+  {
+   "anchor": "api-Comparison",
+   "arguments": [],
+   "description": "Several investments analyzed under one identical methodology, returned by [`compare()`](#api-compare).",
+   "details": "Nothing is ranked or scored. Each investment keeps its full canonical report.",
+   "examples": "",
+   "fields": [
+    {
+     "name": "reports",
+     "text": "The full-history [`FactsheetReport`](#api-FactsheetReport) of each investment, by name."
+    },
+    {
+     "name": "common_period_reports",
+     "text": "Reports restricted to the period all histories share, or `None` when the histories cover the same period or share fewer than two."
+    },
+    {
+     "name": "common_period",
+     "text": "First and last date of the common period, or `None`."
+    },
+    {
+     "name": "notes",
+     "text": "Explanations of track-record and alignment differences."
+    }
+   ],
+   "kind": "class",
+   "members": [
+    {
+     "arguments": [
+      {
+       "name": "common_period",
+       "text": "Use the common-period reports instead of the full histories."
+      }
+     ],
+     "description": "Confidence / status labels by investment.",
+     "details": "",
+     "examples": "",
+     "fields": [],
+     "kind": "method",
+     "name": "status_table",
+     "parameters": [
+      {
+       "annotation": "bool",
+       "default": "False",
+       "name": "common_period"
+      }
+     ],
+     "raises": "",
+     "usage": "status_table(*, common_period=False)",
+     "value": ""
+    },
+    {
+     "arguments": [],
+     "description": "Track records and every metric side by side, as plain text.",
+     "details": "",
+     "examples": "",
+     "fields": [],
+     "kind": "method",
+     "name": "summary",
+     "parameters": [],
+     "raises": "",
+     "usage": "summary()",
+     "value": ""
+    },
+    {
+     "arguments": [
+      {
+       "name": "common_period",
+       "text": "Use the common-period reports instead of the full histories."
+      }
+     ],
+     "description": "Raw metric values (rows) by investment (columns).",
+     "details": "",
+     "examples": "",
+     "fields": [],
+     "kind": "method",
+     "name": "table",
+     "parameters": [
+      {
+       "annotation": "bool",
+       "default": "False",
+       "name": "common_period"
+      }
+     ],
+     "raises": "",
+     "usage": "table(*, common_period=False)",
+     "value": "A DataFrame indexed by metric id with a `name` column and one column\nper investment; unavailable values are missing (see `status_table`)."
+    },
+    {
+     "arguments": [],
+     "description": "Every report (and common-period report) as JSON-compatible Python objects.",
+     "details": "",
+     "examples": "",
+     "fields": [],
+     "kind": "method",
+     "name": "to_dict",
+     "parameters": [],
+     "raises": "",
+     "usage": "to_dict()",
+     "value": ""
+    },
+    {
+     "arguments": [
+      {
+       "name": "indent",
+       "text": "Indentation of the JSON text."
+      }
+     ],
+     "description": "The comparison as deterministic JSON.",
+     "details": "",
+     "examples": "",
+     "fields": [],
+     "kind": "method",
+     "name": "to_json",
+     "parameters": [
+      {
+       "annotation": "int",
+       "default": "2",
+       "name": "indent"
+      }
+     ],
+     "raises": "",
+     "usage": "to_json(indent=2)",
+     "value": ""
+    },
+    {
+     "arguments": [],
+     "description": "Start, end, length, frequency, smoothing risk and benchmark overlap by investment.",
+     "details": "",
+     "examples": "",
+     "fields": [],
+     "kind": "method",
+     "name": "track_records",
+     "parameters": [],
+     "raises": "",
+     "usage": "track_records()",
+     "value": ""
+    }
+   ],
+   "module": "openfactsheet.compare.comparison",
+   "name": "Comparison",
+   "raises": "",
+   "value": ""
+  },
+  {
+   "anchor": "api-FactsheetReport",
+   "arguments": [],
+   "description": "The canonical OpenFactsheet report, returned by [`analyze()`](#api-analyze).",
+   "details": "Every canonical metric is present, each with a status, confidence, warnings\nand the assumptions it used. The report is a plain data object;\ncalculations know nothing about rendering, and every renderer (text,\nMarkdown, HTML, JSON) shows the same content.",
+   "examples": "",
+   "fields": [
+    {
+     "name": "name",
+     "text": "Display name of the analyzed series."
+    },
+    {
+     "name": "returns",
+     "text": "The [`ReturnSeries`](#api-ReturnSeries) exactly as analyzed."
+    },
+    {
+     "name": "input_summary",
+     "text": "What OpenFactsheet believes it received: detected frequency, return scale, observations, date range, parsing warnings."
+    },
+    {
+     "name": "diagnostics",
+     "text": "Data-quality findings computed before any metric (missing periods, stale returns, smoothing risk, ...)."
+    },
+    {
+     "name": "metrics",
+     "text": "Every canonical metric as a [`MetricResult`](#api-MetricResult), indexable by metric id (`report.metrics[\"sharpe_ratio\"]`)."
+    },
+    {
+     "name": "assumptions",
+     "text": "The versioned methodology (all canonical conventions)."
+    },
+    {
+     "name": "interpretations",
+     "text": "Plain-language and professional explanations by metric id."
+    },
+    {
+     "name": "benchmark_summary",
+     "text": "Alignment of fund and benchmark (overlap, method), or `None` without a benchmark."
+    },
+    {
+     "name": "benchmark_input_summary",
+     "text": "Input diagnostics of the benchmark, or `None`."
+    },
+    {
+     "name": "provenance",
+     "text": "Package and methodology versions, input hashes, transformations and, for documents, how the table was extracted."
+    },
+    {
+     "name": "drawdown_episodes",
+     "text": "Peak-to-recovery drawdown episodes of the wealth path."
+    },
+    {
+     "name": "benchmark_returns",
+     "text": "The benchmark series as analyzed, or `None`."
+    },
+    {
+     "name": "factor_analysis",
+     "text": "Factor-model regressions when factors were supplied."
+    },
+    {
+     "name": "document",
+     "text": "What a source document (PDF, image) says about the fund, or `None`."
+    }
+   ],
+   "kind": "class",
+   "members": [
+    {
+     "arguments": [],
+     "description": "Canonical charts as self-contained SVG strings, keyed by chart id.",
+     "details": "Charts that cannot be drawn for these data (e.g. a monthly heatmap for\nweekly returns) are omitted here; `to_html` states why.",
+     "examples": "",
+     "fields": [],
+     "kind": "method",
+     "name": "charts",
+     "parameters": [],
+     "raises": "",
+     "usage": "charts()",
+     "value": ""
+    },
+    {
+     "arguments": [],
+     "description": "Version of the methodology the report was computed with.",
+     "details": "",
+     "examples": "",
+     "fields": [],
+     "kind": "property",
+     "name": "methodology_version",
+     "parameters": [],
+     "raises": "",
+     "usage": "methodology_version",
+     "value": ""
+    },
+    {
+     "arguments": [],
+     "description": "Exactly the returns OpenFactsheet analyzed (decimal, after normalization).",
+     "details": "",
+     "examples": "",
+     "fields": [],
+     "kind": "method",
+     "name": "returns_frame",
+     "parameters": [],
+     "raises": "",
+     "usage": "returns_frame()",
+     "value": ""
+    },
+    {
+     "arguments": [],
+     "description": "The full canonical report as plain text for a terminal.",
+     "details": "",
+     "examples": "",
+     "fields": [],
+     "kind": "method",
+     "name": "summary",
+     "parameters": [],
+     "raises": "",
+     "usage": "summary()",
+     "value": ""
+    },
+    {
+     "arguments": [],
+     "description": "The report as JSON-compatible Python objects (see the JSON report schema).",
+     "details": "",
+     "examples": "",
+     "fields": [],
+     "kind": "method",
+     "name": "to_dict",
+     "parameters": [],
+     "raises": "",
+     "usage": "to_dict()",
+     "value": ""
+    },
+    {
+     "arguments": [
+      {
+       "name": "path",
+       "text": "Also write the HTML to this file (UTF-8) when given."
+      }
+     ],
+     "description": "The full canonical report as one self-contained HTML page with charts.",
+     "details": "",
+     "examples": "",
+     "fields": [],
+     "kind": "method",
+     "name": "to_html",
+     "parameters": [
+      {
+       "annotation": "str | Path | None",
+       "default": "None",
+       "name": "path"
+      }
+     ],
+     "raises": "",
+     "usage": "to_html(path=None)",
+     "value": "The HTML text."
+    },
+    {
+     "arguments": [
+      {
+       "name": "path",
+       "text": "Also write the JSON to this file (UTF-8) when given."
+      },
+      {
+       "name": "indent",
+       "text": "Indentation of the JSON text."
+      }
+     ],
+     "description": "The report as deterministic JSON.",
+     "details": "",
+     "examples": "",
+     "fields": [],
+     "kind": "method",
+     "name": "to_json",
+     "parameters": [
+      {
+       "annotation": "str | Path | None",
+       "default": "None",
+       "name": "path"
+      },
+      {
+       "annotation": "int",
+       "default": "2",
+       "name": "indent"
+      }
+     ],
+     "raises": "",
+     "usage": "to_json(path=None, *, indent=2)",
+     "value": "The JSON text."
+    },
+    {
+     "arguments": [
+      {
+       "name": "path",
+       "text": "Also write the Markdown to this file (UTF-8) when given."
+      }
+     ],
+     "description": "The full canonical report as Markdown.",
+     "details": "",
+     "examples": "",
+     "fields": [],
+     "kind": "method",
+     "name": "to_markdown",
+     "parameters": [
+      {
+       "annotation": "str | Path | None",
+       "default": "None",
+       "name": "path"
+      }
+     ],
+     "raises": "",
+     "usage": "to_markdown(path=None)",
+     "value": "The Markdown text."
+    }
+   ],
+   "module": "openfactsheet.models.report",
+   "name": "FactsheetReport",
+   "raises": "",
+   "value": ""
+  },
+  {
+   "anchor": "api-MetricResult",
+   "arguments": [],
+   "description": "Structured outcome of one metric (CLAUDE.md section 10).",
+   "details": "`value` is `None` whenever the metric could not be validly computed, and\n`reason` then says why. A non-finite value can never be stored.",
+   "examples": "",
+   "fields": [
+    {
+     "name": "id",
+     "text": "Stable metric identifier (e.g. `sharpe_ratio`)."
+    },
+    {
+     "name": "name",
+     "text": "Display name."
+    },
+    {
+     "name": "category",
+     "text": "Report section the metric belongs to."
+    },
+    {
+     "name": "value",
+     "text": "Unrounded value (`float64`), or `None` with a `reason`."
+    },
+    {
+     "name": "unit",
+     "text": "How to read the value (`decimal_return`, `ratio`, `fraction`, ...)."
+    },
+    {
+     "name": "status",
+     "text": "`applicable`, `low_confidence`, `supplementary`, `not_applicable`, `insufficient_data` or `error`."
+    },
+    {
+     "name": "direction",
+     "text": "`higher_is_better`, `lower_is_better`, `context_dependent` or `neutral`."
+    },
+    {
+     "name": "confidence",
+     "text": "Reliability of the estimate (`high`, `moderate`, `low`, `not_assessable`), never a judgement of the investment."
+    },
+    {
+     "name": "nature",
+     "text": "`observed`, `derived`, `estimated` or `model_dependent`."
+    },
+    {
+     "name": "observations",
+     "text": "Number of observations the value is based on (aligned observations for benchmark and factor metrics)."
+    },
+    {
+     "name": "formula_id",
+     "text": "Versioned formula identifier; it changes when the definition does."
+    },
+    {
+     "name": "methodology_version",
+     "text": "Methodology the value was computed under."
+    },
+    {
+     "name": "assumptions",
+     "text": "Canonical assumptions used, in words."
+    },
+    {
+     "name": "warnings",
+     "text": "Data-quality and confidence warnings."
+    },
+    {
+     "name": "reason",
+     "text": "Why there is no value, or why confidence was reduced."
+    },
+    {
+     "name": "details",
+     "text": "Supporting quantities (intervals, dates, episode data, ...)."
+    },
+    {
+     "name": "reference_values",
+     "text": "Values from reference implementations, when recorded."
+    }
+   ],
+   "kind": "class",
+   "members": [
+    {
+     "arguments": [],
+     "description": "Whether a value was computed (`value is not None`).",
+     "details": "",
+     "examples": "",
+     "fields": [],
+     "kind": "property",
+     "name": "has_value",
+     "parameters": [],
+     "raises": "",
+     "usage": "has_value",
+     "value": ""
+    },
+    {
+     "arguments": [],
+     "description": "The result as JSON-compatible Python objects.",
+     "details": "",
+     "examples": "",
+     "fields": [],
+     "kind": "method",
+     "name": "to_dict",
+     "parameters": [],
+     "raises": "",
+     "usage": "to_dict()",
+     "value": ""
+    }
+   ],
+   "module": "openfactsheet.models.metric",
+   "name": "MetricResult",
+   "raises": "",
+   "value": ""
+  },
+  {
+   "anchor": "api-ObservationFrequency",
+   "arguments": [],
+   "description": "Observation frequency inferred from calendar spacing (or declared by the caller).",
+   "details": "",
+   "examples": "",
+   "fields": [],
+   "kind": "enum",
+   "members": [
+    {
+     "arguments": [],
+     "description": "Whether the frequency has a canonical annualization factor.",
+     "details": "",
+     "examples": "",
+     "fields": [],
+     "kind": "property",
+     "name": "is_regular",
+     "parameters": [],
+     "raises": "",
+     "usage": "is_regular",
+     "value": ""
+    }
+   ],
+   "module": "openfactsheet.models.input",
+   "name": "ObservationFrequency",
+   "raises": "",
+   "value": "",
+   "values": [
+    {
+     "name": "DAILY",
+     "value": "daily"
+    },
+    {
+     "name": "WEEKLY",
+     "value": "weekly"
+    },
+    {
+     "name": "MONTHLY",
+     "value": "monthly"
+    },
+    {
+     "name": "QUARTERLY",
+     "value": "quarterly"
+    },
+    {
+     "name": "YEARLY",
+     "value": "yearly"
+    },
+    {
+     "name": "IRREGULAR",
+     "value": "irregular"
+    },
+    {
+     "name": "UNKNOWN",
+     "value": "unknown"
+    }
+   ]
+  },
+  {
+   "anchor": "api-ReturnSeries",
+   "arguments": [],
+   "description": "A normalized, immutable return history.",
+   "details": "",
+   "examples": "",
+   "fields": [
+    {
+     "name": "name",
+     "text": "Display name of the series."
+    },
+    {
+     "name": "values",
+     "text": "Simple decimal returns, `float64`, read-only, no NaN."
+    },
+    {
+     "name": "dates",
+     "text": "Period-end timestamps aligned with `values` (`None` if undated)."
+    },
+    {
+     "name": "frequency",
+     "text": "Observation frequency."
+    },
+    {
+     "name": "periods_per_year",
+     "text": "Canonical annualization factor, `None` when annualization is not defensible (irregular/unknown frequency)."
+    },
+    {
+     "name": "frequency_source",
+     "text": "`\"inferred\"` from dates, `\"declared\"` by the caller, or `\"none\"`."
+    },
+    {
+     "name": "source_type",
+     "text": "Where the data came from (`\"list\"`, `\"pandas.Series\"`, `\"csv\"`, ...)."
+    },
+    {
+     "name": "return_type",
+     "text": "Always `\"simple\"` in methodology 0.1."
+    },
+    {
+     "name": "return_scale",
+     "text": "How percent/decimal scale was established."
+    },
+    {
+     "name": "metadata",
+     "text": "Free-form provenance metadata."
+    },
+    {
+     "name": "input_diagnostics",
+     "text": "What OpenFactsheet believes it received."
+    }
+   ],
+   "kind": "class",
+   "members": [
+    {
+     "arguments": [],
+     "description": "Number of observations.",
+     "details": "",
+     "examples": "",
+     "fields": [],
+     "kind": "property",
+     "name": "n",
+     "parameters": [],
+     "raises": "",
+     "usage": "n",
+     "value": ""
+    },
+    {
+     "arguments": [],
+     "description": "The returns OpenFactsheet actually analyzed, as a pandas Series.",
+     "details": "",
+     "examples": "",
+     "fields": [],
+     "kind": "method",
+     "name": "to_pandas",
+     "parameters": [],
+     "raises": "",
+     "usage": "to_pandas()",
+     "value": ""
+    },
+    {
+     "arguments": [],
+     "description": "Length of history in years, when a periods-per-year factor is defensible.",
+     "details": "",
+     "examples": "",
+     "fields": [],
+     "kind": "property",
+     "name": "years",
+     "parameters": [],
+     "raises": "",
+     "usage": "years",
+     "value": ""
+    }
+   ],
+   "module": "openfactsheet.models.input",
+   "name": "ReturnSeries",
+   "raises": "",
+   "value": ""
+  },
+  {
+   "anchor": "api-ReturnTable",
+   "arguments": [],
+   "description": "Several named return series (e.g. columns of a DataFrame, used by `compare`).",
+   "details": "",
+   "examples": "",
+   "fields": [
+    {
+     "name": "series",
+     "text": "The [`ReturnSeries`](#api-ReturnSeries) by name, in source order."
+    }
+   ],
+   "kind": "class",
+   "members": [],
+   "module": "openfactsheet.models.input",
+   "name": "ReturnTable",
+   "raises": "",
+   "value": ""
+  },
+  {
+   "anchor": "api-exceptions",
+   "classes": [
+    {
+     "anchor": "api-AmbiguousReturnScaleError",
+     "arguments": [],
+     "base": "InputError",
+     "description": "Returns could plausibly be either decimals or percentages.",
+     "details": "Resolve by declaring the scale explicitly, e.g.\n`ofs.analyze(returns, return_scale=\"percent\")`.",
+     "examples": "",
+     "fields": [],
+     "name": "AmbiguousReturnScaleError",
+     "raises": "",
+     "value": ""
+    },
+    {
+     "anchor": "api-BenchmarkAlignmentError",
+     "arguments": [],
+     "base": "OpenFactsheetError",
+     "description": "Fund and benchmark returns cannot be aligned without inventing data.",
+     "details": "",
+     "examples": "",
+     "fields": [],
+     "name": "BenchmarkAlignmentError",
+     "raises": "",
+     "value": ""
+    },
+    {
+     "anchor": "api-FactorAlignmentError",
+     "arguments": [],
+     "base": "OpenFactsheetError",
+     "description": "Fund and factor returns cannot be aligned without inventing data.",
+     "details": "",
+     "examples": "",
+     "fields": [],
+     "name": "FactorAlignmentError",
+     "raises": "",
+     "value": ""
+    },
+    {
+     "anchor": "api-FrequencyInferenceError",
+     "arguments": [],
+     "base": "InputError",
+     "description": "Observation frequency could not be established or was declared inconsistently.",
+     "details": "",
+     "examples": "",
+     "fields": [],
+     "name": "FrequencyInferenceError",
+     "raises": "",
+     "value": ""
+    },
+    {
+     "anchor": "api-InputError",
+     "arguments": [],
+     "base": "OpenFactsheetError",
+     "description": "The supplied data cannot be interpreted as a return history.",
+     "details": "",
+     "examples": "",
+     "fields": [],
+     "name": "InputError",
+     "raises": "",
+     "value": ""
+    },
+    {
+     "anchor": "api-MetricCalculationError",
+     "arguments": [],
+     "base": "OpenFactsheetError",
+     "description": "Unexpected failure inside a metric calculation (captured as status `error`).",
+     "details": "",
+     "examples": "",
+     "fields": [],
+     "name": "MetricCalculationError",
+     "raises": "",
+     "value": ""
+    },
+    {
+     "anchor": "api-OCRExtractionError",
+     "arguments": [],
+     "base": "InputError",
+     "description": "Image/PDF extraction failed or produced inadequate confidence (roadmap phase 6).",
+     "details": "",
+     "examples": "",
+     "fields": [],
+     "name": "OCRExtractionError",
+     "raises": "",
+     "value": ""
+    },
+    {
+     "anchor": "api-OpenFactsheetError",
+     "arguments": [],
+     "base": "Exception",
+     "description": "Base class for all OpenFactsheet errors.",
+     "details": "",
+     "examples": "",
+     "fields": [],
+     "name": "OpenFactsheetError",
+     "raises": "",
+     "value": ""
+    }
+   ],
+   "description": "Errors raised by OpenFactsheet. Input corruption fails early; a metric that cannot be computed never raises but is reported with a status and a reason.",
+   "kind": "exceptions",
+   "name": "Exceptions"
+  },
+  {
+   "anchor": "api-constants",
+   "constants": [
+    {
+     "anchor": "api-METHODOLOGY_VERSION",
+     "name": "METHODOLOGY_VERSION",
+     "value": "0.1.0"
+    },
+    {
+     "anchor": "api-__version__",
+     "name": "__version__",
+     "value": "0.1.0"
+    }
+   ],
+   "description": "Version identifiers embedded in every report.",
+   "kind": "constants",
+   "name": "Constants"
+  }
+ ]
+}

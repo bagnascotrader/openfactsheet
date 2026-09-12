@@ -13,7 +13,12 @@ pre-commit install
 pytest
 ruff check . && ruff format --check . && mypy
 python scripts/generate_docs.py --check
+pip install -e ".[docs]" && python scripts/build_manual.py --check
 ```
+
+Docstrings of public functions and classes are printed in the reference manual
+(decision 0034): write them in Google style (`Args:`, `Returns:`, `Examples:`)
+and document every argument; a test checks this.
 
 R and PerformanceAnalytics are only needed to regenerate cross-library
 reference values (`Rscript validation/r/performanceanalytics_reference.R`);
@@ -65,7 +70,8 @@ Record every reference in `docs/validation/reference_implementations.md`.
       NaN, −100%, undated, irregular)
 - [ ] cross-library comparison where possible; differences documented and pinned
 - [ ] appears correctly in the canonical report and JSON; no NaN/inf possible
-- [ ] generated docs refreshed (`python scripts/generate_docs.py`)
+- [ ] generated docs refreshed (`python scripts/generate_docs.py`) and the
+      reference manual builds (`python scripts/build_manual.py --check`)
 
 ## Pull requests
 

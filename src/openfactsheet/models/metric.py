@@ -194,6 +194,29 @@ class MetricResult:
 
     ``value`` is ``None`` whenever the metric could not be validly computed, and
     ``reason`` then says why. A non-finite value can never be stored.
+
+    Attributes:
+        id: Stable metric identifier (e.g. ``sharpe_ratio``).
+        name: Display name.
+        category: Report section the metric belongs to.
+        value: Unrounded value (``float64``), or ``None`` with a ``reason``.
+        unit: How to read the value (``decimal_return``, ``ratio``, ``fraction``, ...).
+        status: ``applicable``, ``low_confidence``, ``supplementary``, ``not_applicable``,
+            ``insufficient_data`` or ``error``.
+        direction: ``higher_is_better``, ``lower_is_better``, ``context_dependent`` or
+            ``neutral``.
+        confidence: Reliability of the estimate (``high``, ``moderate``, ``low``,
+            ``not_assessable``), never a judgement of the investment.
+        nature: ``observed``, ``derived``, ``estimated`` or ``model_dependent``.
+        observations: Number of observations the value is based on (aligned
+            observations for benchmark and factor metrics).
+        formula_id: Versioned formula identifier; it changes when the definition does.
+        methodology_version: Methodology the value was computed under.
+        assumptions: Canonical assumptions used, in words.
+        warnings: Data-quality and confidence warnings.
+        reason: Why there is no value, or why confidence was reduced.
+        details: Supporting quantities (intervals, dates, episode data, ...).
+        reference_values: Values from reference implementations, when recorded.
     """
 
     id: str
@@ -223,9 +246,11 @@ class MetricResult:
 
     @property
     def has_value(self) -> bool:
+        """Whether a value was computed (``value is not None``)."""
         return self.value is not None
 
     def to_dict(self) -> dict[str, Any]:
+        """The result as JSON-compatible Python objects."""
         return {
             "id": self.id,
             "name": self.name,

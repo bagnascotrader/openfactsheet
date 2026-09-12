@@ -166,6 +166,7 @@ def _policy_rule(policy: MinDataPolicy) -> list[str]:
 
 
 def _criteria_section(d: MetricDefinition) -> list[str]:
+    """Body of the metric's "Calculation criteria" section, as Markdown lines."""
     policy = get_policy(d.min_data_policy)
     conf = _get("confidence")
     smoothing = _get("smoothing")
@@ -175,8 +176,6 @@ def _criteria_section(d: MetricDefinition) -> list[str]:
     basis = "aligned observations" if aligned else "observations"
 
     out = [
-        "## Calculation criteria",
-        "",
         "### When a value is produced (checked in this order)",
         "",
     ]
@@ -353,78 +352,134 @@ def render_catalog() -> str:
     return "\n".join(lines)
 
 
-def render_metric_page(d: MetricDefinition) -> str:
-    docs = d.docs
+def metric_record(d: MetricDefinition) -> dict[str, Any]:
+    """Everything documented about one metric, as plain data.
 
-    def bullets(items: tuple[str, ...]) -> list[str]:
+    The Markdown page (:func:`render_metric_page`) and the PDF reference manual
+    (``openfactsheet.manual.export``) both render from this record, so they
+    cannot disagree. Text fields are Markdown; ``formula_latex`` is LaTeX.
+    """
+    docs = d.docs
+    policy = get_policy(d.min_data_policy)
+    return {
+        "id": d.id,
+        "name": d.name,
+        "anchor": f"metric-{d.id}",
+        "page": f"docs/interpretation/{d.id}.md",
+        "category": d.category,
+        "category_title": CATEGORY_TITLES[d.category],
+        "nature": d.nature,
+        "nature_text": _NATURE[d.nature],
+        "unit": d.unit,
+        "unit_text": _UNIT_OUTPUT[d.unit],
+        "direction": d.direction,
+        "direction_text": _DIRECTION[d.direction],
+        "formula_id": d.formula_id,
+        "formula": docs.formula,
+        "formula_latex": docs.formula_latex,
+        "measures": docs.measures,
+        "inputs": docs.inputs
+        + (" A benchmark is required." if d.requires_benchmark else "")
+        + (" Factor returns are required." if d.requires_factors else ""),
+        "retail": docs.retail,
+        "institutional": docs.institutional,
+        "assumptions": list(docs.assumptions),
+        "misleading_when": list(docs.misleading_when),
+        "minimum_data": docs.minimum_data,
+        "min_data_policy": {"key": policy.key, "description": policy.description},
+        "reference_implementations": [
+            {"library": r.library, "function": r.function, "agrees": r.agrees, "note": r.note}
+            for r in docs.reference_implementations
+        ],
+        "references": [{"citation": r.citation, "url": r.url} for r in docs.references],
+        "convention": docs.convention,
+        "undefined_when": list(docs.undefined_when),
+        "requires_benchmark": d.requires_benchmark,
+        "requires_factors": d.requires_factors,
+        "annualized": d.annualized,
+        "uses_wealth_path": d.uses_wealth_path,
+        "volatility_based": d.volatility_based,
+        "supplementary": d.supplementary,
+        "canonical_parameters": [_ASSUMPTION_LABELS[k] for k in d.assumption_keys],
+        "recorded_assumptions": [_assumption_doc(k) for k in d.assumption_keys],
+        "criteria": "\n".join(_criteria_section(d)),
+    }
+
+
+def render_metric_page(d: MetricDefinition) -> str:
+    r = metric_record(d)
+
+    def bullets(items: list[str]) -> list[str]:
         return [f"- {item}" for item in items] if items else ["- None beyond the general inputs."]
 
-    policy = get_policy(d.min_data_policy)
     lines = [
         GENERATED_NOTE,
         "",
-        f"# {d.name} (`{d.id}`)",
+        f"# {r['name']} (`{r['id']}`)",
         "",
-        f"*Category: {CATEGORY_TITLES[d.category]} · Nature: {d.nature} · Unit: {d.unit} · "
-        f"Formula id: `{d.formula_id}` · Methodology {METHODOLOGY_VERSION}*",
+        f"*Category: {r['category_title']} · Nature: {r['nature']} · Unit: {r['unit']} · "
+        f"Formula id: `{r['formula_id']}` · Methodology {METHODOLOGY_VERSION}*",
         "",
         "## 1. What does it measure?",
         "",
-        docs.measures,
+        r["measures"],
         "",
         "## 2. Formula",
         "",
-        *_math(docs.formula_latex),
+        *_math(r["formula_latex"]),
         "",
-        f"Plain text: `{docs.formula}`. Symbols are defined in "
+        f"Plain text: `{r['formula']}`. Symbols are defined in "
         "[notation](../reference/notation.md).",
         "",
         "## 3. Required inputs",
         "",
-        docs.inputs
-        + (" A benchmark is required." if d.requires_benchmark else "")
-        + (" Factor returns are required." if d.requires_factors else ""),
+        r["inputs"],
         "",
         "## 4. Is higher or lower better?",
         "",
-        _DIRECTION[d.direction] + ".",
+        r["direction_text"] + ".",
         "",
         "## 5. Plain-language interpretation",
         "",
-        docs.retail,
+        r["retail"],
         "",
         "## 6. Professional interpretation",
         "",
-        docs.institutional,
+        r["institutional"],
         "",
         "## 7. Assumptions",
         "",
-        *bullets(docs.assumptions),
+        *bullets(r["assumptions"]),
         "",
         "## 8. When can it be misleading?",
         "",
-        *bullets(docs.misleading_when),
+        *bullets(r["misleading_when"]),
         "",
         "## 9. Minimum sensible data",
         "",
-        f"{docs.minimum_data} (policy `{policy.key}`: {policy.description})",
+        f"{r['minimum_data']} (policy `{r['min_data_policy']['key']}`: "
+        f"{r['min_data_policy']['description']})",
         "",
         "## 10. Reference implementations",
         "",
     ]
-    if docs.reference_implementations:
+    if r["reference_implementations"]:
         lines += ["| Library | Function | Agrees | Note |", "|---|---|---|---|"]
-        for ref in docs.reference_implementations:
+        for ref in r["reference_implementations"]:
+            agrees = "yes" if ref["agrees"] else "no (documented difference)"
             lines.append(
-                f"| {_cell(ref.library)} | `{_cell(ref.function)}` | "
-                f"{'yes' if ref.agrees else 'no (documented difference)'} | {_cell(ref.note)} |"
+                f"| {_cell(ref['library'])} | `{_cell(ref['function'])}` | {agrees} | "
+                f"{_cell(ref['note'])} |"
             )
     else:
         lines.append("No established library implementation was identified.")
     lines += ["", "## 11. Sources", ""]
-    lines += [f"- {ref.citation}" + (f" <{ref.url}>" if ref.url else "") for ref in docs.references]
-    lines += ["", "## 12. OpenFactsheet convention", "", docs.convention, ""]
-    lines += _criteria_section(d)
+    lines += [
+        f"- {ref['citation']}" + (f" <{ref['url']}>" if ref["url"] else "")
+        for ref in r["references"]
+    ]
+    lines += ["", "## 12. OpenFactsheet convention", "", r["convention"], ""]
+    lines += ["## Calculation criteria", "", r["criteria"]]
     return "\n".join(lines)
 
 

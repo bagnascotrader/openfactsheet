@@ -134,7 +134,34 @@ class Provenance:
 
 @dataclass(frozen=True, eq=False)
 class FactsheetReport:
-    """The canonical OpenFactsheet report. Calculations know nothing about rendering."""
+    """The canonical OpenFactsheet report, returned by :func:`analyze`.
+
+    Every canonical metric is present, each with a status, confidence, warnings
+    and the assumptions it used. The report is a plain data object;
+    calculations know nothing about rendering, and every renderer (text,
+    Markdown, HTML, JSON) shows the same content.
+
+    Attributes:
+        name: Display name of the analyzed series.
+        returns: The :class:`ReturnSeries` exactly as analyzed.
+        input_summary: What OpenFactsheet believes it received: detected
+            frequency, return scale, observations, date range, parsing warnings.
+        diagnostics: Data-quality findings computed before any metric (missing
+            periods, stale returns, smoothing risk, ...).
+        metrics: Every canonical metric as a :class:`MetricResult`, indexable by
+            metric id (``report.metrics["sharpe_ratio"]``).
+        assumptions: The versioned methodology (all canonical conventions).
+        interpretations: Plain-language and professional explanations by metric id.
+        benchmark_summary: Alignment of fund and benchmark (overlap, method), or
+            ``None`` without a benchmark.
+        benchmark_input_summary: Input diagnostics of the benchmark, or ``None``.
+        provenance: Package and methodology versions, input hashes, transformations
+            and, for documents, how the table was extracted.
+        drawdown_episodes: Peak-to-recovery drawdown episodes of the wealth path.
+        benchmark_returns: The benchmark series as analyzed, or ``None``.
+        factor_analysis: Factor-model regressions when factors were supplied.
+        document: What a source document (PDF, image) says about the fund, or ``None``.
+    """
 
     name: str
     returns: ReturnSeries
@@ -155,6 +182,7 @@ class FactsheetReport:
     # -- convenience ------------------------------------------------------
     @property
     def methodology_version(self) -> str:
+        """Version of the methodology the report was computed with."""
         return self.assumptions.version
 
     def returns_frame(self) -> pd.Series:
@@ -163,11 +191,21 @@ class FactsheetReport:
 
     # -- rendering (delegated) ---------------------------------------------
     def to_dict(self) -> dict[str, Any]:
+        """The report as JSON-compatible Python objects (see the JSON report schema)."""
         from openfactsheet.report.json import report_to_dict
 
         return report_to_dict(self)
 
     def to_json(self, path: str | Path | None = None, *, indent: int = 2) -> str:
+        """The report as deterministic JSON.
+
+        Args:
+            path: Also write the JSON to this file (UTF-8) when given.
+            indent: Indentation of the JSON text.
+
+        Returns:
+            The JSON text.
+        """
         from openfactsheet.report.json import report_to_json
 
         text = report_to_json(self, indent=indent)
@@ -176,11 +214,20 @@ class FactsheetReport:
         return text
 
     def summary(self) -> str:
+        """The full canonical report as plain text for a terminal."""
         from openfactsheet.report.terminal import render_terminal
 
         return render_terminal(self)
 
     def to_markdown(self, path: str | Path | None = None) -> str:
+        """The full canonical report as Markdown.
+
+        Args:
+            path: Also write the Markdown to this file (UTF-8) when given.
+
+        Returns:
+            The Markdown text.
+        """
         from openfactsheet.report.markdown import render_markdown
 
         text = render_markdown(self)
@@ -199,6 +246,14 @@ class FactsheetReport:
         return {c.id: c.svg for c in build_charts(self) if c.svg}
 
     def to_html(self, path: str | Path | None = None) -> str:
+        """The full canonical report as one self-contained HTML page with charts.
+
+        Args:
+            path: Also write the HTML to this file (UTF-8) when given.
+
+        Returns:
+            The HTML text.
+        """
         from openfactsheet.report.html import render_html
 
         text = render_html(self)

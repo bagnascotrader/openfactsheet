@@ -1,0 +1,667 @@
+{
+ "entries": [
+  {
+   "anchor": "ref-acerbi2002",
+   "authors": "Acerbi, C., & Tasche, D.",
+   "citation": "Acerbi, C., & Tasche, D. (2002). On the Coherence of Expected Shortfall. Journal of Banking & Finance, 26(7), 1487-1503.",
+   "cited_by": [
+    "expected_shortfall_historical_95"
+   ],
+   "key": "acerbi2002",
+   "url": null,
+   "year": "2002"
+  },
+  {
+   "anchor": "ref-ahmadijavid2012",
+   "authors": "Ahmadi-Javid, A.",
+   "citation": "Ahmadi-Javid, A. (2012). Entropic Value-at-Risk: A New Coherent Risk Measure. Journal of Optimization Theory and Applications, 155(3), 1105-1123.",
+   "cited_by": [
+    "edar_95",
+    "evar_95"
+   ],
+   "key": "ahmadijavid2012",
+   "url": null,
+   "year": "2012"
+  },
+  {
+   "anchor": "ref-asness2001",
+   "authors": "Asness, C., Krail, R., & Liew, J.",
+   "citation": "Asness, C., Krail, R., & Liew, J. (2001). Do Hedge Funds Hedge? Journal of Portfolio Management, 28(1), 6-19 (stale prices bias betas down and alphas up).",
+   "cited_by": [
+    "factor_alpha"
+   ],
+   "key": "asness2001",
+   "url": null,
+   "year": "2001"
+  },
+  {
+   "anchor": "ref-bacon2021",
+   "authors": "Bacon, C. R.",
+   "citation": "Bacon, C. R. (2021). Practical Risk-Adjusted Performance Measurement (2nd ed.). Wiley.",
+   "cited_by": [
+    "cumulative_return",
+    "cagr",
+    "arithmetic_mean",
+    "geometric_mean_return",
+    "annualized_arithmetic_mean",
+    "median_return",
+    "best_period",
+    "worst_period",
+    "payoff_ratio",
+    "volatility",
+    "annualized_volatility",
+    "mean_absolute_deviation",
+    "interquartile_range",
+    "downside_deviation",
+    "semi_deviation",
+    "downside_potential",
+    "max_drawdown",
+    "average_drawdown",
+    "current_drawdown",
+    "longest_drawdown_duration",
+    "drawdown_count",
+    "time_underwater_pct",
+    "ulcer_index",
+    "pain_index",
+    "median_drawdown",
+    "average_drawdown_duration",
+    "max_peak_to_trough_duration",
+    "average_recovery_duration",
+    "sortino_ratio",
+    "calmar_ratio",
+    "martin_ratio",
+    "omega_ratio",
+    "kappa_3_ratio",
+    "upside_potential_ratio",
+    "burke_ratio",
+    "sterling_ratio",
+    "pain_ratio",
+    "recovery_factor",
+    "expected_shortfall_historical_95",
+    "tail_ratio",
+    "positive_period_pct",
+    "negative_period_pct",
+    "longest_winning_streak",
+    "longest_losing_streak",
+    "best_calendar_year",
+    "worst_calendar_year",
+    "positive_calendar_years_pct",
+    "best_rolling_year",
+    "worst_rolling_year",
+    "positive_rolling_year_pct",
+    "beta",
+    "alpha",
+    "r_squared",
+    "correlation",
+    "tracking_error",
+    "treynor_ratio",
+    "upside_capture",
+    "downside_capture",
+    "capture_ratio",
+    "batting_average",
+    "residual_volatility",
+    "appraisal_ratio",
+    "m_squared",
+    "bull_beta",
+    "bear_beta",
+    "timing_ratio"
+   ],
+   "key": "bacon2021",
+   "url": null,
+   "year": "2021"
+  },
+  {
+   "anchor": "ref-bailey2012",
+   "authors": "Bailey, D. H., & Lopez de Prado, M.",
+   "citation": "Bailey, D. H., & Lopez de Prado, M. (2012). The Sharpe Ratio Efficient Frontier. Journal of Risk, 15(2), 3-44 (Probabilistic Sharpe Ratio, Minimum Track Record Length).",
+   "cited_by": [
+    "probabilistic_sharpe_ratio",
+    "minimum_track_record_length"
+   ],
+   "key": "bailey2012",
+   "url": null,
+   "year": "2012"
+  },
+  {
+   "anchor": "ref-boudt2008",
+   "authors": "Boudt, K., Peterson, B. G., & Croux, C.",
+   "citation": "Boudt, K., Peterson, B. G., & Croux, C. (2008). Estimation and Decomposition of Downside Risk for Portfolios with Non-Normal Returns. Journal of Risk, 11(2), 79-103.",
+   "cited_by": [
+    "gaussian_var_95",
+    "modified_var_95",
+    "modified_es_95"
+   ],
+   "key": "boudt2008",
+   "url": null,
+   "year": "2008"
+  },
+  {
+   "anchor": "ref-burke1994",
+   "authors": "Burke, G.",
+   "citation": "Burke, G. (1994). A Sharper Sharpe Ratio. Futures, 23(3), 56.",
+   "cited_by": [
+    "burke_ratio"
+   ],
+   "key": "burke1994",
+   "url": null,
+   "year": "1994"
+  },
+  {
+   "anchor": "ref-cajas2021",
+   "authors": "Cajas, D.",
+   "citation": "Cajas, D. (2021). Entropic Portfolio Optimization: A Disciplined Convex Programming Framework. SSRN working paper 3792520 (Entropic Drawdown-at-Risk).",
+   "cited_by": [
+    "edar_95"
+   ],
+   "key": "cajas2021",
+   "url": null,
+   "year": "2021"
+  },
+  {
+   "anchor": "ref-carhart1997",
+   "authors": "Carhart, M. M.",
+   "citation": "Carhart, M. M. (1997). On Persistence in Mutual Fund Performance. Journal of Finance, 52(1), 57-82.",
+   "cited_by": [
+    "factor_alpha",
+    "factor_alpha_t_statistic",
+    "factor_r_squared",
+    "factor_residual_volatility"
+   ],
+   "key": "carhart1997",
+   "url": null,
+   "year": "1997"
+  },
+  {
+   "anchor": "ref-cfa2020",
+   "authors": "CFA Institute",
+   "citation": "CFA Institute (2020). Global Investment Performance Standards (GIPS) for Firms, provisions on annualized returns.",
+   "cited_by": [
+    "cagr",
+    "best_calendar_year",
+    "worst_calendar_year",
+    "positive_calendar_years_pct"
+   ],
+   "key": "cfa2020",
+   "url": "https://www.gipsstandards.org/",
+   "year": "2020"
+  },
+  {
+   "anchor": "ref-chekhlov2005",
+   "authors": "Chekhlov, A., Uryasev, S., & Zabarankin, M.",
+   "citation": "Chekhlov, A., Uryasev, S., & Zabarankin, M. (2005). Drawdown Measure in Portfolio Optimization. International Journal of Theoretical and Applied Finance, 8(1), 13-58 (Drawdown-at-Risk and Conditional Drawdown-at-Risk).",
+   "cited_by": [
+    "drawdown_at_risk_95",
+    "cdar_95"
+   ],
+   "key": "chekhlov2005",
+   "url": null,
+   "year": "2005"
+  },
+  {
+   "anchor": "ref-fabozzi1977",
+   "authors": "Fabozzi, F. J., & Francis, J. C.",
+   "citation": "Fabozzi, F. J., & Francis, J. C. (1977). Stability Tests for Alphas and Betas over Bull and Bear Market Conditions. Journal of Finance, 32(4), 1093-1099.",
+   "cited_by": [
+    "bull_beta",
+    "bear_beta",
+    "timing_ratio"
+   ],
+   "key": "fabozzi1977",
+   "url": null,
+   "year": "1977"
+  },
+  {
+   "anchor": "ref-fama1993",
+   "authors": "Fama, E. F., & French, K. R.",
+   "citation": "Fama, E. F., & French, K. R. (1993). Common Risk Factors in the Returns on Stocks and Bonds. Journal of Financial Economics, 33(1), 3-56.",
+   "cited_by": [
+    "factor_alpha",
+    "factor_alpha_t_statistic",
+    "factor_r_squared",
+    "factor_residual_volatility"
+   ],
+   "key": "fama1993",
+   "url": null,
+   "year": "1993"
+  },
+  {
+   "anchor": "ref-fama2015",
+   "authors": "Fama, E. F., & French, K. R.",
+   "citation": "Fama, E. F., & French, K. R. (2015). A Five-Factor Asset Pricing Model. Journal of Financial Economics, 116(1), 1-22.",
+   "cited_by": [
+    "factor_alpha",
+    "factor_alpha_t_statistic",
+    "factor_r_squared",
+    "factor_residual_volatility"
+   ],
+   "key": "fama2015",
+   "url": null,
+   "year": "2015"
+  },
+  {
+   "anchor": "ref-favre2002",
+   "authors": "Favre, L., & Galeano, J.-A.",
+   "citation": "Favre, L., & Galeano, J.-A. (2002). Mean-Modified Value-at-Risk Optimization with Hedge Funds. Journal of Alternative Investments, 5(2), 21-25.",
+   "cited_by": [
+    "modified_var_95"
+   ],
+   "key": "favre2002",
+   "url": null,
+   "year": "2002"
+  },
+  {
+   "anchor": "ref-fung2004",
+   "authors": "Fung, W., & Hsieh, D. A.",
+   "citation": "Fung, W., & Hsieh, D. A. (2004). Hedge Fund Benchmarks: A Risk-Based Approach. Financial Analysts Journal, 60(5), 65-80.",
+   "cited_by": [
+    "factor_r_squared"
+   ],
+   "key": "fung2004",
+   "url": null,
+   "year": "2004"
+  },
+  {
+   "anchor": "ref-getmansky2004",
+   "authors": "Getmansky, M., Lo, A. W., & Makarov, I.",
+   "citation": "Getmansky, M., Lo, A. W., & Makarov, I. (2004). An Econometric Model of Serial Correlation and Illiquidity in Hedge Fund Returns. Journal of Financial Economics, 74(3), 529-609.",
+   "cited_by": [
+    "sharpe_ratio",
+    "sharpe_ratio_autocorrelation_adjusted",
+    "autocorrelation_lag1",
+    "autocorrelation_lag2",
+    "autocorrelation_lag3",
+    "zero_return_pct",
+    "variance_ratio_1y"
+   ],
+   "key": "getmansky2004",
+   "url": null,
+   "year": "2004"
+  },
+  {
+   "anchor": "ref-goodwin1998",
+   "authors": "Goodwin, T. H.",
+   "citation": "Goodwin, T. H. (1998). The Information Ratio. Financial Analysts Journal, 54(4), 34-43.",
+   "cited_by": [
+    "information_ratio"
+   ],
+   "key": "goodwin1998",
+   "url": null,
+   "year": "1998"
+  },
+  {
+   "anchor": "ref-grinold2000",
+   "authors": "Grinold, R. C., & Kahn, R. N.",
+   "citation": "Grinold, R. C., & Kahn, R. N. (2000). Active Portfolio Management (2nd ed.). McGraw-Hill.",
+   "cited_by": [
+    "tracking_error",
+    "active_return",
+    "information_ratio",
+    "appraisal_ratio"
+   ],
+   "key": "grinold2000",
+   "url": null,
+   "year": "2000"
+  },
+  {
+   "anchor": "ref-hyndman1996",
+   "authors": "Hyndman, R. J., & Fan, Y.",
+   "citation": "Hyndman, R. J., & Fan, Y. (1996). Sample Quantiles in Statistical Packages. The American Statistician, 50(4), 361-365 (definition 7 = linear interpolation).",
+   "cited_by": [
+    "var_historical_95"
+   ],
+   "key": "hyndman1996",
+   "url": null,
+   "year": "1996"
+  },
+  {
+   "anchor": "ref-jarque1987",
+   "authors": "Jarque, C. M., & Bera, A. K.",
+   "citation": "Jarque, C. M., & Bera, A. K. (1987). A Test for Normality of Observations and Regression Residuals. International Statistical Review, 55(2), 163-172.",
+   "cited_by": [
+    "jarque_bera_pvalue"
+   ],
+   "key": "jarque1987",
+   "url": null,
+   "year": "1987"
+  },
+  {
+   "anchor": "ref-jensen1968",
+   "authors": "Jensen, M. C.",
+   "citation": "Jensen, M. C. (1968). The Performance of Mutual Funds in the Period 1945-1964. Journal of Finance, 23(2), 389-416.",
+   "cited_by": [
+    "beta",
+    "alpha",
+    "factor_alpha"
+   ],
+   "key": "jensen1968",
+   "url": null,
+   "year": "1968"
+  },
+  {
+   "anchor": "ref-joanes1998",
+   "authors": "Joanes, D. N., & Gill, C. A.",
+   "citation": "Joanes, D. N., & Gill, C. A. (1998). Comparing Measures of Sample Skewness and Kurtosis. Journal of the Royal Statistical Society D, 47(1), 183-189.",
+   "cited_by": [
+    "skewness",
+    "excess_kurtosis"
+   ],
+   "key": "joanes1998",
+   "url": null,
+   "year": "1998"
+  },
+  {
+   "anchor": "ref-jorion2006",
+   "authors": "Jorion, P.",
+   "citation": "Jorion, P. (2006). Value at Risk (3rd ed.). McGraw-Hill.",
+   "cited_by": [
+    "var_historical_95",
+    "expected_shortfall_historical_95",
+    "gaussian_var_95"
+   ],
+   "key": "jorion2006",
+   "url": null,
+   "year": "2006"
+  },
+  {
+   "anchor": "ref-kaplan2004",
+   "authors": "Kaplan, P. D., & Knowles, J. A.",
+   "citation": "Kaplan, P. D., & Knowles, J. A. (2004). Kappa: A Generalized Downside Risk-Adjusted Performance Measure. Journal of Performance Measurement, 8(3), 42-54.",
+   "cited_by": [
+    "kappa_3_ratio"
+   ],
+   "key": "kaplan2004",
+   "url": null,
+   "year": "2004"
+  },
+  {
+   "anchor": "ref-keating2002",
+   "authors": "Keating, C., & Shadwick, W. F.",
+   "citation": "Keating, C., & Shadwick, W. F. (2002). A Universal Performance Measure. Journal of Performance Measurement, 6(3), 59-84.",
+   "cited_by": [
+    "omega_ratio"
+   ],
+   "key": "keating2002",
+   "url": null,
+   "year": "2002"
+  },
+  {
+   "anchor": "ref-kestner1996",
+   "authors": "Kestner, L. N.",
+   "citation": "Kestner, L. N. (1996). Getting a Handle on True Performance. Futures, 25(1), 44-46 (Sterling ratio).",
+   "cited_by": [
+    "sterling_ratio"
+   ],
+   "key": "kestner1996",
+   "url": null,
+   "year": "1996"
+  },
+  {
+   "anchor": "ref-ljung1978",
+   "authors": "Ljung, G. M., & Box, G. E. P.",
+   "citation": "Ljung, G. M., & Box, G. E. P. (1978). On a Measure of Lack of Fit in Time Series Models. Biometrika, 65(2), 297-303.",
+   "cited_by": [
+    "ljung_box_pvalue"
+   ],
+   "key": "ljung1978",
+   "url": null,
+   "year": "1978"
+  },
+  {
+   "anchor": "ref-lo2002",
+   "authors": "Lo, A. W.",
+   "citation": "Lo, A. W. (2002). The Statistics of Sharpe Ratios. Financial Analysts Journal, 58(4), 36-52.",
+   "cited_by": [
+    "annualized_volatility",
+    "sharpe_ratio",
+    "sharpe_ratio_autocorrelation_adjusted",
+    "variance_ratio_1y",
+    "sharpe_ratio_standard_error"
+   ],
+   "key": "lo2002",
+   "url": null,
+   "year": "2002"
+  },
+  {
+   "anchor": "ref-lo1988",
+   "authors": "Lo, A. W., & MacKinlay, A. C.",
+   "citation": "Lo, A. W., & MacKinlay, A. C. (1988). Stock Market Prices Do Not Follow Random Walks: Evidence from a Simple Specification Test. Review of Financial Studies, 1(1), 41-66.",
+   "cited_by": [
+    "variance_ratio_1y"
+   ],
+   "key": "lo1988",
+   "url": null,
+   "year": "1988"
+  },
+  {
+   "anchor": "ref-magdonismail2004",
+   "authors": "Magdon-Ismail, M., & Atiya, A.",
+   "citation": "Magdon-Ismail, M., & Atiya, A. (2004). Maximum Drawdown. Risk, 17(10), 99-102.",
+   "cited_by": [
+    "max_drawdown"
+   ],
+   "key": "magdonismail2004",
+   "url": null,
+   "year": "2004"
+  },
+  {
+   "anchor": "ref-martin1989",
+   "authors": "Martin, P. G., & McCann, B. B.",
+   "citation": "Martin, P. G., & McCann, B. B. (1989). The Investor's Guide to Fidelity Funds. Wiley (Ulcer Index and Ulcer Performance Index).",
+   "cited_by": [
+    "ulcer_index",
+    "martin_ratio"
+   ],
+   "key": "martin1989",
+   "url": null,
+   "year": "1989"
+  },
+  {
+   "anchor": "ref-mertens2002",
+   "authors": "Mertens, E.",
+   "citation": "Mertens, E. (2002). Comments on Variance of the IID Estimator in Lo (2002). Working paper, University of Basel.",
+   "cited_by": [
+    "probabilistic_sharpe_ratio",
+    "sharpe_ratio_standard_error"
+   ],
+   "key": "mertens2002",
+   "url": null,
+   "year": "2002"
+  },
+  {
+   "anchor": "ref-modigliani1997",
+   "authors": "Modigliani, F., & Modigliani, L.",
+   "citation": "Modigliani, F., & Modigliani, L. (1997). Risk-Adjusted Performance. Journal of Portfolio Management, 23(2), 45-54 (M-squared).",
+   "cited_by": [
+    "m_squared"
+   ],
+   "key": "modigliani1997",
+   "url": null,
+   "year": "1997"
+  },
+  {
+   "anchor": "ref-morningstarbatting",
+   "authors": "Morningstar, Inc",
+   "citation": "Morningstar, Inc. Batting average: share of periods in which a fund outperformed its benchmark (Morningstar Direct data definitions).",
+   "cited_by": [
+    "batting_average"
+   ],
+   "key": "morningstarbatting",
+   "url": null,
+   "year": null
+  },
+  {
+   "anchor": "ref-morningstarupside",
+   "authors": "Morningstar, Inc",
+   "citation": "Morningstar, Inc. Upside/Downside Capture Ratio methodology (geometric compounding of returns in up/down benchmark periods).",
+   "cited_by": [
+    "upside_capture",
+    "downside_capture",
+    "capture_ratio"
+   ],
+   "key": "morningstarupside",
+   "url": null,
+   "year": null
+  },
+  {
+   "anchor": "ref-newey1987",
+   "authors": "Newey, W. K., & West, K. D.",
+   "citation": "Newey, W. K., & West, K. D. (1987). A Simple, Positive Semi-Definite, Heteroskedasticity and Autocorrelation Consistent Covariance Matrix. Econometrica, 55(3), 703-708.",
+   "cited_by": [
+    "factor_alpha",
+    "factor_alpha_t_statistic"
+   ],
+   "key": "newey1987",
+   "url": null,
+   "year": "1987"
+  },
+  {
+   "anchor": "ref-newey1994",
+   "authors": "Newey, W. K., & West, K. D.",
+   "citation": "Newey, W. K., & West, K. D. (1994). Automatic Lag Selection in Covariance Matrix Estimation. Review of Economic Studies, 61(4), 631-653 (lag rule floor(4 (T/100)^(2/9))).",
+   "cited_by": [
+    "factor_alpha",
+    "factor_alpha_t_statistic"
+   ],
+   "key": "newey1994",
+   "url": null,
+   "year": "1994"
+  },
+  {
+   "anchor": "ref-opdyke2007",
+   "authors": "Opdyke, J. D.",
+   "citation": "Opdyke, J. D. (2007). Comparing Sharpe Ratios: So Where Are the p-Values? Journal of Asset Management, 8(5), 308-336.",
+   "cited_by": [
+    "sharpe_ratio_standard_error"
+   ],
+   "key": "opdyke2007",
+   "url": null,
+   "year": "2007"
+  },
+  {
+   "anchor": "ref-pardo2008",
+   "authors": "Pardo, R.",
+   "citation": "Pardo, R. (2008). The Evaluation and Optimization of Trading Strategies (2nd ed.). Wiley (profit factor: gross profit / gross loss).",
+   "cited_by": [
+    "profit_factor"
+   ],
+   "key": "pardo2008",
+   "url": null,
+   "year": "2008"
+  },
+  {
+   "anchor": "ref-schwager2012",
+   "authors": "Schwager, J. D.",
+   "citation": "Schwager, J. D. (2012). Market Sense and Nonsense. Wiley (Gain-to-Pain ratio).",
+   "cited_by": [
+    "gain_to_pain_ratio",
+    "profit_factor"
+   ],
+   "key": "schwager2012",
+   "url": null,
+   "year": "2012"
+  },
+  {
+   "anchor": "ref-sharpe1966",
+   "authors": "Sharpe, W. F.",
+   "citation": "Sharpe, W. F. (1966). Mutual Fund Performance. Journal of Business, 39(1), 119-138.",
+   "cited_by": [
+    "sharpe_ratio"
+   ],
+   "key": "sharpe1966",
+   "url": null,
+   "year": "1966"
+  },
+  {
+   "anchor": "ref-sharpe1994",
+   "authors": "Sharpe, W. F.",
+   "citation": "Sharpe, W. F. (1994). The Sharpe Ratio. Journal of Portfolio Management, 21(1), 49-58.",
+   "cited_by": [
+    "sharpe_ratio",
+    "sharpe_ratio_autocorrelation_adjusted"
+   ],
+   "key": "sharpe1994",
+   "url": null,
+   "year": "1994"
+  },
+  {
+   "anchor": "ref-sortino1994",
+   "authors": "Sortino, F. A., & Price, L. N.",
+   "citation": "Sortino, F. A., & Price, L. N. (1994). Performance Measurement in a Downside Risk Framework. Journal of Investing, 3(3), 59-64.",
+   "cited_by": [
+    "downside_deviation",
+    "downside_potential",
+    "sortino_ratio"
+   ],
+   "key": "sortino1994",
+   "url": null,
+   "year": "1994"
+  },
+  {
+   "anchor": "ref-sortino1999",
+   "authors": "Sortino, F. A., van der Meer, R., & Plantinga, A.",
+   "citation": "Sortino, F. A., van der Meer, R., & Plantinga, A. (1999). The Dutch Triangle. Journal of Portfolio Management, 26(1), 50-57 (upside potential ratio).",
+   "cited_by": [
+    "upside_potential_ratio"
+   ],
+   "key": "sortino1999",
+   "url": null,
+   "year": "1999"
+  },
+  {
+   "anchor": "ref-student1908",
+   "authors": "Student [Gosset, W. S.]",
+   "citation": "Student [Gosset, W. S.] (1908). The Probable Error of a Mean. Biometrika, 6(1), 1-25.",
+   "cited_by": [
+    "mean_return_standard_error"
+   ],
+   "key": "student1908",
+   "url": null,
+   "year": "1908"
+  },
+  {
+   "anchor": "ref-treynor1965",
+   "authors": "Treynor, J. L.",
+   "citation": "Treynor, J. L. (1965). How to Rate Management of Investment Funds. Harvard Business Review, 43(1), 63-75.",
+   "cited_by": [
+    "treynor_ratio"
+   ],
+   "key": "treynor1965",
+   "url": null,
+   "year": "1965"
+  },
+  {
+   "anchor": "ref-treynor1973",
+   "authors": "Treynor, J. L., & Black, F.",
+   "citation": "Treynor, J. L., & Black, F. (1973). How to Use Security Analysis to Improve Portfolio Selection. Journal of Business, 46(1), 66-86 (appraisal ratio).",
+   "cited_by": [
+    "residual_volatility",
+    "appraisal_ratio"
+   ],
+   "key": "treynor1973",
+   "url": null,
+   "year": "1973"
+  },
+  {
+   "anchor": "ref-young1991",
+   "authors": "Young, T. W.",
+   "citation": "Young, T. W. (1991). Calmar Ratio: A Smoother Tool. Futures, 20(1), 40.",
+   "cited_by": [
+    "calmar_ratio"
+   ],
+   "key": "young1991",
+   "url": null,
+   "year": "1991"
+  },
+  {
+   "anchor": "ref-zangari1996",
+   "authors": "Zangari, P.",
+   "citation": "Zangari, P. (1996). A VaR Methodology for Portfolios That Include Options. RiskMetrics Monitor, First Quarter, 4-12 (Cornish-Fisher VaR).",
+   "cited_by": [
+    "modified_var_95"
+   ],
+   "key": "zangari1996",
+   "url": null,
+   "year": "1996"
+  }
+ ]
+}

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from openfactsheet.manual.export import render_manual_data
 from openfactsheet.metrics.catalog_docs import render_all
 from openfactsheet.metrics.registry import all_metrics
 
@@ -11,9 +12,10 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 def test_generated_docs_are_up_to_date() -> None:
+    files = {**render_all(), **render_manual_data(ROOT)}
     stale = [
         rel
-        for rel, content in render_all().items()
+        for rel, content in files.items()
         if not (ROOT / rel).exists() or (ROOT / rel).read_text(encoding="utf-8") != content
     ]
     assert not stale, f"Run `python scripts/generate_docs.py`; stale: {stale}"

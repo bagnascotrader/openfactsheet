@@ -40,6 +40,9 @@ Exact, auditable specification of everything OpenFactsheet computes and decides:
 - [Reference implementations & validation](validation/reference_implementations.md)
   — how results are cross-checked against PerformanceAnalytics, empyrical and
   QuantStats, and every known convention difference.
+- [Reference manual](manual/README.md) — all of the above as one CRAN-style PDF,
+  generated from the code, with a link target for every metric, function and
+  decision.
 
 ## Principles in one paragraph
 

@@ -50,6 +50,8 @@ pdf = ["pypdf>=4.0"]
 ocr = ["rapidocr>=3.9,<4", "onnxruntime>=1.17", "pypdfium2>=4", "Pillow>=10", "pypdf>=4.0"]
 tesseract = ["pytesseract>=0.3.10", "pypdfium2>=4", "Pillow>=10", "pypdf>=4.0"]
 images = ["openfactsheet[ocr]"]
+# Builds the PDF reference manual from a source checkout (decision 0034).
+docs = ["typst>=0.15,<0.16", "pypdf>=4.0"]
 validation = [
     "empyrical-reloaded>=0.5",
     "quantstats>=0.0.62",
@@ -67,8 +69,9 @@ dev = [
     "openpyxl>=3.1",
     "pypdf>=4.0",
     "Pillow>=10",
+    "tomli>=2; python_version < '3.11'",
 ]
-all = ["openfactsheet[excel,pdf,ocr]"]
+all =["openfactsheet[excel,pdf,ocr]"]
 
 [project.urls]
 Homepage = "https://github.com/bagnascotrader/openfactsheet"
@@ -96,6 +99,7 @@ markers = [
     "cross_library: numerical comparison against reference implementations",
     "ocr: runs a real OCR engine (needs the ocr extra)",
     "golden: full-report regression fixtures",
+    "manual: compiles the PDF reference manual (needs the docs extra)",
 ]
 filterwarnings = [
     "error::RuntimeWarning:openfactsheet.*",
@@ -136,5 +140,14 @@ warn_unreachable = true
 files = ["src/openfactsheet"]
 
 [[tool.mypy.overrides]]
-module = ["scipy.*", "statsmodels.*", "openpyxl.*", "rapidocr.*", "pytesseract.*", "pypdfium2.*"]
+module = [
+    "scipy.*",
+    "statsmodels.*",
+    "openpyxl.*",
+    "rapidocr.*",
+    "pytesseract.*",
+    "pypdfium2.*",
+    "typst.*",
+    "tomli.*",
+]
 ignore_missing_imports = true

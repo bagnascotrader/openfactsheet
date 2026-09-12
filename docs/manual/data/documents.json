@@ -1,0 +1,302 @@
+{
+ "documents": [
+  {
+   "anchor": "doc-index",
+   "part": "overview",
+   "source": "docs/index.md",
+   "title": "Introduction"
+  },
+  {
+   "anchor": "doc-getting_started",
+   "part": "overview",
+   "source": "docs/getting_started.md",
+   "title": "Getting started"
+  },
+  {
+   "anchor": "doc-methodology",
+   "part": "methodology",
+   "source": "docs/methodology.md",
+   "title": "Canonical methodology"
+  },
+  {
+   "anchor": "doc-assumptions",
+   "part": "methodology",
+   "source": "docs/assumptions.md",
+   "title": "Canonical assumptions — methodology 0.1.0"
+  },
+  {
+   "anchor": "doc-criteria",
+   "part": "methodology",
+   "source": "docs/reference/criteria.md",
+   "title": "Decision criteria reference"
+  },
+  {
+   "anchor": "doc-notation",
+   "part": "methodology",
+   "source": "docs/reference/notation.md",
+   "title": "Notation"
+  },
+  {
+   "anchor": "doc-policies",
+   "part": "methodology",
+   "source": "docs/reference/policies.md",
+   "title": "Policies, thresholds and constants"
+  },
+  {
+   "anchor": "doc-report_schema",
+   "part": "methodology",
+   "source": "docs/reference/report_schema.md",
+   "title": "JSON report schema (schema version 0.1)"
+  },
+  {
+   "anchor": "doc-decisions",
+   "part": "decisions",
+   "source": "docs/methodology/decisions/README.md",
+   "title": "Methodology decisions"
+  },
+  {
+   "anchor": "doc-validation",
+   "part": "validation",
+   "source": "docs/validation/reference_implementations.md",
+   "title": "Reference implementations"
+  },
+  {
+   "anchor": "decision-0001",
+   "number": "0001",
+   "part": "decisions",
+   "source": "docs/methodology/decisions/0001-return-type.md",
+   "title": "Return type: simple decimal returns"
+  },
+  {
+   "anchor": "decision-0002",
+   "number": "0002",
+   "part": "decisions",
+   "source": "docs/methodology/decisions/0002-annualization-and-frequency.md",
+   "title": "Frequency inference and annualization factors"
+  },
+  {
+   "anchor": "decision-0003",
+   "number": "0003",
+   "part": "decisions",
+   "source": "docs/methodology/decisions/0003-standard-deviation.md",
+   "title": "Standard deviation: sample (n − 1) estimator"
+  },
+  {
+   "anchor": "decision-0004",
+   "number": "0004",
+   "part": "decisions",
+   "source": "docs/methodology/decisions/0004-annual-return.md",
+   "title": "Annual return: geometric CAGR by observation count"
+  },
+  {
+   "anchor": "decision-0005",
+   "number": "0005",
+   "part": "decisions",
+   "source": "docs/methodology/decisions/0005-risk-free-rate.md",
+   "title": "Risk-free rate: zero in methodology 0.1.0, always disclosed"
+  },
+  {
+   "anchor": "decision-0006",
+   "number": "0006",
+   "part": "decisions",
+   "source": "docs/methodology/decisions/0006-sortino-downside-deviation.md",
+   "title": "Sortino ratio and downside deviation: MAR 0, full-sample denominator"
+  },
+  {
+   "anchor": "decision-0007",
+   "number": "0007",
+   "part": "decisions",
+   "source": "docs/methodology/decisions/0007-drawdown-conventions.md",
+   "title": "Drawdown conventions"
+  },
+  {
+   "anchor": "decision-0008",
+   "number": "0008",
+   "part": "decisions",
+   "source": "docs/methodology/decisions/0008-sharpe-ratio.md",
+   "title": "Sharpe ratio: arithmetic mean over sample volatility, square-root-of-time"
+  },
+  {
+   "anchor": "decision-0009",
+   "number": "0009",
+   "part": "decisions",
+   "source": "docs/methodology/decisions/0009-calmar-full-history.md",
+   "title": "Calmar ratio over the full history"
+  },
+  {
+   "anchor": "decision-0010",
+   "number": "0010",
+   "part": "decisions",
+   "source": "docs/methodology/decisions/0010-var-es-quantiles.md",
+   "title": "Historical VaR, Expected Shortfall and tail ratio"
+  },
+  {
+   "anchor": "decision-0011",
+   "number": "0011",
+   "part": "decisions",
+   "source": "docs/methodology/decisions/0011-skewness-kurtosis.md",
+   "title": "Skewness and kurtosis estimators"
+  },
+  {
+   "anchor": "decision-0012",
+   "number": "0012",
+   "part": "decisions",
+   "source": "docs/methodology/decisions/0012-benchmark-alignment-and-relative-metrics.md",
+   "title": "Benchmark alignment and benchmark-relative metrics"
+  },
+  {
+   "anchor": "decision-0013",
+   "number": "0013",
+   "part": "decisions",
+   "source": "docs/methodology/decisions/0013-return-scale-detection.md",
+   "title": "Percent-versus-decimal return-scale detection"
+  },
+  {
+   "anchor": "decision-0014",
+   "number": "0014",
+   "part": "decisions",
+   "source": "docs/methodology/decisions/0014-smoothing-risk.md",
+   "title": "Return-smoothing risk: diagnose and warn, never unsmooth"
+  },
+  {
+   "anchor": "decision-0015",
+   "number": "0015",
+   "part": "decisions",
+   "source": "docs/methodology/decisions/0015-minimum-data-policy.md",
+   "title": "Minimum-data policies and confidence"
+  },
+  {
+   "anchor": "decision-0016",
+   "number": "0016",
+   "part": "decisions",
+   "source": "docs/methodology/decisions/0016-lower-partial-moment-ratios.md",
+   "title": "Lower-partial-moment ratios and dispersion: target 0, full-sample denominators"
+  },
+  {
+   "anchor": "decision-0017",
+   "number": "0017",
+   "part": "decisions",
+   "source": "docs/methodology/decisions/0017-drawdown-ratios-burke-sterling-pain.md",
+   "title": "Drawdown-based ratios: Burke, Sterling, Pain; payoff ratio"
+  },
+  {
+   "anchor": "decision-0018",
+   "number": "0018",
+   "part": "decisions",
+   "source": "docs/methodology/decisions/0018-parametric-var.md",
+   "title": "Parametric VaR: Gaussian and Cornish-Fisher with population moments"
+  },
+  {
+   "anchor": "decision-0019",
+   "number": "0019",
+   "part": "decisions",
+   "source": "docs/methodology/decisions/0019-sharpe-ratio-inference.md",
+   "title": "Sharpe-ratio inference: PSR, standard error, minimum track record length"
+  },
+  {
+   "anchor": "decision-0020",
+   "number": "0020",
+   "part": "decisions",
+   "source": "docs/methodology/decisions/0020-mean-inference-and-normality.md",
+   "title": "Mean-return inference and the Jarque-Bera normality test"
+  },
+  {
+   "anchor": "decision-0021",
+   "number": "0021",
+   "part": "decisions",
+   "source": "docs/methodology/decisions/0021-drawdown-tail-and-entropic-measures.md",
+   "title": "Drawdown tail (DaR, CDaR, EDaR) and entropic VaR"
+  },
+  {
+   "anchor": "decision-0022",
+   "number": "0022",
+   "part": "decisions",
+   "source": "docs/methodology/decisions/0022-modified-expected-shortfall.md",
+   "title": "Modified (Cornish-Fisher) Expected Shortfall"
+  },
+  {
+   "anchor": "decision-0023",
+   "number": "0023",
+   "part": "decisions",
+   "source": "docs/methodology/decisions/0023-calendar-year-statistics.md",
+   "title": "Calendar-year statistics: complete years only"
+  },
+  {
+   "anchor": "decision-0024",
+   "number": "0024",
+   "part": "decisions",
+   "source": "docs/methodology/decisions/0024-rolling-one-year-windows.md",
+   "title": "Rolling one-year windows"
+  },
+  {
+   "anchor": "decision-0025",
+   "number": "0025",
+   "part": "decisions",
+   "source": "docs/methodology/decisions/0025-episode-durations-and-path-summaries.md",
+   "title": "Episode durations, recovery factor and path summaries"
+  },
+  {
+   "anchor": "decision-0026",
+   "number": "0026",
+   "part": "decisions",
+   "source": "docs/methodology/decisions/0026-canonical-charts.md",
+   "title": "Canonical charts and the drawdown-episode table"
+  },
+  {
+   "anchor": "decision-0027",
+   "number": "0027",
+   "part": "decisions",
+   "source": "docs/methodology/decisions/0027-benchmark-relative-additions.md",
+   "title": "Benchmark-relative additions: capture ratio, batting average, residual risk, appraisal ratio, M², regime betas"
+  },
+  {
+   "anchor": "decision-0028",
+   "number": "0028",
+   "part": "decisions",
+   "source": "docs/methodology/decisions/0028-factor-models.md",
+   "title": "Factor models with caller-supplied factor returns"
+  },
+  {
+   "anchor": "decision-0029",
+   "number": "0029",
+   "part": "decisions",
+   "source": "docs/methodology/decisions/0029-serial-correlation-and-annualization.md",
+   "title": "Serial correlation and annualization: variance ratio, Lo-adjusted Sharpe, profit factor"
+  },
+  {
+   "anchor": "decision-0030",
+   "number": "0030",
+   "part": "decisions",
+   "source": "docs/methodology/decisions/0030-pdf-ingestion.md",
+   "title": "Monthly-return tables from PDF factsheets (embedded text)"
+  },
+  {
+   "anchor": "decision-0031",
+   "number": "0031",
+   "part": "decisions",
+   "source": "docs/methodology/decisions/0031-ocr-ingestion.md",
+   "title": "Monthly-return tables by OCR (screenshots and scanned PDFs)"
+  },
+  {
+   "anchor": "decision-0032",
+   "number": "0032",
+   "part": "decisions",
+   "source": "docs/methodology/decisions/0032-identifiers-and-fund-profile.md",
+   "title": "Security identifiers and the fund profile of a document"
+  },
+  {
+   "anchor": "decision-0033",
+   "number": "0033",
+   "part": "decisions",
+   "source": "docs/methodology/decisions/0033-share-classes-and-table-roles.md",
+   "title": "Share classes, table roles and benchmark returns in documents"
+  },
+  {
+   "anchor": "decision-0034",
+   "number": "0034",
+   "part": "decisions",
+   "source": "docs/methodology/decisions/0034-reference-manual.md",
+   "title": "The reference manual"
+  }
+ ]
+}

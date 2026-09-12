@@ -141,7 +141,7 @@ def factor_alpha(ctx: MetricContext) -> Computed:
             r" \quad "
             r"\widehat{V}_{\mathrm{HAC}} = \frac{m}{m-k-1} (X^\top X)^{-1} \hat S (X^\top X)^{-1},"
             r" \quad \hat S = \sum_{\ell=-q}^{q} \Big(1 - \frac{|\ell|}{q+1}\Big) \hat\Gamma_\ell,"
-            r" \quad q = \big\lfloor 4 (m/100)^{2/9} \big\rfloor"
+            r" \quad q = \left\lfloor 4 (m/100)^{2/9} \right\rfloor"
         ),
         undefined_when=(
             "A factor is constant or the factors are perfectly collinear.",

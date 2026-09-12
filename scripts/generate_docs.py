@@ -1,7 +1,8 @@
-"""Generate metric documentation from the registry.
+"""Generate metric documentation and reference-manual data from the code.
 
-python scripts/generate_docs.py          # write docs/metric_catalog.md and docs/interpretation/
-python scripts/generate_docs.py --check  # exit 1 if committed docs are stale
+python scripts/generate_docs.py          # write docs/metric_catalog.md, docs/interpretation/,
+                                         # docs/reference/{formulas,policies}.md, docs/manual/data/
+python scripts/generate_docs.py --check  # exit 1 if committed files are stale
 """
 
 from __future__ import annotations
@@ -10,9 +11,16 @@ import argparse
 import sys
 from pathlib import Path
 
+from openfactsheet.manual.export import DATA_DIR, render_manual_data
 from openfactsheet.metrics.catalog_docs import render_all
 
 ROOT = Path(__file__).resolve().parents[1]
+# Directories whose every file is generated: files not generated any more are orphans.
+GENERATED_DIRS = (("docs/interpretation", "*.md"), (DATA_DIR, "*.json"))
+
+
+def generated_files() -> dict[str, str]:
+    return {**render_all(), **render_manual_data(ROOT)}
 
 
 def main() -> int:
@@ -20,7 +28,7 @@ def main() -> int:
     parser.add_argument("--check", action="store_true", help="fail if generated docs are stale")
     args = parser.parse_args()
 
-    files = render_all()
+    files = generated_files()
     stale = []
     for rel, content in files.items():
         path = ROOT / rel
@@ -31,11 +39,11 @@ def main() -> int:
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_text(content, encoding="utf-8", newline="\n")
 
-    generated = set(files)
     orphans = [
         p.relative_to(ROOT).as_posix()
-        for p in (ROOT / "docs" / "interpretation").glob("*.md")
-        if p.relative_to(ROOT).as_posix() not in generated
+        for directory, pattern in GENERATED_DIRS
+        for p in (ROOT / directory).glob(pattern)
+        if p.relative_to(ROOT).as_posix() not in files
     ]
     if args.check:
         if stale or orphans:
@@ -46,7 +54,7 @@ def main() -> int:
         return 0
     for rel in orphans:
         (ROOT / rel).unlink()
-    print(f"Updated {len(stale)} of {len(files)} files; removed {len(orphans)} orphan page(s).")
+    print(f"Updated {len(stale)} of {len(files)} files; removed {len(orphans)} orphan file(s).")
     return 0
 
 

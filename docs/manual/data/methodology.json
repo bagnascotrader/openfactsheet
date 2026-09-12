@@ -1,0 +1,341 @@
+{
+ "conventions": {
+  "conventions": {
+   "annual_return": {
+    "description": "geometric (CAGR): (prod(1 + r))^(periods_per_year / n) - 1; the arithmetic mean x periods_per_year is reported separately",
+    "method": "geometric"
+   },
+   "annualization": {
+    "irregular": "not annualized",
+    "periods_per_year": {
+     "daily_business": 252.0,
+     "daily_calendar": 365.0,
+     "monthly": 12.0,
+     "quarterly": 4.0,
+     "weekly": 52.0,
+     "yearly": 1.0
+    },
+    "scaling": "square-root-of-time for volatility; linear for arithmetic means",
+    "unknown": "not annualized unless the caller declares the observation frequency"
+   },
+   "benchmark": {
+    "alignment": "intersection of periods; never filled",
+    "alpha_annualization": "arithmetic: per-period intercept x periods_per_year",
+    "appraisal_ratio": "annualized OLS alpha / annualized residual volatility",
+    "batting_average": "share of aligned periods with fund return strictly above benchmark",
+    "capture": "geometric, annualized over up (benchmark > 0) or down (benchmark < 0) periods",
+    "capture_ratio": "upside capture / downside capture; undefined unless downside capture > 0",
+    "description": "periods aligned on their intersection (monthly/quarterly/yearly by calendar period, daily/weekly by exact date); missing benchmark returns are never filled",
+    "information_ratio": "annualized arithmetic mean active return / tracking error",
+    "m_squared": "aligned Sharpe ratio x benchmark volatility, arithmetic annualization",
+    "regime_betas": "OLS with intercept on benchmark > 0 (bull) or < 0 (bear) periods",
+    "regression": "OLS of fund on benchmark returns (risk-free = 0)",
+    "residual_volatility": "OLS regression standard error (m - 2 dof) x sqrt(periods_per_year)",
+    "timing_ratio": "bull beta / bear beta; undefined unless bear beta > 0"
+   },
+   "calendar_years": {
+    "daily_weekly_edge_tolerance_days": 7,
+    "monthly": "all 12 calendar months observed",
+    "quarterly": "all 4 calendar quarters observed",
+    "yearly": "the year's observation"
+   },
+   "charts": {
+    "bar_baseline": "bars always grow from zero; the value axis always includes zero",
+    "benchmark": "compared only over the aligned overlap, both rebased to 1.0 at its start",
+    "episode_table": "deepest drawdown episodes first (ties: earliest peak); all in JSON",
+    "episode_table_rows": 10,
+    "heatmap_scale": "diverging, symmetric around zero at the largest absolute month",
+    "histogram_bins": "Freedman-Diaconis width clipped to 10 to 40 bins over the range; edges then aligned at zero, which can add one bin",
+    "histogram_max_bins": 40,
+    "histogram_min_bins": 10,
+    "history": "every chart spans the full analyzed history; no start date is chosen",
+    "partial_years": "shown outlined and labelled partial; never styled as full years",
+    "rolling_windows": "the one-year windows of the rolling metrics (rolling.*)",
+    "wealth_scale": "linear, starting at 1.0 one period before the first return"
+   },
+   "confidence": {
+    "annualization_min_years": 1.0,
+    "benchmark_min_coverage": 0.9,
+    "factor_min_coverage": 0.9
+   },
+   "dependence": {
+    "acf_lags": [
+     1,
+     2,
+     3
+    ],
+    "description": "sample autocorrelation (full-sample variance denominator)",
+    "ljung_box_lags": 3
+   },
+   "dispersion": {
+    "ddof": 1,
+    "description": "sample standard deviation (n - 1 denominator)"
+   },
+   "distribution": {
+    "description": "bias-corrected sample estimators G1 and G2 (as pandas / Excel)",
+    "kurtosis": "bias-corrected sample excess kurtosis G2",
+    "skewness": "adjusted Fisher-Pearson G1 (bias-corrected sample skewness)"
+   },
+   "distribution_warning": {
+    "excess_kurtosis_at_or_above": 3.0,
+    "min_observations": 24,
+    "skewness_at_or_below": -1.0
+   },
+   "downside": {
+    "denominator": "full_sample",
+    "description": "target (MAR) = 0% per period; downside deviation = sqrt(sum(min(r - MAR, 0)^2) / n) using all n observations",
+    "mar": 0.0
+   },
+   "drawdown": {
+    "description": "wealth index starts at 1 before the first return, so a first-period loss is a drawdown; drawdowns reported as signed returns (negative = loss)",
+    "initial_wealth_is_peak": true
+   },
+   "drawdown_risk": {
+    "confidence": 0.95,
+    "quantile_method": "linear"
+   },
+   "entropic": {
+    "confidence": 0.95
+   },
+   "factor_model": {
+    "alignment": "periods where the fund and every factor have a return; never filled",
+    "alpha_annualization": "arithmetic: per-period intercept x periods_per_year",
+    "ci_level": 0.95,
+    "covariance": "Newey-West HAC, Bartlett kernel, small-sample factor m / (m - k - 1)",
+    "estimator": "OLS with intercept of fund (excess) returns on the supplied factors",
+    "hac_lag_rule": "floor(4 * (m / 100) ** (2 / 9))",
+    "inference": "Student t with m - k - 1 degrees of freedom",
+    "ljung_box_min_observations": 10,
+    "risk_free": "a factor column named RF is subtracted from fund returns; without one the dependent variable is the fund return (risk-free rate 0%)",
+    "vif_warning": 10.0
+   },
+   "lower_partial_moments": {
+    "denominator": "full_sample",
+    "kappa_order": 3,
+    "target": 0.0
+   },
+   "mean_inference": {
+    "ci_level": 0.95
+   },
+   "missing_data": {
+    "description": "missing returns are never replaced by zero or forward-filled; leading and trailing gaps are trimmed, interior gaps are disclosed and the remaining observations are analyzed"
+   },
+   "modified_es": {
+    "confidence": 0.95,
+    "moments": "population"
+   },
+   "ocr": {
+    "default_engine": "rapidocr",
+    "dpi": 300,
+    "header_inference": "up to three month headers the engine misread are placed by the column spacing of the others (recorded)",
+    "header_min_months": 9,
+    "line_grouping": "words overlapping vertically by at least half the smaller height",
+    "min_cell_confidence": 0.9,
+    "numeric_repairs": {
+     "I": "1",
+     "O": "0",
+     "l": "1",
+     "o": "0",
+     "|": "1"
+    },
+    "require_reconciled_totals": true
+   },
+   "omega": {
+    "description": "threshold = 0% per period, simple (empirical) estimator",
+    "threshold": 0.0
+   },
+   "outliers": {
+    "description": "robust z-score |r - median| / (1.4826 * MAD) above 5 is flagged (never removed)",
+    "robust_z_threshold": 5.0
+   },
+   "parametric_var": {
+    "confidence": 0.95,
+    "moments": "population"
+   },
+   "return_scale": {
+    "confident_divisor": 4.0,
+    "decimal_median_abs_upper": {
+     "daily": 0.05,
+     "irregular": 0.3,
+     "monthly": 0.2,
+     "quarterly": 0.3,
+     "unknown": 0.3,
+     "weekly": 0.1,
+     "yearly": 0.6
+    }
+   },
+   "return_type": "simple",
+   "risk_free": {
+    "description": "0% per period in methodology 0.1.0 for all excess-return metrics (Sharpe, Sortino, Calmar, Martin, alpha, Treynor). Ratios are therefore total-return ratios; this is disclosed on every affected metric.",
+    "rate": 0.0
+   },
+   "rolling": {
+    "step_periods": 1,
+    "window_years": 1
+   },
+   "serial_correlation": {
+    "horizon_years": 1,
+    "min_years": 2,
+    "sharpe_adjustment": "Lo (2002): SR_per_period * q / sqrt(q + 2 * sum_{k=1}^{q-1} (q-k) rho_k)",
+    "variance_ratio": "1 + 2 * sum_{k=1}^{q-1} (1 - k/q) * rho_k"
+   },
+   "sharpe_inference": {
+    "ci_level": 0.95,
+    "min_track_record_confidence": 0.95,
+    "moments": "population skewness g1 and non-excess kurtosis m4 / m2^2",
+    "reference_sharpe": 0.0
+   },
+   "smoothing": {
+    "high": {
+     "lag1_min": 0.3,
+     "z_min": 1.96
+    },
+    "min_observations": 12,
+    "moderate": {
+     "lag1_min": 0.15,
+     "z_min": 1.645
+    },
+    "reference": "Getmansky, Lo & Makarov (2004), Journal of Financial Economics 74(3)"
+   },
+   "stale_returns": {
+    "identical_run_warning": 3,
+    "zero_share_warning": 0.1
+   },
+   "sterling": {
+    "excess": 0.1
+   },
+   "tail": {
+    "description": "historical 95% VaR = 5% empirical quantile (linear interpolation, R type 7); 95% ES = mean of returns at or below that quantile; both reported as signed returns (negative = loss)",
+    "es_confidence": 0.95,
+    "quantile_method": "linear",
+    "sign": "signed return (negative = loss)",
+    "var_confidence": 0.95
+   }
+  },
+  "name": "OpenFactsheet Methodology 0.1.0",
+  "version": "0.1.0"
+ },
+ "min_data_policies": [
+  {
+   "basis": "none",
+   "description": "Observed fact about the supplied history; any non-empty history suffices.",
+   "key": "observed_point",
+   "low_below": null,
+   "math_min_obs": 1,
+   "moderate_below": null
+  },
+  {
+   "basis": "years",
+   "description": "Path statistics (drawdowns, streaks) are computable from one observation but are unrepresentative below 3 years (low) and 5 years (moderate); longer histories tend to reveal deeper drawdowns.",
+   "key": "path_risk",
+   "low_below": 3.0,
+   "math_min_obs": 1,
+   "moderate_below": 5.0
+  },
+  {
+   "basis": "years",
+   "description": "Mean-type estimates: low confidence below 3 years, moderate below 5 years.",
+   "key": "location",
+   "low_below": 3.0,
+   "math_min_obs": 1,
+   "moderate_below": 5.0
+  },
+  {
+   "basis": "years",
+   "description": "Requires at least 2 observations; low confidence below 3 years, moderate below 5.",
+   "key": "dispersion",
+   "low_below": 3.0,
+   "math_min_obs": 2,
+   "moderate_below": 5.0
+  },
+  {
+   "basis": "years",
+   "description": "Risk-adjusted ratios: at least 2 observations; low confidence below 3 years, moderate below 5 years.",
+   "key": "ratio_standard",
+   "low_below": 3.0,
+   "math_min_obs": 2,
+   "moderate_below": 5.0
+  },
+  {
+   "basis": "observations",
+   "description": "Requires at least 3 observations; standard error is roughly sqrt(6/n), so low confidence below 60 and moderate below 120 observations.",
+   "key": "skewness",
+   "low_below": 60,
+   "math_min_obs": 3,
+   "moderate_below": 120
+  },
+  {
+   "basis": "observations",
+   "description": "Requires at least 4 observations; kurtosis estimates are highly unstable, so low confidence below 120 and moderate below 240 observations.",
+   "key": "kurtosis",
+   "low_below": 120,
+   "math_min_obs": 4,
+   "moderate_below": 240
+  },
+  {
+   "basis": "tail_observations",
+   "description": "Requires at least 2 observations; low confidence when fewer than 5 observations are expected in the 5% tail (n < 100), moderate when fewer than 10 (n < 200).",
+   "key": "tail",
+   "low_below": 5,
+   "math_min_obs": 2,
+   "moderate_below": 10
+  },
+  {
+   "basis": "observations",
+   "description": "Requires at least 5 observations; standard error is roughly 1/sqrt(n), so low confidence below 36 and moderate below 60 observations.",
+   "key": "autocorrelation",
+   "low_below": 36,
+   "math_min_obs": 5,
+   "moderate_below": 60
+  },
+  {
+   "basis": "observations",
+   "description": "Requires at least 10 observations for a 3-lag test; low below 36, moderate below 60.",
+   "key": "ljung_box",
+   "low_below": 36,
+   "math_min_obs": 10,
+   "moderate_below": 60
+  },
+  {
+   "basis": "observations",
+   "description": "Asymptotic Sharpe-ratio inference needs at least 4 observations for the moments it uses; the normal approximation is poor below 36 observations (low) and 60 (moderate).",
+   "key": "asymptotic_inference",
+   "low_below": 36,
+   "math_min_obs": 4,
+   "moderate_below": 60
+  },
+  {
+   "basis": "years",
+   "description": "Requires at least 3 aligned observations; low confidence below 3 years of overlap, moderate below 5 years.",
+   "key": "benchmark_regression",
+   "low_below": 3.0,
+   "math_min_obs": 3,
+   "moderate_below": 5.0
+  },
+  {
+   "basis": "years",
+   "description": "Requires at least 2 aligned observations; low confidence below 3 years of overlap, moderate below 5 years.",
+   "key": "benchmark_simple",
+   "low_below": 3.0,
+   "math_min_obs": 2,
+   "moderate_below": 5.0
+  },
+  {
+   "basis": "years",
+   "description": "One-year-horizon serial-correlation statistics need at least two years of data (undefined below); their standard error is about sqrt(4 / (3 y)) for y years, so confidence is low below 5 years and moderate below 10 years.",
+   "key": "long_horizon_dependence",
+   "low_below": 5.0,
+   "math_min_obs": 4,
+   "moderate_below": 10.0
+  },
+  {
+   "basis": "years",
+   "description": "Requires at least 3 aligned observations and at least k + 2 for k factors (k + 1 coefficients and one residual degree of freedom); low confidence below 3 years of overlap, moderate below 5 years.",
+   "key": "factor_regression",
+   "low_below": 3.0,
+   "math_min_obs": 3,
+   "moderate_below": 5.0
+  }
+ ],
+ "version": "0.1.0"
+}
