@@ -372,7 +372,7 @@
    "anchor": "api-FactsheetReport",
    "arguments": [],
    "description": "The canonical OpenFactsheet report, returned by [`analyze()`](#api-analyze).",
-   "details": "Every canonical metric is present, each with a status, confidence, warnings\nand the assumptions it used. The report is a plain data object;\ncalculations know nothing about rendering, and every renderer (text,\nMarkdown, HTML, JSON) shows the same content.",
+   "details": "Every canonical metric is present, each with a status, confidence, warnings\nand the assumptions it used. The report is a plain data object;\ncalculations know nothing about rendering, and every renderer (text,\nMarkdown, HTML, JSON) shows the same content. The report and every metric\nin it link to the documentation of their own version (decision 0035).",
    "examples": "",
    "fields": [
     {
@@ -430,6 +430,10 @@
     {
      "name": "document",
      "text": "What a source document (PDF, image) says about the fund, or `None`."
+    },
+    {
+     "name": "documentation",
+     "text": "Links to the documentation of the version that produced the report: the PDF reference manual, the metric catalog and a topic per metric."
     }
    ],
    "kind": "class",
@@ -445,6 +449,19 @@
      "parameters": [],
      "raises": "",
      "usage": "charts()",
+     "value": ""
+    },
+    {
+     "arguments": [],
+     "description": "Links to the documentation of the version that produced this report.",
+     "details": "`report.documentation.manual` is the PDF reference manual and\n`report.documentation.metric(\"sharpe_ratio\")` the page defining one\nmetric, which is also on every result as\n`documentation`.",
+     "examples": "",
+     "fields": [],
+     "kind": "property",
+     "name": "documentation",
+     "parameters": [],
+     "raises": "",
+     "usage": "documentation",
      "value": ""
     },
     {
@@ -590,7 +607,7 @@
    "anchor": "api-MetricResult",
    "arguments": [],
    "description": "Structured outcome of one metric (CLAUDE.md section 10).",
-   "details": "`value` is `None` whenever the metric could not be validly computed, and\n`reason` then says why. A non-finite value can never be stored.",
+   "details": "`value` is `None` whenever the metric could not be validly computed, and\n`reason` then says why. A non-finite value can never be stored. Every\nresult links to the page of the reference manual that defines it\n(decision 0035).",
    "examples": "",
    "fields": [
     {
@@ -660,10 +677,27 @@
     {
      "name": "reference_values",
      "text": "Values from reference implementations, when recorded."
+    },
+    {
+     "name": "documentation",
+     "text": "URL of the reference-manual topic defining this metric, for the version that produced the value."
     }
    ],
    "kind": "class",
    "members": [
+    {
+     "arguments": [],
+     "description": "URL of the manual topic defining this metric: formula, assumptions, references.",
+     "details": "",
+     "examples": "",
+     "fields": [],
+     "kind": "property",
+     "name": "documentation",
+     "parameters": [],
+     "raises": "",
+     "usage": "documentation",
+     "value": ""
+    },
     {
      "arguments": [],
      "description": "Whether a value was computed (`value is not None`).",

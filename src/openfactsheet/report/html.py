@@ -5,6 +5,8 @@ opened offline and never calls out to a CDN). Canonical sections and charts
 cannot be removed by a flag (CLAUDE.md section 43). Colors are theme tokens
 (light and dark), validated for color-vision deficiency; every chart has a
 caption and a data table, and tooltips only repeat values that are also shown.
+Every metric name links to the topic of the reference manual that defines it
+(decision 0035).
 """
 
 from __future__ import annotations
@@ -83,6 +85,12 @@ vertical-align:top}
 .ofs th{color:var(--ink-2);font-weight:600}
 .ofs td.v{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
 .ofs tr.low td{color:var(--low)}.ofs tr.na td{color:var(--muted)}
+.ofs a{color:var(--series-1)}
+.ofs a.doc{color:inherit;text-decoration:none;border-bottom:1px dotted var(--axis)}
+.ofs a.doc:hover,.ofs a.doc:focus{border-bottom-color:currentColor;
+text-decoration:underline}
+.ofs .manual{font-size:.82rem;color:var(--ink-2);margin:.2rem 0 0}
+@media print{.ofs a.doc{border-bottom:none}}
 .ofs .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(9.5rem,1fr));gap:.6rem;
 margin:1rem 0 .4rem}
 .ofs .tile{background:var(--surface);border:1px solid var(--border);border-radius:10px;
@@ -173,6 +181,20 @@ def _pre(text: str) -> str:
     return f"<pre>{escape(text)}</pre>"
 
 
+def _doc_link(result: MetricResult) -> str:
+    """The metric's name, linked to the manual topic that defines it (decision 0035)."""
+    return (
+        f"<a class='doc' href='{escape(result.documentation)}' target='_blank' rel='noopener' "
+        f"title='{escape(result.name)} in the OpenFactsheet reference manual: formula, "
+        f"assumptions, interpretation and references'>{escape(result.name)}</a>"
+    )
+
+
+def _doc_link_list(rows: list[MetricResult]) -> str:
+    """Names of metrics that have no table in this section, each linked to its topic."""
+    return ", ".join(_doc_link(r) for r in rows)
+
+
 def _metric_table(rows: list[MetricResult], notes: Footnotes) -> list[str]:
     parts = [
         "<table><thead><tr><th>Metric</th><th>Value</th><th>Confidence / status</th>"
@@ -182,7 +204,7 @@ def _metric_table(rows: list[MetricResult], notes: Footnotes) -> list[str]:
         refs = " ".join(f"[{notes.ref(t)}]" for t in result_notes(r))
         css = "na" if r.value is None else ("low" if r.confidence == "low" else "")
         parts.append(
-            f"<tr class='{css}'><td>{escape(r.name)}</td><td class='v'>"
+            f"<tr class='{css}'><td>{_doc_link(r)}</td><td class='v'>"
             f"{escape(format_value(r))}</td><td>{escape(status_label(r))}</td>"
             f"<td>{escape(refs)}</td></tr>"
         )
@@ -263,8 +285,7 @@ def _factor_section(report: FactsheetReport, notes: Footnotes) -> list[str]:
     rows = factor_metrics(report)
     fa = report.factor_analysis
     if fa is None:
-        names = ", ".join(r.name for r in rows)
-        return [f"<p>{escape(FACTOR_SECTION_TEXT)}</p><p>Metrics: {escape(names)}.</p>"]
+        return [f"<p>{escape(FACTOR_SECTION_TEXT)}</p><p>Metrics: {_doc_link_list(rows)}.</p>"]
     parts = [_pre(fa.to_text())]
     loadings = factor_loading_rows(report)
     if loadings:
@@ -317,6 +338,7 @@ def _headline(report: FactsheetReport) -> list[str]:
 def render_html(report: FactsheetReport) -> str:
     notes = Footnotes([])
     p = report.provenance
+    docs = report.documentation
     charts = build_charts(report)
     by_section: dict[str, list[Chart]] = {}
     for c in charts:
@@ -332,6 +354,10 @@ def render_html(report: FactsheetReport) -> str:
         f"<h1>{escape(report.name)}</h1>",
         f"<p class='sub'>{escape(period)} · {s.observations} {escape(s.frequency.value)} returns "
         f"· {escape(report.assumptions.name)} · openfactsheet {escape(p.package_version)}</p>",
+        f"<p class='manual'>Every metric below links to its topic in the "
+        f"<a href='{escape(docs.manual)}' target='_blank' rel='noopener'>reference manual</a>"
+        f"{'' if docs.released else ' built from the development branch'}: formula, "
+        "assumptions, interpretation and references.</p>",
         "</header>",
         *_headline(report),
         "<h2>1. Input &amp; methodology</h2>",
@@ -353,6 +379,7 @@ def render_html(report: FactsheetReport) -> str:
                 parts.append(f"<p>Not applicable: {escape(NO_BENCHMARK_REASON)}</p>")
                 if (note := document_benchmark_note(report)) is not None:
                     parts.append(f"<p>{escape(note)}</p>")
+                parts.append(f"<p>Metrics: {_doc_link_list(rows)}.</p>")
                 continue
             parts.append(_pre(report.benchmark_summary.to_text()))
         for chart in by_section.get(cat, []):
@@ -368,8 +395,12 @@ def render_html(report: FactsheetReport) -> str:
         + escape(", ".join(f"{k.replace('_', ' ')}: {v}" for k, v in sorted(counts.items())))
         + f"</p><p>{escape(CONFIDENCE_DISCLAIMER + ' ' + STATISTICAL_SECTION_TEXT)}</p>",
         *_metric_table(statistical_metrics(report), notes),
-        f"<h2>{number + 2}. Metric catalog</h2><p>Definitions: <code>ofs.metric_catalog()</code> "
-        "or docs/metric_catalog.md.</p>",
+        f"<h2>{number + 2}. Metric catalog</h2><p>Definitions, formulas, assumptions and "
+        f"references for every metric: the <a href='{escape(docs.manual)}' target='_blank' "
+        f"rel='noopener'>reference manual</a> of openfactsheet "
+        f"{escape(docs.package_version)} (one topic per metric), the "
+        f"<a href='{escape(docs.catalog)}' target='_blank' rel='noopener'>metric catalog</a>, "
+        "or <code>ofs.metric_catalog()</code>.</p>",
         f"<h2>{number + 3}. Assumptions &amp; caveats</h2>",
         _pre(report.assumptions.describe()),
     ]

@@ -32,7 +32,7 @@ from collections.abc import Callable, Iterator
 from pathlib import Path
 from typing import Any
 
-from openfactsheet.manual import api_anchor, decision_anchor
+from openfactsheet.manual import api_anchor, decision_anchor, reference_anchor
 
 DATA_DIR = "docs/manual/data"
 
@@ -180,7 +180,9 @@ def bibliography_data(metrics: dict[str, Any]) -> dict[str, Any]:
             base = "".join(w.lower() for w in words[:1] + words[2:3])
         used[base] = used.get(base, 0) + 1
         key = base if used[base] == 1 else f"{base}{chr(ord('a') + used[base] - 1)}"
-        out.append({**entry, "key": key, "anchor": f"ref-{key}", "authors": authors, "year": year})
+        out.append(
+            {**entry, "key": key, "anchor": reference_anchor(key), "authors": authors, "year": year}
+        )
     return {"entries": out}
 
 

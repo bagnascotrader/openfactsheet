@@ -8,6 +8,8 @@ from dataclasses import dataclass, field
 from types import MappingProxyType
 from typing import Any, Literal
 
+from openfactsheet.manual.links import metric_documentation
+
 MetricStatus = Literal[
     "applicable",
     "low_confidence",
@@ -198,7 +200,9 @@ class MetricResult:
     """Structured outcome of one metric (CLAUDE.md section 10).
 
     ``value`` is ``None`` whenever the metric could not be validly computed, and
-    ``reason`` then says why. A non-finite value can never be stored.
+    ``reason`` then says why. A non-finite value can never be stored. Every
+    result links to the page of the reference manual that defines it
+    (decision 0035).
 
     Attributes:
         id: Stable metric identifier (e.g. ``sharpe_ratio``).
@@ -222,6 +226,8 @@ class MetricResult:
         reason: Why there is no value, or why confidence was reduced.
         details: Supporting quantities (intervals, dates, episode data, ...).
         reference_values: Values from reference implementations, when recorded.
+        documentation: URL of the reference-manual topic defining this metric,
+            for the version that produced the value.
     """
 
     id: str
@@ -254,6 +260,11 @@ class MetricResult:
         """Whether a value was computed (``value is not None``)."""
         return self.value is not None
 
+    @property
+    def documentation(self) -> str:
+        """URL of the manual topic defining this metric: formula, assumptions, references."""
+        return metric_documentation(self.id)
+
     def to_dict(self) -> dict[str, Any]:
         """The result as JSON-compatible Python objects."""
         return {
@@ -269,6 +280,7 @@ class MetricResult:
             "observations": self.observations,
             "formula_id": self.formula_id,
             "methodology_version": self.methodology_version,
+            "documentation": self.documentation,
             "assumptions": list(self.assumptions),
             "warnings": list(self.warnings),
             "reason": self.reason,

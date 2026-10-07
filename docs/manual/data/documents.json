@@ -297,6 +297,13 @@
    "part": "decisions",
    "source": "docs/methodology/decisions/0034-reference-manual.md",
    "title": "The reference manual"
+  },
+  {
+   "anchor": "decision-0035",
+   "number": "0035",
+   "part": "decisions",
+   "source": "docs/methodology/decisions/0035-linking-results-to-the-manual.md",
+   "title": "Linking a result to its documentation"
   }
  ]
 }

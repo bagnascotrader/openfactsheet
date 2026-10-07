@@ -11,6 +11,7 @@ from __future__ import annotations
 from collections.abc import Callable
 from typing import Any
 
+from openfactsheet.manual import metric_anchor
 from openfactsheet.metrics.registry import all_metrics
 from openfactsheet.models.metric import CATEGORY_TITLES, MetricDefinition
 from openfactsheet.policy.confidence import IID_ASYMPTOTICS_ASSUMPTION, PARAMETRIC_ASSUMPTION
@@ -380,7 +381,7 @@ def metric_record(d: MetricDefinition) -> dict[str, Any]:
     return {
         "id": d.id,
         "name": d.name,
-        "anchor": f"metric-{d.id}",
+        "anchor": metric_anchor(d.id),
         "page": f"docs/interpretation/{d.id}.md",
         "category": d.category,
         "category_title": CATEGORY_TITLES[d.category],

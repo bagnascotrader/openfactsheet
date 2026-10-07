@@ -1,4 +1,9 @@
-"""Plain-text (terminal) rendering of the canonical report."""
+"""Plain-text (terminal) rendering of the canonical report.
+
+Plain text cannot carry a link per row, so section 13 gives the manual of this
+version and the destination that opens any one metric's topic (decision 0035);
+the Markdown and HTML reports link every metric name.
+"""
 
 from __future__ import annotations
 
@@ -59,6 +64,11 @@ def _indent(text: str, prefix: str = "  ") -> str:
 
 def _wrap(text: str, prefix: str = "  ") -> str:
     return textwrap.fill(text, WIDTH, initial_indent=prefix, subsequent_indent=prefix)
+
+
+def _url(url: str, prefix: str = "    ") -> str:
+    """A URL on its own line: never wrapped, so that it can be copied or clicked."""
+    return prefix + url
 
 
 def _heading(number: int, title: str) -> str:
@@ -182,10 +192,22 @@ def render_terminal(report: FactsheetReport) -> str:
 
     out.append(_heading(number, "Metric catalog"))
     number += 1
+    docs = report.documentation
     out.append(
         _wrap(
             "Definitions, formulas, assumptions and references for every metric: "
-            "ofs.metric_catalog() or docs/metric_catalog.md."
+            "ofs.metric_catalog(), or one topic per metric in the reference manual of "
+            f"openfactsheet {docs.package_version}"
+            + ("" if docs.released else " (built from the development branch)")
+            + ":"
+        )
+    )
+    out.append(_url(docs.manual))
+    out.append(
+        _wrap(
+            "Appending '#nameddest=metric-<id>' to that address opens one metric's topic; "
+            "report.metrics['<id>'].documentation is the link of any result, and the "
+            "Markdown and HTML reports link every metric name."
         )
     )
 

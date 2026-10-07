@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
 from openfactsheet.factors.models import FactorAnalysis
+from openfactsheet.manual.links import DocumentationLinks, documentation_links
 from openfactsheet.models.assumptions import Methodology
 from openfactsheet.models.diagnostics import DataQualityReport
 from openfactsheet.models.input import InputDiagnostics, ReturnSeries
@@ -139,7 +140,8 @@ class FactsheetReport:
     Every canonical metric is present, each with a status, confidence, warnings
     and the assumptions it used. The report is a plain data object;
     calculations know nothing about rendering, and every renderer (text,
-    Markdown, HTML, JSON) shows the same content.
+    Markdown, HTML, JSON) shows the same content. The report and every metric
+    in it link to the documentation of their own version (decision 0035).
 
     Attributes:
         name: Display name of the analyzed series.
@@ -161,6 +163,9 @@ class FactsheetReport:
         benchmark_returns: The benchmark series as analyzed, or ``None``.
         factor_analysis: Factor-model regressions when factors were supplied.
         document: What a source document (PDF, image) says about the fund, or ``None``.
+        documentation: Links to the documentation of the version that produced
+            the report: the PDF reference manual, the metric catalog and a topic
+            per metric.
     """
 
     name: str
@@ -184,6 +189,17 @@ class FactsheetReport:
     def methodology_version(self) -> str:
         """Version of the methodology the report was computed with."""
         return self.assumptions.version
+
+    @property
+    def documentation(self) -> DocumentationLinks:
+        """Links to the documentation of the version that produced this report.
+
+        ``report.documentation.manual`` is the PDF reference manual and
+        ``report.documentation.metric("sharpe_ratio")`` the page defining one
+        metric, which is also on every result as
+        :attr:`~openfactsheet.models.metric.MetricResult.documentation`.
+        """
+        return documentation_links()
 
     def returns_frame(self) -> pd.Series:
         """Exactly the returns OpenFactsheet analyzed (decimal, after normalization)."""

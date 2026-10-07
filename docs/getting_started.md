@@ -128,3 +128,24 @@ cannot be drawn for the data is replaced by the reason.
 ofs.methodology().describe()  # canonical conventions
 ofs.metric_catalog()  # DataFrame of all metrics and their definitions
 ```
+
+## Follow a number to its definition
+
+Every result links to the page of the
+[reference manual](manual/README.md) that defines it — formula, inputs,
+assumptions, when it misleads, and the papers and reference implementations it
+comes from ([decision 0035](methodology/decisions/0035-linking-results-to-the-manual.md)):
+
+```python
+report.metrics["sharpe_ratio"].documentation
+# '.../openfactsheet-manual.pdf#nameddest=metric-sharpe_ratio'
+
+report.documentation.manual  # the manual of the version that produced the report
+report.documentation.catalog  # the metric catalog at that version
+```
+
+The Markdown and HTML reports link every metric name, the JSON carries the link
+on every metric and a `documentation` block, and the terminal report gives the
+address of the manual. The links are pinned to the version that computed the
+numbers, so an archived report always points at the conventions it actually
+used, not at whatever the documentation says later.
