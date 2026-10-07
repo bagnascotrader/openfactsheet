@@ -1,4 +1,8 @@
-"""Markdown rendering of the canonical report."""
+"""Markdown rendering of the canonical report.
+
+Every metric name is a link to the topic of the reference manual that defines
+it (decision 0035).
+"""
 
 from __future__ import annotations
 
@@ -36,11 +40,21 @@ def _kv_block(text: str) -> list[str]:
     return ["```text", text, "```"]
 
 
+def _doc_link(result: MetricResult) -> str:
+    """The metric's name, linked to the manual topic that defines it (decision 0035)."""
+    return f"[{_cell(result.name)}]({result.documentation})"
+
+
+def _doc_link_list(rows: list[MetricResult]) -> str:
+    """Names of metrics that have no table in this section, each linked to its topic."""
+    return ", ".join(_doc_link(r) for r in rows)
+
+
 def _metric_table(rows: list[MetricResult], notes: Footnotes) -> list[str]:
     out = ["| Metric | Value | Confidence / status | Notes |", "|---|---:|---|---|"]
     for r in rows:
         refs = " ".join(f"[{notes.ref(t)}]" for t in result_notes(r))
-        out.append(f"| {_cell(r.name)} | {format_value(r)} | {status_label(r)} | {refs} |")
+        out.append(f"| {_doc_link(r)} | {format_value(r)} | {status_label(r)} | {refs} |")
     return out
 
 
@@ -79,7 +93,7 @@ def _factor_section(report: FactsheetReport, notes: Footnotes) -> list[str]:
     rows = factor_metrics(report)
     fa = report.factor_analysis
     if fa is None:
-        return [FACTOR_SECTION_TEXT, "", "Metrics: " + ", ".join(r.name for r in rows) + "."]
+        return [FACTOR_SECTION_TEXT, "", "Metrics: " + _doc_link_list(rows) + "."]
     out = [*_kv_block(fa.to_text()), ""]
     loadings = factor_loading_rows(report)
     if loadings:
@@ -94,10 +108,15 @@ def _factor_section(report: FactsheetReport, notes: Footnotes) -> list[str]:
 def render_markdown(report: FactsheetReport) -> str:
     notes = Footnotes([])
     p = report.provenance
+    docs = report.documentation
     out: list[str] = [
         f"# OpenFactsheet — {_cell(report.name)}",
         "",
         f"*Canonical report · {report.assumptions.name} · openfactsheet {p.package_version}*",
+        "",
+        f"Every metric below links to its topic in the [reference manual]({docs.manual})"
+        + ("" if docs.released else " built from the development branch")
+        + ": formula, assumptions, interpretation and references.",
         "",
         "Canonical charts (growth of 1, drawdowns, calendar years, monthly returns, "
         "distribution, rolling one-year statistics) are in the HTML report "
@@ -129,7 +148,7 @@ def render_markdown(report: FactsheetReport) -> str:
                 out.append("Not applicable: " + NO_BENCHMARK_REASON)
                 if (note := document_benchmark_note(report)) is not None:
                     out += ["", note]
-                out += ["", "Metrics: " + ", ".join(r.name for r in rows) + "."]
+                out += ["", "Metrics: " + _doc_link_list(rows) + "."]
                 continue
             out += [*_kv_block(report.benchmark_summary.to_text()), ""]
         out += _metric_table(rows, notes)
@@ -153,8 +172,10 @@ def render_markdown(report: FactsheetReport) -> str:
         "",
         f"## {number + 2}. Metric catalog",
         "",
-        "Definitions, formulas, assumptions and references: `ofs.metric_catalog()` or "
-        "`docs/metric_catalog.md`.",
+        "Definitions, formulas, assumptions and references for every metric: the "
+        f"[reference manual]({docs.manual}) of openfactsheet {docs.package_version} "
+        f"(one topic per metric), the [metric catalog]({docs.catalog}), or "
+        "`ofs.metric_catalog()`.",
         "",
         f"## {number + 3}. Assumptions & caveats",
         "",

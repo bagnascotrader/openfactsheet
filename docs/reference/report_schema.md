@@ -44,6 +44,7 @@ Conventions used throughout:
 | `factor_analysis` | object \| null | Factor-model regression; `null` without factor returns ([factor_analysis](#factor_analysis)). |
 | `interpretations` | object | Map metric id → interpretation ([interpretations](#interpretations)). |
 | `provenance` | object | Audit information ([provenance](#provenance)). |
+| `documentation` | object | Where the documentation of the version that produced the report lives ([documentation](#documentation)); every metric also carries its own topic URL (decision 0035). |
 
 ---
 
@@ -142,6 +143,7 @@ it could be computed.
 | `observations` | integer | Observations used: `n`, or the aligned count `m` for benchmark and factor metrics. |
 | `formula_id` | string | `<id>@v<version>`; changes when the formula changes. |
 | `methodology_version` | string | Methodology that produced the value. |
+| `documentation` | string | URL of the reference-manual topic defining this metric (formula, assumptions, interpretation, references), for the version that produced the value. Present even when `value` is `null` (decision 0035). |
 | `assumptions` | array of string | Assumptions behind this value (annualization factor, risk-free rate, targets, benchmark, ...). Present even when `value` is `null`. |
 | `warnings` | array of string | Data-specific caveats, de-duplicated. |
 | `reason` | string \| null | Why there is no value; always present when `value` is `null`. |
@@ -345,6 +347,27 @@ Map of metric id → [models/report.py](../../src/openfactsheet/models/report.py
 
 ---
 
+## documentation
+
+[manual/links.py](../../src/openfactsheet/manual/links.py) `DocumentationLinks.to_dict`
+(decision 0035). The links are pinned to the version that produced the report, never
+to "latest": a released version points at its own release assets and sources, and an
+unreleased one at the rolling manual built from `main`.
+
+| Key | Type | Meaning |
+|---|---|---|
+| `package_version` | string | The `openfactsheet` version the documentation describes. |
+| `released` | boolean | `true` when the links point at a released version; `false` when they point at the rolling manual built from `main`. |
+| `repository` | string | Repository the documentation is published from. |
+| `manual` | string | URL of the PDF reference manual for this version. |
+| `manual_tag` | string | Release tag whose assets carry that PDF (`manual-latest` before release, otherwise `v<version>`). |
+| `source_ref` | string | Git ref the documentation sources are read at (`main` before release, otherwise `v<version>`). |
+| `docs` | string | URL of the documentation tree at this version. |
+| `catalog` | string | URL of the metric catalog at this version. |
+| `metric_topic` | string | How a metric's link is formed: the manual URL followed by `#nameddest=metric-<id>`. |
+
+---
+
 ## Example: one metric entry
 
 `ofs.analyze("tests/fixtures/monthly_fund_10y.csv")`, entry for `max_drawdown`:
@@ -365,6 +388,7 @@ Map of metric id → [models/report.py](../../src/openfactsheet/models/report.py
     "trough_date": "2022-06-30"
   },
   "direction": "higher_is_better",
+  "documentation": "https://github.com/bagnascotrader/openfactsheet/releases/download/manual-latest/openfactsheet-manual.pdf#nameddest=metric-max_drawdown",
   "formula_id": "max_drawdown@v1",
   "id": "max_drawdown",
   "methodology_version": "0.1.0",

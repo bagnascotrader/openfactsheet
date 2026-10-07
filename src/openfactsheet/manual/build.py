@@ -24,6 +24,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+from openfactsheet.manual import category_anchor
 from openfactsheet.manual.export import manual_data, prepare_markdown
 
 TEMPLATE = "openfactsheet-manual.typ"
@@ -65,7 +66,7 @@ class Sources:
 def expected_anchors(data: dict[str, Any]) -> set[str]:
     """Named destinations the manual must contain: every metric, API topic and document."""
     anchors = {m["anchor"] for m in data["metrics"]["metrics"]}
-    anchors |= {f"category-{c['id']}" for c in data["metrics"]["categories"]}
+    anchors |= {category_anchor(c["id"]) for c in data["metrics"]["categories"]}
     for topic in data["api"]["topics"]:
         anchors.add(topic["anchor"])
         anchors |= {c["anchor"] for c in topic.get("classes", []) + topic.get("constants", [])}

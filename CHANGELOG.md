@@ -21,6 +21,11 @@ Package 0.1.0 · Methodology 0.1.0
   outliers, impossible returns, serial correlation, smoothing risk.
 - Reports: terminal, Markdown, HTML, deterministic JSON; `ofs.compare()` with
   common-period analysis and no ranking.
+- Every result links to the reference-manual topic that defines it:
+  `MetricResult.documentation` and `FactsheetReport.documentation`, a
+  `documentation` key on every metric in the JSON and a top-level
+  `documentation` block, linked metric names in the Markdown and HTML reports.
+  The links are pinned to the version that produced the result (decision 0035).
 - Tests: unit, property-based, golden reports, CLAUDE.md acceptance tests 1–3,
   cross-library validation against PerformanceAnalytics, empyrical, QuantStats.
 

@@ -73,6 +73,9 @@ def report_to_dict(report: FactsheetReport) -> dict[str, Any]:
         ),
         "interpretations": {k: v.to_dict() for k, v in report.interpretations.items()},
         "provenance": report.provenance.to_dict(),
+        # Where this version's documentation lives; every metric also carries its
+        # own topic URL in "documentation" (decision 0035).
+        "documentation": report.documentation.to_dict(),
     }
     return to_jsonable(data)  # type: ignore[no-any-return]
 

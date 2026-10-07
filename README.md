@@ -51,8 +51,8 @@ report, and JSON output that is stable and never contains a `NaN`.
 
 > [!NOTE]
 > **Status: alpha (methodology 0.1.0).** The numerical core is implemented and
-> cross-validated against independent R and Python implementations.
-> Linking every result to the PDF reference manual is on the [roadmap](#roadmap).
+> cross-validated against independent R and Python implementations. Every result
+> links to the page of the PDF reference manual that defines it.
 
 ## Why OpenFactsheet
 
@@ -305,7 +305,7 @@ received.
 | 5 | Comparison engine (`ofs.compare`) | ✅ Done |
 | 6 | Optional document ingestion: PDF with embedded text, screenshots and scanned PDFs (OCR) | ✅ Done |
 | 8 | Fund profile from documents: name, objective, identifiers, share classes and table attribution, benchmark tables | ✅ Done |
-| 9 | CRAN-style PDF reference manual, linked from every result | 🚧 Manual built from the code; links from results next |
+| 9 | CRAN-style PDF reference manual, linked from every result | ✅ Done |
 | 7 | Factor models (CAPM, Fama-French, Carhart, custom) using factor data you supply | ✅ Done |
 
 ## Development

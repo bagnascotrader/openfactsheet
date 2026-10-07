@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import dataclasses
 import inspect
 import os
 import re
@@ -61,6 +62,35 @@ def test_every_argument_of_every_public_function_and_method_is_documented(
             documented = {a["name"] for a in c["arguments"]}
             for p in c.get("parameters", []):
                 assert p["name"] in documented, (t["name"], c["name"], p["name"])
+
+
+def test_every_dataclass_field_of_a_public_type_is_documented(data: dict[str, Any]) -> None:
+    """An ``Attributes:`` section must document every field, and keep parsing.
+
+    Prose placed after the attribute list silently drops every field from the
+    manual, which is how a whole class lost its documentation once.
+    """
+    documented_types = {
+        c["name"]: c
+        for t in data["api"]["topics"]
+        for c in ([t] if t["kind"] == "class" else []) + t.get("classes", [])
+    }
+    checked = 0
+    for name in ofs.__all__:
+        obj = getattr(ofs, name)
+        if not (dataclasses.is_dataclass(obj) and name in documented_types):
+            continue
+        if "Attributes:" not in (obj.__doc__ or ""):  # documented in prose only
+            continue
+        checked += 1
+        fields = {f["name"] for f in documented_types[name]["fields"]}
+        # An empty list means the section stopped parsing, not that there is
+        # nothing to say.
+        assert fields, name
+        for f in dataclasses.fields(obj):
+            if not f.name.startswith("_"):
+                assert f.name in fields, (name, f.name)
+    assert checked, "no public dataclass was checked"
 
 
 def test_every_decision_note_is_in_the_manual(data: dict[str, Any]) -> None:

@@ -42,7 +42,9 @@ Exact, auditable specification of everything OpenFactsheet computes and decides:
   QuantStats, and every known convention difference.
 - [Reference manual (PDF)](manual/openfactsheet-manual.pdf) — all of the above as
   one CRAN-style PDF, generated from the code, with a link target for every
-  metric, function and decision ([how it is built](manual/README.md)).
+  metric, function and decision ([how it is built](manual/README.md)). Every
+  result in every report links to the topic that defines it
+  ([decision 0035](methodology/decisions/0035-linking-results-to-the-manual.md)).
 
 ## Principles in one paragraph
 

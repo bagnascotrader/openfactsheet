@@ -44,6 +44,7 @@ All decisions below are **Accepted** for methodology **0.1.0**.
 | [0032](0032-identifiers-and-fund-profile.md) | Identifiers and fund profile | Fixed fields with evidence (name, objective, benchmark name, currency, launch date, identifiers); ISIN/CUSIP/SEDOL/LEI/FIGI validated by check digit and never corrected; WKN/Valor/tickers only after their label; national codes linked to ISINs; the profile never changes a metric. |
 | [0033](0033-share-classes-and-table-roles.md) | Share classes and table roles | Series-labelled rows become separate series with roles (fund / benchmark / relative / unknown); document benchmark returns are returned by load() but never used; the returns table is attributed to a share class by caption, heading, single-class or currency rules, otherwise reported as ambiguous. |
 | [0034](0034-reference-manual.md) | Reference manual | A CRAN-style PDF manual generated from the code on every change: API topics from docstrings, one topic per metric from the registry, every methodology document and decision; offline, reproducible Typst build; a named destination for every topic. |
+| [0035](0035-linking-results-to-the-manual.md) | Linking a result to its documentation | Every result carries the URL of the manual topic that defines it; the report carries the manual, catalog and documentation links of its own version; links are pinned to the version that produced the number, never to "latest". |
 
 ## Adding or changing a decision
 

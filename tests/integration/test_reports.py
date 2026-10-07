@@ -61,8 +61,8 @@ def test_canonical_report_has_fourteen_sections(report: ofs.FactsheetReport) -> 
     assert "Serial dependence & smoothing" in md
     # Statistical-confidence metrics are rendered in section 12.
     section12 = md.split("## 12. Statistical confidence")[1].split("## 13.")[0]
-    assert "| Probabilistic Sharpe Ratio (vs 0) |" in section12
-    assert "| Minimum track record length |" in section12
+    assert "| [Probabilistic Sharpe Ratio (vs 0)](" in section12
+    assert "| [Minimum track record length](" in section12
 
 
 def test_html_escapes_names(tmp_path: Path) -> None:
@@ -74,7 +74,9 @@ def test_html_escapes_names(tmp_path: Path) -> None:
 
 def test_markdown_table_rows(report: ofs.FactsheetReport) -> None:
     md = report.to_markdown()
-    assert "| Sharpe ratio |" in md
+    # The name links to the metric's topic in the reference manual (decision 0035).
+    assert "| [Sharpe ratio](https://" in md
+    assert "#nameddest=metric-sharpe_ratio) |" in md
     assert "## Notes" in md
 
 

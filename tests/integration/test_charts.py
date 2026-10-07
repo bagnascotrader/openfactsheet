@@ -148,9 +148,22 @@ def test_html_is_self_contained_and_deterministic(bench_report: ofs.FactsheetRep
     assert html == bench_report.to_html()
     assert "<script src" not in html
     assert "<link" not in html
-    assert not re.search(r"(src|href)=['\"]https?://", html)
+    # Nothing is fetched when the page is opened: no external subresource, no CDN.
+    assert not re.search(r"src=['\"]https?://", html)
+    assert "@import" not in html
+    assert "url(http" not in html
     for cid in CHART_IDS:
         assert f"id='chart-{cid}'" in html
+
+
+def test_html_links_out_only_to_the_documentation(bench_report: ofs.FactsheetReport) -> None:
+    """The only external addresses are documentation links the reader may follow (0035)."""
+    html = bench_report.to_html()
+    external = re.findall(r"href='(https?://[^']+)'", html)
+    assert external
+    assert all(u.startswith("https://github.com/bagnascotrader/openfactsheet/") for u in external)
+    # Every one of them is an anchor the reader clicks, never a loaded resource.
+    assert len(re.findall(r"<a [^>]*href='https", html)) == len(external)
 
 
 def test_charts_method_returns_svg(bench_report: ofs.FactsheetReport) -> None:
