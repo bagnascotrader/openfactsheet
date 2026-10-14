@@ -14,7 +14,7 @@ pins the relationship.
 | PerformanceAnalytics (R) | 2.0.4 on R 4.3.1 | GPL-2 \| GPL-3 | External numerical oracle only. Function bodies were read to understand conventions; **no code was copied** into OpenFactsheet. |
 | empyrical-reloaded | 0.5.12 | Apache-2.0 | Python cross-check (optional `validation` extra). |
 | QuantStats | 0.0.81 | Apache-2.0 | Python cross-check (optional `validation` extra). |
-| skfolio | 1.0.6 | BSD-3-Clause | Python cross-check for DaR / CDaR / EDaR / EVaR (optional `validation` extra). |
+| skfolio | 1.0.6 and 1.4.1+ | BSD-3-Clause | Python cross-check for DaR / CDaR / EDaR / EVaR (optional `validation` extra). The drawdown-path convention changed in 1.4.1 (difference 15), so both are asserted. |
 | R `stats` (base R) | R 4.3.1 | GPL-2 \| GPL-3 | External oracle only: `acf`, `Box.test`, `cor`, `lm`, `t.test`, `pchisq` in the R harness. |
 | statsmodels | installed version | BSD-3-Clause | Runtime dependency: OLS, ACF, Ljung-Box. |
 | SciPy | installed version | BSD-3-Clause | Runtime dependency: skewness, kurtosis, normal / Student-t / chi-squared distributions; `jarque_bera` and `ttest_1samp` used as test references. |
@@ -180,8 +180,8 @@ Serial-correlation additions (decision 0029):
 The R harness records per-episode `findDrawdowns` columns, whether the last
 episode is open, complete-year returns, rolling 12-month returns, modified ES,
 `mean.geometric` and `IQR`; `test_phase2b_agreement` rebuilds each statistic
-from them. skfolio is compared on OpenFactsheet's canonical drawdown path
-because its own compounded path starts the running peak at W_1 (difference 15).
+from them. The skfolio risk measures are compared on OpenFactsheet's canonical
+drawdown path, which its own compounded path matches from 1.4.1 (difference 15).
 
 R's base `t.test` is used as an additional independent reference for the
 mean-return interval; it is not part of PerformanceAnalytics.
@@ -241,10 +241,13 @@ streaks, zero_return_pct) are checked against hand computations in
     uses `qnorm(p)` with p = 0.95, a 90% two-sided interval on the per-period
     Sharpe ratio; OpenFactsheet reports a two-sided 95% interval on the annualized
     Sharpe ratio (not numerically compared).
-15. **Drawdown path (skfolio).** `get_drawdowns(compounded=True)` starts its
-    running peak at W_1, so a first-period loss is not a drawdown; the default is
-    `compounded=False` (uncompounded cumulative sums). OpenFactsheet counts W_0 = 1
-    as a peak and compounds (asserted). See
+15. **Drawdown path (skfolio) — resolved upstream in 1.4.1.** Up to skfolio
+    1.4.0, `get_drawdowns(compounded=True)` started its running peak at W_1, so a
+    first-period loss was not a drawdown. Since 1.4.1 the starting wealth is the
+    first peak, which is OpenFactsheet's convention. The default remains
+    `compounded=False` (uncompounded cumulative sums). OpenFactsheet counts
+    W_0 = 1 as a peak and compounds; the test asserts the path of whichever
+    version is installed, because the `validation` extra is not pinned. See
     [0021](../methodology/decisions/0021-drawdown-tail-and-entropic-measures.md).
 16. **Drawdown-at-Risk (skfolio).** `drawdown_at_risk` uses the lower order
     statistic (inverted-CDF quantile); OpenFactsheet uses the linear quantile of
