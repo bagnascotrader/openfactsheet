@@ -5,9 +5,12 @@ Skipped automatically when the reference libraries are not installed.
 
 from __future__ import annotations
 
+from importlib.metadata import version
+
 import numpy as np
 import pandas as pd
 import pytest
+from packaging.version import Version
 from scipy import stats
 
 import openfactsheet as ofs
@@ -78,12 +81,17 @@ def test_skfolio_drawdown_and_entropic_measures(fixture: str) -> None:
     r = s.to_numpy()
     wealth = np.concatenate([[1.0], np.cumprod(1 + r)])
     d = (wealth / np.maximum.accumulate(wealth) - 1)[1:]  # canonical path D_1..D_n
-    # Documented path difference (decision 0007): skfolio's running peak starts at W_1, so
-    # a first-period loss is not a drawdown there; OpenFactsheet counts W_0 = 1 as a peak.
-    w1 = wealth[1:]
-    np.testing.assert_allclose(
-        sm.get_drawdowns(r, compounded=True), w1 / np.maximum.accumulate(w1) - 1
-    )
+    # Drawdown path (decision 0007): OpenFactsheet counts W_0 = 1 as a peak, so a
+    # first-period loss is a drawdown. skfolio started its running peak at W_1 until
+    # 1.4.1, which adopted the same convention; both are asserted by version because
+    # the validation extra is not pinned.
+    if Version(version("skfolio")) >= Version("1.4.1"):
+        np.testing.assert_allclose(sm.get_drawdowns(r, compounded=True), d)
+    else:
+        w1 = wealth[1:]
+        np.testing.assert_allclose(
+            sm.get_drawdowns(r, compounded=True), w1 / np.maximum.accumulate(w1) - 1
+        )
     # The risk-measure estimators are compared on the canonical path.
 
     # EDaR / EVaR: same definition, solver tolerance.
