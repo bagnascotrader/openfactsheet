@@ -8,6 +8,7 @@ from typing import Any
 
 from openfactsheet.documents.layout import Line, PageLayout, Word
 from openfactsheet.exceptions import OCRExtractionError
+from openfactsheet.input import limits
 
 _TOKEN = re.compile(r"\S+")
 
@@ -36,9 +37,16 @@ def open_pdf(path: Path) -> Any:
             'pip install "openfactsheet[pdf]".'
         ) from exc
     try:
-        return pypdf.PdfReader(str(path))
+        reader = pypdf.PdfReader(str(path))
+        pages = len(reader.pages)
     except Exception as exc:  # malformed or encrypted files
         raise OCRExtractionError(f"Could not open {path.name} as a PDF ({exc}).") from exc
+    if pages > limits.MAX_PDF_PAGES:
+        raise OCRExtractionError(
+            f"{path.name} has {pages} pages, above OpenFactsheet's safety limit of "
+            f"{limits.MAX_PDF_PAGES} pages for a factsheet; it was not read."
+        )
+    return reader
 
 
 def pypdf_engine() -> str:

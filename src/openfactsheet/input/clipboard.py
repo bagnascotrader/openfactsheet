@@ -7,12 +7,14 @@ import io
 import pandas as pd
 
 from openfactsheet.exceptions import InputError
+from openfactsheet.input.limits import check_text_size
 from openfactsheet.input.pandas_input import from_frame
 from openfactsheet.models.input import RawReturns
 
 
 def read_text_table(text: str, name: str | None = None) -> list[RawReturns]:
     """Parse a pasted table. Delimiters (tab, comma, semicolon, whitespace) are sniffed."""
+    check_text_size(text)
     stripped = text.strip()
     if not stripped:
         raise InputError("The pasted text is empty.")

@@ -12,6 +12,7 @@ from typing import TYPE_CHECKING, Any
 from openfactsheet.documents.layout import Word
 from openfactsheet.documents.ocr.base import EngineInfo
 from openfactsheet.exceptions import OCRExtractionError
+from openfactsheet.input import limits
 
 if TYPE_CHECKING:
     from PIL import Image
@@ -51,12 +52,18 @@ class TesseractEngine:
         )
 
     def recognize(self, image: Image.Image) -> list[Word]:
-        data = self._tess.image_to_data(
-            image.convert("RGB"),
-            lang=self._lang,
-            config="--psm 11",
-            output_type=self._tess.Output.DICT,
-        )
+        try:
+            data = self._tess.image_to_data(
+                image.convert("RGB"),
+                lang=self._lang,
+                config="--psm 11",
+                output_type=self._tess.Output.DICT,
+                timeout=limits.TESSERACT_TIMEOUT_SECONDS,
+            )
+        except RuntimeError as exc:  # pytesseract reports a timeout as RuntimeError
+            raise OCRExtractionError(
+                f"Tesseract did not finish within {limits.TESSERACT_TIMEOUT_SECONDS} s ({exc})."
+            ) from exc
         words: list[Word] = []
         for i, text in enumerate(data["text"]):
             conf = float(data["conf"][i])

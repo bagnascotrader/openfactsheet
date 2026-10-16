@@ -17,6 +17,7 @@ from typing import Any
 from openfactsheet.documents.profile import extract_profile
 from openfactsheet.documents.tables import ExtractedTable, find_monthly_tables, tables_to_raw
 from openfactsheet.exceptions import OCRExtractionError
+from openfactsheet.input.limits import check_pixels
 from openfactsheet.models.input import RawReturns
 
 IMAGE_SUFFIXES = frozenset({".png", ".jpg", ".jpeg", ".gif", ".bmp", ".tif", ".tiff", ".webp"})
@@ -36,8 +37,10 @@ def read_image(
 
     try:
         with Image.open(path) as opened:
+            # Image.open reads only the header: check the size before decoding pixels.
+            check_pixels(*opened.size, what=path.name)
             image = opened.convert("RGB")
-    except OSError as exc:
+    except (OSError, Image.DecompressionBombError) as exc:
         raise OCRExtractionError(f"Could not open {path.name} as an image ({exc}).") from exc
     engine = get_engine(ocr_engine)
     layout = ocr_layout(image, engine)

@@ -7,6 +7,7 @@ from pathlib import Path
 import pandas as pd
 
 from openfactsheet.exceptions import InputError
+from openfactsheet.input.limits import check_excel_package
 from openfactsheet.input.pandas_input import from_frame
 from openfactsheet.models.input import RawReturns
 
@@ -19,6 +20,7 @@ def read_excel(path: Path, name: str | None = None) -> list[RawReturns]:
             "Reading Excel files requires the optional dependency openpyxl: "
             "pip install 'openfactsheet[excel]'"
         ) from exc
+    check_excel_package(path)  # zip-bomb guard before openpyxl inflates any part
     try:
         # Only the first sheet is read; choosing among sheets would be a guess.
         frame = pd.read_excel(path, sheet_name=0)
