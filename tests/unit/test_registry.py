@@ -39,6 +39,9 @@ def test_phase_one_catalog_is_complete() -> None:
         "median_drawdown", "average_drawdown_duration", "max_peak_to_trough_duration",
         "average_recovery_duration", "recovery_factor", "geometric_mean_return",
         "interquartile_range",
+        # Bacon Wave 1 (decision 0036)
+        "gini_mean_difference", "relative_mean_difference", "skewness_kurtosis_ratio",
+        "bias_ratio", "volatility_skewness",
     }  # fmt: skip
     assert required <= ids
 

@@ -98,6 +98,20 @@ s = \sqrt{\frac{1}{n-1} \sum_{t=1}^{n} \left(r_t - \bar r\right)^2}
 \mathrm{MAD} = \frac{1}{n} \sum_{t=1}^{n} \left| r_t - \bar r \right|
 ```
 
+### Gini mean difference — [`gini_mean_difference`](../interpretation/gini_mean_difference.md)
+
+```math
+\mathrm{MD} = \frac{1}{n(n-1)} \sum_{i=1}^{n} \sum_{j \ne i} \left| r_i - r_j \right| = \frac{2}{n(n-1)} \sum_{k=1}^{n} (2k - n - 1)\, r_{(k)}
+```
+
+### Relative mean difference — [`relative_mean_difference`](../interpretation/relative_mean_difference.md)
+
+```math
+\mathrm{RMD} = \frac{\mathrm{MD}}{\bar r}, \quad \mathrm{MD} = \frac{1}{n(n-1)} \sum_{i=1}^{n} \sum_{j \ne i} \left| r_i - r_j \right|
+```
+
+Undefined (`not_applicable`) when: The arithmetic mean return is exactly zero.
+
 ### Interquartile range — [`interquartile_range`](../interpretation/interquartile_range.md)
 
 ```math
@@ -387,6 +401,30 @@ JB = \frac{n}{6}\left( g_1^2 + \frac{g_2^2}{4} \right), \quad g_1 = \frac{m_3}{m
 ```
 
 Undefined (`not_applicable`) when: Return variance is zero or underflows in floating point (e.g. identical returns).
+
+### Skewness-kurtosis ratio — [`skewness_kurtosis_ratio`](../interpretation/skewness_kurtosis_ratio.md)
+
+```math
+\mathrm{SKR} = \frac{G_1}{G_2 + 3}, \quad G_1 = \frac{\sqrt{n(n-1)}}{n-2} \, \frac{m_3}{m_2^{3/2}}, \quad G_2 = \frac{n-1}{(n-2)(n-3)} \left[ (n+1) \frac{m_4}{m_2^2} - 3(n-1) \right]
+```
+
+Undefined (`not_applicable`) when: Return variance is zero or underflows in floating point (e.g. identical returns). The bias-corrected kurtosis G2 + 3 is zero or negative (possible only in very small samples).
+
+### Bias ratio — [`bias_ratio`](../interpretation/bias_ratio.md)
+
+```math
+\mathrm{BR} = \frac{\#\{t : 0 \le r_t \le s\}}{1 + \#\{t : -s \le r_t \le 0\}}, \quad s = \sqrt{\frac{1}{n-1} \sum_{t=1}^{n} \left(r_t - \bar r\right)^2}
+```
+
+Undefined (`not_applicable`) when: All returns are identical (zero standard deviation).
+
+### Volatility skewness — [`volatility_skewness`](../interpretation/volatility_skewness.md)
+
+```math
+\mathrm{VS} = \frac{\frac{1}{n} \sum_{t=1}^{n} \max(r_t - \tau, 0)^2}{\frac{1}{n} \sum_{t=1}^{n} \max(\tau - r_t, 0)^2}, \quad \tau = 0
+```
+
+Undefined (`not_applicable`) when: No return is below the 0% target (zero downside variance).
 
 ## Consistency
 

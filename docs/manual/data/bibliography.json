@@ -1,6 +1,17 @@
 {
  "entries": [
   {
+   "anchor": "ref-abdulali2006",
+   "authors": "Abdulali, A.",
+   "citation": "Abdulali, A. (2006). The Bias Ratio: Measuring the Shape of Fraud. Protege Partners Quarterly Letter (practitioner note, as cited by Bacon, eq. 10.17).",
+   "cited_by": [
+    "bias_ratio"
+   ],
+   "key": "abdulali2006",
+   "url": null,
+   "year": "2006"
+  },
+  {
    "anchor": "ref-acerbi2002",
    "authors": "Acerbi, C., & Tasche, D.",
    "citation": "Acerbi, C., & Tasche, D. (2002). On the Coherence of Expected Shortfall. Journal of Banking & Finance, 26(7), 1487-1503.",
@@ -51,6 +62,8 @@
     "volatility",
     "annualized_volatility",
     "mean_absolute_deviation",
+    "gini_mean_difference",
+    "relative_mean_difference",
     "interquartile_range",
     "downside_deviation",
     "semi_deviation",
@@ -79,6 +92,9 @@
     "recovery_factor",
     "expected_shortfall_historical_95",
     "tail_ratio",
+    "skewness_kurtosis_ratio",
+    "bias_ratio",
+    "volatility_skewness",
     "positive_period_pct",
     "negative_period_pct",
     "longest_winning_streak",
@@ -276,6 +292,18 @@
    "key": "getmansky2004",
    "url": null,
    "year": "2004"
+  },
+  {
+   "anchor": "ref-gini1912",
+   "authors": "Gini, C.",
+   "citation": "Gini, C. (1912). Variabilita e mutabilita. Studi Economico-Giuridici della R. Universita di Cagliari, 3(2), 3-159 (mean difference).",
+   "cited_by": [
+    "gini_mean_difference",
+    "relative_mean_difference"
+   ],
+   "key": "gini1912",
+   "url": null,
+   "year": "1912"
   },
   {
    "anchor": "ref-goodwin1998",
@@ -640,6 +668,28 @@
    "key": "treynor1973",
    "url": null,
    "year": "1973"
+  },
+  {
+   "anchor": "ref-watanabe2006",
+   "authors": "Watanabe, Y.",
+   "citation": "Watanabe, Y. (2006). Is Sharpe Ratio Still Effective? Journal of Performance Measurement, 11(1), 55-66 (skewness-kurtosis ratio, as cited by Bacon, eq. 3.7).",
+   "cited_by": [
+    "skewness_kurtosis_ratio"
+   ],
+   "key": "watanabe2006",
+   "url": null,
+   "year": "2006"
+  },
+  {
+   "anchor": "ref-yitzhaki2003",
+   "authors": "Yitzhaki, S.",
+   "citation": "Yitzhaki, S. (2003). Gini's Mean Difference: A Superior Measure of Variability for Non-Normal Distributions. Metron, 61(2), 285-316.",
+   "cited_by": [
+    "gini_mean_difference"
+   ],
+   "key": "yitzhaki2003",
+   "url": null,
+   "year": "2003"
   },
   {
    "anchor": "ref-young1991",

@@ -42,6 +42,8 @@ OpenFactsheet seeks to credit the people who originated each measure it reports.
 | [`volatility`](interpretation/volatility.md) | Volatility per period | Standard statistic (no single originator) | Markowitz (1952) | yes | convention | Variance as the measure of portfolio risk: Markowitz (1952). |
 | [`annualized_volatility`](interpretation/annualized_volatility.md) | Annualized volatility | Standard statistic (no single originator) | Markowitz (1952) | yes | convention | Square-root-of-time scaling; see Lo (2002) on its limits. |
 | [`mean_absolute_deviation`](interpretation/mean_absolute_deviation.md) | Mean absolute deviation | Standard statistic (no single originator) | — | yes | convention | — |
+| [`gini_mean_difference`](interpretation/gini_mean_difference.md) | Gini mean difference | Corrado Gini | Gini (1912) | yes | established | Bacon, 2nd ed., eq. (2.8). |
+| [`relative_mean_difference`](interpretation/relative_mean_difference.md) | Relative mean difference | Corrado Gini | Gini (1912) | yes | established | Bacon, 2nd ed., eq. (2.9); equals twice the Gini coefficient for positive means. |
 | [`interquartile_range`](interpretation/interquartile_range.md) | Interquartile range | Standard statistic (no single originator) | — | yes | convention | — |
 | [`downside_deviation`](interpretation/downside_deviation.md) | Downside deviation (annualized) | Harry Markowitz (semivariance); Frank A. Sortino and co-authors (deviation below a target) | Markowitz (1959); Sortino & van der Meer (1991); Sortino & Price (1994) | yes | established | — |
 | [`semi_deviation`](interpretation/semi_deviation.md) | Semi-deviation (annualized) | Harry Markowitz | Markowitz (1959) | yes | established | — |
@@ -103,6 +105,9 @@ OpenFactsheet seeks to credit the people who originated each measure it reports.
 | [`skewness`](interpretation/skewness.md) | Skewness | Standard statistic (no single originator) | Joanes & Gill (1998) | — | convention | Moment statistic; estimator per Joanes & Gill. |
 | [`excess_kurtosis`](interpretation/excess_kurtosis.md) | Excess kurtosis | Standard statistic (no single originator) | Joanes & Gill (1998) | — | convention | Moment statistic; estimator per Joanes & Gill. |
 | [`jarque_bera_pvalue`](interpretation/jarque_bera_pvalue.md) | Jarque-Bera normality p-value | Carlos M. Jarque, Anil K. Bera | Jarque & Bera (1987) | — | established | — |
+| [`skewness_kurtosis_ratio`](interpretation/skewness_kurtosis_ratio.md) | Skewness-kurtosis ratio | Watanabe (as cited by Bacon) | — | yes | attributed | Bacon, 2nd ed., eq. (3.7); primary source not verified. |
+| [`bias_ratio`](interpretation/bias_ratio.md) | Bias ratio | Adil Abdulali (as cited by Bacon) | — | yes | attributed | Bacon, 2nd ed., eq. (10.17); primary source not verified. A diagnostic, not a fraud detector. |
+| [`volatility_skewness`](interpretation/volatility_skewness.md) | Volatility skewness | Not reliably established | — | yes | uncertain | Bacon, 2nd ed., eq. (6.32): upside variance / downside variance. |
 
 ## Consistency
 
@@ -188,6 +193,7 @@ OpenFactsheet seeks to credit the people who originated each measure it reports.
 - Fama, E. F., & French, K. R. (1993). Common Risk Factors in the Returns on Stocks and Bonds. Journal of Financial Economics, 33(1), 3-56.
 - Favre, L., & Galeano, J.-A. (2002). Mean-Modified Value-at-Risk Optimization with Hedge Funds. Journal of Alternative Investments, 5(2), 21-25.
 - Fishburn, P. C. (1977). Mean-Risk Analysis with Risk Associated with Below-Target Returns. American Economic Review, 67(2), 116-126.
+- Gini, C. (1912). Variabilità e mutabilità. Bologna: C. Cuppini.
 - Grinold, R. C. (1989). The Fundamental Law of Active Management. Journal of Portfolio Management, 15(3), 30-37.
 - J.P. Morgan/Reuters (1996). RiskMetrics: Technical Document (4th ed.).
 - Jarque, C. M., & Bera, A. K. (1987). A Test for Normality of Observations and Regression Residuals. International Statistical Review, 55(2), 163-172.

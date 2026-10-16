@@ -109,6 +109,19 @@ def test_skfolio_drawdown_and_entropic_measures(fixture: str) -> None:
         assert val(rep, "cdar_95") == pytest.approx(-sm.cdar(d, 0.95), **TOL)
 
 
+@pytest.mark.parametrize("fixture", SINGLE_FIXTURES)
+def test_skfolio_gini_mean_difference(fixture: str) -> None:
+    sm = pytest.importorskip("skfolio.measures")
+    s = fixture_series(fixture)
+    rep = ofs.analyze(s)
+    r = s.to_numpy()
+    # Same definition: mean |r_i - r_j| over the n(n-1) ordered pairs (decision 0036).
+    assert val(rep, "gini_mean_difference") == pytest.approx(sm.gini_mean_difference(r), **TOL)
+    assert val(rep, "relative_mean_difference") == pytest.approx(
+        sm.gini_mean_difference(r) / r.mean(), **TOL
+    )
+
+
 def test_quantstats_recovery_factor_uses_arithmetic_sum() -> None:
     qs = pytest.importorskip("quantstats")
     s = fixture_series("monthly_fund_10y")
