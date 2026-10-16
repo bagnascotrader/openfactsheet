@@ -24,6 +24,14 @@ Conventions used throughout:
 `{"reports": {name: report}, "common_period": [start, end] | null,
 "common_period_reports": {name: report} | null, "notes": [string]}`.
 
+**Disclaimer.** The JSON output is data for other programs, so it carries no
+disclaimer field and its schema is unchanged by the disclosure work; a notice is
+never inserted into the returns or metric values. The same terms apply to it as
+to every other output: *For information and education only — not investment advice. Investing involves risk; past performance does not predict future results. Verify results and consult a qualified financial adviser.*
+The full text is [DISCLAIMER.md](../../DISCLAIMER.md), reachable from the
+`documentation.repository` link of every report. Applications that display
+OpenFactsheet results to people should show this notice next to them.
+
 ---
 
 ## Top level

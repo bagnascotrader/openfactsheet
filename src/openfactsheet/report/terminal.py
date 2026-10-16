@@ -9,7 +9,11 @@ from __future__ import annotations
 
 import textwrap
 
-from openfactsheet.interpretation.glossary import CONFIDENCE_DISCLAIMER
+from openfactsheet.interpretation.glossary import (
+    CONFIDENCE_DISCLAIMER,
+    DISCLAIMER_PATH,
+    SHORT_DISCLAIMER,
+)
 from openfactsheet.models.metric import MetricResult
 from openfactsheet.models.report import FactsheetReport
 from openfactsheet.policy.applicability import NO_BENCHMARK_REASON
@@ -142,6 +146,9 @@ def render_terminal(report: FactsheetReport) -> str:
         f"OPENFACTSHEET — {report.name}",
         f"Canonical report · {report.assumptions.name} · openfactsheet {p.package_version}",
         "=" * WIDTH,
+        _wrap(SHORT_DISCLAIMER, ""),
+        "Full disclaimer:",
+        _url(report.documentation.source(DISCLAIMER_PATH)),
     ]
 
     out.append(_heading(1, "Input & methodology"))
@@ -217,7 +224,8 @@ def render_terminal(report: FactsheetReport) -> str:
     if material:
         out.append("  Material data-quality findings:")
         out.extend(_wrap(f"- [{f.severity}] {f.message}", "    ") for f in material)
-    out.append(_wrap("OpenFactsheet explains measurements; it does not give investment advice."))
+    out.append(_wrap(SHORT_DISCLAIMER))
+    out.append(_url(docs.source(DISCLAIMER_PATH)))
 
     if notes.texts:
         out.append("\nNOTES\n" + "-" * WIDTH)

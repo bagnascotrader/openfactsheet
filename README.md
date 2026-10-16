@@ -50,9 +50,16 @@ That one call gives you 97 metrics, data-quality diagnostics, a 14-section
 report, and JSON output that is stable and never contains a `NaN`.
 
 > [!NOTE]
-> **Status: alpha (methodology 0.1.0).** The numerical core is implemented and
-> cross-validated against independent R and Python implementations. Every result
-> links to the page of the PDF reference manual that defines it.
+> **Status: Public alpha** · Methodology 0.1.0
+>
+> Public alpha: interfaces, metrics and documentation may evolve; validate results before investment decisions.
+> The numerical core is implemented and cross-validated against independent R and
+> Python implementations. Every result links to the page of the PDF reference
+> manual that defines it.
+
+> [!IMPORTANT]
+> For information and education only — not investment advice. Investing involves risk; past performance does not predict future results. Verify results and consult a qualified financial adviser.
+> Read the full [disclaimer](DISCLAIMER.md).
 
 ## Why OpenFactsheet
 
@@ -330,15 +337,24 @@ If you use OpenFactsheet in research, please cite it using
 [`CITATION.cff`](CITATION.cff) and **state the methodology version** shown in
 your results, so that others can reproduce them.
 
-## About
+## Creator
 
-OpenFactsheet was created by **Prof. Andrés A. Bagnasco** of
-**UCU Business School** in September 2026. It is developed in the open, and
-contributions from practitioners, academics and developers are welcome.
+> **Created by Prof. Andrés A. Bagnasco** — creator of the OpenFactsheet open-source Python library and [OpenFactsheet.org](https://openfactsheet.org). He brings more than 25 years of experience in the financial industry, specializing in quantitative finance and AI/machine learning. He is Investment Management Program Director at UCU Business School and a Postgraduate Professor of Finance. [Connect on LinkedIn](https://www.linkedin.com/in/andres-bagnasco/).
+
+OpenFactsheet was first published in September 2026. It is an independent
+open-source project: the creator's academic affiliation is stated for
+identification only and does not imply endorsement by UCU Business School. The
+project is developed in the open, and contributions from practitioners,
+academics and developers are welcome; every contributor is credited in the
+project's Git history.
 
 ## License
 
-[Apache-2.0](LICENSE).
+[Apache-2.0](LICENSE). The license covers the software; the investment
+disclaimer is a separate document, [DISCLAIMER.md](DISCLAIMER.md). Credits for
+metric originators are in [docs/ATTRIBUTION.md](docs/ATTRIBUTION.md) and
+third-party licenses in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
 <sub>OpenFactsheet explains measurements. It does not give investment advice, and
-nothing it produces is a recommendation to buy or sell any investment.</sub>
+nothing it produces is a recommendation to buy or sell any investment.
+[Full disclaimer](DISCLAIMER.md).</sub>

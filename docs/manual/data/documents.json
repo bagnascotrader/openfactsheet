@@ -13,6 +13,12 @@
    "title": "Getting started"
   },
   {
+   "anchor": "doc-disclaimer",
+   "part": "overview",
+   "source": "DISCLAIMER.md",
+   "title": "Important information and disclaimers"
+  },
+  {
    "anchor": "doc-methodology",
    "part": "methodology",
    "source": "docs/methodology.md",
@@ -59,6 +65,12 @@
    "part": "validation",
    "source": "docs/validation/reference_implementations.md",
    "title": "Reference implementations"
+  },
+  {
+   "anchor": "doc-attribution",
+   "part": "validation",
+   "source": "docs/ATTRIBUTION.md",
+   "title": "Metric attribution"
   },
   {
    "anchor": "decision-0001",

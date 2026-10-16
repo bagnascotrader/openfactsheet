@@ -10,7 +10,7 @@ readme = "README.md"
 license = "Apache-2.0"
 license-files = ["LICENSE"]
 requires-python = ">=3.10"
-authors = [{ name = "OpenFactsheet contributors" }]
+authors = [{ name = "Andrés A. Bagnasco" }, { name = "OpenFactsheet contributors" }]
 keywords = [
     "finance",
     "performance",
@@ -86,7 +86,16 @@ path = "src/openfactsheet/version.py"
 packages = ["src/openfactsheet"]
 
 [tool.hatch.build.targets.sdist]
-include = ["src/openfactsheet", "tests", "docs", "README.md", "LICENSE", "CHANGELOG.md"]
+include = [
+    "src/openfactsheet",
+    "tests",
+    "docs",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md",
+    "DISCLAIMER.md",
+    "THIRD_PARTY_NOTICES.md",
+]
 
 # ---------------------------------------------------------------------------
 # Tooling

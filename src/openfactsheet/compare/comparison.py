@@ -15,6 +15,7 @@ import pandas as pd
 
 from openfactsheet.exceptions import InputError
 from openfactsheet.input.dispatcher import to_raw
+from openfactsheet.interpretation.glossary import DISCLAIMER_PATH, SHORT_DISCLAIMER
 from openfactsheet.models.input import ObservationFrequency, RawReturns, ReturnSeries, ReturnTable
 from openfactsheet.models.report import FactsheetReport
 from openfactsheet.normalization.scaling import DeclaredScale
@@ -115,6 +116,8 @@ class Comparison:
         lines = [
             "OPENFACTSHEET COMPARISON",
             f"{first.assumptions.name} (identical for all investments). Not a ranking.",
+            SHORT_DISCLAIMER,
+            f"Full disclaimer: {first.documentation.source(DISCLAIMER_PATH)}",
             "",
             "Track records:",
             self.track_records().to_string(),

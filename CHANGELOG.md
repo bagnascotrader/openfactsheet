@@ -29,6 +29,23 @@ Package 0.1.0 · Methodology 0.1.0
 - Tests: unit, property-based, golden reports, CLAUDE.md acceptance tests 1–3,
   cross-library validation against PerformanceAnalytics, empyrical, QuantStats.
 
+### Added — Public-alpha status, creator credit, disclaimer and attribution
+- README states **Public alpha** · Methodology 0.1.0 with a caution to validate
+  results, and a Creator section (Prof. Andrés A. Bagnasco, with LinkedIn link);
+  `CITATION.cff` and `pyproject.toml` credit him alongside the contributors.
+- `DISCLAIMER.md` is the single source of the disclosure (proposed text, counsel
+  review pending). Its short notice (`interpretation.glossary.SHORT_DISCLAIMER`)
+  appears, with a link to the full text, at the top and end of the terminal,
+  Markdown and HTML reports, in `ofs.compare(...).summary()` and on the manual's
+  title page; the manual includes the full text. The JSON schema is unchanged.
+- `docs/ATTRIBUTION.md`, generated from the registry and
+  `metrics/attribution.py`, credits each metric's originator(s) and seminal
+  work with an uncertainty flag (Bacon as a secondary reference); a test requires
+  an entry for every registered metric.
+- `THIRD_PARTY_NOTICES.md` (dependency and vendored-component licenses) and
+  `docs/audits/regulatory_disclosure_review.md` (regulatory questions for
+  counsel; no compliance claim).
+
 ### Added — Share classes, table roles and document benchmarks (decision 0033)
 - Tables with a fund row and a benchmark row per year (and optional relative
   rows) are read as separate series with roles (fund / benchmark / relative /

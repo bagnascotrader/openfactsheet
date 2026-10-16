@@ -12,6 +12,7 @@ from collections.abc import Callable
 from typing import Any
 
 from openfactsheet.manual import metric_anchor
+from openfactsheet.metrics.attribution import render_attribution
 from openfactsheet.metrics.registry import all_metrics
 from openfactsheet.models.metric import CATEGORY_TITLES, MetricDefinition
 from openfactsheet.policy.confidence import IID_ASYMPTOTICS_ASSUMPTION, PARAMETRIC_ASSUMPTION
@@ -679,6 +680,7 @@ def render_all() -> dict[str, str]:
         "docs/metric_catalog.md": render_catalog(),
         "docs/reference/formulas.md": render_formulas(),
         "docs/reference/policies.md": render_policies(),
+        "docs/ATTRIBUTION.md": render_attribution(list(all_metrics()), GENERATED_NOTE),
     }
     for d in all_metrics():
         files[f"docs/interpretation/{d.id}.md"] = render_metric_page(d)

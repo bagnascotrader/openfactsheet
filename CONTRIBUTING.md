@@ -5,6 +5,16 @@ measurement. OpenFactsheet is opinionated about methodology and humble about
 inference; contributions are judged by correctness, transparency and
 documentation more than by feature count.
 
+By contributing you agree that your contribution is licensed under the
+project's [Apache-2.0 license](LICENSE). User-facing text you add (README,
+documentation, report wording, website copy) must stay consistent with
+[DISCLAIMER.md](DISCLAIMER.md): describe measurements, never recommend an
+investment, and avoid promotional claims such as "guaranteed", "risk-free" or
+regulatory approval. When you add a metric, credit its originator in the
+metric's references and in `src/openfactsheet/metrics/attribution.py`, then run
+`scripts/generate_docs.py` so that [docs/ATTRIBUTION.md](docs/ATTRIBUTION.md)
+includes it.
+
 ## Development setup
 
 ```bash

@@ -54,3 +54,12 @@ versioned and visible; never return an unexplained NaN; separate calculation
 from applicability, confidence and presentation; and distinguish what was
 observed from what is estimated or model-dependent. OpenFactsheet explains
 measurements — it does not give investment advice.
+
+## Important information
+
+For information and education only — not investment advice. Investing involves risk; past performance does not predict future results. Verify results and consult a qualified financial adviser.
+See the full [disclaimer](../DISCLAIMER.md), the
+[metric attribution](ATTRIBUTION.md) and the
+[third-party notices](../THIRD_PARTY_NOTICES.md). OpenFactsheet is a public alpha:
+interfaces, metrics and documentation may evolve; validate results before
+investment decisions.

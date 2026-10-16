@@ -40,6 +40,7 @@ DATA_DIR = "docs/manual/data"
 _DOCUMENTS: tuple[tuple[str, str, str, str | None], ...] = (
     ("overview", "docs/index.md", "doc-index", "Introduction"),
     ("overview", "docs/getting_started.md", "doc-getting_started", None),
+    ("overview", "DISCLAIMER.md", "doc-disclaimer", None),
     ("methodology", "docs/methodology.md", "doc-methodology", None),
     ("methodology", "docs/assumptions.md", "doc-assumptions", None),
     ("methodology", "docs/reference/criteria.md", "doc-criteria", None),
@@ -48,6 +49,7 @@ _DOCUMENTS: tuple[tuple[str, str, str, str | None], ...] = (
     ("methodology", "docs/reference/report_schema.md", "doc-report_schema", None),
     ("decisions", "docs/methodology/decisions/README.md", "doc-decisions", None),
     ("validation", "docs/validation/reference_implementations.md", "doc-validation", None),
+    ("validation", "docs/ATTRIBUTION.md", "doc-attribution", None),
 )
 _DECISIONS_DIR = "docs/methodology/decisions"
 
@@ -70,6 +72,7 @@ def _dumps(obj: Any) -> str:
 
 
 def package_data(root: Path) -> dict[str, Any]:
+    from openfactsheet.interpretation.glossary import SHORT_DISCLAIMER
     from openfactsheet.policy.methodology_version import METHODOLOGY_VERSION
     from openfactsheet.version import __version__
 
@@ -90,6 +93,7 @@ def package_data(root: Path) -> dict[str, Any]:
         "dependencies": project["dependencies"],
         "extras": {k: v for k, v in project["optional-dependencies"].items() if k != "dev"},
         "urls": project["urls"],
+        "short_disclaimer": SHORT_DISCLAIMER,
     }
 
 
