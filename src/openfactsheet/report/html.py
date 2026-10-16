@@ -13,7 +13,11 @@ from __future__ import annotations
 
 from html import escape
 
-from openfactsheet.interpretation.glossary import CONFIDENCE_DISCLAIMER
+from openfactsheet.interpretation.glossary import (
+    CONFIDENCE_DISCLAIMER,
+    DISCLAIMER_PATH,
+    SHORT_DISCLAIMER,
+)
 from openfactsheet.models.metric import MetricResult
 from openfactsheet.models.report import FactsheetReport
 from openfactsheet.policy.applicability import NO_BENCHMARK_REASON
@@ -90,6 +94,7 @@ vertical-align:top}
 .ofs a.doc:hover,.ofs a.doc:focus{border-bottom-color:currentColor;
 text-decoration:underline}
 .ofs .manual{font-size:.82rem;color:var(--ink-2);margin:.2rem 0 0}
+.ofs .disclaimer{font-size:.82rem;color:var(--ink-2);margin:.4rem 0 0}
 @media print{.ofs a.doc{border-bottom:none}}
 .ofs .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(9.5rem,1fr));gap:.6rem;
 margin:1rem 0 .4rem}
@@ -335,6 +340,14 @@ def _headline(report: FactsheetReport) -> list[str]:
     return parts
 
 
+def _disclaimer(url: str) -> str:
+    """The canonical short notice with a link to the full disclaimer."""
+    return (
+        f"<p class='disclaimer' role='note'>{escape(SHORT_DISCLAIMER)} "
+        f"<a href='{escape(url)}' target='_blank' rel='noopener'>Full disclaimer</a>.</p>"
+    )
+
+
 def render_html(report: FactsheetReport) -> str:
     notes = Footnotes([])
     p = report.provenance
@@ -358,6 +371,7 @@ def render_html(report: FactsheetReport) -> str:
         f"<a href='{escape(docs.manual)}' target='_blank' rel='noopener'>reference manual</a>"
         f"{'' if docs.released else ' built from the development branch'}: formula, "
         "assumptions, interpretation and references.</p>",
+        _disclaimer(docs.source(DISCLAIMER_PATH)),
         "</header>",
         *_headline(report),
         "<h2>1. Input &amp; methodology</h2>",
@@ -409,7 +423,7 @@ def render_html(report: FactsheetReport) -> str:
         parts.append("<ul>")
         parts += [f"<li><em>{f.severity}</em>: {escape(f.message)}</li>" for f in material]
         parts.append("</ul>")
-    parts.append("<p>OpenFactsheet explains measurements; it does not give investment advice.</p>")
+    parts.append(_disclaimer(docs.source(DISCLAIMER_PATH)))
     if notes.texts:
         parts.append("<h2>Notes</h2><ol class='notes'>")
         parts += [f"<li>{escape(t)}</li>" for t in notes.texts]

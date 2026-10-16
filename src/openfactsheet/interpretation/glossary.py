@@ -21,3 +21,16 @@ CONFIDENCE_MEANING: dict[str, str] = {
 CONFIDENCE_DISCLAIMER = (
     "Confidence describes the reliability of an estimate, not the quality of the investment."
 )
+
+# The canonical short notice. DISCLAIMER.md at the repository root is the single source
+# of the full disclosure and of this line; tests/unit/test_disclaimer.py fails if this
+# constant, DISCLAIMER.md and README.md stop carrying the identical text. Reports show
+# it next to a link to the full text and never inside the return data.
+SHORT_DISCLAIMER = (
+    "For information and education only — not investment advice. Investing involves risk; "
+    "past performance does not predict future results. Verify results and consult a "
+    "qualified financial adviser."
+)
+# Repository-relative path of the full disclosure, linked from every report at the
+# documentation version that produced it (DocumentationLinks.source).
+DISCLAIMER_PATH = "DISCLAIMER.md"

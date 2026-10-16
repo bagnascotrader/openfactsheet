@@ -59,6 +59,13 @@
     #raw("openfactsheet-manual.pdf#nameddest=metric-sharpe_ratio"). OpenFactsheet
     explains measurements; it does not give investment advice.
   ]
+  #v(0.6em)
+  #block(stroke: 0.5pt + muted, inset: 8pt, width: 100%)[
+    #text(size: 9pt)[
+      *Public alpha.* #package.short_disclaimer
+      See #link(<doc-disclaimer>)[Important information and disclaimers].
+    ]
+  ]
 ]
 
 #outline(title: [Contents], depth: 3, indent: 1.2em)

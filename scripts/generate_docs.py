@@ -1,7 +1,8 @@
 """Generate metric documentation and reference-manual data from the code.
 
 python scripts/generate_docs.py          # write docs/metric_catalog.md, docs/interpretation/,
-                                         # docs/reference/{formulas,policies}.md, docs/manual/data/
+                                         # docs/reference/{formulas,policies}.md,
+                                         # docs/ATTRIBUTION.md, docs/manual/data/
 python scripts/generate_docs.py --check  # exit 1 if committed files are stale
 """
 

@@ -1,5 +1,6 @@
 {
  "authors": [
+  "Andrés A. Bagnasco",
   "OpenFactsheet contributors"
  ],
  "dependencies": [
@@ -50,6 +51,7 @@
  "methodology_version": "0.1.0",
  "name": "openfactsheet",
  "requires_python": ">=3.10",
+ "short_disclaimer": "For information and education only — not investment advice. Investing involves risk; past performance does not predict future results. Verify results and consult a qualified financial adviser.",
  "urls": {
   "Documentation": "https://github.com/bagnascotrader/openfactsheet/tree/main/docs",
   "Homepage": "https://github.com/bagnascotrader/openfactsheet",

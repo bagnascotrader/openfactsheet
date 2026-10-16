@@ -6,7 +6,11 @@ it (decision 0035).
 
 from __future__ import annotations
 
-from openfactsheet.interpretation.glossary import CONFIDENCE_DISCLAIMER
+from openfactsheet.interpretation.glossary import (
+    CONFIDENCE_DISCLAIMER,
+    DISCLAIMER_PATH,
+    SHORT_DISCLAIMER,
+)
 from openfactsheet.models.metric import MetricResult
 from openfactsheet.models.report import FactsheetReport
 from openfactsheet.policy.applicability import NO_BENCHMARK_REASON
@@ -114,6 +118,8 @@ def render_markdown(report: FactsheetReport) -> str:
         "",
         f"*Canonical report · {report.assumptions.name} · openfactsheet {p.package_version}*",
         "",
+        f"> {SHORT_DISCLAIMER} [Full disclaimer]({docs.source(DISCLAIMER_PATH)}).",
+        "",
         f"Every metric below links to its topic in the [reference manual]({docs.manual})"
         + ("" if docs.released else " built from the development branch")
         + ": formula, assumptions, interpretation and references.",
@@ -185,7 +191,7 @@ def render_markdown(report: FactsheetReport) -> str:
     if material:
         out += ["", "**Material data-quality findings:**", ""]
         out += [f"- *{f.severity}*: {_cell(f.message)}" for f in material]
-    out += ["", "OpenFactsheet explains measurements; it does not give investment advice."]
+    out += ["", f"{SHORT_DISCLAIMER} [Full disclaimer]({docs.source(DISCLAIMER_PATH)})."]
     if notes.texts:
         out += ["", "## Notes", ""]
         out += [f"{i}. {_cell(t)}" for i, t in enumerate(notes.texts, start=1)]
