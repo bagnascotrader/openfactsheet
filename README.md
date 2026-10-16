@@ -18,7 +18,7 @@ One function call. One versioned methodology. Every metric, including the unflat
 **[Quick start](#quick-start)** &nbsp;·&nbsp;
 **[Why OpenFactsheet](#why-openfactsheet)** &nbsp;·&nbsp;
 **[Example](#a-sharpe-ratio-of-238-and-why-you-should-not-trust-it)** &nbsp;·&nbsp;
-**[Metrics](#90-metrics-one-methodology)** &nbsp;·&nbsp;
+**[Metrics](#102-metrics-one-methodology)** &nbsp;·&nbsp;
 **[Methodology](docs/methodology.md)** &nbsp;·&nbsp;
 **[Docs](#documentation)** &nbsp;·&nbsp;
 **[Roadmap](#roadmap)**
@@ -288,7 +288,7 @@ received.
   [reference implementations](docs/validation/reference_implementations.md).
 - **Independent implementations.** Formulas are implemented from their academic
   definitions, not copied from other libraries' source code.
-- **34 methodology decision records.** Every contested convention (sample vs.
+- **36 methodology decision records.** Every contested convention (sample vs.
   population deviation, VaR quantile interpolation, the Sortino denominator,
   drawdown episode definitions, partial calendar years, and so on) has a written
   [decision](docs/methodology/decisions/README.md) with its rationale.
