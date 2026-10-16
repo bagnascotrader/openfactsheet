@@ -4,9 +4,9 @@ All notable changes are recorded here. OpenFactsheet versions the **package**
 and the **methodology** separately: a methodology version change means reported
 numbers, statuses or conventions changed.
 
-## [0.1.0] — unreleased
+## [0.1.0a1] — 2026-10-16
 
-Package 0.1.0 · Methodology 0.1.0
+Package 0.1.0a1 (public alpha) · Methodology 0.1.0
 
 ### Added
 - Canonical pipeline: input → normalization → data-quality diagnostics →

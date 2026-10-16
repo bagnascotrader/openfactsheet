@@ -76,11 +76,14 @@ dev = [
     "Pillow>=12.3",
     "tomli>=2; python_version < '3.11'",
 ]
-all =["openfactsheet[excel,pdf,ocr]"]
+all = ["openfactsheet[excel,pdf,ocr]"]
 
 [project.urls]
 Homepage = "https://github.com/bagnascotrader/openfactsheet"
+Website = "https://openfactsheet.org"
 Documentation = "https://github.com/bagnascotrader/openfactsheet/tree/main/docs"
+Manual = "https://github.com/bagnascotrader/openfactsheet/releases/download/manual-latest/openfactsheet-manual.pdf"
+Changelog = "https://github.com/bagnascotrader/openfactsheet/blob/main/CHANGELOG.md"
 Issues = "https://github.com/bagnascotrader/openfactsheet/issues"
 
 [tool.hatch.version]

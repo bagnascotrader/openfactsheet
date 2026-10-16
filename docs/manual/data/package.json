@@ -55,9 +55,12 @@
  "requires_python": ">=3.10",
  "short_disclaimer": "For information and education only — not investment advice. Investing involves risk; past performance does not predict future results. Verify results and consult a qualified financial adviser.",
  "urls": {
+  "Changelog": "https://github.com/bagnascotrader/openfactsheet/blob/main/CHANGELOG.md",
   "Documentation": "https://github.com/bagnascotrader/openfactsheet/tree/main/docs",
   "Homepage": "https://github.com/bagnascotrader/openfactsheet",
-  "Issues": "https://github.com/bagnascotrader/openfactsheet/issues"
+  "Issues": "https://github.com/bagnascotrader/openfactsheet/issues",
+  "Manual": "https://github.com/bagnascotrader/openfactsheet/releases/download/manual-latest/openfactsheet-manual.pdf",
+  "Website": "https://openfactsheet.org"
  },
- "version": "0.1.0"
+ "version": "0.1.0a1"
 }

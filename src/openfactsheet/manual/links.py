@@ -36,8 +36,8 @@ MANUAL_FILENAME = "openfactsheet-manual.pdf"
 # ``tests/unit/test_links.py`` checks against CHANGELOG.md.
 ROLLING_MANUAL_TAG = "manual-latest"
 ROLLING_SOURCE_REF = "main"
-MANUAL_TAG = ROLLING_MANUAL_TAG
-SOURCE_REF = ROLLING_SOURCE_REF
+MANUAL_TAG = "v0.1.0a1"
+SOURCE_REF = "v0.1.0a1"
 
 
 @dataclass(frozen=True)
