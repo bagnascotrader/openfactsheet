@@ -10,9 +10,10 @@ One function call. One versioned methodology. Every metric, including the unflat
 [![Python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-0B3C7D?logo=python&logoColor=white)](pyproject.toml)
 [![License](https://img.shields.io/badge/license-Apache--2.0-0B3C7D)](LICENSE)
 [![Methodology](https://img.shields.io/badge/methodology-0.1.0-0E7C86)](docs/methodology.md)
-[![Metrics](https://img.shields.io/badge/canonical%20metrics-90-10A37F)](docs/metric_catalog.md)
+[![Metrics](https://img.shields.io/badge/canonical%20metrics-102-10A37F)](docs/metric_catalog.md)
 [![Typed](https://img.shields.io/badge/mypy-strict-10A37F)](pyproject.toml)
 [![Status](https://img.shields.io/badge/status-alpha-C98A00)](CHANGELOG.md)
+[![PyPI](https://img.shields.io/pypi/v/openfactsheet?include_prereleases&color=0B3C7D)](https://pypi.org/project/openfactsheet/)
 
 **[Quick start](#quick-start)** &nbsp;·&nbsp;
 **[Why OpenFactsheet](#why-openfactsheet)** &nbsp;·&nbsp;
@@ -102,9 +103,15 @@ applies them the same way to every return stream.
 ## Quick start
 
 ```bash
+pip install --pre "openfactsheet[excel]"   # public alpha on PyPI (0.1.0a1)
+```
+
+or, from a source checkout:
+
+```bash
 git clone https://github.com/bagnascotrader/openfactsheet.git
 cd openfactsheet
-pip install -e ".[excel]"          # PyPI release pending
+pip install -e ".[excel]"
 ```
 
 ```python
