@@ -43,23 +43,26 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-excel = ["openpyxl>=3.1"]
+# openpyxl parses workbook XML with defusedxml when it is installed (security review 2026-10).
+excel = ["openpyxl>=3.1", "defusedxml>=0.7.1"]
 # PDF ingestion reads embedded text (decision 0030); OCR of images and scanned pages uses a
 # local engine with its bundled models, never a network call (decision 0031).
-pdf = ["pypdf>=4.0"]
-ocr = ["rapidocr>=3.9,<4", "onnxruntime>=1.17", "pypdfium2>=4", "Pillow>=10", "pypdf>=4.0"]
-tesseract = ["pytesseract>=0.3.10", "pypdfium2>=4", "Pillow>=10", "pypdf>=4.0"]
+pdf = ["pypdf>=6.19"]
+ocr = ["rapidocr>=3.9,<4", "onnxruntime>=1.17", "pypdfium2>=4", "Pillow>=12.3", "pypdf>=6.19"]
+tesseract = ["pytesseract>=0.3.10", "pypdfium2>=4", "Pillow>=12.3", "pypdf>=6.19"]
 images = ["openfactsheet[ocr]"]
 # Builds the PDF reference manual from a source checkout (decision 0034). The
 # compiler is pinned exactly: the committed PDF records the version it was built with.
-docs = ["typst==0.15.0", "pikepdf>=9", "pypdf>=4.0"]
+docs = ["typst==0.15.0", "pikepdf>=9", "pypdf>=6.19"]
 validation = [
+    "packaging>=23",  # version-dependent reference assertions
     "empyrical-reloaded>=0.5",
     "quantstats>=0.0.62",
     "skfolio>=0.7",
 ]
 dev = [
     "pytest>=8",
+    "packaging>=23",
     "pytest-cov>=5",
     "hypothesis>=6.100",
     "ruff>=0.6",
@@ -68,8 +71,9 @@ dev = [
     "detect-secrets>=1.5",
     "pre-commit>=3.7",
     "openpyxl>=3.1",
-    "pypdf>=4.0",
-    "Pillow>=10",
+    "defusedxml>=0.7.1",
+    "pypdf>=6.19",
+    "Pillow>=12.3",
     "tomli>=2; python_version < '3.11'",
 ]
 all =["openfactsheet[excel,pdf,ocr]"]
@@ -129,8 +133,9 @@ target-version = "py310"
 src = ["src", "tests", "scripts"]
 
 [tool.ruff.lint]
-select = ["E", "F", "W", "I", "B", "UP", "SIM", "RUF", "NPY", "PD", "C4", "PT", "RET"]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "RUF", "NPY", "PD", "C4", "PT", "RET", "S"]
 ignore = [
+    "S101",   # asserts narrow types (src) and are pytest's idiom (tests); never a security check
     "PD011",  # ReturnSeries.values is our own NumPy array attribute, not pandas `.values`
     "RET504", # explicit intermediate variables aid readability in formulas
     "RUF001", # unicode in docstrings/strings (e.g. minus sign handling) is intentional

@@ -16,8 +16,10 @@ on:
     types: [published]
   workflow_dispatch:
 
+# Least privilege: read-only by default; only the jobs that edit releases
+# get `contents: write`.
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: manual-download
@@ -30,10 +32,14 @@ env:
 jobs:
   latest:
     name: Update the manual-latest download
+    permissions:
+      contents: write
     if: github.event_name != 'release'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
       - name: Create the pre-release once
         run: |
           gh release view manual-latest >/dev/null 2>&1 || gh release create manual-latest \
@@ -49,10 +55,17 @@ jobs:
 
   release:
     name: Attach the manual to the release
+    permissions:
+      contents: write
     if: github.event_name == 'release'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
         with:
           ref: ${{ github.event.release.tag_name }}
-      - run: gh release upload "${{ github.event.release.tag_name }}" "$PDF" --clobber
+          persist-credentials: false
+      # The tag name reaches the shell through an environment variable, never by
+      # expression substitution into the script.
+      - run: gh release upload "$TAG" "$PDF" --clobber
+        env:
+          TAG: ${{ github.event.release.tag_name }}

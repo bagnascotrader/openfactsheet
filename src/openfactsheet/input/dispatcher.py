@@ -20,6 +20,7 @@ from openfactsheet.input.clipboard import read_text_table
 from openfactsheet.input.csv import read_csv
 from openfactsheet.input.excel import read_excel
 from openfactsheet.input.image import IMAGE_SUFFIXES, read_image
+from openfactsheet.input.limits import check_file_size
 from openfactsheet.input.pandas_input import from_frame, from_series
 from openfactsheet.input.pdf import read_pdf
 from openfactsheet.models.input import RawReturns
@@ -31,6 +32,9 @@ _EXCEL_SUFFIXES = frozenset({".xlsx", ".xlsm", ".xls"})
 def _from_path(path: Path, name: str | None, ocr_engine: str | None = None) -> list[RawReturns]:
     if not path.exists():
         raise InputError(f"File not found: {path}")
+    if not path.is_file():
+        raise InputError(f"Not a regular file: {path}")
+    check_file_size(path)  # safety limit, before any parser reads the file
     suffix = path.suffix.lower()
     label = name or path.stem
     if suffix in _TEXT_SUFFIXES:

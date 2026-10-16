@@ -17,10 +17,11 @@
   "docs": [
    "typst==0.15.0",
    "pikepdf>=9",
-   "pypdf>=4.0"
+   "pypdf>=6.19"
   ],
   "excel": [
-   "openpyxl>=3.1"
+   "openpyxl>=3.1",
+   "defusedxml>=0.7.1"
   ],
   "images": [
    "openfactsheet[ocr]"
@@ -29,19 +30,20 @@
    "rapidocr>=3.9,<4",
    "onnxruntime>=1.17",
    "pypdfium2>=4",
-   "Pillow>=10",
-   "pypdf>=4.0"
+   "Pillow>=12.3",
+   "pypdf>=6.19"
   ],
   "pdf": [
-   "pypdf>=4.0"
+   "pypdf>=6.19"
   ],
   "tesseract": [
    "pytesseract>=0.3.10",
    "pypdfium2>=4",
-   "Pillow>=10",
-   "pypdf>=4.0"
+   "Pillow>=12.3",
+   "pypdf>=6.19"
   ],
   "validation": [
+   "packaging>=23",
    "empyrical-reloaded>=0.5",
    "quantstats>=0.0.62",
    "skfolio>=0.7"

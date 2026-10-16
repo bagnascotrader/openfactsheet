@@ -1,0 +1,19 @@
+# Weekly update proposals for Python dependency floors (pyproject.toml) and for
+# the SHA-pinned GitHub Actions (security review, docs/audits/security_alpha_review.md).
+# Dependabot opens pull requests only; every update still passes CI and review.
+version: 2
+updates:
+  - package-ecosystem: pip
+    directory: "/"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    groups:
+      actions:
+        patterns: ["*"]

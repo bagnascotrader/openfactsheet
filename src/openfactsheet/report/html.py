@@ -421,7 +421,7 @@ def render_html(report: FactsheetReport) -> str:
     material = [f for f in report.diagnostics.findings if f.severity != "info"]
     if material:
         parts.append("<ul>")
-        parts += [f"<li><em>{f.severity}</em>: {escape(f.message)}</li>" for f in material]
+        parts += [f"<li><em>{escape(f.severity)}</em>: {escape(f.message)}</li>" for f in material]
         parts.append("</ul>")
     parts.append(_disclaimer(docs.source(DISCLAIMER_PATH)))
     if notes.texts:

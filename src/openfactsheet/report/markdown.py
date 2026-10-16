@@ -6,6 +6,8 @@ it (decision 0035).
 
 from __future__ import annotations
 
+import re
+
 from openfactsheet.interpretation.glossary import (
     CONFIDENCE_DISCLAIMER,
     DISCLAIMER_PATH,
@@ -37,11 +39,18 @@ from openfactsheet.report.tables import (
 
 
 def _cell(text: str) -> str:
-    return text.replace("|", "\\|").replace("\n", " ")
+    # Names and labels can come from untrusted files (column headers, PDF text):
+    # angle brackets are written as entities so a renderer that allows raw HTML
+    # never sees a tag.
+    return text.replace("|", "\\|").replace("\n", " ").replace("<", "&lt;").replace(">", "&gt;")
 
 
 def _kv_block(text: str) -> list[str]:
-    return ["```text", text, "```"]
+    # The fence is longer than any backtick run in the text (CommonMark), so text
+    # read from a document can never close the code block early.
+    longest = max((len(run) for run in re.findall(r"`+", text)), default=0)
+    fence = "`" * max(3, longest + 1)
+    return [f"{fence}text", text, fence]
 
 
 def _doc_link(result: MetricResult) -> str:

@@ -95,6 +95,21 @@ Package 0.1.0 · Methodology 0.1.0
 - Complete Google-style docstrings for the public API; a test requires every
   argument to be documented.
 
+### Security (pre-release review, 2026-10-16)
+- Security review of the public alpha: `docs/audits/security_alpha_review.md`
+  (automated scans plus manual review; not a third-party audit). No metric
+  value, status or methodology convention changed.
+- Explicit resource limits on untrusted inputs, defined in
+  `openfactsheet.input.limits`: file size, Excel uncompressed size, image and
+  rendered-page pixels, PDF pages, Tesseract run time. Oversized inputs are
+  refused with `InputError` / `OCRExtractionError`.
+- Markdown reports write `<`/`>` in names as entities and fence document text
+  with a fence it cannot close; terminal reports replace control characters.
+- Dependency floors raised past known advisories: `pypdf>=6.19`,
+  `Pillow>=12.3`; `defusedxml` added to the `excel` extra.
+- CI: GitHub Actions pinned to commit SHAs, least-privilege workflow
+  permissions, `persist-credentials: false`, Dependabot for pip and Actions.
+
 ### Changed (pre-release)
 - The reference manual can be downloaded as one file from the `manual-latest`
   pre-release (updated by `.github/workflows/manual.yml` whenever the PDF on

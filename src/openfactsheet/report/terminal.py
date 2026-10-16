@@ -7,6 +7,7 @@ the Markdown and HTML reports link every metric name.
 
 from __future__ import annotations
 
+import re
 import textwrap
 
 from openfactsheet.interpretation.glossary import (
@@ -138,6 +139,16 @@ def _factor_section(report: FactsheetReport, notes: Footnotes) -> list[str]:
     return out
 
 
+# Control characters (ESC, C1 controls such as CSI, DEL...) other than tab and newline.
+_CONTROL = re.compile(r"[\x00-\x08\x0b-\x1f\x7f-\x9f]")
+
+
+def _printable(text: str) -> str:
+    """Replace control characters, so text read from an untrusted file (a column
+    header, a PDF) cannot send terminal escape sequences when the report is printed."""
+    return _CONTROL.sub("\N{REPLACEMENT CHARACTER}", text)
+
+
 def render_terminal(report: FactsheetReport) -> str:
     notes = Footnotes([])
     p = report.provenance
@@ -234,4 +245,4 @@ def render_terminal(report: FactsheetReport) -> str:
                 textwrap.fill(text, WIDTH, initial_indent=f"  [{i}] ", subsequent_indent="      ")
             )
     out.append("=" * WIDTH)
-    return "\n".join(out)
+    return _printable("\n".join(out))
