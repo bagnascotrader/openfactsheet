@@ -496,6 +496,12 @@
       "plain": "A beta of 1 means the fund tended to move one-for-one with the benchmark; 0.5 means about half as much.",
       "professional": "OLS beta against the supplied benchmark with rf = 0; details include the standard error and t-statistic (conventional i.i.d. errors)."
     },
+    "bias_ratio": {
+      "context": [],
+      "metric_id": "bias_ratio",
+      "plain": "A diagnostic of the shape of returns near zero. Values well above 1 mean small gains were much more common than small losses. That can come from a genuinely positive average return, from valuation smoothing of hard-to-price assets, or from rounding. It is not evidence of wrongdoing and is not a fraud detector.",
+      "professional": "Abdulali's bias ratio (Bacon 2nd ed., ch. 10, eq. 10.17) with the closed intervals as printed, so an exactly-zero return is counted in both numerator and denominator. Proposed to flag the asymmetry around zero typical of smoothed or discretionarily marked NAVs in illiquid strategies; a positive mean that is large relative to volatility also raises it mechanically. Read it alongside the autocorrelation, smoothing and zero-return diagnostics, never alone."
+    },
     "bull_beta": {
       "context": [],
       "metric_id": "bull_beta",
@@ -653,6 +659,12 @@
       "metric_id": "geometric_mean_return",
       "plain": "The average compounded return per period (e.g. per month).",
       "professional": "Per-period geometric mean; CAGR is its annualized form. Lies below the arithmetic mean by roughly half the variance (volatility drag). Needs no frequency."
+    },
+    "gini_mean_difference": {
+      "context": [],
+      "metric_id": "gini_mean_difference",
+      "plain": "How far apart the returns of two periods picked at random typically are; higher means a bumpier ride. It needs no average to measure from.",
+      "professional": "Gini's mean difference (Bacon 2nd ed., ch. 2, eq. 2.8), the unbiased U-statistic over all n(n-1) ordered pairs. Unlike the mean absolute deviation it measures pairwise distances, not distances from the mean; for normal returns MD = 2 sigma / sqrt(pi). Yitzhaki (2003) recommends it for non-normal distributions. Per period, not annualized."
     },
     "information_ratio": {
       "context": [],
@@ -844,6 +856,12 @@
       "plain": "How many times over the investment earned back its worst decline.",
       "professional": "Net compounded profit over the maximum drawdown (a practitioner measure used in trading-system evaluation). Not annualized, so it grows with the length of the track record; compare only across equal histories."
     },
+    "relative_mean_difference": {
+      "context": [],
+      "metric_id": "relative_mean_difference",
+      "plain": "How large the typical gap between two periods' returns is compared with the average return. A value of 5 means returns typically differ by five times the average return. A negative value means the average return was negative; it does not mean dispersion was low.",
+      "professional": "Bacon (2nd ed., ch. 2, eq. 2.9): mean difference over the signed arithmetic mean, a coefficient-of-variation analogue built on Gini's mean difference. Neither higher nor lower is uniformly better: with a positive mean a smaller value means less dispersion per unit of return, but the sign flips with the mean and the ratio explodes as the mean approaches zero. Per period, dimensionless."
+    },
     "residual_volatility": {
       "context": [],
       "metric_id": "residual_volatility",
@@ -881,6 +899,12 @@
       "metric_id": "skewness",
       "plain": "Negative values mean occasional large losses and many small gains; positive values mean occasional large gains.",
       "professional": "Bias-corrected sample skewness (Joanes & Gill type G1). Negative skew combined with a high Sharpe ratio is a classic signature of hidden tail risk."
+    },
+    "skewness_kurtosis_ratio": {
+      "context": [],
+      "metric_id": "skewness_kurtosis_ratio",
+      "plain": "Positive values mean the return distribution leans towards occasional large gains, negative values towards occasional large losses; dividing by kurtosis tempers the reading when extreme periods are common in both directions. It describes shape; it is not a measure of performance.",
+      "professional": "Watanabe's skewness-kurtosis ratio (Bacon 2nd ed., ch. 3, eq. 3.7): skewness over Pearson (non-excess) kurtosis, computed from the canonical bias-corrected G1 and G2 so that it is consistent with the reported skewness and excess kurtosis. It is not a substitute for a risk-adjusted return measure and inherits the large sampling error of both moment estimates."
     },
     "sortino_ratio": {
       "context": [],
@@ -959,6 +983,12 @@
       "metric_id": "volatility",
       "plain": "How much returns typically swing from one period to the next; higher means a bumpier ride.",
       "professional": "Sample standard deviation of per-period returns; symmetric, treats upside and downside deviations alike."
+    },
+    "volatility_skewness": {
+      "context": [],
+      "metric_id": "volatility_skewness",
+      "plain": "Compares how much returns vary above zero with how much they vary below it. Above 1, the variability came more from gains; below 1, more from losses. It says nothing about the average return.",
+      "professional": "Bacon (2nd ed., ch. 6, eq. 6.32): second upper partial moment over second lower partial moment at the canonical target 0 with full-sample denominators (the n cancel). No square roots: Bacon's variability skewness (p. 131) is its square root, a monotonic transform not reported separately. The ratio is dominated by the largest deviations and explodes when losses are rare."
     },
     "worst_calendar_year": {
       "context": [],
@@ -1498,6 +1528,46 @@
       "status": "applicable",
       "unit": "decimal_return",
       "value": 0.023757780853517877,
+      "warnings": []
+    },
+    {
+      "assumptions": [],
+      "category": "volatility",
+      "confidence": "high",
+      "details": {},
+      "direction": "lower_is_better",
+      "documentation": "https://github.com/bagnascotrader/openfactsheet/releases/download/manual-latest/openfactsheet-manual.pdf#nameddest=metric-gini_mean_difference",
+      "formula_id": "gini_mean_difference@v1",
+      "id": "gini_mean_difference",
+      "methodology_version": "0.1.0",
+      "name": "Gini mean difference",
+      "nature": "estimated",
+      "observations": 102,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "decimal_return",
+      "value": 0.034650557173364405,
+      "warnings": []
+    },
+    {
+      "assumptions": [],
+      "category": "volatility",
+      "confidence": "high",
+      "details": {},
+      "direction": "context_dependent",
+      "documentation": "https://github.com/bagnascotrader/openfactsheet/releases/download/manual-latest/openfactsheet-manual.pdf#nameddest=metric-relative_mean_difference",
+      "formula_id": "relative_mean_difference@v1",
+      "id": "relative_mean_difference",
+      "methodology_version": "0.1.0",
+      "name": "Relative mean difference",
+      "nature": "estimated",
+      "observations": 102,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "ratio",
+      "value": 2.661822171239535,
       "warnings": []
     },
     {
@@ -2492,6 +2562,75 @@
       "warnings": [
         "102 observations (< 120)."
       ]
+    },
+    {
+      "assumptions": [],
+      "category": "distribution",
+      "confidence": "low",
+      "details": {},
+      "direction": "context_dependent",
+      "documentation": "https://github.com/bagnascotrader/openfactsheet/releases/download/manual-latest/openfactsheet-manual.pdf#nameddest=metric-skewness_kurtosis_ratio",
+      "formula_id": "skewness_kurtosis_ratio@v1",
+      "id": "skewness_kurtosis_ratio",
+      "methodology_version": "0.1.0",
+      "name": "Skewness-kurtosis ratio",
+      "nature": "estimated",
+      "observations": 102,
+      "reason": null,
+      "reference_values": null,
+      "status": "low_confidence",
+      "unit": "ratio",
+      "value": -0.032950675572893696,
+      "warnings": [
+        "Only 102 observations (< 120)."
+      ]
+    },
+    {
+      "assumptions": [],
+      "category": "distribution",
+      "confidence": "high",
+      "details": {
+        "count_0_to_s": 42,
+        "count_minus_s_to_0": 25,
+        "standard_deviation": 0.03093161735027925,
+        "zero_returns_counted_both_sides": 0
+      },
+      "direction": "neutral",
+      "documentation": "https://github.com/bagnascotrader/openfactsheet/releases/download/manual-latest/openfactsheet-manual.pdf#nameddest=metric-bias_ratio",
+      "formula_id": "bias_ratio@v1",
+      "id": "bias_ratio",
+      "methodology_version": "0.1.0",
+      "name": "Bias ratio",
+      "nature": "estimated",
+      "observations": 102,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "ratio",
+      "value": 1.6153846153846154,
+      "warnings": []
+    },
+    {
+      "assumptions": [
+        "Minimum acceptable return (target) = 0% per period; downside deviation uses all observations in the denominator."
+      ],
+      "category": "distribution",
+      "confidence": "high",
+      "details": {},
+      "direction": "context_dependent",
+      "documentation": "https://github.com/bagnascotrader/openfactsheet/releases/download/manual-latest/openfactsheet-manual.pdf#nameddest=metric-volatility_skewness",
+      "formula_id": "volatility_skewness@v1",
+      "id": "volatility_skewness",
+      "methodology_version": "0.1.0",
+      "name": "Volatility skewness",
+      "nature": "estimated",
+      "observations": 102,
+      "reason": null,
+      "reference_values": null,
+      "status": "applicable",
+      "unit": "ratio",
+      "value": 3.5835533166699847,
+      "warnings": []
     },
     {
       "assumptions": [],

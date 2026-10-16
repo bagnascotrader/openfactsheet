@@ -23,6 +23,8 @@
     "volatility",
     "annualized_volatility",
     "mean_absolute_deviation",
+    "gini_mean_difference",
+    "relative_mean_difference",
     "interquartile_range",
     "downside_deviation",
     "semi_deviation",
@@ -87,7 +89,10 @@
    "metrics": [
     "skewness",
     "excess_kurtosis",
-    "jarque_bera_pvalue"
+    "jarque_bera_pvalue",
+    "skewness_kurtosis_ratio",
+    "bias_ratio",
+    "volatility_skewness"
    ],
    "title": "Distribution"
   },
@@ -1105,6 +1110,139 @@
    "undefined_when": [],
    "unit": "decimal_return",
    "unit_text": "Decimal return (0.01 = 1%); displayed as a percentage with 2 decimals.",
+   "uses_wealth_path": false,
+   "volatility_based": true
+  },
+  {
+   "anchor": "metric-gini_mean_difference",
+   "annualized": false,
+   "assumptions": [
+    "Returns are identically distributed over the history."
+   ],
+   "canonical_parameters": [],
+   "category": "volatility",
+   "category_title": "Risk summary",
+   "convention": "Pair denominator n(n-1) (not n^2), per period, computed from the sorted returns in O(n log n) (decision 0036).",
+   "criteria": "### When a value is produced (checked in this order)\n\n1. At least 2 observations (mathematical minimum of policy `dispersion`); otherwise `insufficient_data`.\n2. Once the conditions above hold, the value is always defined.\n\nAn unexpected calculation failure or a non-finite result is reported as `error` with the value withheld; it never appears as NaN or infinity.\n\n### Confidence and status\n\n- Base confidence from years of history `y = n / P` (aligned observations for benchmark metrics):\n  **high** if `y >= 5`; **moderate** if `3 <= y < 5`; **low** if `y < 3` or if `y` cannot be established (no regular frequency).\n- Then, in this order, data-quality modifiers (a cap lowers confidence to at most the stated level; warnings are attached to the result):\n  - Smoothing risk **high** (lag-1 autocorrelation >= 0.3 and z = rho_1 sqrt(n) >= 1.96) sets confidence to **low**.\n  - Smoothing risk **moderate** (rho_1 >= 0.15 and z >= 1.645) caps at **moderate**.\n  - At least 10% exactly-zero returns caps at **moderate**.\n  - With n >= 24 and skewness <= -1 or excess kurtosis >= 3: warning only (no confidence change).\n- Status: `low_confidence` if the final confidence is **low**, otherwise `applicable`. Low confidence never hides the value.\n\n### Assumptions recorded on every result\n\n- None beyond simple decimal returns as supplied.\n\n### Output\n\n- Unit: Decimal return (0.01 = 1%); displayed as a percentage with 2 decimals. Values are stored unrounded (float64).\n- Direction: Lower is better.\n- Nature: Estimated: a sample statistic subject to sampling error.\n- Formula id `gini_mean_difference@v1`; the version increments if the definition changes.\n",
+   "decisions": [
+    "0036"
+   ],
+   "direction": "lower_is_better",
+   "direction_text": "Lower is better",
+   "formula": "MD = sum_{i != j} |r_i - r_j| / (n(n-1)) = 2 / (n(n-1)) * sum_k (2k - n - 1) r_(k), r_(k) sorted ascending",
+   "formula_id": "gini_mean_difference@v1",
+   "formula_latex": "\\mathrm{MD} = \\frac{1}{n(n-1)} \\sum_{i=1}^{n} \\sum_{j \\ne i} \\left| r_i - r_j \\right| = \\frac{2}{n(n-1)} \\sum_{k=1}^{n} (2k - n - 1)\\, r_{(k)}",
+   "id": "gini_mean_difference",
+   "inputs": "Periodic simple returns.",
+   "institutional": "Gini's mean difference (Bacon 2nd ed., ch. 2, eq. 2.8), the unbiased U-statistic over all n(n-1) ordered pairs. Unlike the mean absolute deviation it measures pairwise distances, not distances from the mean; for normal returns MD = 2 sigma / sqrt(pi). Yitzhaki (2003) recommends it for non-normal distributions. Per period, not annualized.",
+   "measures": "Average absolute difference between the returns of two different periods.",
+   "min_data_policy": {
+    "description": "Requires at least 2 observations; low confidence below 3 years, moderate below 5.",
+    "key": "dispersion"
+   },
+   "minimum_data": "At least 2 observations; low confidence below 3 years.",
+   "misleading_when": [
+    "Returns are smoothed or stale (illiquid assets, appraisal pricing): measured volatility is understated.",
+    "Compared across data frequencies (per-period quantity).",
+    "Read as a tail-risk measure: like volatility it treats gains and losses alike."
+   ],
+   "name": "Gini mean difference",
+   "nature": "estimated",
+   "nature_text": "Estimated: a sample statistic subject to sampling error.",
+   "page": "docs/interpretation/gini_mean_difference.md",
+   "recorded_assumptions": [],
+   "reference_implementations": [
+    {
+     "agrees": true,
+     "function": "measures.gini_mean_difference",
+     "library": "skfolio 1.0.6",
+     "note": ""
+    }
+   ],
+   "references": [
+    {
+     "citation": "Gini, C. (1912). Variabilita e mutabilita. Studi Economico-Giuridici della R. Universita di Cagliari, 3(2), 3-159 (mean difference).",
+     "url": null
+    },
+    {
+     "citation": "Bacon, C. R. (2021). Practical Risk-Adjusted Performance Measurement (2nd ed.). Wiley.",
+     "url": null
+    },
+    {
+     "citation": "Yitzhaki, S. (2003). Gini's Mean Difference: A Superior Measure of Variability for Non-Normal Distributions. Metron, 61(2), 285-316.",
+     "url": null
+    }
+   ],
+   "requires_benchmark": false,
+   "requires_factors": false,
+   "retail": "How far apart the returns of two periods picked at random typically are; higher means a bumpier ride. It needs no average to measure from.",
+   "signed_loss": false,
+   "supplementary": false,
+   "undefined_when": [],
+   "unit": "decimal_return",
+   "unit_text": "Decimal return (0.01 = 1%); displayed as a percentage with 2 decimals.",
+   "uses_wealth_path": false,
+   "volatility_based": true
+  },
+  {
+   "anchor": "metric-relative_mean_difference",
+   "annualized": false,
+   "assumptions": [
+    "Returns are identically distributed over the history."
+   ],
+   "canonical_parameters": [],
+   "category": "volatility",
+   "category_title": "Risk summary",
+   "convention": "Signed arithmetic mean in the denominator, as printed by Bacon (never |mean|); not annualized (decision 0036).",
+   "criteria": "### When a value is produced (checked in this order)\n\n1. At least 2 observations (mathematical minimum of policy `dispersion`); otherwise `insufficient_data`.\n2. The value is undefined, and reported as `not_applicable` with the reason, when:\n   - The arithmetic mean return is exactly zero.\n\nAn unexpected calculation failure or a non-finite result is reported as `error` with the value withheld; it never appears as NaN or infinity.\n\n### Confidence and status\n\n- Base confidence from years of history `y = n / P` (aligned observations for benchmark metrics):\n  **high** if `y >= 5`; **moderate** if `3 <= y < 5`; **low** if `y < 3` or if `y` cannot be established (no regular frequency).\n- Then, in this order, data-quality modifiers (a cap lowers confidence to at most the stated level; warnings are attached to the result):\n  - Smoothing risk **high** (lag-1 autocorrelation >= 0.3 and z = rho_1 sqrt(n) >= 1.96) sets confidence to **low**.\n  - Smoothing risk **moderate** (rho_1 >= 0.15 and z >= 1.645) caps at **moderate**.\n  - At least 10% exactly-zero returns caps at **moderate**.\n  - With n >= 24 and skewness <= -1 or excess kurtosis >= 3: warning only (no confidence change).\n- Status: `low_confidence` if the final confidence is **low**, otherwise `applicable`. Low confidence never hides the value.\n\n### Assumptions recorded on every result\n\n- None beyond simple decimal returns as supplied.\n\n### Output\n\n- Unit: Dimensionless ratio; displayed with 2 decimals. Values are stored unrounded (float64).\n- Direction: Context dependent.\n- Nature: Estimated: a sample statistic subject to sampling error.\n- Formula id `relative_mean_difference@v1`; the version increments if the definition changes.\n",
+   "decisions": [
+    "0036"
+   ],
+   "direction": "context_dependent",
+   "direction_text": "Context dependent",
+   "formula": "RMD = MD / mean(r_t), signed",
+   "formula_id": "relative_mean_difference@v1",
+   "formula_latex": "\\mathrm{RMD} = \\frac{\\mathrm{MD}}{\\bar r}, \\quad \\mathrm{MD} = \\frac{1}{n(n-1)} \\sum_{i=1}^{n} \\sum_{j \\ne i} \\left| r_i - r_j \\right|",
+   "id": "relative_mean_difference",
+   "inputs": "Periodic simple returns.",
+   "institutional": "Bacon (2nd ed., ch. 2, eq. 2.9): mean difference over the signed arithmetic mean, a coefficient-of-variation analogue built on Gini's mean difference. Neither higher nor lower is uniformly better: with a positive mean a smaller value means less dispersion per unit of return, but the sign flips with the mean and the ratio explodes as the mean approaches zero. Per period, dimensionless.",
+   "measures": "Gini mean difference per unit of the (signed) arithmetic mean return.",
+   "min_data_policy": {
+    "description": "Requires at least 2 observations; low confidence below 3 years, moderate below 5.",
+    "key": "dispersion"
+   },
+   "minimum_data": "At least 2 observations; low confidence below 3 years.",
+   "misleading_when": [
+    "The mean return is close to zero: the ratio becomes arbitrarily large and unstable.",
+    "The mean return is negative: the value is negative, and a larger dispersion gives a more negative number.",
+    "Returns are smoothed or stale (illiquid assets, appraisal pricing): measured volatility is understated."
+   ],
+   "name": "Relative mean difference",
+   "nature": "estimated",
+   "nature_text": "Estimated: a sample statistic subject to sampling error.",
+   "page": "docs/interpretation/relative_mean_difference.md",
+   "recorded_assumptions": [],
+   "reference_implementations": [],
+   "references": [
+    {
+     "citation": "Bacon, C. R. (2021). Practical Risk-Adjusted Performance Measurement (2nd ed.). Wiley.",
+     "url": null
+    },
+    {
+     "citation": "Gini, C. (1912). Variabilita e mutabilita. Studi Economico-Giuridici della R. Universita di Cagliari, 3(2), 3-159 (mean difference).",
+     "url": null
+    }
+   ],
+   "requires_benchmark": false,
+   "requires_factors": false,
+   "retail": "How large the typical gap between two periods' returns is compared with the average return. A value of 5 means returns typically differ by five times the average return. A negative value means the average return was negative; it does not mean dispersion was low.",
+   "signed_loss": false,
+   "supplementary": false,
+   "undefined_when": [
+    "The arithmetic mean return is exactly zero."
+   ],
+   "unit": "ratio",
+   "unit_text": "Dimensionless ratio; displayed with 2 decimals.",
    "uses_wealth_path": false,
    "volatility_based": true
   },
@@ -3905,7 +4043,8 @@
    "criteria": "### When a value is produced (checked in this order)\n\n1. At least 3 observations (mathematical minimum of policy `skewness`); otherwise `insufficient_data`.\n2. The value is undefined, and reported as `not_applicable` with the reason, when:\n   - Return variance is zero or underflows in floating point (e.g. identical returns).\n\nAn unexpected calculation failure or a non-finite result is reported as `error` with the value withheld; it never appears as NaN or infinity.\n\n### Confidence and status\n\n- Base confidence from the number of observations `n`: **high** if `n >= 120`; **moderate** if `60 <= n < 120`; **low** if `n < 60`.\n- Then, in this order, data-quality modifiers (a cap lowers confidence to at most the stated level; warnings are attached to the result):\n  - None apply to this metric.\n- Status: `low_confidence` if the final confidence is **low**, otherwise `applicable`. Low confidence never hides the value.\n\n### Assumptions recorded on every result\n\n- None beyond simple decimal returns as supplied.\n\n### Output\n\n- Unit: Dimensionless ratio; displayed with 2 decimals. Values are stored unrounded (float64).\n- Direction: Context dependent.\n- Nature: Estimated: a sample statistic subject to sampling error.\n- Formula id `skewness@v1`; the version increments if the definition changes.\n",
    "decisions": [
     "0011",
-    "0020"
+    "0020",
+    "0036"
    ],
    "direction": "context_dependent",
    "direction_text": "Context dependent",
@@ -4120,6 +4259,212 @@
    "unit_text": "Probability between 0 and 1; displayed with 3 decimals.",
    "uses_wealth_path": false,
    "volatility_based": false
+  },
+  {
+   "anchor": "metric-skewness_kurtosis_ratio",
+   "annualized": false,
+   "assumptions": [
+    "Returns are identically distributed over the history."
+   ],
+   "canonical_parameters": [],
+   "category": "distribution",
+   "category_title": "Distribution",
+   "convention": "Bias-corrected G1 over G2 + 3 (estimators of decision 0011); not skewness over excess kurtosis (decision 0036).",
+   "criteria": "### When a value is produced (checked in this order)\n\n1. At least 4 observations (mathematical minimum of policy `kurtosis`); otherwise `insufficient_data`.\n2. The value is undefined, and reported as `not_applicable` with the reason, when:\n   - Return variance is zero or underflows in floating point (e.g. identical returns).\n   - The bias-corrected kurtosis G2 + 3 is zero or negative (possible only in very small samples).\n\nAn unexpected calculation failure or a non-finite result is reported as `error` with the value withheld; it never appears as NaN or infinity.\n\n### Confidence and status\n\n- Base confidence from the number of observations `n`: **high** if `n >= 240`; **moderate** if `120 <= n < 240`; **low** if `n < 120`.\n- Then, in this order, data-quality modifiers (a cap lowers confidence to at most the stated level; warnings are attached to the result):\n  - None apply to this metric.\n- Status: `low_confidence` if the final confidence is **low**, otherwise `applicable`. Low confidence never hides the value.\n\n### Assumptions recorded on every result\n\n- None beyond simple decimal returns as supplied.\n\n### Output\n\n- Unit: Dimensionless ratio; displayed with 2 decimals. Values are stored unrounded (float64).\n- Direction: Context dependent.\n- Nature: Estimated: a sample statistic subject to sampling error.\n- Formula id `skewness_kurtosis_ratio@v1`; the version increments if the definition changes.\n",
+   "decisions": [
+    "0011",
+    "0036"
+   ],
+   "direction": "context_dependent",
+   "direction_text": "Context dependent",
+   "formula": "SKR = G1 / (G2 + 3), G1 and G2 the canonical bias-corrected skewness and excess kurtosis",
+   "formula_id": "skewness_kurtosis_ratio@v1",
+   "formula_latex": "\\mathrm{SKR} = \\frac{G_1}{G_2 + 3}, \\quad G_1 = \\frac{\\sqrt{n(n-1)}}{n-2} \\, \\frac{m_3}{m_2^{3/2}}, \\quad G_2 = \\frac{n-1}{(n-2)(n-3)} \\left[ (n+1) \\frac{m_4}{m_2^2} - 3(n-1) \\right]",
+   "id": "skewness_kurtosis_ratio",
+   "inputs": "Periodic simple returns.",
+   "institutional": "Watanabe's skewness-kurtosis ratio (Bacon 2nd ed., ch. 3, eq. 3.7): skewness over Pearson (non-excess) kurtosis, computed from the canonical bias-corrected G1 and G2 so that it is consistent with the reported skewness and excess kurtosis. It is not a substitute for a risk-adjusted return measure and inherits the large sampling error of both moment estimates.",
+   "measures": "Skewness relative to (non-excess) kurtosis: asymmetry scaled by tail heaviness.",
+   "min_data_policy": {
+    "description": "Requires at least 4 observations; kurtosis estimates are highly unstable, so low confidence below 120 and moderate below 240 observations.",
+    "key": "kurtosis"
+   },
+   "minimum_data": "At least 4 observations; low confidence below 120, moderate below 240.",
+   "misleading_when": [
+    "Samples are short: both skewness and kurtosis estimates are unstable.",
+    "A single extreme observation dominates both moments.",
+    "Compared with values computed from population moments (g1 / b2), which differ in small samples."
+   ],
+   "name": "Skewness-kurtosis ratio",
+   "nature": "estimated",
+   "nature_text": "Estimated: a sample statistic subject to sampling error.",
+   "page": "docs/interpretation/skewness_kurtosis_ratio.md",
+   "recorded_assumptions": [],
+   "reference_implementations": [
+    {
+     "agrees": false,
+     "function": "SkewnessKurtosisRatio",
+     "library": "PerformanceAnalytics 2.0.4 (R)",
+     "note": "PerformanceAnalytics divides the population (moment) skewness g1 by the population kurtosis m4/m2^2; OpenFactsheet uses the bias-corrected G1 / (G2 + 3). The two converge as n grows."
+    }
+   ],
+   "references": [
+    {
+     "citation": "Watanabe, Y. (2006). Is Sharpe Ratio Still Effective? Journal of Performance Measurement, 11(1), 55-66 (skewness-kurtosis ratio, as cited by Bacon, eq. 3.7).",
+     "url": null
+    },
+    {
+     "citation": "Bacon, C. R. (2021). Practical Risk-Adjusted Performance Measurement (2nd ed.). Wiley.",
+     "url": null
+    }
+   ],
+   "requires_benchmark": false,
+   "requires_factors": false,
+   "retail": "Positive values mean the return distribution leans towards occasional large gains, negative values towards occasional large losses; dividing by kurtosis tempers the reading when extreme periods are common in both directions. It describes shape; it is not a measure of performance.",
+   "signed_loss": false,
+   "supplementary": false,
+   "undefined_when": [
+    "Return variance is zero or underflows in floating point (e.g. identical returns).",
+    "The bias-corrected kurtosis G2 + 3 is zero or negative (possible only in very small samples)."
+   ],
+   "unit": "ratio",
+   "unit_text": "Dimensionless ratio; displayed with 2 decimals.",
+   "uses_wealth_path": false,
+   "volatility_based": false
+  },
+  {
+   "anchor": "metric-bias_ratio",
+   "annualized": false,
+   "assumptions": [
+    "Window of one sample standard deviation (n - 1) on each side of zero.",
+    "Closed intervals: a zero return counts on both sides; returns equal to +s or -s count."
+   ],
+   "canonical_parameters": [],
+   "category": "distribution",
+   "category_title": "Distribution",
+   "convention": "s = sample standard deviation (decision 0003); closed intervals exactly as printed by Bacon, a zero return counted on both sides; per period (decision 0036).",
+   "criteria": "### When a value is produced (checked in this order)\n\n1. At least 2 observations (mathematical minimum of policy `ratio_standard`); otherwise `insufficient_data`.\n2. The value is undefined, and reported as `not_applicable` with the reason, when:\n   - All returns are identical (zero standard deviation).\n\nAn unexpected calculation failure or a non-finite result is reported as `error` with the value withheld; it never appears as NaN or infinity.\n\n### Confidence and status\n\n- Base confidence from years of history `y = n / P` (aligned observations for benchmark metrics):\n  **high** if `y >= 5`; **moderate** if `3 <= y < 5`; **low** if `y < 3` or if `y` cannot be established (no regular frequency).\n- Then, in this order, data-quality modifiers (a cap lowers confidence to at most the stated level; warnings are attached to the result):\n  - None apply to this metric.\n- Status: `low_confidence` if the final confidence is **low**, otherwise `applicable`. Low confidence never hides the value.\n\n### Assumptions recorded on every result\n\n- None beyond simple decimal returns as supplied.\n\n### Output\n\n- Unit: Dimensionless ratio; displayed with 2 decimals. Values are stored unrounded (float64).\n- Direction: Neutral (descriptive).\n- Nature: Estimated: a sample statistic subject to sampling error.\n- Formula id `bias_ratio@v1`; the version increments if the definition changes.\n",
+   "decisions": [
+    "0003",
+    "0036"
+   ],
+   "direction": "neutral",
+   "direction_text": "Neutral (descriptive)",
+   "formula": "BR = #{t : 0 <= r_t <= s} / (1 + #{t : -s <= r_t <= 0}), s = std(r_t, ddof=1)",
+   "formula_id": "bias_ratio@v1",
+   "formula_latex": "\\mathrm{BR} = \\frac{\\#\\{t : 0 \\le r_t \\le s\\}}{1 + \\#\\{t : -s \\le r_t \\le 0\\}}, \\quad s = \\sqrt{\\frac{1}{n-1} \\sum_{t=1}^{n} \\left(r_t - \\bar r\\right)^2}",
+   "id": "bias_ratio",
+   "inputs": "Periodic simple returns.",
+   "institutional": "Abdulali's bias ratio (Bacon 2nd ed., ch. 10, eq. 10.17) with the closed intervals as printed, so an exactly-zero return is counted in both numerator and denominator. Proposed to flag the asymmetry around zero typical of smoothed or discretionarily marked NAVs in illiquid strategies; a positive mean that is large relative to volatility also raises it mechanically. Read it alongside the autocorrelation, smoothing and zero-return diagnostics, never alone.",
+   "measures": "How many returns fall just above zero (within one standard deviation) compared with how many fall just below it.",
+   "min_data_policy": {
+    "description": "Risk-adjusted ratios: at least 2 observations; low confidence below 3 years, moderate below 5 years.",
+    "key": "ratio_standard"
+   },
+   "minimum_data": "At least 2 observations, not all identical; low confidence below 3 years.",
+   "misleading_when": [
+    "Few observations: the counts are small and the ratio jumps by large steps.",
+    "Returns are reported with few decimals or many exact zeros (discrete NAVs).",
+    "The mean return is large relative to volatility: most returns are then legitimately positive.",
+    "Taken as proof of manipulation: it is only a shape diagnostic."
+   ],
+   "name": "Bias ratio",
+   "nature": "estimated",
+   "nature_text": "Estimated: a sample statistic subject to sampling error.",
+   "page": "docs/interpretation/bias_ratio.md",
+   "recorded_assumptions": [],
+   "reference_implementations": [],
+   "references": [
+    {
+     "citation": "Abdulali, A. (2006). The Bias Ratio: Measuring the Shape of Fraud. Protege Partners Quarterly Letter (practitioner note, as cited by Bacon, eq. 10.17).",
+     "url": null
+    },
+    {
+     "citation": "Bacon, C. R. (2021). Practical Risk-Adjusted Performance Measurement (2nd ed.). Wiley.",
+     "url": null
+    }
+   ],
+   "requires_benchmark": false,
+   "requires_factors": false,
+   "retail": "A diagnostic of the shape of returns near zero. Values well above 1 mean small gains were much more common than small losses. That can come from a genuinely positive average return, from valuation smoothing of hard-to-price assets, or from rounding. It is not evidence of wrongdoing and is not a fraud detector.",
+   "signed_loss": false,
+   "supplementary": false,
+   "undefined_when": [
+    "All returns are identical (zero standard deviation)."
+   ],
+   "unit": "ratio",
+   "unit_text": "Dimensionless ratio; displayed with 2 decimals.",
+   "uses_wealth_path": false,
+   "volatility_based": false
+  },
+  {
+   "anchor": "metric-volatility_skewness",
+   "annualized": false,
+   "assumptions": [
+    "Target (MAR) of 0% per period."
+   ],
+   "canonical_parameters": [
+    "MAR = 0"
+   ],
+   "category": "distribution",
+   "category_title": "Distribution",
+   "convention": "Target 0 and full-sample denominators as for the other partial-moment measures (decision 0016); not annualized (decision 0036).",
+   "criteria": "### When a value is produced (checked in this order)\n\n1. At least 2 observations (mathematical minimum of policy `ratio_standard`); otherwise `insufficient_data`.\n2. The value is undefined, and reported as `not_applicable` with the reason, when:\n   - No return is below the 0% target (zero downside variance).\n\nAn unexpected calculation failure or a non-finite result is reported as `error` with the value withheld; it never appears as NaN or infinity.\n\n### Confidence and status\n\n- Base confidence from years of history `y = n / P` (aligned observations for benchmark metrics):\n  **high** if `y >= 5`; **moderate** if `3 <= y < 5`; **low** if `y < 3` or if `y` cannot be established (no regular frequency).\n- Then, in this order, data-quality modifiers (a cap lowers confidence to at most the stated level; warnings are attached to the result):\n  - Smoothing risk **high** (lag-1 autocorrelation >= 0.3 and z = rho_1 sqrt(n) >= 1.96) sets confidence to **low**.\n  - Smoothing risk **moderate** (rho_1 >= 0.15 and z >= 1.645) caps at **moderate**.\n  - At least 10% exactly-zero returns caps at **moderate**.\n  - With n >= 24 and skewness <= -1 or excess kurtosis >= 3: warning only (no confidence change).\n- Status: `low_confidence` if the final confidence is **low**, otherwise `applicable`. Low confidence never hides the value.\n\n### Assumptions recorded on every result\n\n- Minimum acceptable return (target) tau = 0% per period; the downside deviation divides by all n observations.\n\n### Output\n\n- Unit: Dimensionless ratio; displayed with 2 decimals. Values are stored unrounded (float64).\n- Direction: Context dependent.\n- Nature: Estimated: a sample statistic subject to sampling error.\n- Formula id `volatility_skewness@v1`; the version increments if the definition changes.\n",
+   "decisions": [
+    "0016",
+    "0036"
+   ],
+   "direction": "context_dependent",
+   "direction_text": "Context dependent",
+   "formula": "VS = UPM2 / LPM2, UPM2 = (1/n) sum max(r_t - tau, 0)^2, LPM2 = (1/n) sum max(tau - r_t, 0)^2, tau = 0",
+   "formula_id": "volatility_skewness@v1",
+   "formula_latex": "\\mathrm{VS} = \\frac{\\frac{1}{n} \\sum_{t=1}^{n} \\max(r_t - \\tau, 0)^2}{\\frac{1}{n} \\sum_{t=1}^{n} \\max(\\tau - r_t, 0)^2}, \\quad \\tau = 0",
+   "id": "volatility_skewness",
+   "inputs": "Periodic simple returns.",
+   "institutional": "Bacon (2nd ed., ch. 6, eq. 6.32): second upper partial moment over second lower partial moment at the canonical target 0 with full-sample denominators (the n cancel). No square roots: Bacon's variability skewness (p. 131) is its square root, a monotonic transform not reported separately. The ratio is dominated by the largest deviations and explodes when losses are rare.",
+   "measures": "Upside variance relative to downside variance around the 0% target.",
+   "min_data_policy": {
+    "description": "Risk-adjusted ratios: at least 2 observations; low confidence below 3 years, moderate below 5 years.",
+    "key": "ratio_standard"
+   },
+   "minimum_data": "At least 2 observations and one loss; low confidence below 3 years.",
+   "misleading_when": [
+    "Very few losing periods: the denominator rests on a handful of values.",
+    "Read as a performance ranking: it ignores the level of returns.",
+    "Returns are smoothed, which dampens measured losses."
+   ],
+   "name": "Volatility skewness",
+   "nature": "estimated",
+   "nature_text": "Estimated: a sample statistic subject to sampling error.",
+   "page": "docs/interpretation/volatility_skewness.md",
+   "recorded_assumptions": [
+    "Minimum acceptable return (target) tau = 0% per period; the downside deviation divides by all n observations."
+   ],
+   "reference_implementations": [
+    {
+     "agrees": true,
+     "function": "VolatilitySkewness(MAR=0, stat='volatility')",
+     "library": "PerformanceAnalytics 2.0.4 (R)",
+     "note": ""
+    }
+   ],
+   "references": [
+    {
+     "citation": "Bacon, C. R. (2021). Practical Risk-Adjusted Performance Measurement (2nd ed.). Wiley.",
+     "url": null
+    }
+   ],
+   "requires_benchmark": false,
+   "requires_factors": false,
+   "retail": "Compares how much returns vary above zero with how much they vary below it. Above 1, the variability came more from gains; below 1, more from losses. It says nothing about the average return.",
+   "signed_loss": false,
+   "supplementary": false,
+   "undefined_when": [
+    "No return is below the 0% target (zero downside variance)."
+   ],
+   "unit": "ratio",
+   "unit_text": "Dimensionless ratio; displayed with 2 decimals.",
+   "uses_wealth_path": false,
+   "volatility_based": true
   },
   {
    "anchor": "metric-positive_period_pct",

@@ -6,8 +6,20 @@ import math
 
 import numpy as np
 
+from openfactsheet.exceptions import UndefinedMetric
 from openfactsheet.metrics.context import MetricContext
-from openfactsheet.metrics.references import BACON, EMP, LO_2002, NUMPY, PA, QS, lib
+from openfactsheet.metrics.references import (
+    BACON,
+    EMP,
+    GINI_1912,
+    LO_2002,
+    NUMPY,
+    PA,
+    QS,
+    SKFOLIO,
+    YITZHAKI_2003,
+    lib,
+)
 from openfactsheet.metrics.registry import metric
 from openfactsheet.models.metric import MetricDocs
 
@@ -120,6 +132,99 @@ def annualized_volatility(ctx: MetricContext) -> float:
 )
 def mean_absolute_deviation(ctx: MetricContext) -> float:
     return float(np.mean(np.abs(ctx.r - ctx.cache.mean)))
+
+
+@metric(
+    id="gini_mean_difference",
+    name="Gini mean difference",
+    category="volatility",
+    unit="decimal_return",
+    direction="lower_is_better",
+    nature="estimated",
+    min_data_policy="dispersion",
+    volatility_based=True,
+    docs=MetricDocs(
+        measures="Average absolute difference between the returns of two different periods.",
+        formula="MD = sum_{i != j} |r_i - r_j| / (n(n-1)) "
+        "= 2 / (n(n-1)) * sum_k (2k - n - 1) r_(k), r_(k) sorted ascending",
+        formula_latex=(
+            r"\mathrm{MD} = \frac{1}{n(n-1)} \sum_{i=1}^{n} \sum_{j \ne i} \left| r_i - r_j "
+            r"\right| = \frac{2}{n(n-1)} \sum_{k=1}^{n} (2k - n - 1)\, r_{(k)}"
+        ),
+        inputs="Periodic simple returns.",
+        retail="How far apart the returns of two periods picked at random typically are; "
+        "higher means a bumpier ride. It needs no average to measure from.",
+        institutional="Gini's mean difference (Bacon 2nd ed., ch. 2, eq. 2.8), the unbiased "
+        "U-statistic over all n(n-1) ordered pairs. Unlike the mean absolute deviation it "
+        "measures pairwise distances, not distances from the mean; for normal returns "
+        "MD = 2 sigma / sqrt(pi). Yitzhaki (2003) recommends it for non-normal distributions. "
+        "Per period, not annualized.",
+        assumptions=("Returns are identically distributed over the history.",),
+        misleading_when=(
+            _SMOOTHING_CAVEAT,
+            "Compared across data frequencies (per-period quantity).",
+            "Read as a tail-risk measure: like volatility it treats gains and losses alike.",
+        ),
+        minimum_data="At least 2 observations; low confidence below 3 years.",
+        reference_implementations=(lib(SKFOLIO, "measures.gini_mean_difference"),),
+        references=(GINI_1912, BACON, YITZHAKI_2003),
+        convention="Pair denominator n(n-1) (not n^2), per period, computed from the sorted "
+        "returns in O(n log n) (decision 0036).",
+    ),
+)
+def gini_mean_difference(ctx: MetricContext) -> float:
+    return ctx.cache.gini_mean_difference
+
+
+@metric(
+    id="relative_mean_difference",
+    name="Relative mean difference",
+    category="volatility",
+    unit="ratio",
+    direction="context_dependent",
+    nature="estimated",
+    min_data_policy="dispersion",
+    volatility_based=True,
+    docs=MetricDocs(
+        measures="Gini mean difference per unit of the (signed) arithmetic mean return.",
+        formula="RMD = MD / mean(r_t), signed",
+        formula_latex=(
+            r"\mathrm{RMD} = \frac{\mathrm{MD}}{\bar r}, \quad "
+            r"\mathrm{MD} = \frac{1}{n(n-1)} \sum_{i=1}^{n} \sum_{j \ne i} \left| r_i - r_j "
+            r"\right|"
+        ),
+        undefined_when=("The arithmetic mean return is exactly zero.",),
+        inputs="Periodic simple returns.",
+        retail="How large the typical gap between two periods' returns is compared with the "
+        "average return. A value of 5 means returns typically differ by five times the average "
+        "return. A negative value means the average return was negative; it does not mean "
+        "dispersion was low.",
+        institutional="Bacon (2nd ed., ch. 2, eq. 2.9): mean difference over the signed "
+        "arithmetic mean, a coefficient-of-variation analogue built on Gini's mean difference. "
+        "Neither higher nor lower is uniformly better: with a positive mean a smaller value means "
+        "less dispersion per unit of return, but the sign flips with the mean and the ratio "
+        "explodes as the mean approaches zero. Per period, dimensionless.",
+        assumptions=("Returns are identically distributed over the history.",),
+        misleading_when=(
+            "The mean return is close to zero: the ratio becomes arbitrarily large and unstable.",
+            "The mean return is negative: the value is negative, and a larger dispersion gives a "
+            "more negative number.",
+            _SMOOTHING_CAVEAT,
+        ),
+        minimum_data="At least 2 observations; low confidence below 3 years.",
+        reference_implementations=(),
+        references=(BACON, GINI_1912),
+        convention="Signed arithmetic mean in the denominator, as printed by Bacon (never "
+        "|mean|); not annualized (decision 0036).",
+    ),
+)
+def relative_mean_difference(ctx: MetricContext) -> float:
+    mean = ctx.cache.mean
+    if mean == 0.0:
+        raise UndefinedMetric(
+            "The mean return is exactly zero; the relative mean difference is undefined."
+        )
+    return ctx.cache.gini_mean_difference / mean
 
 
 @metric(

@@ -46,6 +46,26 @@ Package 0.1.0 · Methodology 0.1.0
   `docs/audits/regulatory_disclosure_review.md` (regulatory questions for
   counsel; no compliance claim).
 
+### Added — Bacon Wave 1: monthly-return measures (5 metrics; 102 in total)
+- `gini_mean_difference`: Gini's mean difference over the n(n − 1) ordered
+  pairs (Bacon eq. 2.8), per period, computed in O(n log n) from the sorted
+  returns; agrees with skfolio `gini_mean_difference`.
+- `relative_mean_difference`: mean difference over the **signed** mean
+  (Bacon eq. 2.9); undefined when the mean is zero, negative for losing
+  histories (documented).
+- `skewness_kurtosis_ratio`: Watanabe's ratio G1 / (G2 + 3) from the canonical
+  bias-corrected estimators (Bacon eq. 3.7); undefined when G2 + 3 <= 0.
+  PerformanceAnalytics' population-moment g1 / b2 is a pinned known difference.
+- `bias_ratio`: Abdulali's bias ratio (Bacon eq. 10.17) with the sample
+  standard deviation and closed intervals, a zero return counted on both
+  sides; a neutral shape diagnostic, explicitly not a fraud detector.
+- `volatility_skewness`: UPM2 / LPM2 at the 0% target (Bacon eq. 6.32);
+  agrees with PerformanceAnalytics `VolatilitySkewness`. Variability skewness
+  (its square root) is not registered.
+- None is annualized. No existing metric value, status or convention changes;
+  methodology stays 0.1.0. Gap audit in
+  `docs/audits/bacon_wave1_monthly_gap_audit.md`; decision 0036.
+
 ### Added — Share classes, table roles and document benchmarks (decision 0033)
 - Tables with a fund row and a benchmark row per year (and optional relative
   rows) are read as separate series with roles (fund / benchmark / relative /

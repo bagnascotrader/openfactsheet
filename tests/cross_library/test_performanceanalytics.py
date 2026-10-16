@@ -14,6 +14,7 @@ import numpy as np
 import pytest
 
 import openfactsheet as ofs
+from openfactsheet.metrics.context import MetricCache
 from tests.conftest import SINGLE_FIXTURES, fixture_series
 
 pytestmark = pytest.mark.cross_library
@@ -100,6 +101,20 @@ def test_phase2_agreement(fixture: str, pa_reference: dict[str, Any]) -> None:
         ref["mean_absolute_deviation"], **TOL
     )
     assert val(rep, "downside_potential") == pytest.approx(ref["downside_potential"], **TOL)
+    # Bacon Wave 1 (decision 0036).
+    assert val(rep, "volatility_skewness") == pytest.approx(ref["volatility_skewness"], **TOL)
+    # PA's SkewnessKurtosisRatio uses population moments g1 / b2 (known difference 22);
+    # OpenFactsheet uses the bias-corrected G1 / (G2 + 3).
+    cache = MetricCache(rep.returns)
+    assert ref["skewness_kurtosis_ratio_pa"] == pytest.approx(
+        cache.population_skewness / cache.population_kurtosis, **TOL
+    )
+    assert val(rep, "skewness_kurtosis_ratio") == pytest.approx(
+        val(rep, "skewness") / (val(rep, "excess_kurtosis") + 3.0), **TOL
+    )
+    assert val(rep, "skewness_kurtosis_ratio") != pytest.approx(
+        ref["skewness_kurtosis_ratio_pa"], rel=1e-6
+    )
     assert val(rep, "sterling_ratio") == pytest.approx(ref["sterling_ratio"], **TOL)
     # Burke: PA's own BurkeRatio uses runs of negative returns with a percent-input
     # scaling; OpenFactsheet agrees with the formula on PA's findDrawdowns depths.

@@ -198,6 +198,23 @@ LO_MACKINLAY_1988 = AcademicReference(
     "Lo, A. W., & MacKinlay, A. C. (1988). Stock Market Prices Do Not Follow Random Walks: "
     "Evidence from a Simple Specification Test. Review of Financial Studies, 1(1), 41-66."
 )
+# Wave 1 (decision 0036). Bacon's equation numbers are those of the 2nd edition.
+GINI_1912 = AcademicReference(
+    "Gini, C. (1912). Variabilita e mutabilita. Studi Economico-Giuridici della R. Universita "
+    "di Cagliari, 3(2), 3-159 (mean difference)."
+)
+YITZHAKI_2003 = AcademicReference(
+    "Yitzhaki, S. (2003). Gini's Mean Difference: A Superior Measure of Variability for "
+    "Non-Normal Distributions. Metron, 61(2), 285-316."
+)
+WATANABE_2006 = AcademicReference(
+    "Watanabe, Y. (2006). Is Sharpe Ratio Still Effective? Journal of Performance "
+    "Measurement, 11(1), 55-66 (skewness-kurtosis ratio, as cited by Bacon, eq. 3.7)."
+)
+ABDULALI_2006 = AcademicReference(
+    "Abdulali, A. (2006). The Bias Ratio: Measuring the Shape of Fraud. Protege Partners "
+    "Quarterly Letter (practitioner note, as cited by Bacon, eq. 10.17)."
+)
 # --- Library references ----------------------------------------------------
 R_SANDWICH = "R lm + sandwich::NeweyWest + lmtest::coeftest"
 PA = "PerformanceAnalytics 2.0.4 (R)"

@@ -67,7 +67,7 @@ None; this is a documentation and provenance decision.
   or test spells one out.
 - **Every renderer links what it can.** The HTML and Markdown reports link each
   metric name, including the names listed in sections whose metrics are not
-  applicable (no benchmark supplied, no factors supplied) — all 97 in both.
+  applicable (no benchmark supplied, no factors supplied) — all 102 in both.
   Plain text cannot carry a link per row, so the terminal report gives the
   manual of its version and the destination pattern, on one unwrapped line so
   that it stays copyable.

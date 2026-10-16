@@ -26,6 +26,20 @@ m_k = \frac{1}{n}\sum_{t=1}^{n}(r_t-\bar r)^k
 $s$ is the sample standard deviation (denominator $n-1$); $m_k$ are central sample moments
 (denominator $n$) used by skewness and kurtosis.
 
+## Partial moments and pairwise dispersion
+
+```math
+\mathrm{LPM}_k(\tau) = \frac{1}{n}\sum_{t=1}^{n}\max(\tau - r_t, 0)^k, \qquad
+\mathrm{UPM}_k(\tau) = \frac{1}{n}\sum_{t=1}^{n}\max(r_t - \tau, 0)^k, \qquad
+\mathrm{MD} = \frac{1}{n(n-1)}\sum_{i \ne j}\left|r_i - r_j\right|
+```
+
+Lower and upper partial moments of order $k$ at the target $\tau$ use the full-sample
+denominator $n$ (a return equal to $\tau$ contributes to neither). $\mathrm{MD}$ is Gini's
+mean difference over the $n(n-1)$ ordered pairs of distinct observations. These are
+intermediate quantities, not separate metrics; $\sqrt{\mathrm{LPM}_2(0)}$ is the per-period
+downside deviation $\mathrm{DD}$.
+
 ## Wealth and drawdowns
 
 ```math

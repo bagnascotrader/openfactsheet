@@ -75,6 +75,9 @@ phase2 <- function(R) {
     semi_deviation_per_period = num(SemiDeviation(R)),
     mean_absolute_deviation = num(MeanAbsoluteDeviation(R)),
     downside_potential = num(DownsideDeviation(R, MAR = 0, potential = TRUE)),
+    # Bacon Wave 1 (decision 0036).
+    volatility_skewness = num(VolatilitySkewness(R, MAR = 0, stat = "volatility")),
+    skewness_kurtosis_ratio_pa = num(SkewnessKurtosisRatio(R)),
     sterling_ratio = num(SterlingRatio(R, scale = 12, excess = 0.1)),
     burke_ratio_pa = num(BurkeRatio(R)),
     burke_from_find_drawdowns = cagr / sqrt(sum(depths^2)),

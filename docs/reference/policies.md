@@ -13,10 +13,10 @@ Below the mathematical minimum a metric is `insufficient_data`; the statistical 
 | `observed_point` | 1 obs | none (always high) | — | — | `cumulative_return`, `best_period`, `worst_period`, `current_drawdown`, `zero_return_pct` |
 | `path_risk` | 1 obs | years of history | 3 | 5 | `max_drawdown`, `average_drawdown`, `longest_drawdown_duration`, `drawdown_count`, `time_underwater_pct`, `ulcer_index`, `pain_index`, `median_drawdown`, `average_drawdown_duration`, `max_peak_to_trough_duration`, `average_recovery_duration`, `longest_winning_streak`, `longest_losing_streak`, `best_calendar_year`, `worst_calendar_year`, `positive_calendar_years_pct`, `best_rolling_year`, `worst_rolling_year`, `positive_rolling_year_pct` |
 | `location` | 1 obs | years of history | 3 | 5 | `cagr`, `arithmetic_mean`, `geometric_mean_return`, `annualized_arithmetic_mean`, `median_return`, `positive_period_pct`, `negative_period_pct` |
-| `dispersion` | 2 obs | years of history | 3 | 5 | `volatility`, `annualized_volatility`, `mean_absolute_deviation`, `interquartile_range`, `downside_deviation`, `semi_deviation`, `downside_potential`, `gaussian_var_95`, `mean_return_standard_error` |
-| `ratio_standard` | 2 obs | years of history | 3 | 5 | `gain_to_pain_ratio`, `payoff_ratio`, `profit_factor`, `sharpe_ratio`, `sortino_ratio`, `calmar_ratio`, `martin_ratio`, `omega_ratio`, `kappa_3_ratio`, `upside_potential_ratio`, `burke_ratio`, `sterling_ratio`, `pain_ratio`, `recovery_factor` |
+| `dispersion` | 2 obs | years of history | 3 | 5 | `volatility`, `annualized_volatility`, `mean_absolute_deviation`, `gini_mean_difference`, `relative_mean_difference`, `interquartile_range`, `downside_deviation`, `semi_deviation`, `downside_potential`, `gaussian_var_95`, `mean_return_standard_error` |
+| `ratio_standard` | 2 obs | years of history | 3 | 5 | `gain_to_pain_ratio`, `payoff_ratio`, `profit_factor`, `sharpe_ratio`, `sortino_ratio`, `calmar_ratio`, `martin_ratio`, `omega_ratio`, `kappa_3_ratio`, `upside_potential_ratio`, `burke_ratio`, `sterling_ratio`, `pain_ratio`, `recovery_factor`, `bias_ratio`, `volatility_skewness` |
 | `skewness` | 3 obs | observations | 60 | 120 | `skewness`, `jarque_bera_pvalue` |
-| `kurtosis` | 4 obs | observations | 120 | 240 | `modified_var_95`, `modified_es_95`, `excess_kurtosis` |
+| `kurtosis` | 4 obs | observations | 120 | 240 | `modified_var_95`, `modified_es_95`, `excess_kurtosis`, `skewness_kurtosis_ratio` |
 | `tail` | 2 obs | expected tail observations | 5 | 10 | `drawdown_at_risk_95`, `cdar_95`, `edar_95`, `var_historical_95`, `expected_shortfall_historical_95`, `tail_ratio`, `evar_95` |
 | `autocorrelation` | 5 obs | observations | 36 | 60 | `autocorrelation_lag1`, `autocorrelation_lag2`, `autocorrelation_lag3` |
 | `ljung_box` | 10 obs | observations | 36 | 60 | `ljung_box_pvalue` |
@@ -64,6 +64,8 @@ Flags that decide which applicability checks and confidence modifiers apply to e
 | [`volatility`](../interpretation/volatility.md) | volatility | yes |  |  |  |  |  |  | `dispersion` | `sample_std` |
 | [`annualized_volatility`](../interpretation/annualized_volatility.md) | volatility | yes |  | yes |  |  |  |  | `dispersion` | `sample_std`, `annualization` |
 | [`mean_absolute_deviation`](../interpretation/mean_absolute_deviation.md) | volatility | yes |  |  |  |  |  |  | `dispersion` | — |
+| [`gini_mean_difference`](../interpretation/gini_mean_difference.md) | volatility | yes |  |  |  |  |  |  | `dispersion` | — |
+| [`relative_mean_difference`](../interpretation/relative_mean_difference.md) | volatility | yes |  |  |  |  |  |  | `dispersion` | — |
 | [`interquartile_range`](../interpretation/interquartile_range.md) | volatility | yes |  |  |  |  |  |  | `dispersion` | — |
 | [`downside_deviation`](../interpretation/downside_deviation.md) | volatility | yes |  | yes |  |  |  |  | `dispersion` | `mar`, `annualization` |
 | [`semi_deviation`](../interpretation/semi_deviation.md) | volatility | yes |  | yes |  |  |  |  | `dispersion` | `annualization` |
@@ -105,6 +107,9 @@ Flags that decide which applicability checks and confidence modifiers apply to e
 | [`skewness`](../interpretation/skewness.md) | distribution |  |  |  |  |  |  |  | `skewness` | — |
 | [`excess_kurtosis`](../interpretation/excess_kurtosis.md) | distribution |  |  |  |  |  |  |  | `kurtosis` | — |
 | [`jarque_bera_pvalue`](../interpretation/jarque_bera_pvalue.md) | distribution |  |  |  |  |  | yes |  | `skewness` | — |
+| [`skewness_kurtosis_ratio`](../interpretation/skewness_kurtosis_ratio.md) | distribution |  |  |  |  |  |  |  | `kurtosis` | — |
+| [`bias_ratio`](../interpretation/bias_ratio.md) | distribution |  |  |  |  |  |  |  | `ratio_standard` | — |
+| [`volatility_skewness`](../interpretation/volatility_skewness.md) | distribution | yes |  |  |  |  |  |  | `ratio_standard` | `mar` |
 | [`positive_period_pct`](../interpretation/positive_period_pct.md) | consistency |  |  |  |  |  |  |  | `location` | — |
 | [`negative_period_pct`](../interpretation/negative_period_pct.md) | consistency |  |  |  |  |  |  |  | `location` | — |
 | [`longest_winning_streak`](../interpretation/longest_winning_streak.md) | consistency |  |  |  |  |  |  |  | `path_risk` | — |

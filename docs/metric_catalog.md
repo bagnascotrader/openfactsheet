@@ -29,6 +29,8 @@ Reference column: ✓ agrees with the OpenFactsheet convention, ≠ documented c
 | [`volatility`](interpretation/volatility.md) | Volatility per period | estimated | decimal_return | Lower is better | no | no | sample std (n-1) | `dispersion` | implemented (volatility@v1) | NumPy ✓, PerformanceAnalytics ✓ |
 | [`annualized_volatility`](interpretation/annualized_volatility.md) | Annualized volatility | estimated | decimal_return | Lower is better | no | yes | sample std (n-1), annualization factor | `dispersion` | implemented (annualized_volatility@v1) | PerformanceAnalytics ✓, empyrical-reloaded ✓, QuantStats ✓ |
 | [`mean_absolute_deviation`](interpretation/mean_absolute_deviation.md) | Mean absolute deviation | estimated | decimal_return | Lower is better | no | no | — | `dispersion` | implemented (mean_absolute_deviation@v1) | PerformanceAnalytics ✓ |
+| [`gini_mean_difference`](interpretation/gini_mean_difference.md) | Gini mean difference | estimated | decimal_return | Lower is better | no | no | — | `dispersion` | implemented (gini_mean_difference@v1) | skfolio ✓ |
+| [`relative_mean_difference`](interpretation/relative_mean_difference.md) | Relative mean difference | estimated | ratio | Context dependent | no | no | — | `dispersion` | implemented (relative_mean_difference@v1) | — |
 | [`interquartile_range`](interpretation/interquartile_range.md) | Interquartile range | estimated | decimal_return | Lower is better | no | no | — | `dispersion` | implemented (interquartile_range@v1) | NumPy ✓, PerformanceAnalytics ✓ |
 | [`downside_deviation`](interpretation/downside_deviation.md) | Downside deviation (annualized) | estimated | decimal_return | Lower is better | no | yes | MAR = 0, annualization factor | `dispersion` | implemented (downside_deviation@v1) | PerformanceAnalytics ✓, empyrical-reloaded ✓, QuantStats ✓ |
 | [`semi_deviation`](interpretation/semi_deviation.md) | Semi-deviation (annualized) | estimated | decimal_return | Lower is better | no | yes | annualization factor | `dispersion` | implemented (semi_deviation@v1) | PerformanceAnalytics ✓ |
@@ -90,6 +92,9 @@ Reference column: ✓ agrees with the OpenFactsheet convention, ≠ documented c
 | [`skewness`](interpretation/skewness.md) | Skewness | estimated | ratio | Context dependent | no | no | — | `skewness` | implemented (skewness@v1) | SciPy ✓, pandas ✓, QuantStats ✓, PerformanceAnalytics ≠ |
 | [`excess_kurtosis`](interpretation/excess_kurtosis.md) | Excess kurtosis | estimated | ratio | Context dependent | no | no | — | `kurtosis` | implemented (excess_kurtosis@v1) | SciPy ✓, pandas ✓, QuantStats ✓, PerformanceAnalytics ✓ |
 | [`jarque_bera_pvalue`](interpretation/jarque_bera_pvalue.md) | Jarque-Bera normality p-value | model_dependent | probability | Context dependent | no | no | — | `skewness` | implemented (jarque_bera_pvalue@v1) | SciPy ✓ |
+| [`skewness_kurtosis_ratio`](interpretation/skewness_kurtosis_ratio.md) | Skewness-kurtosis ratio | estimated | ratio | Context dependent | no | no | — | `kurtosis` | implemented (skewness_kurtosis_ratio@v1) | PerformanceAnalytics ≠ |
+| [`bias_ratio`](interpretation/bias_ratio.md) | Bias ratio | estimated | ratio | Neutral (descriptive) | no | no | — | `ratio_standard` | implemented (bias_ratio@v1) | — |
+| [`volatility_skewness`](interpretation/volatility_skewness.md) | Volatility skewness | estimated | ratio | Context dependent | no | no | MAR = 0 | `ratio_standard` | implemented (volatility_skewness@v1) | PerformanceAnalytics ✓ |
 
 ## Consistency
 

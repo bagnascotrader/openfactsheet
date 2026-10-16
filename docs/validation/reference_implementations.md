@@ -177,6 +177,16 @@ Serial-correlation additions (decision 0029):
 | variance_ratio_1y | Autocorrelations agree with statsmodels `acf(adjusted=False)` to 1e-12; the standard error equals Lo & MacKinlay's (1988) asymptotic variance | No maintained Python/R implementation of the autocorrelation form was available (R `vrtest` implements the overlapping estimator, asymptotically equivalent). |
 | sharpe_ratio_autocorrelation_adjusted | Lo (2002) eq. (33) AR(1) closed form reproduced to 1e-12 from the autocorrelation sum | No library implementation identified. |
 
+Bacon Wave 1 (decision 0036):
+
+| Metric id | Reference | Notes |
+|---|---|---|
+| gini_mean_difference | Agrees with skfolio `measures.gini_mean_difference` (1e-9) on all single-series fixtures | Same n(n − 1) pair denominator. Also checked against a quadratic brute force in unit tests. |
+| relative_mean_difference | Agrees with skfolio `gini_mean_difference` / mean (1e-9) | No library implements the ratio itself. |
+| skewness_kurtosis_ratio | Differs (pinned) from PA `SkewnessKurtosisRatio` | PA = population g1 / b2, verified equal to OpenFactsheet's cached population moments (difference 22). |
+| bias_ratio | — | No library implementation found; hand computations (boundaries at 0 and ±s) in `tests/unit/metrics/test_bacon_wave1.py`. |
+| volatility_skewness | Agrees (`VolatilitySkewness(MAR=0, stat="volatility")`) | Per period. |
+
 The R harness records per-episode `findDrawdowns` columns, whether the last
 episode is open, complete-year returns, rolling 12-month returns, modified ES,
 `mean.geometric` and `IQR`; `test_phase2b_agreement` rebuilds each statistic
@@ -275,3 +285,9 @@ streaks, zero_return_pct) are checked against hand computations in
     OpenFactsheet divides the arithmetic annualized OLS alpha by its residual
     volatility (both relationships asserted). See
     [0027](../methodology/decisions/0027-benchmark-relative-additions.md).
+22. **Skewness-kurtosis ratio (PA).** `SkewnessKurtosisRatio` divides the
+    population (moment) skewness g1 by the population kurtosis b2 = m4 / m2²;
+    OpenFactsheet divides the bias-corrected G1 by G2 + 3, consistent with the
+    canonical skewness and excess kurtosis. Both relationships are asserted; on
+    the fixtures (n = 60 to 120) the two differ by 1.5% to 3%. See
+    [0036](../methodology/decisions/0036-bacon-wave1-monthly-measures.md).

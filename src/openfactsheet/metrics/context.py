@@ -83,6 +83,22 @@ class MetricCache:
         return float(np.sqrt(np.mean(shortfall**2)))
 
     @cached_property
+    def gini_mean_difference(self) -> float:
+        """Gini mean difference: mean of |r_i - r_j| over the n(n-1) ordered pairs i != j.
+
+        Computed in O(n log n) from the sorted returns. Summing by parts,
+        sum_k (2k - n - 1) r_(k) = sum_{k=1}^{n-1} k (n - k) (r_(k+1) - r_(k)), a sum of
+        non-negative terms that is exactly zero for identical returns.
+        """
+        n = self.r.shape[0]
+        if n < 2:
+            raise UndefinedMetric("The mean difference requires at least 2 observations.")
+        gaps = np.diff(np.sort(self.r))
+        k = np.arange(1, n, dtype=np.float64)
+        pair_sum = float(np.sum(k * (n - k) * gaps))  # = sum_{i<j} |r_i - r_j|
+        return float(2.0 * pair_sum / (n * (n - 1)))
+
+    @cached_property
     def cumulative_return(self) -> float:
         return float(self.wealth[-1] - 1.0)
 

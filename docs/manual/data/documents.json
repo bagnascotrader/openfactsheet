@@ -316,6 +316,13 @@
    "part": "decisions",
    "source": "docs/methodology/decisions/0035-linking-results-to-the-manual.md",
    "title": "Linking a result to its documentation"
+  },
+  {
+   "anchor": "decision-0036",
+   "number": "0036",
+   "part": "decisions",
+   "source": "docs/methodology/decisions/0036-bacon-wave1-monthly-measures.md",
+   "title": "Bacon Wave 1: mean difference, shape ratios and the bias ratio"
   }
  ]
 }
