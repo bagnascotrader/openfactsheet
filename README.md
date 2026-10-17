@@ -13,7 +13,7 @@ One function call. One versioned methodology. Every metric, including the unflat
 [![Metrics](https://img.shields.io/badge/canonical%20metrics-102-10A37F)](docs/metric_catalog.md)
 [![Typed](https://img.shields.io/badge/mypy-strict-10A37F)](pyproject.toml)
 [![Status](https://img.shields.io/badge/status-alpha-C98A00)](CHANGELOG.md)
-[![PyPI](https://img.shields.io/pypi/v/openfactsheet?include_prereleases&color=0B3C7D)](https://pypi.org/project/openfactsheet/)
+[![PyPI](https://img.shields.io/pypi/v/openfactsheet?color=0B3C7D)](https://pypi.org/project/openfactsheet/)
 
 **[Quick start](#quick-start)** &nbsp;·&nbsp;
 **[Why OpenFactsheet](#why-openfactsheet)** &nbsp;·&nbsp;
@@ -51,9 +51,9 @@ That one call gives you 102 metrics, data-quality diagnostics, a 14-section
 report, and JSON output that is stable and never contains a `NaN`.
 
 > [!NOTE]
-> **Status: Public alpha** · Methodology 0.1.0
+> **Status: Release 0.1.0** · Methodology 0.1.0
 >
-> Public alpha: interfaces, metrics and documentation may evolve; validate results before investment decisions.
+> Pre-1.0 release: interfaces, metrics and documentation may evolve between minor versions; validate results before investment decisions.
 > The numerical core is implemented and cross-validated against independent R and
 > Python implementations. Every result links to the page of the PDF reference
 > manual that defines it.
@@ -103,7 +103,7 @@ applies them the same way to every return stream.
 ## Quick start
 
 ```bash
-pip install --pre "openfactsheet[excel]"   # public alpha on PyPI (0.1.0a1)
+pip install "openfactsheet[excel]"   # from PyPI
 ```
 
 or, from a source checkout:
@@ -265,12 +265,12 @@ sensible data, and its academic and library references. See the
 | Python lists and tuples, NumPy arrays | ✅ |
 | pandas `Series` / `DataFrame` | ✅ |
 | CSV files | ✅ |
-| Excel files | ✅ `pip install --pre "openfactsheet[excel]"` |
+| Excel files | ✅ `pip install "openfactsheet[excel]"` |
 | Wide monthly tables (Year × Jan…Dec, `%` labels understood) | ✅ |
 | Pasted table text | ✅ |
 | Price / NAV levels | Detected and flagged, never silently treated as returns |
-| PDF factsheets with a monthly-return table (embedded text) | ✅ `pip install --pre "openfactsheet[pdf]"`: columns assigned by position, every year reconciled with its YTD, unreliable tables refused |
-| Screenshots and scanned PDFs (OCR) | ✅ `pip install --pre "openfactsheet[ocr]"`: local RapidOCR (Tesseract optional), no network; every year must reconcile with its printed YTD, otherwise the table is refused |
+| PDF factsheets with a monthly-return table (embedded text) | ✅ `pip install "openfactsheet[pdf]"`: columns assigned by position, every year reconciled with its YTD, unreliable tables refused |
+| Screenshots and scanned PDFs (OCR) | ✅ `pip install "openfactsheet[ocr]"`: local RapidOCR (Tesseract optional), no network; every year must reconcile with its printed YTD, otherwise the table is refused |
 
 The percent-or-decimal scale is detected by a deterministic classifier, and
 frequency is inferred from calendar spacing. `report.input_summary` and

@@ -22,7 +22,7 @@ keywords = [
     "portfolio-analytics",
 ]
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 4 - Beta",
     "Intended Audience :: Financial and Insurance Industry",
     "Intended Audience :: Science/Research",
     "Operating System :: OS Independent",

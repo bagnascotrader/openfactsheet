@@ -98,12 +98,12 @@ def test_documents_carry_the_identical_short_notice_and_link(rel: str) -> None:
     assert "DISCLAIMER.md" in text
 
 
-def test_readme_states_public_alpha_and_creator() -> None:
+def test_readme_states_release_status_and_creator() -> None:
     text = _read("README.md")
-    assert "**Status: Public alpha** · Methodology 0.1.0" in text
+    assert f"**Status: Release {ofs.__version__}** · Methodology 0.1.0" in text
     assert (
-        "Public alpha: interfaces, metrics and documentation may evolve; validate results "
-        "before investment decisions." in text
+        "Pre-1.0 release: interfaces, metrics and documentation may evolve between minor "
+        "versions; validate results before investment decisions." in text
     )
     assert "[Connect on LinkedIn](https://www.linkedin.com/in/andres-bagnasco/)" in text
 

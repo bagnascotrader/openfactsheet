@@ -60,6 +60,6 @@ measurements — it does not give investment advice.
 For information and education only — not investment advice. Investing involves risk; past performance does not predict future results. Verify results and consult a qualified financial adviser.
 See the full [disclaimer](../DISCLAIMER.md), the
 [metric attribution](ATTRIBUTION.md) and the
-[third-party notices](../THIRD_PARTY_NOTICES.md). OpenFactsheet is a public alpha:
+[third-party notices](../THIRD_PARTY_NOTICES.md). OpenFactsheet is a pre-1.0 release:
 interfaces, metrics and documentation may evolve; validate results before
 investment decisions.

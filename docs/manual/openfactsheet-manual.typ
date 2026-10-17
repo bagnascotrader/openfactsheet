@@ -62,7 +62,7 @@
   #v(0.6em)
   #block(stroke: 0.5pt + muted, inset: 8pt, width: 100%)[
     #text(size: 9pt)[
-      *Public alpha.* #package.short_disclaimer
+      *Release #package.version.* #package.short_disclaimer
       See #link(<doc-disclaimer>)[Important information and disclaimers].
     ]
   ]

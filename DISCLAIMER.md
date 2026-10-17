@@ -7,7 +7,7 @@ than keeping their own copies. A test (`tests/unit/test_disclaimer.py`) fails if
 the short notice below drifts from the copy used in the README and the reports.
 
 > **Status of this text.** This is proposed public-facing copy prepared for the
-> public alpha. It is not legal advice and has not yet been reviewed by legal
+> public release. It is not legal advice and has not yet been reviewed by legal
 > counsel; counsel review is pending (see
 > [the regulatory disclosure review](docs/audits/regulatory_disclosure_review.md)).
 > A disclaimer is not a regulatory safe harbor and does not, by itself,

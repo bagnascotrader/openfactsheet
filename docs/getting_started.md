@@ -3,10 +3,9 @@
 ## Install
 
 ```bash
-pip install --pre "openfactsheet[excel]"
+pip install "openfactsheet[excel]"
 ```
 
-The `--pre` flag is needed while OpenFactsheet is a public alpha (0.1.0a1).
 From a source checkout instead:
 
 ```bash

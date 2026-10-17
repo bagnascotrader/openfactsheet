@@ -1021,7 +1021,7 @@
     {
      "anchor": "api-__version__",
      "name": "__version__",
-     "value": "0.1.0a1"
+     "value": "0.1.0"
     }
    ],
    "description": "Version identifiers embedded in every report.",

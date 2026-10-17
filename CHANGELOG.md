@@ -4,6 +4,22 @@ All notable changes are recorded here. OpenFactsheet versions the **package**
 and the **methodology** separately: a methodology version change means reported
 numbers, statuses or conventions changed.
 
+## [0.1.0] — 2026-10-17
+
+Package 0.1.0 · Methodology 0.1.0
+
+First full release. Promotes the 0.1.0a1 public alpha with no change to
+metrics, formulas, statuses or conventions: methodology 0.1.0 is unchanged, so
+0.1.0 reports the same numbers as 0.1.0a1.
+
+### Changed
+- Package version 0.1.0; PyPI classifier `Development Status :: 4 - Beta`
+  (pre-1.0: interfaces may still change between minor versions).
+- Installing no longer needs `pip install --pre`; README, getting started,
+  `CITATION.cff`, `SECURITY.md` and the manual no longer describe the package
+  as a public alpha.
+- Result documentation links point at the `v0.1.0` release and its manual.
+
 ## [0.1.0a1] — 2026-10-16
 
 Package 0.1.0a1 (public alpha) · Methodology 0.1.0
