@@ -265,12 +265,12 @@ sensible data, and its academic and library references. See the
 | Python lists and tuples, NumPy arrays | ✅ |
 | pandas `Series` / `DataFrame` | ✅ |
 | CSV files | ✅ |
-| Excel files | ✅ `pip install -e ".[excel]"` |
+| Excel files | ✅ `pip install --pre "openfactsheet[excel]"` |
 | Wide monthly tables (Year × Jan…Dec, `%` labels understood) | ✅ |
 | Pasted table text | ✅ |
 | Price / NAV levels | Detected and flagged, never silently treated as returns |
-| PDF factsheets with a monthly-return table (embedded text) | ✅ `pip install -e ".[pdf]"`: columns assigned by position, every year reconciled with its YTD, unreliable tables refused |
-| Screenshots and scanned PDFs (OCR) | ✅ `pip install -e ".[ocr]"`: local RapidOCR (Tesseract optional), no network; every year must reconcile with its printed YTD, otherwise the table is refused |
+| PDF factsheets with a monthly-return table (embedded text) | ✅ `pip install --pre "openfactsheet[pdf]"`: columns assigned by position, every year reconciled with its YTD, unreliable tables refused |
+| Screenshots and scanned PDFs (OCR) | ✅ `pip install --pre "openfactsheet[ocr]"`: local RapidOCR (Tesseract optional), no network; every year must reconcile with its printed YTD, otherwise the table is refused |
 
 The percent-or-decimal scale is detected by a deterministic classifier, and
 frequency is inferred from calendar spacing. `report.input_summary` and
@@ -318,9 +318,9 @@ received.
 | 4 | Reporting: terminal, Markdown, HTML, JSON; canonical charts and drawdown-episode table | ✅ Done |
 | 5 | Comparison engine (`ofs.compare`) | ✅ Done |
 | 6 | Optional document ingestion: PDF with embedded text, screenshots and scanned PDFs (OCR) | ✅ Done |
+| 7 | Factor models (CAPM, Fama-French, Carhart, custom) using factor data you supply | ✅ Done |
 | 8 | Fund profile from documents: name, objective, identifiers, share classes and table attribution, benchmark tables | ✅ Done |
 | 9 | CRAN-style PDF reference manual, linked from every result | ✅ Done |
-| 7 | Factor models (CAPM, Fama-French, Carhart, custom) using factor data you supply | ✅ Done |
 
 ## Development
 

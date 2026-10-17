@@ -14,9 +14,11 @@ Package 0.1.0a1 (public alpha) · Methodology 0.1.0
 - Inputs: lists, tuples, NumPy arrays, pandas Series/DataFrames, CSV, Excel
   (optional extra), wide monthly-return tables, pasted table text.
 - Deterministic percent/decimal classifier; calendar-based frequency inference.
-- 48 canonical metrics (returns, volatility, drawdowns, risk-adjusted, tail,
-  distribution, consistency, serial dependence, benchmark-relative) with full
-  registry documentation and generated per-metric pages.
+- An initial set of 48 canonical metrics (returns, volatility, drawdowns,
+  risk-adjusted, tail, distribution, consistency, serial dependence,
+  benchmark-relative) with full registry documentation and generated
+  per-metric pages; later additions in this release bring the total to 102
+  (see below).
 - Data-quality diagnostics: missing values/periods, stale and repeated returns,
   outliers, impossible returns, serial correlation, smoothing risk.
 - Reports: terminal, Markdown, HTML, deterministic JSON; `ofs.compare()` with
