@@ -3,7 +3,7 @@ message: "If you use OpenFactsheet in research, please cite it and state the met
 title: "OpenFactsheet: standardized, transparent investment performance analytics"
 type: software
 authors:
-  - given-names: "Andrés A."
+  - given-names: "Andres A."
     family-names: "Bagnasco"
   - name: "OpenFactsheet contributors"
 license: Apache-2.0
