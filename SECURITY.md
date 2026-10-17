@@ -2,12 +2,13 @@
 
 ## Supported versions
 
-OpenFactsheet is a **public alpha**. Security fixes are made on the `main`
+OpenFactsheet 0.1.0 is the first full release, following the 0.1.0a1 public alpha. Security fixes are made on the `main`
 branch and released in the next 0.1.x version.
 
 | Version | Supported |
 |---|---|
-| 0.1.x (public alpha) | Yes |
+| 0.1.x | Yes |
+| 0.1.0a1 (public alpha) | No; upgrade to 0.1.0 |
 | < 0.1 (unreleased development snapshots) | No |
 
 ## Reporting a vulnerability
