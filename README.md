@@ -355,6 +355,10 @@ project is developed in the open, and contributions from practitioners,
 academics and developers are welcome; every contributor is credited in the
 project's Git history.
 
+
+[![Support OpenFactsheet on Ko-fi](https://img.shields.io/badge/Support_OpenFactsheet-Ko--fi-FF5E5B?logo=kofi&logoColor=white)](https://ko-fi.com/YOUR_KOFI_USERNAME)
+
+
 ## License
 
 [Apache-2.0](LICENSE). The license covers the software; the investment
