@@ -25,11 +25,11 @@ One function call. One versioned methodology. Every metric, including the unflat
 
 <br>
 
-<a href="https://www.youtube.com/watch?v=rtf-nFizsiI" title="Watch the OpenFactsheet explainer on YouTube">
-  <img src="https://img.youtube.com/vi/rtf-nFizsiI/maxresdefault.jpg" alt="OpenFactsheet explainer video: click to watch on YouTube" width="640">
+<a href="https://www.youtube.com/watch?v=3hC6-jzdBRE" title="Watch the OpenFactsheet explainer on YouTube">
+  <img src="https://img.youtube.com/vi/3hC6-jzdBRE/maxresdefault.jpg" alt="OpenFactsheet explainer video: click to watch on YouTube" width="640">
 </a>
 
-<sub>▶ <b><a href="https://www.youtube.com/watch?v=rtf-nFizsiI">Watch the explainer</a></b> to see what OpenFactsheet does and why.</sub>
+<sub>▶ <b><a href="https://www.youtube.com/watch?v=3hC6-jzdBRE">Watch the explainer</a></b> to see what OpenFactsheet does and why.</sub>
 
 </div>
 
