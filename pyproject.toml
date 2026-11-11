@@ -53,7 +53,7 @@ tesseract = ["pytesseract>=0.3.10", "pypdfium2>=4", "Pillow>=12.3", "pypdf>=6.19
 images = ["openfactsheet[ocr]"]
 # Builds the PDF reference manual from a source checkout (decision 0034). The
 # compiler is pinned exactly: the committed PDF records the version it was built with.
-docs = ["typst==0.15.0", "pikepdf>=9", "pypdf>=6.19"]
+docs = ["typst==0.15.2", "pikepdf>=9", "pypdf>=6.19"]
 validation = [
     "packaging>=23",  # version-dependent reference assertions
     "empyrical-reloaded>=0.5",
